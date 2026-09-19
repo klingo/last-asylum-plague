@@ -28,13 +28,13 @@ const itemPicker = createItemPicker({
     clearButton: itemSearchClearBtn,
     onChange: () => recalculate(),
 });
-const shopSelectButton = document.getElementById('shop-select-button');
-const shopSelectPanel = document.getElementById('shop-select-panel');
-const shopMultiSelect = createMultiSelect({
-    button: shopSelectButton,
-    panel: shopSelectPanel,
-    emptyLabel: () => t('analyze.shopNoneSelected'),
-    countLabel: (count) => t('analyze.shopSelectedCount', { count }),
+const eventSelectButton = document.getElementById('event-select-button');
+const eventSelectPanel = document.getElementById('event-select-panel');
+const eventMultiSelect = createMultiSelect({
+    button: eventSelectButton,
+    panel: eventSelectPanel,
+    emptyLabel: () => t('analyze.eventsNoneSelected'),
+    countLabel: (count) => t('analyze.eventsSelectedCount', { count }),
     onChange: () => recalculate(),
 });
 const resetBtn = document.getElementById('reset-btn');
@@ -66,11 +66,13 @@ function firstEntry(choiceEntry) {
     return Object.entries(choiceEntry)[0] || [null, 0];
 }
 
-function populateShopSelect(exchangeShops) {
-    const sortedShops = Object.entries(exchangeShops).sort((a, b) =>
+function populateEventSelect(events) {
+    const sortedEvents = Object.entries(events).sort((a, b) =>
         localizedName(a[1].name).localeCompare(localizedName(b[1].name)),
     );
-    shopMultiSelect.setOptions(sortedShops.map(([shopId, shop]) => ({ id: shopId, label: localizedName(shop.name) })));
+    eventMultiSelect.setOptions(
+        sortedEvents.map(([eventId, event]) => ({ id: eventId, label: localizedName(event.name) })),
+    );
 }
 
 /**
@@ -79,34 +81,27 @@ function populateShopSelect(exchangeShops) {
  * value a package's own "choice" contents), then finds the single best-priced source for each
  * option so the table below can show its Type/Source/Days.
  *
- * `selectedShopIds` mirrors the Analyze page's "Active Exchange Shop" selection: it restricts
- * which shop may sell an option's item *directly* (an empty set means no exchange shop may) and
- * which events currently count as active, gating any event-tied package/offer the same way
- * lib/pricing-core.js's `createMarket` does for Analyze. Packages with no event tie are always
- * considered, and currency needed for an exchange offer can still come from any shop, matching
- * `market.purchase()`'s own shopFilter semantics.
+ * `activeEventIds` mirrors the Analyze page's "Active Events" selection: each selected id gates
+ * any package/exchange shop tied to that event via `event_id` the same way
+ * lib/pricing-core.js's `createMarket` does for Analyze (an empty set means no event is active).
+ * A shop counts as active exactly when its own event is selected, which in turn restricts which
+ * shop may sell an option's item *directly*; currency needed for an exchange offer can still
+ * come from any shop, matching `market.purchase()`'s own shopFilter semantics.
  */
-function buildOptionRows(choiceItem, items, packages, exchangeShops, locale, selectedShopIds) {
-    const activeEventIds = new Set();
-    for (const shopId of selectedShopIds) {
-        const eventId = exchangeShops[shopId]?.event_id;
-        if (eventId) {
-            activeEventIds.add(eventId);
-        }
-    }
-
+function buildOptionRows(choiceItem, items, packages, exchangeShops, locale, activeEventIds) {
     const market = createMarket(packages, exchangeShops, items, {}, { activeEventIds }, locale);
 
     const activeShops = {};
-    for (const shopId of selectedShopIds) {
-        if (exchangeShops[shopId]) {
-            activeShops[shopId] = exchangeShops[shopId];
+    for (const [shopId, shop] of Object.entries(exchangeShops)) {
+        if (shop.event_id && activeEventIds.has(shop.event_id)) {
+            activeShops[shopId] = shop;
         }
     }
+    const activeShopIds = new Set(Object.keys(activeShops));
 
     return choiceItem.choice.choices.map((choiceEntry) => {
         const [itemId, qty] = firstEntry(choiceEntry);
-        const unitCost = itemId ? market.peekUnitCost(itemId, selectedShopIds) : NaN;
+        const unitCost = itemId ? market.peekUnitCost(itemId, activeShopIds) : NaN;
         const totalValue = Number.isFinite(unitCost) ? qty * unitCost : NaN;
 
         const packageSources = itemId
@@ -207,7 +202,7 @@ function syncUrlParams() {
     const url = new URL(window.location.href);
     const params = new URLSearchParams();
     const itemId = itemPicker.getValue();
-    const shopIds = [...shopMultiSelect.getValues()];
+    const eventIds = [...eventMultiSelect.getValues()];
     const lang = new URLSearchParams(url.search).get('lang');
 
     if (lang) {
@@ -216,8 +211,8 @@ function syncUrlParams() {
     if (itemId) {
         params.set('item', itemId);
     }
-    if (shopIds.length > 0) {
-        params.set('shop', shopIds.join(','));
+    if (eventIds.length > 0) {
+        params.set('events', eventIds.join(','));
     }
 
     const queryString = params.toString();
@@ -228,12 +223,12 @@ function syncUrlParams() {
 function applyUrlParams() {
     const params = new URLSearchParams(window.location.search);
     const itemParam = params.get('item');
-    const shopParam = params.get('shop');
+    const eventsParam = params.get('events');
     if (itemParam && choiceItems[itemParam]) {
         itemPicker.setValue(itemParam);
     }
-    const shopIds = shopParam ? shopParam.split(',').filter((id) => data?.exchange_shops?.[id]) : [];
-    shopMultiSelect.setValues(shopIds);
+    const eventIds = eventsParam ? eventsParam.split(',').filter((id) => data?.events?.[id]) : [];
+    eventMultiSelect.setValues(eventIds);
 }
 
 function recalculate({ syncUrl = true } = {}) {
@@ -253,8 +248,8 @@ function recalculate({ syncUrl = true } = {}) {
 
     const { items, packages = {}, exchange_shops: exchangeShops = {} } = data;
     const locale = getLocale();
-    const selectedShopIds = shopMultiSelect.getValues();
-    const rows = buildOptionRows(choiceItems[targetItemId], items, packages, exchangeShops, locale, selectedShopIds);
+    const activeEventIds = eventMultiSelect.getValues();
+    const rows = buildOptionRows(choiceItems[targetItemId], items, packages, exchangeShops, locale, activeEventIds);
 
     optionsCard.hidden = false;
     if (rows.length === 0) {
@@ -268,7 +263,7 @@ function recalculate({ syncUrl = true } = {}) {
 
 function handleReset() {
     itemPicker.reset();
-    shopMultiSelect.reset();
+    eventMultiSelect.reset();
     const url = new URL(window.location.href);
     const lang = new URLSearchParams(url.search).get('lang');
     window.history.replaceState(null, '', `${url.pathname}${lang ? `?lang=${lang}` : ''}${url.hash}`);
@@ -289,16 +284,16 @@ async function init() {
     updateFooter();
     choiceItems = filterChoiceItems(data.items || {});
     itemPicker.setItems(choiceItems);
-    populateShopSelect(data.exchange_shops || {});
+    populateEventSelect(data.events || {});
     applyUrlParams();
 
     window.addEventListener('localechange', () => {
-        const selectedShopIds = [...shopMultiSelect.getValues()];
+        const selectedEventIds = [...eventMultiSelect.getValues()];
         applyStaticTranslations();
         updateFooter();
         itemPicker.setItems(choiceItems);
-        populateShopSelect(data.exchange_shops || {});
-        shopMultiSelect.setValues(selectedShopIds);
+        populateEventSelect(data.events || {});
+        eventMultiSelect.setValues(selectedEventIds);
         recalculate({ syncUrl: false });
     });
 

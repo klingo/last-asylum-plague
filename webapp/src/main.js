@@ -31,13 +31,13 @@ const itemPicker = createItemPicker({
     clearButton: itemSearchClearBtn,
     onChange: () => recalculate(),
 });
-const shopSelectButton = document.getElementById('shop-select-button');
-const shopSelectPanel = document.getElementById('shop-select-panel');
-const shopMultiSelect = createMultiSelect({
-    button: shopSelectButton,
-    panel: shopSelectPanel,
-    emptyLabel: () => t('analyze.shopNoneSelected'),
-    countLabel: (count) => t('analyze.shopSelectedCount', { count }),
+const eventSelectButton = document.getElementById('event-select-button');
+const eventSelectPanel = document.getElementById('event-select-panel');
+const eventMultiSelect = createMultiSelect({
+    button: eventSelectButton,
+    panel: eventSelectPanel,
+    emptyLabel: () => t('analyze.eventsNoneSelected'),
+    countLabel: (count) => t('analyze.eventsSelectedCount', { count }),
     onChange: () => recalculate(),
 });
 const quantityInput = document.getElementById('quantity-input');
@@ -57,11 +57,13 @@ const appFooter = document.querySelector('.app-footer');
 
 let data = null;
 
-function populateShopSelect(exchangeShops) {
-    const sortedShops = Object.entries(exchangeShops).sort((a, b) =>
+function populateEventSelect(events) {
+    const sortedEvents = Object.entries(events).sort((a, b) =>
         localizedName(a[1].name).localeCompare(localizedName(b[1].name)),
     );
-    shopMultiSelect.setOptions(sortedShops.map(([shopId, shop]) => ({ id: shopId, label: localizedName(shop.name) })));
+    eventMultiSelect.setOptions(
+        sortedEvents.map(([eventId, event]) => ({ id: eventId, label: localizedName(event.name) })),
+    );
 }
 
 function renderSourcesTable(sources) {
@@ -253,7 +255,7 @@ function syncUrlParams() {
     const params = new URLSearchParams();
 
     const itemId = itemPicker.getValue();
-    const shopIds = [...shopMultiSelect.getValues()];
+    const eventIds = [...eventMultiSelect.getValues()];
     const quantity = quantityInput?.value?.trim();
     const days = daysInput?.value?.trim();
     const lang = new URLSearchParams(url.search).get('lang');
@@ -264,8 +266,8 @@ function syncUrlParams() {
     if (itemId) {
         params.set('item', itemId);
     }
-    if (shopIds.length > 0) {
-        params.set('shop', shopIds.join(','));
+    if (eventIds.length > 0) {
+        params.set('events', eventIds.join(','));
     }
     if (quantity && Number(quantity) > 0) {
         params.set('quantity', quantity);
@@ -285,15 +287,15 @@ function syncUrlParams() {
 function applyUrlParams() {
     const params = new URLSearchParams(window.location.search);
     const itemParam = params.get('item');
-    const shopParam = params.get('shop');
+    const eventsParam = params.get('events');
     const quantityParam = params.get('quantity') || params.get('amount');
     const daysParam = params.get('days');
 
     if (itemParam && data?.items?.[itemParam]) {
         itemPicker.setValue(itemParam);
     }
-    const shopIds = shopParam ? shopParam.split(',').filter((id) => data?.exchange_shops?.[id]) : [];
-    shopMultiSelect.setValues(shopIds);
+    const eventIds = eventsParam ? eventsParam.split(',').filter((id) => data?.events?.[id]) : [];
+    eventMultiSelect.setValues(eventIds);
     if (quantityParam && Number(quantityParam) > 0) {
         quantityInput.value = quantityParam;
     } else {
@@ -315,15 +317,17 @@ function recalculate({ syncUrl = true } = {}) {
     }
 
     const targetItemId = itemPicker.getValue();
-    const selectedShopIds = shopMultiSelect.getValues();
-    const hasActiveShop = selectedShopIds.size > 0;
+    // The selection IS the set of currently active event ids: each option in the multi-select
+    // is an entry from `data.events` (whether or not that event has its own exchange shop).
+    const activeEventIds = eventMultiSelect.getValues();
+    const hasActiveEvent = activeEventIds.size > 0;
 
-    // "Exceed event limits" only makes sense once an event is actually active (i.e. at least
-    // one exchange shop is selected); keep it disabled and cleared otherwise so a stale
-    // checked state never lingers from before the last shop was deselected.
+    // "Exceed event limits" only makes sense once an event is actually active; keep it
+    // disabled and cleared otherwise so a stale checked state never lingers from before the
+    // last event was deselected.
     if (exceedPackLimitsCheckbox) {
-        exceedPackLimitsCheckbox.disabled = !hasActiveShop;
-        if (!hasActiveShop) {
+        exceedPackLimitsCheckbox.disabled = !hasActiveEvent;
+        if (!hasActiveEvent) {
             exceedPackLimitsCheckbox.checked = false;
         }
     }
@@ -331,7 +335,7 @@ function recalculate({ syncUrl = true } = {}) {
     const limitOptions = {
         days: Number(daysInput ? daysInput.value : 1) || 1,
     };
-    const exceedEventPackLimits = hasActiveShop && Boolean(exceedPackLimitsCheckbox?.checked);
+    const exceedEventPackLimits = hasActiveEvent && Boolean(exceedPackLimitsCheckbox?.checked);
     const targetQuantity = Number(quantityInput ? quantityInput.value : 0) || 0;
 
     if (syncUrl) {
@@ -347,24 +351,11 @@ function recalculate({ syncUrl = true } = {}) {
     const { items, packages = {}, exchange_shops: exchangeShops = {} } = data;
     const locale = getLocale();
 
-    // Packages tied to an event (e.g. "blades_out_select_pack") only exist while that event's
-    // exchange shop is running, so they're gated by the same "Active Exchange Shop" selection:
-    // an event is active exactly when one of the currently selected shops carries its
-    // event_id (shops without an event_id contribute nothing). No shop selected activates no
-    // event at all.
-    const activeEventIds = new Set();
-    for (const shopId of selectedShopIds) {
-        const eventId = exchangeShops[shopId]?.event_id;
-        if (eventId) {
-            activeEventIds.add(eventId);
-        }
-    }
-
-    // The market always sees every package/exchange shop, since the "Active Exchange Shop"
-    // selection only restricts which shop may sell the target item *directly*; the currency
-    // needed to pay for any exchange offer (target item or otherwise) can still come from
-    // any shop. A fresh market is created per recalculation so purchase-limit capacities
-    // start out unconsumed.
+    // The market always sees every package/exchange shop, since the "Active Events" selection
+    // only restricts which shop may sell the target item *directly* (via `activeShops` below);
+    // the currency needed to pay for any exchange offer (target item or otherwise) can still
+    // come from any shop. A fresh market is created per recalculation so purchase-limit
+    // capacities start out unconsumed.
     const market = createMarket(
         packages,
         exchangeShops,
@@ -383,13 +374,15 @@ function recalculate({ syncUrl = true } = {}) {
         activeEventIds,
         exceedEventPackLimits,
     );
+    // A shop counts as "active" exactly when its own event is currently selected (shops with
+    // no event_id can never be activated this way, but none exist in the data today).
     const activeShops = {};
-    for (const shopId of selectedShopIds) {
-        if (exchangeShops[shopId]) {
-            activeShops[shopId] = exchangeShops[shopId];
+    for (const [shopId, shop] of Object.entries(exchangeShops)) {
+        if (shop.event_id && activeEventIds.has(shop.event_id)) {
+            activeShops[shopId] = shop;
         }
     }
-    const shopFilter = new Set(selectedShopIds);
+    const shopFilter = new Set(Object.keys(activeShops));
     const exchangeSources = collectExchangeSources(
         targetItemId,
         activeShops,
@@ -425,7 +418,7 @@ function recalculate({ syncUrl = true } = {}) {
 
 function handleReset() {
     itemPicker.reset();
-    shopMultiSelect.reset();
+    eventMultiSelect.reset();
     if (quantityInput) {
         quantityInput.value = '';
     }
@@ -455,20 +448,20 @@ async function init() {
     data = await loadPackData();
     updateFooter();
     itemPicker.setItems(data.items || {});
-    populateShopSelect(data.exchange_shops || {});
+    populateEventSelect(data.events || {});
     applyUrlParams();
 
     window.addEventListener('localechange', () => {
-        const selectedShopIds = [...shopMultiSelect.getValues()];
+        const selectedEventIds = [...eventMultiSelect.getValues()];
         applyStaticTranslations();
         updateFooter();
         // Re-affirms the currently selected item's display text in the new locale; both
         // pickers keep their own selection state across a setItems()/setOptions() call, unlike
         // a native <select> whose value resets when its <option>s are replaced (hence the
-        // shop capture/restore just below still being necessary).
+        // event capture/restore just below still being necessary).
         itemPicker.setItems(data.items || {});
-        populateShopSelect(data.exchange_shops || {});
-        shopMultiSelect.setValues(selectedShopIds);
+        populateEventSelect(data.events || {});
+        eventMultiSelect.setValues(selectedEventIds);
         recalculate({ syncUrl: false });
     });
 
