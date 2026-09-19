@@ -157,6 +157,8 @@
         "itemSearchPlaceholder": "",
         "optionsHeading": "",
         "optionsDescription": "",
+        "selectCountHintPartial": "",
+        "selectCountHintAll": "",
         "optionsEmpty": "",
         "table": {
             "item": ""

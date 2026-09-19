@@ -1,7 +1,7 @@
 import './style.css';
 import { renderNav } from './nav';
 import { loadPackData } from './lib/data';
-import { createMarket, collectPackageSources, collectExchangeSources } from './lib/pricing-core';
+import { createMarket, collectPackageSources, collectExchangeSources, packageDisplayName } from './lib/pricing-core';
 import { createItemPicker } from './lib/item-picker';
 import { createMultiSelect } from './lib/multi-select';
 import { createItemImage, banknoteIconHtml } from './lib/images';
@@ -41,20 +41,43 @@ const resetBtn = document.getElementById('reset-btn');
 const form = document.getElementById('choices-form');
 
 const optionsCard = document.getElementById('options-card');
+const optionsSelectHint = document.getElementById('options-select-hint');
 const optionsTable = document.getElementById('options-table');
 const optionsEmpty = document.getElementById('options-empty');
 const appFooter = document.querySelector('.app-footer');
 
 let data = null;
-let choiceItems = {};
+let choiceSources = {};
 
-// Only items with `type: "choice"` (chests/resource pouches that let the player pick one of
-// several reward options) are selectable on this page.
-function filterChoiceItems(items) {
+// Every selectable "choice pool" on this page: items with `type: "choice"` (chests/resource
+// pouches) AND packages that carry their own `choice` block directly (e.g. "Jokers Weekly
+// Special" lets you pick N of its listed rewards on top of its fixed contents). Both shapes
+// store the same `{ select_count, choices }` structure, so downstream code only ever needs
+// `.choice`.
+//
+// Package-derived entries are keyed with a `package:` prefix (items are kept bare) because a
+// package id can otherwise collide with an unrelated item id (e.g. "raven_essence" and
+// "study_scroll" each name both an item and a package in pack_data.json today) — the prefix
+// keeps the two namespaces apart without touching lib/item-picker.js, which already tolerates
+// keys that don't resolve to a real item icon (falls back to no icon at all, same as any other
+// item with a still-missing image).
+function collectChoiceSources(items, packages, locale) {
     const result = {};
     for (const [itemId, item] of Object.entries(items)) {
         if (item.type === 'choice' && item.choice?.choices?.length) {
-            result[itemId] = item;
+            result[itemId] = { name: item.name, category: item.category, choice: item.choice };
+        }
+    }
+    for (const [pkgId, pkg] of Object.entries(packages)) {
+        if (pkg.choice?.choices?.length) {
+            result[`package:${pkgId}`] = {
+                name: packageDisplayName(pkg, locale),
+                category: pkg.category,
+                choice: pkg.choice,
+                // Its own price/yield must never count as evidence for its own contents'
+                // worth — see buildOptionRows.
+                excludePackageId: pkgId,
+            };
         }
     }
     return result;
@@ -87,9 +110,18 @@ function populateEventSelect(events) {
  * A shop counts as active exactly when its own event is selected, which in turn restricts which
  * shop may sell an option's item *directly*; currency needed for an exchange offer can still
  * come from any shop, matching `market.purchase()`'s own shopFilter semantics.
+ *
+ * When `choiceSource` is itself a package (`excludePackageId` set), that package is dropped from
+ * the pricing market entirely: otherwise it counts as a valid (and often the cheapest) source
+ * for its own choice contents, so every option would price out identically to the package's own
+ * price/yield ratio instead of reflecting what it'd cost through some OTHER purchase option —
+ * the same self-reference lib/ranking-core.js's `marketExcludingPackage` guards against.
  */
-function buildOptionRows(choiceItem, items, packages, exchangeShops, locale, activeEventIds) {
-    const market = createMarket(packages, exchangeShops, items, {}, { activeEventIds }, locale);
+function buildOptionRows(choiceSource, items, packages, exchangeShops, locale, activeEventIds) {
+    const pricingPackages = choiceSource.excludePackageId
+        ? Object.fromEntries(Object.entries(packages).filter(([id]) => id !== choiceSource.excludePackageId))
+        : packages;
+    const market = createMarket(pricingPackages, exchangeShops, items, {}, { activeEventIds }, locale);
 
     const activeShops = {};
     for (const [shopId, shop] of Object.entries(exchangeShops)) {
@@ -99,13 +131,13 @@ function buildOptionRows(choiceItem, items, packages, exchangeShops, locale, act
     }
     const activeShopIds = new Set(Object.keys(activeShops));
 
-    return choiceItem.choice.choices.map((choiceEntry) => {
+    return choiceSource.choice.choices.map((choiceEntry) => {
         const [itemId, qty] = firstEntry(choiceEntry);
         const unitCost = itemId ? market.peekUnitCost(itemId, activeShopIds) : NaN;
         const totalValue = Number.isFinite(unitCost) ? qty * unitCost : NaN;
 
         const packageSources = itemId
-            ? collectPackageSources(itemId, packages, items, {}, locale, activeEventIds, false)
+            ? collectPackageSources(itemId, pricingPackages, items, {}, locale, activeEventIds, false)
             : [];
         const exchangeSources = itemId
             ? collectExchangeSources(itemId, activeShops, items, market.peekUnitCost, {}, locale, activeEventIds, false)
@@ -116,6 +148,23 @@ function buildOptionRows(choiceItem, items, packages, exchangeShops, locale, act
 
         return { itemId, qty, unitCost, totalValue, bestSource };
     });
+}
+
+// Most choice items only ever let you pick 1 of their options, which the page's static
+// description already covers ("that's the option worth picking"). Packages like "Jokers
+// Weekly Special" pick more than one (or even all) of theirs, which changes what "ranked"
+// means in practice, so that case gets an explicit hint instead.
+function renderSelectCountHint(selectCount, totalOptions) {
+    if (selectCount <= 1 || totalOptions === 0) {
+        optionsSelectHint.hidden = true;
+        optionsSelectHint.textContent = '';
+        return;
+    }
+    optionsSelectHint.hidden = false;
+    optionsSelectHint.textContent =
+        selectCount >= totalOptions
+            ? t('choices.selectCountHintAll', { total: totalOptions })
+            : t('choices.selectCountHintPartial', { count: selectCount, total: totalOptions });
 }
 
 function renderOptionsTable(rows, items, locale) {
@@ -224,7 +273,7 @@ function applyUrlParams() {
     const params = new URLSearchParams(window.location.search);
     const itemParam = params.get('item');
     const eventsParam = params.get('events');
-    if (itemParam && choiceItems[itemParam]) {
+    if (itemParam && choiceSources[itemParam]) {
         itemPicker.setValue(itemParam);
     }
     const eventIds = eventsParam ? eventsParam.split(',').filter((id) => data?.events?.[id]) : [];
@@ -240,8 +289,9 @@ function recalculate({ syncUrl = true } = {}) {
         syncUrlParams();
     }
 
-    const targetItemId = itemPicker.getValue();
-    if (!targetItemId || !choiceItems[targetItemId]) {
+    const targetKey = itemPicker.getValue();
+    const source = choiceSources[targetKey];
+    if (!source) {
         optionsCard.hidden = true;
         return;
     }
@@ -249,15 +299,17 @@ function recalculate({ syncUrl = true } = {}) {
     const { items, packages = {}, exchange_shops: exchangeShops = {} } = data;
     const locale = getLocale();
     const activeEventIds = eventMultiSelect.getValues();
-    const rows = buildOptionRows(choiceItems[targetItemId], items, packages, exchangeShops, locale, activeEventIds);
+    const rows = buildOptionRows(source, items, packages, exchangeShops, locale, activeEventIds);
 
     optionsCard.hidden = false;
     if (rows.length === 0) {
         optionsTable.innerHTML = '';
         optionsEmpty.hidden = false;
+        renderSelectCountHint(0, 0);
         return;
     }
     optionsEmpty.hidden = true;
+    renderSelectCountHint(source.choice.select_count || 1, rows.length);
     renderOptionsTable(rows, items, locale);
 }
 
@@ -282,8 +334,8 @@ function updateFooter() {
 async function init() {
     data = await loadPackData();
     updateFooter();
-    choiceItems = filterChoiceItems(data.items || {});
-    itemPicker.setItems(choiceItems);
+    choiceSources = collectChoiceSources(data.items || {}, data.packages || {}, getLocale());
+    itemPicker.setItems(choiceSources);
     populateEventSelect(data.events || {});
     applyUrlParams();
 
@@ -291,7 +343,12 @@ async function init() {
         const selectedEventIds = [...eventMultiSelect.getValues()];
         applyStaticTranslations();
         updateFooter();
-        itemPicker.setItems(choiceItems);
+        // Rebuilt (not just re-affirmed) because package-derived entries' display names are
+        // pre-resolved strings (see collectChoiceSources), unlike items' raw {en,de} name
+        // objects which lib/item-picker.js re-resolves to the new locale on its own. setItems()
+        // keeps the current selection as long as its key still exists, same as before.
+        choiceSources = collectChoiceSources(data.items || {}, data.packages || {}, getLocale());
+        itemPicker.setItems(choiceSources);
         populateEventSelect(data.events || {});
         eventMultiSelect.setValues(selectedEventIds);
         recalculate({ syncUrl: false });

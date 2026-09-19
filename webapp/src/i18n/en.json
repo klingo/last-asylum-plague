@@ -80,7 +80,7 @@
         "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from the current pack data.",
         "analyzeDescription": "Pick any item and see every package or exchange offer that yields it, ranked by cost per unit, plus the cheapest purchase plan to reach a target quantity.",
         "rankingsDescription": "Browse every package, exchange offer, and bonus tier ranked by how much value it returns relative to its price, to spot the best deals at a glance.",
-        "choicesDescription": "Pick a choice chest and see which of its reward options is worth the most, ranked by the cheapest cost to buy that same reward elsewhere."
+        "choicesDescription": "Pick a choice chest or package and see which of its reward options is worth the most, ranked by the cheapest cost to buy that same reward elsewhere."
     },
     "analyze": {
         "heading": "Analyze Item Value",
@@ -152,11 +152,13 @@
     },
     "choices": {
         "heading": "Best Choice Pick",
-        "description": "Pick a choice chest (an item that lets you select one of several rewards). Its options are ranked below by how much it would cost to buy that same reward elsewhere — the higher the value, the better the pick.",
-        "itemLabel": "Choice Item",
-        "itemSearchPlaceholder": "Search choice items…",
+        "description": "Pick a choice chest or package (something that lets you select one or more rewards from a pool). Its options are ranked below by how much it would cost to buy that same reward elsewhere — the higher the value, the better the pick.",
+        "itemLabel": "Choice Source",
+        "itemSearchPlaceholder": "Search choice items or packages…",
         "optionsHeading": "Ranked Choice Options",
         "optionsDescription": "Each option is priced by what it would cost to buy that same reward through the cheapest other package or exchange offer. Ranked highest per-unit price first — that's the option worth picking.",
+        "selectCountHintPartial": "You can pick {count} of these {total} options — the top {count} above are the best picks.",
+        "selectCountHintAll": "You get all {total} of these options, so there's nothing to prioritize between them.",
         "optionsEmpty": "This item has no choice options.",
         "table": {
             "item": "Item"

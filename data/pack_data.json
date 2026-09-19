@@ -1883,7 +1883,7 @@
                 "en": "Mystic Cabinet I",
                 "de": ""
             },
-            "category": "Special",
+            "category": "Special Event",
             "event_id": "mystic_cabinet",
             "price": 499,
             "deal_percentage": 5520,
@@ -1905,7 +1905,7 @@
                 "en": "Mystic Cabinet I",
                 "de": ""
             },
-            "category": "Special",
+            "category": "Special Event",
             "event_id": "mystic_cabinet",
             "price": 999,
             "deal_percentage": 5520,
@@ -1927,7 +1927,7 @@
                 "en": "Mystic Cabinet I",
                 "de": ""
             },
-            "category": "Special",
+            "category": "Special Event",
             "event_id": "mystic_cabinet",
             "price": 1999,
             "deal_percentage": 5520,
@@ -1948,7 +1948,7 @@
                 "en": "Mystic Cabinet II",
                 "de": ""
             },
-            "category": "Special",
+            "category": "Special Event",
             "event_id": "mystic_cabinet",
             "price": 499,
             "deal_percentage": 5520,
@@ -1969,7 +1969,7 @@
                 "en": "Mystic Cabinet III",
                 "de": ""
             },
-            "category": "Special",
+            "category": "Special Event",
             "event_id": "mystic_cabinet",
             "price": 499,
             "deal_percentage": 5520,
@@ -2770,7 +2770,7 @@
                 "en": "Jokers Weekly Special",
                 "de": ""
             },
-            "category": "Special",
+            "category": "Special Event",
             "event_id": "weekly_special",
             "price": 499,
             "deal_percentage": 9870,
@@ -2808,7 +2808,7 @@
                 "en": "Jokers Weekly Special",
                 "de": ""
             },
-            "category": "Special",
+            "category": "Special Event",
             "event_id": "weekly_special",
             "price": 499,
             "deal_percentage": 8530,
@@ -3139,7 +3139,7 @@
                 "en": "Mystic Cabinet",
                 "de": ""
             },
-            "category": "Special"
+            "category": "Special Event"
         },
         "strange_bazaar": {
             "name": {
@@ -3160,7 +3160,7 @@
                 "en": "Jokers Weekly Special",
                 "de": ""
             },
-            "category": "Special"
+            "category": "Special Event"
         }
     }
 }
