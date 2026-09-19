@@ -304,6 +304,23 @@ function verifyData() {
                     }
                 }
             }
+
+            if (shop.bonus_tiers && typeof shop.bonus_tiers === 'object') {
+                for (const [tier, contents] of Object.entries(shop.bonus_tiers)) {
+                    if (!contents || typeof contents !== 'object') {
+                        continue;
+                    }
+                    for (const itemId of Object.keys(contents)) {
+                        referencedItemKeys.add(itemId);
+                        if (!itemKeys.has(itemId)) {
+                            reportError(
+                                'Shop Reference',
+                                `Exchange shop "${shopId}" bonus tier "${tier}" contains unresolvable item: "${itemId}"`,
+                            );
+                        }
+                    }
+                }
+            }
         }
     });
 
