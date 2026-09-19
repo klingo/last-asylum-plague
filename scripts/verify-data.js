@@ -93,12 +93,15 @@ function verifyData() {
     const items = data.items || {};
     const packages = data.packages || {};
     const exchangeShops = data.exchange_shops || {};
+    const events = data.events || {};
 
     const itemKeys = new Set(Object.keys(items));
     const packageKeys = new Set(Object.keys(packages));
+    const eventKeys = new Set(Object.keys(events));
 
     const referencedItemKeys = new Set();
     const referencedPackageKeys = new Set();
+    const referencedEventKeys = new Set();
 
     // 3. Item-to-Item Relational Checks
     checkCategory('Items & Item Containers', ({ reportError }) => {
@@ -225,6 +228,17 @@ function verifyData() {
                 }
             }
 
+            // Check event_id
+            if (pkg.event_id) {
+                referencedEventKeys.add(pkg.event_id);
+                if (!eventKeys.has(pkg.event_id)) {
+                    reportError(
+                        'Package Reference',
+                        `Package "${pkgId}" specifies unresolvable event: "${pkg.event_id}"`,
+                    );
+                }
+            }
+
             // Check requires (package prerequisite)
             if (pkg.requires !== null && pkg.requires !== undefined) {
                 referencedPackageKeys.add(pkg.requires);
@@ -258,6 +272,16 @@ function verifyData() {
     // 5. Exchange Shop Relational Checks
     checkCategory('Exchange Shops', ({ reportError }) => {
         for (const [shopId, shop] of Object.entries(exchangeShops)) {
+            if (shop.event_id) {
+                referencedEventKeys.add(shop.event_id);
+                if (!eventKeys.has(shop.event_id)) {
+                    reportError(
+                        'Shop Reference',
+                        `Exchange shop "${shopId}" specifies unresolvable event: "${shop.event_id}"`,
+                    );
+                }
+            }
+
             if (shop.currency_item_id) {
                 referencedItemKeys.add(shop.currency_item_id);
                 if (!itemKeys.has(shop.currency_item_id)) {
@@ -283,7 +307,19 @@ function verifyData() {
         }
     });
 
-    // 6. Report Unreferenced Items (Informational / Warnings)
+    // 6. Events Relational Checks
+    checkCategory('Events', ({ reportWarning }) => {
+        for (const eventId of eventKeys) {
+            if (!referencedEventKeys.has(eventId)) {
+                reportWarning(
+                    'Unreferenced Event',
+                    `Event "${eventId}" (${events[eventId].name.en}) is defined but never referenced by any package or exchange shop.`,
+                );
+            }
+        }
+    });
+
+    // 7. Report Unreferenced Items (Informational / Warnings)
     checkCategory('Unreferenced Items', ({ reportWarning }) => {
         for (const itemId of itemKeys) {
             if (!referencedItemKeys.has(itemId)) {
@@ -299,6 +335,7 @@ function verifyData() {
         totalItems: itemKeys.size,
         totalPackages: packageKeys.size,
         totalShops: Object.keys(exchangeShops).length,
+        totalEvents: eventKeys.size,
     });
 }
 
@@ -309,6 +346,7 @@ function finish(errorCount, warningCount, stats = {}) {
         console.log(`   - Items Scanned: ${stats.totalItems}`);
         console.log(`   - Packages Scanned: ${stats.totalPackages}`);
         console.log(`   - Exchange Shops Scanned: ${stats.totalShops}`);
+        console.log(`   - Events Scanned: ${stats.totalEvents}`);
     }
     console.log(`   - Total Errors: ${errorCount}`);
     console.log(`   - Total Warnings: ${warningCount}`);

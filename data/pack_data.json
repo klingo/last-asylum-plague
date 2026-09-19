@@ -1884,6 +1884,7 @@
                 "de": ""
             },
             "category": "Special",
+            "event_id": "mystic_cabinet",
             "price": 499,
             "deal_percentage": 5520,
             "purchase_limit": 1,
@@ -1905,6 +1906,7 @@
                 "de": ""
             },
             "category": "Special",
+            "event_id": "mystic_cabinet",
             "price": 999,
             "deal_percentage": 5520,
             "purchase_limit": 1,
@@ -1926,6 +1928,7 @@
                 "de": ""
             },
             "category": "Special",
+            "event_id": "mystic_cabinet",
             "price": 1999,
             "deal_percentage": 5520,
             "purchase_limit": 1,
@@ -1946,6 +1949,7 @@
                 "de": ""
             },
             "category": "Special",
+            "event_id": "mystic_cabinet",
             "price": 499,
             "deal_percentage": 5520,
             "purchase_limit": 1,
@@ -1966,6 +1970,7 @@
                 "de": ""
             },
             "category": "Special",
+            "event_id": "mystic_cabinet",
             "price": 499,
             "deal_percentage": 5520,
             "purchase_limit": 1,
@@ -2766,6 +2771,7 @@
                 "de": ""
             },
             "category": "Special",
+            "event_id": "weekly_special",
             "price": 499,
             "deal_percentage": 9870,
             "purchase_limit": 1,
@@ -2803,6 +2809,7 @@
                 "de": ""
             },
             "category": "Special",
+            "event_id": "weekly_special",
             "price": 499,
             "deal_percentage": 8530,
             "purchase_limit": 1,
@@ -3117,6 +3124,43 @@
                     "ur_hero_omni_shard": 20
                 }
             }
+        }
+    },
+    "events": {
+        "blades_out": {
+            "name": {
+                "en": "Blades Out",
+                "de": ""
+            },
+            "category": "Shop Event"
+        },
+        "mystic_cabinet": {
+            "name": {
+                "en": "Mystic Cabinet",
+                "de": ""
+            },
+            "category": "Special"
+        },
+        "strange_bazaar": {
+            "name": {
+                "en": "Strange Bazaar",
+                "de": ""
+            },
+            "category": "Shop Event"
+        },
+        "surprise_encounter": {
+            "name": {
+                "en": "Surprise Encounter",
+                "de": ""
+            },
+            "category": "Shop Event"
+        },
+        "weekly_special": {
+            "name": {
+                "en": "Jokers Weekly Special",
+                "de": ""
+            },
+            "category": "Special"
         }
     }
 }

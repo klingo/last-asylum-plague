@@ -3,7 +3,7 @@
     "title": "PackData",
     "description": "Schema for Last Asylum pack solver data",
     "type": "object",
-    "required": ["metadata", "items", "packages", "exchange_shops"],
+    "required": ["metadata", "items", "packages", "exchange_shops", "events"],
     "additionalProperties": false,
     "properties": {
         "metadata": {
@@ -34,6 +34,16 @@
             },
             "additionalProperties": {
                 "$ref": "#/definitions/exchangeShop"
+            }
+        },
+        "events": {
+            "type": "object",
+            "description": "Registry of every toggleable \"event\" a package or exchange shop can be tied to via its `event_id` (whether or not it has its own exchange shop), giving it a display name.",
+            "propertyNames": {
+                "$ref": "#/definitions/eventId"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/event"
             }
         }
     },
@@ -384,7 +394,20 @@
         },
         "eventId": {
             "type": "string",
-            "enum": ["blades_out", "strange_bazaar", "surprise_encounter"]
+            "enum": ["blades_out", "strange_bazaar", "surprise_encounter", "weekly_special", "mystic_cabinet"]
+        },
+        "event": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/localizedString"
+                },
+                "category": {
+                    "$ref": "#/definitions/packageCategory"
+                }
+            }
         }
     }
 }
