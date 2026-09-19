@@ -1,8 +1,8 @@
 {
-    "name": "last-asylum-pack-solver-webapp",
+    "name": "last-asylum-plague-webapp",
     "private": true,
     "version": "1.0.0",
-    "description": "Static webapp (item value analyzer + full value ranking) for last-asylum-pack-solver, deployed to GitHub Pages.",
+    "description": "Static webapp (item value analyzer + full value ranking) for last-asylum-plague, deployed to GitHub Pages.",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -13,6 +13,6 @@
         "vite": "^6.4.3"
     },
     "dependencies": {
-        "last-asylum-pack-solver": "file:.."
+        "last-asylum-plague": "file:.."
     }
 }
