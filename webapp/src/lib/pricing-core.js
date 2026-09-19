@@ -218,10 +218,16 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
 
     // Cheapest price for the *next* unit of `itemId`, given currently remaining capacities.
     // Never mutates the ledger, so it's safe to call at any time to inspect the current state.
-    function peekUnitCost(itemId, visiting) {
+    // `shopFilter` (a Set of shop ids, or null/undefined for "any shop") restricts which
+    // exchange shops may sell `itemId` *directly*, mirroring `purchase()`'s `shopFilter`; it
+    // only applies at the outermost call (detected via `visiting` still being empty on entry),
+    // never to the recursive currency-cost lookups below, so an "active shop" filter on the
+    // item being priced never restricts which shops its currency can come from.
+    function peekUnitCost(itemId, visiting, shopFilter) {
         if (visiting.has(itemId)) {
             return Infinity; // cycle guard
         }
+        const isOutermost = visiting.size === 0;
         visiting.add(itemId);
         let best = Infinity;
 
@@ -236,6 +242,9 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
         }
 
         for (const [shopId, shop] of Object.entries(exchangeShops)) {
+            if (isOutermost && shopFilter && !shopFilter.has(shopId)) {
+                continue;
+            }
             for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
                 if (offerCapacity(shopId, offerKey, offer) <= 0) {
                     continue;
@@ -245,7 +254,7 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
                 if (y <= 0) {
                     continue;
                 }
-                const currencyCost = peekUnitCost(shop.currency_item_id, visiting);
+                const currencyCost = peekUnitCost(shop.currency_item_id, visiting, null);
                 if (Number.isFinite(currencyCost)) {
                     best = Math.min(best, (offer.currency_cost * currencyCost) / y);
                 }
@@ -430,7 +439,7 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
     }
 
     return {
-        peekUnitCost: (itemId) => peekUnitCost(itemId, new Set()),
+        peekUnitCost: (itemId, shopFilter = null) => peekUnitCost(itemId, new Set(), shopFilter),
         purchase: (itemId, quantity, shopFilter = null) => purchase(itemId, quantity, 0, shopFilter),
     };
 }

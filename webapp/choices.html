@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.choices"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="choices.heading"></h2>
+                <p class="text-dim" data-i18n="choices.description"></p>
+                <form id="choices-form">
+                    <div class="form-row">
+                        <div class="field field--item">
+                            <label for="item-search" data-i18n="choices.itemLabel"></label>
+                            <div class="item-combobox">
+                                <input
+                                    type="text"
+                                    id="item-search"
+                                    class="item-combobox__input"
+                                    role="combobox"
+                                    aria-expanded="false"
+                                    aria-autocomplete="list"
+                                    aria-controls="item-listbox"
+                                    autocomplete="off"
+                                    data-i18n-placeholder="choices.itemSearchPlaceholder"
+                                />
+                                <button type="button" id="item-search-clear" class="item-combobox__clear" tabindex="-1" hidden>
+                                    &times;
+                                </button>
+                                <div class="item-combobox__panel" id="item-listbox" role="listbox" hidden></div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="shop-select-button" data-i18n="analyze.shopLabel"></label>
+                            <div class="multi-select">
+                                <button
+                                    type="button"
+                                    id="shop-select-button"
+                                    class="multi-select__button"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                ></button>
+                                <div
+                                    class="multi-select__panel"
+                                    id="shop-select-panel"
+                                    role="listbox"
+                                    aria-multiselectable="true"
+                                    hidden
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="field field--reset">
+                            <button type="button" id="reset-btn" class="btn-secondary" data-i18n="analyze.reset"></button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="card" id="options-card" hidden>
+                <h2 data-i18n="choices.optionsHeading"></h2>
+                <p class="text-dim" data-i18n="choices.optionsDescription"></p>
+                <div id="options-empty" class="empty-state" hidden data-i18n="choices.optionsEmpty"></div>
+                <div class="table-wrap"><table id="options-table"></table></div>
+                <p class="footnote" data-i18n="analyze.sourcesFootnote"></p>
+            </section>
+        </main>
+        <footer class="app-footer" data-i18n="footer.choicesDefault"></footer>
+        <script type="module" src="/src/choices.js"></script>
+    </body>
+</html>

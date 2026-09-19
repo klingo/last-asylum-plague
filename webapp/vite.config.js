@@ -14,6 +14,7 @@ export default defineConfig({
                 welcome: resolve(__dirname, 'index.html'),
                 analyze: resolve(__dirname, 'analyze.html'),
                 rankings: resolve(__dirname, 'rankings.html'),
+                choices: resolve(__dirname, 'choices.html'),
             },
         },
     },

@@ -6,6 +6,7 @@
         "home": "",
         "analyze": "",
         "rankings": "",
+        "choices": "",
         "language": ""
     },
     "common": {
@@ -63,19 +64,23 @@
     "docTitle": {
         "welcome": "",
         "analyze": "",
-        "rankings": ""
+        "rankings": "",
+        "choices": ""
     },
     "footer": {
         "welcome": "",
         "analyzeGenerated": "",
         "analyzeDefault": "",
-        "rankings": ""
+        "rankings": "",
+        "choicesGenerated": "",
+        "choicesDefault": ""
     },
     "welcome": {
         "heading": "",
         "intro": "",
         "analyzeDescription": "",
-        "rankingsDescription": ""
+        "rankingsDescription": "",
+        "choicesDescription": ""
     },
     "analyze": {
         "heading": "",
@@ -143,6 +148,18 @@
             "package": "",
             "exchange": "",
             "bonusTier": ""
+        }
+    },
+    "choices": {
+        "heading": "",
+        "description": "",
+        "itemLabel": "",
+        "itemSearchPlaceholder": "",
+        "optionsHeading": "",
+        "optionsDescription": "",
+        "optionsEmpty": "",
+        "table": {
+            "item": ""
         }
     }
 }
