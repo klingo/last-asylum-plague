@@ -680,6 +680,13 @@
             },
             "category": "Hero"
         },
+        "red_amber_amulet": {
+            "name": {
+                "en": "Red Amber Amulet",
+                "de": ""
+            },
+            "category": "Curio"
+        },
         "refined_iron": {
             "name": {
                 "en": "Refined Iron",
