@@ -226,6 +226,27 @@
             },
             "category": "Hero"
         },
+        "frenzied_flock_iv_ranger": {
+            "name": {
+                "en": "Frenzied Flock IV - Ranger",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
+        "frenzied_flock_iv_warlock": {
+            "name": {
+                "en": "Frenzied Flock IV - Warlock",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
+        "frenzied_flock_iv_warrior": {
+            "name": {
+                "en": "Frenzied Flock IV - Warrior",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
         "gear_blueprint_mr": {
             "name": {
                 "en": "Gear Blueprint (MR)",
@@ -283,6 +304,27 @@
             "contains": {
                 "grain": 4057980
             }
+        },
+        "guard_of_nature_iv_ranger": {
+            "name": {
+                "en": "Guard of Nature IV - Ranger",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
+        "guard_of_nature_iv_warlock": {
+            "name": {
+                "en": "Guard of Nature IV - Warlock",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
+        "guard_of_nature_iv_warrior": {
+            "name": {
+                "en": "Guard of Nature IV - Warrior",
+                "de": ""
+            },
+            "category": "Virtual"
         },
         "herb_level_supply_sr": {
             "name": {
@@ -455,12 +497,85 @@
             },
             "category": "Virtual"
         },
+        "lv5_attackers_claw": {
+            "name": {
+                "en": "Attacker's Claw",
+                "de": ""
+            },
+            "category": "Gear"
+        },
+        "lv5_eye_of_perception": {
+            "name": {
+                "en": "Eye of perception",
+                "de": ""
+            },
+            "category": "Gear"
+        },
+        "lv5_feather_of_the_night": {
+            "name": {
+                "en": "Feather of the Night",
+                "de": ""
+            },
+            "category": "Gear"
+        },
+        "lv5_heart_of_wisdom": {
+            "name": {
+                "en": "Heart of Wisdom",
+                "de": ""
+            },
+            "category": "Gear"
+        },
         "lv5_raven_gear_chest": {
             "name": {
                 "en": "Lv.5 Raven Gear Chest",
                 "de": ""
             },
             "category": "Special"
+        },
+        "lv5_raven_gear_choice_chest": {
+            "name": {
+                "en": "LV5 Raven Gear Choice Chest",
+                "de": ""
+            },
+            "category": "Special",
+            "type": "choice",
+            "choice": {
+                "select_count": 1,
+                "choices": [
+                    {
+                        "lv5_heart_of_wisdom": 1
+                    },
+                    {
+                        "lv5_feather_of_the_night": 1
+                    },
+                    {
+                        "lv5_sharp_beak": 1
+                    },
+                    {
+                        "lv5_tail_of_wind": 1
+                    },
+                    {
+                        "lv5_attackers_claw": 1
+                    },
+                    {
+                        "lv5_eye_of_perception": 1
+                    }
+                ]
+            }
+        },
+        "lv5_sharp_beak": {
+            "name": {
+                "en": "Sharp Beak",
+                "de": ""
+            },
+            "category": "Gear"
+        },
+        "lv5_tail_of_wind": {
+            "name": {
+                "en": "Tail of Wind",
+                "de": ""
+            },
+            "category": "Gear"
         },
         "lv6_alliance_chest": {
             "name": {
@@ -514,6 +629,27 @@
                     "probability": 0.375
                 }
             ]
+        },
+        "protective_charm_iv_ranger": {
+            "name": {
+                "en": "Protective Charm IV - Ranger",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
+        "protective_charm_iv_warlock": {
+            "name": {
+                "en": "Protective Charm IV - Warlock",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
+        "protective_charm_iv_warrior": {
+            "name": {
+                "en": "Protective Charm IV - Warrior",
+                "de": ""
+            },
+            "category": "Virtual"
         },
         "r_epigraph": {
             "name": {
@@ -788,6 +924,27 @@
                     }
                 ]
             }
+        },
+        "reversal_power_iv_ranger": {
+            "name": {
+                "en": "Reversal Power IV - Ranger",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
+        "reversal_power_iv_warlock": {
+            "name": {
+                "en": "Reversal Power IV - Warlock",
+                "de": ""
+            },
+            "category": "Virtual"
+        },
+        "reversal_power_iv_warrior": {
+            "name": {
+                "en": "Reversal Power IV - Warrior",
+                "de": ""
+            },
+            "category": "Virtual"
         },
         "rock_loot": {
             "name": {
@@ -1176,6 +1333,67 @@
                 "de": ""
             },
             "category": "Special"
+        },
+        "ur_epigraph_choice_chest": {
+            "name": {
+                "en": "UR Epigraph Choice Chest",
+                "de": ""
+            },
+            "category": "Special",
+            "type": "choice",
+            "choice": {
+                "select_count": 1,
+                "choices": [
+                    {
+                        "guard_of_nature_iv_warrior": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "frenzied_flock_iv_warrior": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "reversal_power_iv_warrior": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "protective_charm_iv_warrior": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "guard_of_nature_iv_ranger": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "frenzied_flock_iv_ranger": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "reversal_power_iv_ranger": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "protective_charm_iv_ranger": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "guard_of_nature_iv_warlock": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "frenzied_flock_iv_warlock": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "reversal_power_iv_warlock": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "protective_charm_iv_warlock": 1,
+                        "ur_epigraph_shard": 100
+                    }
+                ]
+            }
         },
         "ur_epigraph_shard": {
             "name": {
