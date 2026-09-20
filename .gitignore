@@ -33,3 +33,7 @@ webapp/public/data
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude Code
+.claude/jobs/
+.claude/worktrees/
