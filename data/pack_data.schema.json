@@ -249,18 +249,19 @@
             "enum": ["Resource", "Hero", "Gear", "Special", "Speedup", "Virtual", "Curio"]
         },
         "package": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/standalonePackage"
+                },
+                {
+                    "$ref": "#/definitions/packageFamily"
+                }
+            ]
+        },
+        "standalonePackage": {
             "type": "object",
-            "required": [
-                "name",
-                "category",
-                "price",
-                "deal_percentage",
-                "purchase_limit",
-                "limit_type",
-                "tier",
-                "requires",
-                "contains"
-            ],
+            "description": "A single purchasable SKU with no sibling tiers.",
+            "required": ["name", "category", "price", "deal_percentage", "purchase_limit", "limit_type", "contains"],
             "additionalProperties": false,
             "properties": {
                 "name": {
@@ -290,26 +291,31 @@
                 "available_days": {
                     "$ref": "#/definitions/availableDays"
                 },
-                "tier": {
-                    "anyOf": [
-                        {
-                            "type": "integer",
-                            "minimum": 1
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
+                "contains": {
+                    "$ref": "#/definitions/itemQuantities"
                 },
-                "requires": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/id"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
+                "choice": {
+                    "$ref": "#/definitions/choicePool"
+                }
+            }
+        },
+        "packageTier": {
+            "type": "object",
+            "description": "One rung of a package family's price ladder. Buying this tier is assumed to require having already bought every lower-numbered tier present in the same family's `tiers` map.",
+            "required": ["price", "deal_percentage", "purchase_limit", "contains"],
+            "additionalProperties": false,
+            "properties": {
+                "price": {
+                    "type": "integer",
+                    "minimum": 99
+                },
+                "deal_percentage": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "purchase_limit": {
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "contains": {
                     "$ref": "#/definitions/itemQuantities"
@@ -318,6 +324,43 @@
                     "$ref": "#/definitions/choicePool"
                 }
             }
+        },
+        "packageFamily": {
+            "type": "object",
+            "description": "A ladder of same-family packages (e.g. T1/T2 daily offers) sharing a name/category/limit_type, keyed by tier number so a not-yet-known tier can simply be left out without shifting any other tier's number.",
+            "required": ["name", "category", "limit_type", "tiers"],
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/localizedString"
+                },
+                "category": {
+                    "$ref": "#/definitions/packageCategory"
+                },
+                "event_id": {
+                    "$ref": "#/definitions/eventId"
+                },
+                "limit_type": {
+                    "$ref": "#/definitions/limitType"
+                },
+                "available_days": {
+                    "$ref": "#/definitions/availableDays"
+                },
+                "tiers": {
+                    "type": "object",
+                    "propertyNames": {
+                        "$ref": "#/definitions/tierNumber"
+                    },
+                    "additionalProperties": {
+                        "$ref": "#/definitions/packageTier"
+                    },
+                    "minProperties": 1
+                }
+            }
+        },
+        "tierNumber": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
         },
         "packageCategory": {
             "type": "string",

@@ -34,5 +34,11 @@ if (fs.existsSync(DATA_PATH)) {
         }
     }
 
+    for (const pkg of Object.values(data.packages ?? {})) {
+        if (isObject(pkg.tiers)) {
+            pkg.tiers = sortByNumericKey(pkg.tiers);
+        }
+    }
+
     fs.writeFileSync(DATA_PATH, `${JSON.stringify(data, null, 4)}\n`, 'utf8');
 }

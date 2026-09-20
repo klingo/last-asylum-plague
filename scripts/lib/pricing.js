@@ -13,12 +13,52 @@ const DATA_PATH = path.join(__dirname, '..', '..', 'data', 'pack_data.json');
  * find the cheapest Banknotes cost to obtain a single unit of any item.
  */
 
+/**
+ * `pack_data.json` authors a package "family" (e.g. a T1/T2 daily offer ladder) as one object
+ * with a `tiers` map keyed by tier number, so a not-yet-known tier can be left out without
+ * shifting any other tier's number. Every other part of the codebase still wants the flat,
+ * one-SKU-per-id shape this used to be authored in directly (`awaken_shard_t1`, `_t2`, ...),
+ * each carrying its own `tier` and a `requires` link to the previous tier present in the map
+ * (or null for the lowest one). This expands the former into the latter right after loading,
+ * so nothing downstream has to know families exist. Mirror any change here in
+ * webapp/src/lib/data.js's `expandPackageFamilies`.
+ */
+function expandPackageFamilies(packages) {
+    const expanded = {};
+    for (const [id, pkg] of Object.entries(packages)) {
+        if (!pkg.tiers) {
+            expanded[id] = pkg;
+            continue;
+        }
+        const { tiers, ...family } = pkg;
+        const tierNumbers = Object.keys(tiers)
+            .map(Number)
+            .sort((a, b) => a - b);
+        let previousId = null;
+        for (const tierNum of tierNumbers) {
+            const tierId = `${id}_t${tierNum}`;
+            expanded[tierId] = {
+                ...family,
+                ...tiers[String(tierNum)],
+                tier: tierNum,
+                requires: previousId,
+            };
+            previousId = tierId;
+        }
+    }
+    return expanded;
+}
+
 function loadData(dataPath = DATA_PATH) {
     if (!fs.existsSync(dataPath)) {
         console.error(`Data file not found at ${dataPath}`);
         process.exit(1);
     }
-    return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    if (data.packages) {
+        data.packages = expandPackageFamilies(data.packages);
+    }
+    return data;
 }
 
 /**

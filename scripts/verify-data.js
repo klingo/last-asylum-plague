@@ -100,7 +100,6 @@ function verifyData() {
     const eventKeys = new Set(Object.keys(events));
 
     const referencedItemKeys = new Set();
-    const referencedPackageKeys = new Set();
     const referencedEventKeys = new Set();
 
     // 3. Item-to-Item Relational Checks
@@ -201,34 +200,36 @@ function verifyData() {
 
     // 4. Package Relational Checks
     checkCategory('Packages & Package Prerequisites', ({ reportError }) => {
-        for (const [pkgId, pkg] of Object.entries(packages)) {
-            // Check contains
-            if (pkg.contains && typeof pkg.contains === 'object') {
-                for (const itemId of Object.keys(pkg.contains)) {
+        function checkContains(label, contains) {
+            if (!contains || typeof contains !== 'object') {
+                return;
+            }
+            for (const itemId of Object.keys(contains)) {
+                referencedItemKeys.add(itemId);
+                if (!itemKeys.has(itemId)) {
+                    reportError('Package Reference', `${label} contains unresolvable item: "${itemId}"`);
+                }
+            }
+        }
+
+        function checkChoice(label, choice) {
+            if (!choice || !Array.isArray(choice.choices)) {
+                return;
+            }
+            for (let i = 0; i < choice.choices.length; i++) {
+                for (const itemId of Object.keys(choice.choices[i])) {
                     referencedItemKeys.add(itemId);
                     if (!itemKeys.has(itemId)) {
-                        reportError('Package Reference', `Package "${pkgId}" contains unresolvable item: "${itemId}"`);
+                        reportError(
+                            'Package Reference',
+                            `${label} choice option #${i + 1} contains unresolvable item: "${itemId}"`,
+                        );
                     }
                 }
             }
+        }
 
-            // Check choice options
-            if (pkg.choice && Array.isArray(pkg.choice.choices)) {
-                for (let i = 0; i < pkg.choice.choices.length; i++) {
-                    const choice = pkg.choice.choices[i];
-                    for (const itemId of Object.keys(choice)) {
-                        referencedItemKeys.add(itemId);
-                        if (!itemKeys.has(itemId)) {
-                            reportError(
-                                'Package Reference',
-                                `Package "${pkgId}" choice option #${i + 1} contains unresolvable item: "${itemId}"`,
-                            );
-                        }
-                    }
-                }
-            }
-
-            // Check event_id
+        for (const [pkgId, pkg] of Object.entries(packages)) {
             if (pkg.event_id) {
                 referencedEventKeys.add(pkg.event_id);
                 if (!eventKeys.has(pkg.event_id)) {
@@ -239,32 +240,16 @@ function verifyData() {
                 }
             }
 
-            // Check requires (package prerequisite)
-            if (pkg.requires !== null && pkg.requires !== undefined) {
-                referencedPackageKeys.add(pkg.requires);
-                if (!packageKeys.has(pkg.requires)) {
-                    reportError(
-                        'Package Prerequisite',
-                        `Package "${pkgId}" requires unresolvable package: "${pkg.requires}"`,
-                    );
-                } else if (pkg.requires === pkgId) {
-                    reportError('Package Prerequisite Loop', `Package "${pkgId}" cannot require itself.`);
-                } else {
-                    // Cycle detection traversal
-                    const visited = new Set([pkgId]);
-                    let current = pkg.requires;
-                    while (current && packages[current]) {
-                        if (visited.has(current)) {
-                            reportError(
-                                'Package Dependency Cycle',
-                                `Circular dependency detected in package chain starting at "${pkgId}" (cycle at "${current}")`,
-                            );
-                            break;
-                        }
-                        visited.add(current);
-                        current = packages[current].requires;
-                    }
+            if (pkg.tiers && typeof pkg.tiers === 'object') {
+                // Package family: each tier owns its own contains/choice.
+                for (const [tierNum, tier] of Object.entries(pkg.tiers)) {
+                    const label = `Package "${pkgId}" tier ${tierNum}`;
+                    checkContains(label, tier.contains);
+                    checkChoice(label, tier.choice);
                 }
+            } else {
+                checkContains(`Package "${pkgId}"`, pkg.contains);
+                checkChoice(`Package "${pkgId}"`, pkg.choice);
             }
         }
     });

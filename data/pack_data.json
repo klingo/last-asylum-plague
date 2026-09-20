@@ -1237,90 +1237,77 @@
         }
     },
     "packages": {
-        "awaken_shard_t1": {
+        "awaken_shard": {
             "name": {
                 "en": "Awaken Shard",
                 "de": ""
             },
             "category": "Daily Offer",
-            "price": 499,
-            "deal_percentage": 5880,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 700,
-                "hero_awaken_shard": 10,
-                "recruit_ticket": 10,
-                "antitoxin_level_supply_ssr": 6,
-                "vip_points": 700,
-                "lv1_alliance_chest": 1,
-                "lv2_alliance_chest": 2
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5880,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 700,
+                        "hero_awaken_shard": 10,
+                        "recruit_ticket": 10,
+                        "antitoxin_level_supply_ssr": 6,
+                        "vip_points": 700,
+                        "lv1_alliance_chest": 1,
+                        "lv2_alliance_chest": 2
+                    }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 5880,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1400,
+                        "hero_awaken_shard": 20,
+                        "recruit_ticket": 20,
+                        "antitoxin_level_supply_ssr": 12,
+                        "vip_points": 1400,
+                        "lv1_alliance_chest": 1,
+                        "lv2_alliance_chest": 2
+                    }
+                }
             }
         },
-        "awaken_shard_t2": {
-            "name": {
-                "en": "Awaken Shard",
-                "de": ""
-            },
-            "category": "Daily Offer",
-            "price": 999,
-            "deal_percentage": 5880,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "tier": 2,
-            "requires": "awaken_shard_t1",
-            "contains": {
-                "diamonds": 1400,
-                "hero_awaken_shard": 20,
-                "recruit_ticket": 20,
-                "antitoxin_level_supply_ssr": 12,
-                "vip_points": 1400,
-                "lv1_alliance_chest": 1,
-                "lv2_alliance_chest": 2
-            }
-        },
-        "awakening_special_pack_t1": {
+        "awakening_special_pack": {
             "name": {
                 "en": "Awakening Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 3500,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["wednesday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "awaken_shard_choice_chest": 10,
-                "antitoxin_level_supply_sr": 10,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
-            }
-        },
-        "awakening_special_pack_t2": {
-            "name": {
-                "en": "Awakening Special Pack",
-                "de": ""
-            },
-            "category": "Weekly Rotation",
-            "price": 999,
-            "deal_percentage": 3500,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "available_days": ["wednesday"],
-            "tier": 2,
-            "requires": "awakening_special_pack_t1",
-            "contains": {
-                "diamonds": 1000,
-                "awaken_shard_choice_chest": 20,
-                "antitoxin_level_supply_sr": 20,
-                "vip_points": 1000,
-                "lv3_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3500,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "awaken_shard_choice_chest": 10,
+                        "antitoxin_level_supply_sr": 10,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 3500,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "awaken_shard_choice_chest": 20,
+                        "antitoxin_level_supply_sr": 20,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                }
             }
         },
         "blades_out_deluxe_pack": {
@@ -1334,8 +1321,6 @@
             "deal_percentage": 3550,
             "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 2,
-            "requires": null,
             "contains": {
                 "diamonds": 1000,
                 "stone_blade": 20,
@@ -1356,8 +1341,6 @@
             "deal_percentage": 3550,
             "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 4,
-            "requires": null,
             "contains": {
                 "diamonds": 5000,
                 "stone_blade": 100,
@@ -1378,8 +1361,6 @@
             "deal_percentage": 3550,
             "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 3,
-            "requires": null,
             "contains": {
                 "diamonds": 2000,
                 "stone_blade": 40,
@@ -1400,8 +1381,6 @@
             "deal_percentage": 3550,
             "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
             "contains": {
                 "diamonds": 500,
                 "stone_blade": 10,
@@ -1422,8 +1401,6 @@
             "deal_percentage": 3550,
             "purchase_limit": 5,
             "limit_type": "daily",
-            "tier": 5,
-            "requires": null,
             "contains": {
                 "diamonds": 10000,
                 "stone_blade": 200,
@@ -1433,27 +1410,29 @@
                 "lv6_alliance_chest": 1
             }
         },
-        "building_speedup_pack_t1": {
+        "building_speedup_pack": {
             "name": {
                 "en": "Building Speedup Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 4140,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["tuesday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "construction_speedup": 1200,
-                "timber_level_supply_ur": 1,
-                "grain_level_supply_ur": 1,
-                "herb_level_supply_ur": 1,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4140,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "construction_speedup": 1200,
+                        "timber_level_supply_ur": 1,
+                        "grain_level_supply_ur": 1,
+                        "herb_level_supply_ur": 1,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "curio_boost": {
@@ -1466,8 +1445,6 @@
             "deal_percentage": 3360,
             "purchase_limit": 7,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 10000,
                 "universal_curio_shard": 1100,
@@ -1477,25 +1454,27 @@
                 "lv6_alliance_chest": 1
             }
         },
-        "curio_pack_t1": {
+        "curio_pack": {
             "name": {
                 "en": "Curio Pack",
                 "de": ""
             },
             "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 4080,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "top_up_exp": 5,
-                "universal_curio_random_chest": 1,
-                "resource_supply_general": 5,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4080,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "top_up_exp": 5,
+                        "universal_curio_random_chest": 1,
+                        "resource_supply_general": 5,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "develop_territory": {
@@ -1508,8 +1487,6 @@
             "deal_percentage": 3980,
             "purchase_limit": 5,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 2000,
                 "speedup": 950,
@@ -1521,75 +1498,70 @@
                 "lv4_alliance_chest": 1
             }
         },
-        "development_pack_t1": {
+        "development_pack": {
             "name": {
                 "en": "Development Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 4140,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["tuesday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "resource_supply_ur": 5,
-                "timber_level_supply_ur": 2,
-                "grain_level_supply_ur": 2,
-                "herb_level_supply_ur": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4140,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "resource_supply_ur": 5,
+                        "timber_level_supply_ur": 2,
+                        "grain_level_supply_ur": 2,
+                        "herb_level_supply_ur": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 4140,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 100,
+                        "resource_supply_ur": 10,
+                        "timber_level_supply_ur": 4,
+                        "grain_level_supply_ur": 4,
+                        "herb_level_supply_ur": 4,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                }
             }
         },
-        "development_pack_t2": {
-            "name": {
-                "en": "Development Pack",
-                "de": ""
-            },
-            "category": "Weekly Rotation",
-            "price": 999,
-            "deal_percentage": 4140,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "available_days": ["tuesday"],
-            "tier": 2,
-            "requires": "development_pack_t1",
-            "contains": {
-                "diamonds": 100,
-                "resource_supply_ur": 10,
-                "timber_level_supply_ur": 4,
-                "grain_level_supply_ur": 4,
-                "herb_level_supply_ur": 4,
-                "vip_points": 1000,
-                "lv3_alliance_chest": 1
-            }
-        },
-        "dragon_blood_pack_t1": {
+        "dragon_blood_pack": {
             "name": {
                 "en": "Dragon Blood Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 999,
-            "deal_percentage": 4700,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["sunday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 1000,
-                "dragon_blood": 1,
-                "antitoxin_level_supply_ssr": 11,
-                "skill_badge": 550,
-                "herb_level_supply_ssr": 2,
-                "grain_level_supply_ssr": 2,
-                "timber_level_supply_ssr": 2,
-                "vip_points": 1000,
-                "lv3_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 999,
+                    "deal_percentage": 4700,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "dragon_blood": 1,
+                        "antitoxin_level_supply_ssr": 11,
+                        "skill_badge": 550,
+                        "herb_level_supply_ssr": 2,
+                        "grain_level_supply_ssr": 2,
+                        "timber_level_supply_ssr": 2,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                }
             }
         },
         "enhance_might": {
@@ -1602,8 +1574,6 @@
             "deal_percentage": 3980,
             "purchase_limit": 2,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 10000,
                 "gearstone": 25000,
@@ -1614,25 +1584,27 @@
                 "lv6_alliance_chest": 1
             }
         },
-        "enhancement_special_pack_t1": {
+        "enhancement_special_pack": {
             "name": {
                 "en": "Enhancement Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 3280,
-            "purchase_limit": 1,
             "limit_type": "weekly",
             "available_days": ["sunday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "random_gearstone_supply": 1,
-                "gearstone": 1500,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3280,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "random_gearstone_supply": 1,
+                        "gearstone": 1500,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "exclusive_weapon": {
@@ -1645,8 +1617,6 @@
             "deal_percentage": 2550,
             "purchase_limit": 3,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 10000,
                 "exclusive_weapon_omni_shard": 80,
@@ -1654,25 +1624,27 @@
                 "lv6_alliance_chest": 1
             }
         },
-        "exclusive_weapon_pack_t1": {
+        "exclusive_weapon_pack": {
             "name": {
                 "en": "Exclusive Weapon Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 3500,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["tuesday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "excl_weapon_shard_choice_chest": 10,
-                "antitoxin_level_supply_sr": 10,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3500,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "excl_weapon_shard_choice_chest": 10,
+                        "antitoxin_level_supply_sr": 10,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "exclusive_weapon_pass": {
@@ -1685,8 +1657,6 @@
             "deal_percentage": 8159,
             "purchase_limit": 1,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "lv4_alliance_chest": 1,
                 "recruit_ticket": 30,
@@ -1697,68 +1667,26 @@
                 "resource_supply_general": 105
             }
         },
-        "exclusive_weapon_t1": {
-            "name": {
-                "en": "Exclusive Weapon",
-                "de": ""
-            },
-            "category": "Daily Offer",
-            "price": 499,
-            "deal_percentage": 5880,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 700,
-                "exclusive_weapon_shard": 10,
-                "recruit_ticket": 10,
-                "antitoxin_level_supply_ssr": 6,
-                "vip_points": 700,
-                "lv1_alliance_chest": 1,
-                "lv2_alliance_chest": 2
-            }
-        },
-        "exclusive_weapon_t2": {
-            "name": {
-                "en": "Exclusive Weapon",
-                "de": ""
-            },
-            "category": "Daily Offer",
-            "price": 999,
-            "deal_percentage": 5880,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "tier": 2,
-            "requires": "exclusive_weapon_t1",
-            "contains": {
-                "diamonds": 1400,
-                "exclusive_weapon_shard": 20,
-                "recruit_ticket": 20,
-                "antitoxin_level_supply_ssr": 12,
-                "vip_points": 1400,
-                "lv1_alliance_chest": 1,
-                "lv2_alliance_chest": 2
-            }
-        },
-        "exp_special_pack_t1": {
+        "exp_special_pack": {
             "name": {
                 "en": "EXP Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 2550,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["monday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "antitoxin_level_supply_ssr": 10,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 2550,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "antitoxin_level_supply_ssr": 10,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "hero_awaken": {
@@ -1771,8 +1699,6 @@
             "deal_percentage": 2550,
             "purchase_limit": 3,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 10000,
                 "hero_awaken_omni_shard": 80,
@@ -1780,153 +1706,127 @@
                 "lv6_alliance_chest": 1
             }
         },
-        "hero_awaken_growth_pack_t5": {
+        "hero_awaken_growth_pack": {
             "name": {
                 "en": "<Hero> Awaken Growth Pack",
                 "de": ""
             },
             "category": "Hero Exclusive",
-            "price": 9999,
-            "deal_percentage": 3610,
-            "purchase_limit": 1,
             "limit_type": "exclusive",
-            "tier": 5,
-            "requires": "hero_awaken_growth_pack_t4",
-            "contains": {
-                "diamonds": 10000,
-                "hero_awaken_shard": 160,
-                "resource_supply_ssr": 160,
-                "skill_badge": 8000,
-                "vip_points": 10000,
-                "lv6_alliance_chest": 1
+            "tiers": {
+                "5": {
+                    "price": 9999,
+                    "deal_percentage": 3610,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 10000,
+                        "hero_awaken_shard": 160,
+                        "resource_supply_ssr": 160,
+                        "skill_badge": 8000,
+                        "vip_points": 10000,
+                        "lv6_alliance_chest": 1
+                    }
+                }
             }
         },
-        "hero_exclusive_weapon_pack_t1": {
+        "hero_exclusive_weapon_pack": {
             "name": {
                 "en": "<Hero> Exclusive Weapon Pack",
                 "de": ""
             },
             "category": "Hero Exclusive",
-            "price": 499,
-            "deal_percentage": 4220,
-            "purchase_limit": 1,
             "limit_type": "exclusive",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "exclusive_weapon_shard": 10,
-                "antitoxin_level_supply_sr": 10,
-                "skill_badge": 250,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4220,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "exclusive_weapon_shard": 10,
+                        "antitoxin_level_supply_sr": 10,
+                        "skill_badge": 250,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 4220,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "exclusive_weapon_shard": 20,
+                        "antitoxin_level_supply_sr": 20,
+                        "skill_badge": 500,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                },
+                "3": {
+                    "price": 1999,
+                    "deal_percentage": 4220,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 2000,
+                        "exclusive_weapon_shard": 40,
+                        "antitoxin_level_supply_sr": 40,
+                        "skill_badge": 1000,
+                        "vip_points": 2000,
+                        "lv4_alliance_chest": 1
+                    }
+                },
+                "4": {
+                    "price": 4999,
+                    "deal_percentage": 3610,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 5000,
+                        "exclusive_weapon_shard": 80,
+                        "antitoxin_level_supply_sr": 100,
+                        "skill_badge": 2500,
+                        "vip_points": 5000,
+                        "lv5_alliance_chest": 1
+                    }
+                },
+                "5": {
+                    "price": 9999,
+                    "deal_percentage": 3610,
+                    "purchase_limit": 2,
+                    "contains": {
+                        "diamonds": 10000,
+                        "exclusive_weapon_shard": 160,
+                        "antitoxin_level_supply_sr": 200,
+                        "skill_badge": 5000,
+                        "vip_points": 10000,
+                        "lv6_alliance_chest": 1
+                    }
+                }
             }
         },
-        "hero_exclusive_weapon_pack_t2": {
-            "name": {
-                "en": "<Hero> Exclusive Weapon Pack",
-                "de": ""
-            },
-            "category": "Hero Exclusive",
-            "price": 999,
-            "deal_percentage": 4220,
-            "purchase_limit": 1,
-            "limit_type": "exclusive",
-            "tier": 2,
-            "requires": "hero_exclusive_weapon_pack_t1",
-            "contains": {
-                "diamonds": 1000,
-                "exclusive_weapon_shard": 20,
-                "antitoxin_level_supply_sr": 20,
-                "skill_badge": 500,
-                "vip_points": 1000,
-                "lv3_alliance_chest": 1
-            }
-        },
-        "hero_exclusive_weapon_pack_t3": {
-            "name": {
-                "en": "<Hero> Exclusive Weapon Pack",
-                "de": ""
-            },
-            "category": "Hero Exclusive",
-            "price": 1999,
-            "deal_percentage": 4220,
-            "purchase_limit": 1,
-            "limit_type": "exclusive",
-            "tier": 3,
-            "requires": "hero_exclusive_weapon_pack_t2",
-            "contains": {
-                "diamonds": 2000,
-                "exclusive_weapon_shard": 40,
-                "antitoxin_level_supply_sr": 40,
-                "skill_badge": 1000,
-                "vip_points": 2000,
-                "lv4_alliance_chest": 1
-            }
-        },
-        "hero_exclusive_weapon_pack_t4": {
-            "name": {
-                "en": "<Hero> Exclusive Weapon Pack",
-                "de": ""
-            },
-            "category": "Hero Exclusive",
-            "price": 4999,
-            "deal_percentage": 3610,
-            "purchase_limit": 1,
-            "limit_type": "exclusive",
-            "tier": 4,
-            "requires": "hero_exclusive_weapon_pack_t3",
-            "contains": {
-                "diamonds": 5000,
-                "exclusive_weapon_shard": 80,
-                "antitoxin_level_supply_sr": 100,
-                "skill_badge": 2500,
-                "vip_points": 5000,
-                "lv5_alliance_chest": 1
-            }
-        },
-        "hero_exclusive_weapon_pack_t5": {
-            "name": {
-                "en": "<Hero> Exclusive Weapon Pack",
-                "de": ""
-            },
-            "category": "Hero Exclusive",
-            "price": 9999,
-            "deal_percentage": 3610,
-            "purchase_limit": 2,
-            "limit_type": "exclusive",
-            "tier": 5,
-            "requires": "hero_exclusive_weapon_pack_t4",
-            "contains": {
-                "diamonds": 10000,
-                "exclusive_weapon_shard": 160,
-                "antitoxin_level_supply_sr": 200,
-                "skill_badge": 5000,
-                "vip_points": 10000,
-                "lv6_alliance_chest": 1
-            }
-        },
-        "hero_growth_pack_t1": {
+        "hero_growth_pack": {
             "name": {
                 "en": "Hero Growth Pack",
                 "de": ""
             },
             "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 4450,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "top_up_exp": 5,
-                "gearstone": 1000,
-                "skill_badge": 1200,
-                "recruit_ticket": 5,
-                "resource_supply_general": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4450,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "top_up_exp": 5,
+                        "gearstone": 1000,
+                        "skill_badge": 1200,
+                        "recruit_ticket": 5,
+                        "resource_supply_general": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "hero_promotion": {
@@ -1939,8 +1839,6 @@
             "deal_percentage": 2540,
             "purchase_limit": 3,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 10000,
                 "ur_hero_omni_shard": 75,
@@ -1949,219 +1847,217 @@
                 "lv6_alliance_chest": 1
             }
         },
-        "hero_shard_t1": {
+        "hero_shard": {
             "name": {
                 "en": "Hero Shard",
                 "de": ""
             },
             "category": "Daily Offer",
-            "price": 499,
-            "deal_percentage": 5880,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 700,
-                "hero_shard": 10,
-                "recruit_ticket": 10,
-                "antitoxin_level_supply_ssr": 6,
-                "vip_points": 700,
-                "lv1_alliance_chest": 1,
-                "lv2_alliance_chest": 2
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5880,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 700,
+                        "hero_shard": 10,
+                        "recruit_ticket": 10,
+                        "antitoxin_level_supply_ssr": 6,
+                        "vip_points": 700,
+                        "lv1_alliance_chest": 1,
+                        "lv2_alliance_chest": 2
+                    }
+                }
             }
         },
-        "hero_special_pack_t1": {
+        "hero_special_pack": {
             "name": {
                 "en": "Hero Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 3500,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["thursday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "ur_hero_choice_chest": 10,
-                "antitoxin_level_supply_sr": 10,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3500,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "ur_hero_choice_chest": 10,
+                        "antitoxin_level_supply_sr": 10,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "might_special_pack_t1": {
+        "might_special_pack": {
             "name": {
                 "en": "Might Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 4180,
-            "purchase_limit": 1,
             "limit_type": "weekly",
             "available_days": ["sunday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "gearstone": 1250,
-                "skill_badge": 1250,
-                "antitoxin_level_supply_ssr": 2,
-                "resource_supply_general": 2,
-                "vip_points": 1000,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4180,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "gearstone": 1250,
+                        "skill_badge": 1250,
+                        "antitoxin_level_supply_ssr": 2,
+                        "resource_supply_general": 2,
+                        "vip_points": 1000,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "mystic_cabinet_i_t1": {
+        "mystic_cabinet_i": {
             "name": {
                 "en": "Mystic Cabinet I",
                 "de": ""
             },
             "category": "Special Event",
-            "event_id": "mystic_cabinet",
-            "price": 499,
-            "deal_percentage": 5520,
-            "purchase_limit": 1,
             "limit_type": "exclusive",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "random_gearstone_supply": 1,
-                "resource_supply_ur": 6,
-                "gearstone": 800,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "event_id": "mystic_cabinet",
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5520,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "random_gearstone_supply": 1,
+                        "resource_supply_ur": 6,
+                        "gearstone": 800,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 5520,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "random_gearstone_supply": 2,
+                        "resource_supply_ur": 12,
+                        "gearstone": 1600,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                },
+                "3": {
+                    "price": 1999,
+                    "deal_percentage": 5520,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 2000,
+                        "random_gearstone_supply": 6,
+                        "resource_supply_ur": 24,
+                        "vip_points": 2000,
+                        "lv4_alliance_chest": 1
+                    }
+                }
             }
         },
-        "mystic_cabinet_i_t2": {
-            "name": {
-                "en": "Mystic Cabinet I",
-                "de": ""
-            },
-            "category": "Special Event",
-            "event_id": "mystic_cabinet",
-            "price": 999,
-            "deal_percentage": 5520,
-            "purchase_limit": 1,
-            "limit_type": "exclusive",
-            "tier": 2,
-            "requires": "mystic_cabinet_i_t1",
-            "contains": {
-                "diamonds": 1000,
-                "random_gearstone_supply": 2,
-                "resource_supply_ur": 12,
-                "gearstone": 1600,
-                "vip_points": 1000,
-                "lv3_alliance_chest": 1
-            }
-        },
-        "mystic_cabinet_i_t3": {
-            "name": {
-                "en": "Mystic Cabinet I",
-                "de": ""
-            },
-            "category": "Special Event",
-            "event_id": "mystic_cabinet",
-            "price": 1999,
-            "deal_percentage": 5520,
-            "purchase_limit": 1,
-            "limit_type": "exclusive",
-            "tier": 3,
-            "requires": "mystic_cabinet_i_t2",
-            "contains": {
-                "diamonds": 2000,
-                "random_gearstone_supply": 6,
-                "resource_supply_ur": 24,
-                "vip_points": 2000,
-                "lv4_alliance_chest": 1
-            }
-        },
-        "mystic_cabinet_ii_t1": {
+        "mystic_cabinet_ii": {
             "name": {
                 "en": "Mystic Cabinet II",
                 "de": ""
             },
             "category": "Special Event",
-            "event_id": "mystic_cabinet",
-            "price": 499,
-            "deal_percentage": 5520,
-            "purchase_limit": 1,
             "limit_type": "exclusive",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "ur_hero_omni_shard": 5,
-                "skill_badge": 1800,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "event_id": "mystic_cabinet",
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5520,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "ur_hero_omni_shard": 5,
+                        "skill_badge": 1800,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "mystic_cabinet_iii_t1": {
+        "mystic_cabinet_iii": {
             "name": {
                 "en": "Mystic Cabinet III",
                 "de": ""
             },
             "category": "Special Event",
-            "event_id": "mystic_cabinet",
-            "price": 499,
-            "deal_percentage": 5520,
-            "purchase_limit": 1,
             "limit_type": "exclusive",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "study_scroll": 100,
-                "research_speedup": 390,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "event_id": "mystic_cabinet",
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5520,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "study_scroll": 100,
+                        "research_speedup": 390,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "premium_grain_pack_t1": {
+        "premium_grain_pack": {
             "name": {
                 "en": "Premium Grain Pack",
                 "de": ""
             },
             "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 3700,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "grain_level_supply_ur": 8,
-                "top_up_exp": 5,
-                "resource_supply_general": 4,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3700,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "grain_level_supply_ur": 8,
+                        "top_up_exp": 5,
+                        "resource_supply_general": 4,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "premium_herb_pack_t1": {
+        "premium_herb_pack": {
             "name": {
                 "en": "Premium Herb Pack",
                 "de": ""
             },
             "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 3700,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "herb_level_supply_ur": 8,
-                "top_up_exp": 5,
-                "resource_supply_general": 4,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3700,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "herb_level_supply_ur": 8,
+                        "top_up_exp": 5,
+                        "resource_supply_general": 4,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "premium_monthly_pass": {
@@ -2174,8 +2070,6 @@
             "deal_percentage": 8360,
             "purchase_limit": 1,
             "limit_type": "monthly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 5500,
                 "stamina": 3000,
@@ -2186,46 +2080,50 @@
                 "lv4_alliance_chest": 1
             }
         },
-        "premium_timber_pack_t1": {
+        "premium_timber_pack": {
             "name": {
                 "en": "Premium Timber Pack",
                 "de": ""
             },
             "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 3700,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "timber_level_supply_ur": 8,
-                "top_up_exp": 5,
-                "resource_supply_general": 4,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3700,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "timber_level_supply_ur": 8,
+                        "top_up_exp": 5,
+                        "resource_supply_general": 4,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "quick_research_pack_t1": {
+        "quick_research_pack": {
             "name": {
                 "en": "Quick Research Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 4490,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["wednesday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "research_speedup": 1500,
-                "herb_level_supply_ur": 5,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4490,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "research_speedup": 1500,
+                        "herb_level_supply_ur": 5,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "raven_epigraph": {
@@ -2238,8 +2136,6 @@
             "deal_percentage": 3720,
             "purchase_limit": 10,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 5000,
                 "r_epigraph_chest": 22,
@@ -2250,49 +2146,29 @@
                 "lv5_alliance_chest": 1
             }
         },
-        "raven_epigraph_offer_t1": {
+        "raven_epigraph_offer": {
             "name": {
                 "en": "Raven Epigraph Offer",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 4500,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["monday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "ssr_epigraph_chest": 1,
-                "sr_epigraph_chest": 1,
-                "r_epigraph_chest": 2,
-                "raven_evolve_guide": 1,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
-            }
-        },
-        "raven_epigraph_t1": {
-            "name": {
-                "en": "Raven Epigraph",
-                "de": ""
-            },
-            "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 4020,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "top_up_exp": 5,
-                "ssr_epigraph_chest": 1,
-                "r_epigraph_chest": 4,
-                "resource_supply_general": 5,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4500,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "ssr_epigraph_chest": 1,
+                        "sr_epigraph_chest": 1,
+                        "r_epigraph_chest": 2,
+                        "raven_evolve_guide": 1,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "raven_essence": {
@@ -2305,8 +2181,6 @@
             "deal_percentage": 3340,
             "purchase_limit": 6,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 5000,
                 "raven_essence": 150,
@@ -2314,28 +2188,6 @@
                 "resource_supply_general": 40,
                 "vip_points": 5000,
                 "lv5_alliance_chest": 1
-            }
-        },
-        "raven_essence_t1": {
-            "name": {
-                "en": "Raven Essence",
-                "de": ""
-            },
-            "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 4460,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "raven_essence": 20,
-                "top_up_exp": 5,
-                "raven_fruit": 10000,
-                "resource_supply_general": 5,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
             }
         },
         "raven_gear": {
@@ -2348,8 +2200,6 @@
             "deal_percentage": 3630,
             "purchase_limit": 6,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 5000,
                 "lv5_raven_gear_choice_chest": 1,
@@ -2360,185 +2210,156 @@
                 "lv5_alliance_chest": 1
             }
         },
-        "raven_gear_special_pack_t1": {
+        "raven_gear_special_pack": {
             "name": {
                 "en": "Raven Gear Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 4200,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["wednesday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "lv3_raven_gear_chest": 3,
-                "lv1_raven_gear_chest": 1,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4200,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "lv3_raven_gear_chest": 3,
+                        "lv1_raven_gear_chest": 1,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "raven_gear_t1": {
-            "name": {
-                "en": "Raven Gear",
-                "de": ""
-            },
-            "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 4280,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "lv3_raven_gear_chest": 3,
-                "top_up_exp": 5,
-                "lv1_raven_gear_chest": 3,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
-            }
-        },
-        "raven_growth_pack_t1": {
+        "raven_growth_pack": {
             "name": {
                 "en": "Raven Growth Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 5000,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["monday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "raven_essence": 20,
-                "raven_fruit": 40000,
-                "sr_epigraph_chest": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5000,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "raven_essence": 20,
+                        "raven_fruit": 40000,
+                        "sr_epigraph_chest": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "research_special_pack_t1": {
+        "research_special_pack": {
             "name": {
                 "en": "Research Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 4490,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["wednesday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "study_scroll": 60,
-                "research_speedup": 350,
-                "timber_level_supply_ur": 1,
-                "grain_level_supply_ur": 1,
-                "herb_level_supply_ur": 1,
-                "resource_supply_general": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4490,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "study_scroll": 60,
+                        "research_speedup": 350,
+                        "timber_level_supply_ur": 1,
+                        "grain_level_supply_ur": 1,
+                        "herb_level_supply_ur": 1,
+                        "resource_supply_general": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "resource_special_pack_t1": {
+        "resource_special_pack": {
             "name": {
                 "en": "Resource Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 4140,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["wednesday", "friday", "saturday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "resource_supply_ur": 5,
-                "timber_level_supply_ur": 2,
-                "grain_level_supply_ur": 2,
-                "herb_level_supply_ur": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 4140,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "resource_supply_ur": 5,
+                        "timber_level_supply_ur": 2,
+                        "grain_level_supply_ur": 2,
+                        "herb_level_supply_ur": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 4140,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "resource_supply_ur": 10,
+                        "timber_level_supply_ur": 4,
+                        "grain_level_supply_ur": 4,
+                        "herb_level_supply_ur": 4,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                },
+                "3": {
+                    "price": 1999,
+                    "deal_percentage": 4140,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 2000,
+                        "resource_supply_ur": 20,
+                        "timber_level_supply_ur": 8,
+                        "grain_level_supply_ur": 8,
+                        "herb_level_supply_ur": 8,
+                        "vip_points": 2000,
+                        "lv4_alliance_chest": 1
+                    }
+                }
             }
         },
-        "resource_special_pack_t2": {
-            "name": {
-                "en": "Resource Special Pack",
-                "de": ""
-            },
-            "category": "Weekly Rotation",
-            "price": 999,
-            "deal_percentage": 4140,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "available_days": ["wednesday", "friday", "saturday"],
-            "tier": 2,
-            "requires": "resource_special_pack_t1",
-            "contains": {
-                "diamonds": 1000,
-                "resource_supply_ur": 10,
-                "timber_level_supply_ur": 4,
-                "grain_level_supply_ur": 4,
-                "herb_level_supply_ur": 4,
-                "vip_points": 1000,
-                "lv3_alliance_chest": 1
-            }
-        },
-        "resource_special_pack_t3": {
-            "name": {
-                "en": "Resource Special Pack",
-                "de": ""
-            },
-            "category": "Weekly Rotation",
-            "price": 1999,
-            "deal_percentage": 4140,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "available_days": ["wednesday", "friday", "saturday"],
-            "tier": 3,
-            "requires": "resource_special_pack_t2",
-            "contains": {
-                "diamonds": 2000,
-                "resource_supply_ur": 20,
-                "timber_level_supply_ur": 8,
-                "grain_level_supply_ur": 8,
-                "herb_level_supply_ur": 8,
-                "vip_points": 2000,
-                "lv4_alliance_chest": 1
-            }
-        },
-        "speedup_special_pack_t1": {
+        "speedup_special_pack": {
             "name": {
                 "en": "Speedup Special Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 3330,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["friday", "saturday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "speedup": 1000,
-                "timber_level_supply_ur": 1,
-                "grain_level_supply_ur": 1,
-                "herb_level_supply_ur": 1,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3330,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "speedup": 1000,
+                        "timber_level_supply_ur": 1,
+                        "grain_level_supply_ur": 1,
+                        "herb_level_supply_ur": 1,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
         "stamina_discount_pack": {
@@ -2551,8 +2372,6 @@
             "deal_percentage": 3220,
             "purchase_limit": 5,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 1000,
                 "stamina": 500,
@@ -2573,8 +2392,6 @@
             "deal_percentage": 3160,
             "purchase_limit": 10,
             "limit_type": "daily",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 1000,
                 "strange_coin": 100,
@@ -2593,8 +2410,6 @@
             "deal_percentage": 5000,
             "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 500,
                 "strange_coin": 80,
@@ -2612,8 +2427,6 @@
             "deal_percentage": 4000,
             "purchase_limit": 5,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 10000,
                 "study_scroll": 1000,
@@ -2623,31 +2436,6 @@
                 "herb_level_supply_ur": 82,
                 "vip_points": 5000,
                 "lv6_alliance_chest": 1
-            }
-        },
-        "study_scroll_t1": {
-            "name": {
-                "en": "Study Scroll",
-                "de": ""
-            },
-            "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 4180,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "study_scroll": 60,
-                "top_up_exp": 5,
-                "research_speedup": 300,
-                "timber_level_supply_ur": 1,
-                "grain_level_supply_ur": 1,
-                "herb_level_supply_ur": 1,
-                "resource_supply_general": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
             }
         },
         "surprise_encounter_exquisite_pack": {
@@ -2661,8 +2449,6 @@
             "deal_percentage": 3410,
             "purchase_limit": 5,
             "limit_type": "daily",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 1000,
                 "surprise_emblem": 50,
@@ -2681,8 +2467,6 @@
             "deal_percentage": 3410,
             "purchase_limit": 5,
             "limit_type": "daily",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 5000,
                 "surprise_emblem": 250,
@@ -2701,8 +2485,6 @@
             "deal_percentage": 3410,
             "purchase_limit": 5,
             "limit_type": "daily",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 2000,
                 "surprise_emblem": 100,
@@ -2721,8 +2503,6 @@
             "deal_percentage": 5610,
             "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 500,
                 "surprise_emblem": 40,
@@ -2741,8 +2521,6 @@
             "deal_percentage": 3410,
             "purchase_limit": 10,
             "limit_type": "daily",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 10000,
                 "surprise_emblem": 500,
@@ -2760,8 +2538,6 @@
             "deal_percentage": 2240,
             "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 500,
                 "survivor_recruit_ticket": 12,
@@ -2769,118 +2545,106 @@
                 "vip_points": 500
             }
         },
-        "twin_dragon_brooch_pack_t1": {
+        "twin_dragon_brooch_pack": {
             "name": {
                 "en": "Twin Dragon Brooch Pack",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 499,
-            "deal_percentage": 5790,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["sunday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "twin_dragon_brooch": 1,
-                "speedup": 500,
-                "herb_level_supply_ssr": 2,
-                "grain_level_supply_ssr": 2,
-                "timber_level_supply_ssr": 2,
-                "antitoxin_level_supply_sr": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5790,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "twin_dragon_brooch": 1,
+                        "speedup": 500,
+                        "herb_level_supply_ssr": 2,
+                        "grain_level_supply_ssr": 2,
+                        "timber_level_supply_ssr": 2,
+                        "antitoxin_level_supply_sr": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "universal_speedup_pack_t1": {
+        "universal_speedup_pack": {
             "name": {
                 "en": "Universal Speedup Pack",
                 "de": ""
             },
             "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 3880,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "speedup": 925,
-                "top_up_exp": 5,
-                "grain_level_supply_sr": 2,
-                "timber_level_supply_sr": 2,
-                "herb_level_supply_sr": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 3880,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "speedup": 925,
+                        "top_up_exp": 5,
+                        "grain_level_supply_sr": 2,
+                        "timber_level_supply_sr": 2,
+                        "herb_level_supply_sr": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "ur_blueprint_offer_t1": {
+        "ur_blueprint_offer": {
             "name": {
                 "en": "UR Blueprint Offer",
                 "de": ""
             },
             "category": "Weekly Rotation",
-            "price": 999,
-            "deal_percentage": 4650,
-            "purchase_limit": 1,
             "limit_type": "daily",
             "available_days": ["saturday", "sunday"],
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 1000,
-                "tempered_steel": 50,
-                "gear_blueprint_ur": 2,
-                "gearstone": 1000,
-                "vip_points": 1000,
-                "lv3_alliance_chest": 1
-            }
-        },
-        "ur_blueprint_offer_t2": {
-            "name": {
-                "en": "UR Blueprint Offer",
-                "de": ""
-            },
-            "category": "Weekly Rotation",
-            "price": 1999,
-            "deal_percentage": 4650,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "available_days": ["saturday", "sunday"],
-            "tier": 2,
-            "requires": "ur_blueprint_offer_t1",
-            "contains": {
-                "diamonds": 2000,
-                "tempered_steel": 100,
-                "gear_blueprint_ur": 4,
-                "gearstone": 2000,
-                "vip_points": 2000,
-                "lv4_alliance_chest": 1
-            }
-        },
-        "ur_blueprint_offer_t3": {
-            "name": {
-                "en": "UR Blueprint Offer",
-                "de": ""
-            },
-            "category": "Weekly Rotation",
-            "price": 4999,
-            "deal_percentage": 4380,
-            "purchase_limit": 1,
-            "limit_type": "daily",
-            "available_days": ["saturday", "sunday"],
-            "tier": 3,
-            "requires": "ur_blueprint_offer_t2",
-            "contains": {
-                "diamonds": 5000,
-                "tempered_steel": 250,
-                "gear_blueprint_ur": 8,
-                "gearstone": 5000,
-                "vip_points": 5000,
-                "lv5_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 999,
+                    "deal_percentage": 4650,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "tempered_steel": 50,
+                        "gear_blueprint_ur": 2,
+                        "gearstone": 1000,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 1999,
+                    "deal_percentage": 4650,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 2000,
+                        "tempered_steel": 100,
+                        "gear_blueprint_ur": 4,
+                        "gearstone": 2000,
+                        "vip_points": 2000,
+                        "lv4_alliance_chest": 1
+                    }
+                },
+                "3": {
+                    "price": 4999,
+                    "deal_percentage": 4380,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 5000,
+                        "tempered_steel": 250,
+                        "gear_blueprint_ur": 8,
+                        "gearstone": 5000,
+                        "vip_points": 5000,
+                        "lv5_alliance_chest": 1
+                    }
+                }
             }
         },
         "ur_gear_crafting": {
@@ -2893,8 +2657,6 @@
             "deal_percentage": 2960,
             "purchase_limit": 2,
             "limit_type": "weekly",
-            "tier": null,
-            "requires": null,
             "contains": {
                 "diamonds": 5000,
                 "speedup": 3000,
@@ -2905,102 +2667,97 @@
                 "lv5_alliance_chest": 1
             }
         },
-        "value_gear_pack_t1": {
+        "value_gear_pack": {
             "name": {
                 "en": "Value Gear Pack",
                 "de": ""
             },
             "category": "Daily Must-Buy",
-            "price": 499,
-            "deal_percentage": 5060,
-            "purchase_limit": 1,
             "limit_type": "daily",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "top_up_exp": 5,
-                "random_gear_chest": 1,
-                "gearstone": 1000,
-                "resource_supply_general": 5,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5060,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "top_up_exp": 5,
+                        "random_gear_chest": 1,
+                        "gearstone": 1000,
+                        "resource_supply_general": 5,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
             }
         },
-        "weekly_special_t1": {
+        "weekly_special": {
             "name": {
                 "en": "Jokers Weekly Special",
                 "de": ""
             },
             "category": "Special Event",
-            "event_id": "weekly_special",
-            "price": 499,
-            "deal_percentage": 9870,
-            "purchase_limit": 1,
             "limit_type": "event",
-            "tier": 1,
-            "requires": null,
-            "contains": {
-                "diamonds": 500,
-                "ur_hero_omni_shard": 8,
-                "survivor_recruit_ticket": 2,
-                "vip_points": 500,
-                "lv2_alliance_chest": 1
-            },
-            "choice": {
-                "select_count": 2,
-                "choices": [
-                    {
-                        "raven_essence": 70
-                    },
-                    {
-                        "resource_supply_ur": 14
-                    },
-                    {
-                        "speedup": 3780
-                    },
-                    {
-                        "gearstone": 7000
-                    }
-                ]
-            }
-        },
-        "weekly_special_t2": {
-            "name": {
-                "en": "Jokers Weekly Special",
-                "de": ""
-            },
-            "category": "Special Event",
             "event_id": "weekly_special",
-            "price": 499,
-            "deal_percentage": 8530,
-            "purchase_limit": 1,
-            "limit_type": "event",
-            "tier": 2,
-            "requires": "weekly_special_t1",
-            "contains": {
-                "diamonds": 1000,
-                "ur_hero_omni_shard": 8,
-                "survivor_recruit_ticket": 2,
-                "vip_points": 1000,
-                "lv3_alliance_chest": 1
-            },
-            "choice": {
-                "select_count": 4,
-                "choices": [
-                    {
-                        "raven_essence": 70
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 9870,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "ur_hero_omni_shard": 8,
+                        "survivor_recruit_ticket": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
                     },
-                    {
-                        "resource_supply_ur": 14
-                    },
-                    {
-                        "speedup": 3780
-                    },
-                    {
-                        "gearstone": 7000
+                    "choice": {
+                        "select_count": 2,
+                        "choices": [
+                            {
+                                "raven_essence": 70
+                            },
+                            {
+                                "resource_supply_ur": 14
+                            },
+                            {
+                                "speedup": 3780
+                            },
+                            {
+                                "gearstone": 7000
+                            }
+                        ]
                     }
-                ]
+                },
+                "2": {
+                    "price": 499,
+                    "deal_percentage": 8530,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "ur_hero_omni_shard": 8,
+                        "survivor_recruit_ticket": 2,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    },
+                    "choice": {
+                        "select_count": 4,
+                        "choices": [
+                            {
+                                "raven_essence": 70
+                            },
+                            {
+                                "resource_supply_ur": 14
+                            },
+                            {
+                                "speedup": 3780
+                            },
+                            {
+                                "gearstone": 7000
+                            }
+                        ]
+                    }
+                }
             }
         }
     },
