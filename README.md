@@ -13,22 +13,26 @@ See `package.json` for the full list. The most relevant ones:
 
 ## Webapp
 
-The `webapp/` folder is a small [Vite](https://vitejs.dev/) app with three pages:
+The `webapp/` folder is a small [Vite](https://vitejs.dev/) app with four pages:
 
-- **Welcome** (`index.html`) — a landing page introducing the tool and linking to the two pages below.
+- **Welcome** (`index.html`) — a landing page introducing the tool and linking to the pages below.
 - **Analyze Item Value** (`analyze.html`) — pick an item, an amount, and optionally exceed purchase limits; renders
   the same purchase-plan calculation as `analyze-item-value.js`, directly in the page.
 - **Value Ranking** (`rankings.html`) — a searchable, filterable ranking of every package/exchange offer/bonus
   tier by value for money.
+- **Best Choice Pick** (`choices.html`) — pick a choice chest or package (anything that lets you select one or more
+  rewards from a pool) and see its options ranked by what each reward would cost to buy elsewhere, so you know
+  which pick is worth the most.
 
-Both analysis pages compute everything live in the browser from `data/pack_data.json`; nothing is pre-generated. This
-matters because the effective cost of buying an item is dynamic: it depends on the target quantity and on shared
-purchase-limit capacities (e.g. a cheap "100 Strange Coins" exchange offer that's capped at once per day still
-only covers the first 100 coins needed — the rest has to come from a pricier source), so it can't be flattened
-into a single static number ahead of time. See `webapp/src/lib/pricing-core.js` (`createMarket`) for the
-purchase-simulation logic shared with the CLI scripts.
+All three analysis pages compute everything live in the browser from `data/pack_data.json`; nothing is
+pre-generated. This matters because the effective cost of buying an item is dynamic: it depends on the target
+quantity and on shared purchase-limit capacities (e.g. a cheap "100 Strange Coins" exchange offer that's capped at
+once per day still only covers the first 100 coins needed — the rest has to come from a pricier source), so it
+can't be flattened into a single static number ahead of time. See `webapp/src/lib/pricing-core.js` (`createMarket`)
+for the purchase-simulation logic, ported from `scripts/lib/pricing.js`: the CLI is CommonJS/Node and the webapp is
+browser-only ESM, so the two are mirrored by hand rather than literally shared — see `CLAUDE.md` for details.
 
-Both analysis pages are ready to show per-item images once they exist: drop a `<item_id>.png` file into
+Both analysis pages show per-item images where available: drop a `<item_id>.png` file into
 `webapp/public/assets/items/` and it will be picked up automatically (items without an image fall back to a
 placeholder icon).
 
