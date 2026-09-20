@@ -246,7 +246,7 @@
         },
         "itemCategory": {
             "type": "string",
-            "enum": ["Resource", "Hero", "Gear", "Special", "Speedup", "Virtual"]
+            "enum": ["Resource", "Hero", "Gear", "Special", "Speedup", "Virtual", "Curio"]
         },
         "package": {
             "type": "object",

@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-09-19"
+        "last_updated": "2026-09-20"
     },
     "items": {
         "antitoxin": {
@@ -193,6 +193,13 @@
                 "de": ""
             },
             "category": "Resource"
+        },
+        "dragon_blood": {
+            "name": {
+                "en": "Dragon Blood",
+                "de": ""
+            },
+            "category": "Curio"
         },
         "excl_weapon_shard_choice_chest": {
             "name": {
@@ -982,6 +989,13 @@
             },
             "category": "Virtual"
         },
+        "twin_dragon_brooch": {
+            "name": {
+                "en": "Twin Dragon Brooch",
+                "de": ""
+            },
+            "category": "Curio"
+        },
         "universal_curio_random_chest": {
             "name": {
                 "en": "Universal Curio Random Chest",
@@ -1451,6 +1465,31 @@
                 "timber_level_supply_ur": 4,
                 "grain_level_supply_ur": 4,
                 "herb_level_supply_ur": 4,
+                "vip_points": 1000,
+                "lv3_alliance_chest": 1
+            }
+        },
+        "dragon_blood_pack_t1": {
+            "name": {
+                "en": "Dragon Blood Pack",
+                "de": ""
+            },
+            "category": "Weekly Rotation",
+            "price": 999,
+            "deal_percentage": 4700,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "available_days": ["sunday"],
+            "tier": 1,
+            "requires": null,
+            "contains": {
+                "diamonds": 1000,
+                "dragon_blood": 1,
+                "antitoxin_level_supply_ssr": 11,
+                "skill_badge": 550,
+                "herb_level_supply_ssr": 2,
+                "grain_level_supply_ssr": 2,
+                "timber_level_supply_ssr": 2,
                 "vip_points": 1000,
                 "lv3_alliance_chest": 1
             }
@@ -2630,6 +2669,31 @@
                 "survivor_recruit_ticket": 12,
                 "survivor_token": 5,
                 "vip_points": 500
+            }
+        },
+        "twin_dragon_brooch_pack_t1": {
+            "name": {
+                "en": "Twin Dragon Brooch Pack",
+                "de": ""
+            },
+            "category": "Weekly Rotation",
+            "price": 499,
+            "deal_percentage": 5790,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "available_days": ["sunday"],
+            "tier": 1,
+            "requires": null,
+            "contains": {
+                "diamonds": 500,
+                "twin_dragon_brooch": 1,
+                "speedup": 500,
+                "herb_level_supply_ssr": 2,
+                "grain_level_supply_ssr": 2,
+                "timber_level_supply_ssr": 2,
+                "antitoxin_level_supply_sr": 2,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
             }
         },
         "universal_speedup_pack_t1": {
