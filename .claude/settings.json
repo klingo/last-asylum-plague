@@ -5,7 +5,8 @@
     "maxEffortLevel": "high",
     "permissions": {
         "allow": ["Bash(npm run *)"],
-        "ask": ["Bash(git push *)"]
+        "ask": ["Bash(git push *)"],
+        "deny": ["Bash(rm -rf *)", "Bash(git reset --hard*)", "Bash(git push --force*)", "Bash(git clean -f*)"]
     },
     "worktree": {
         "bgIsolation": "none"
