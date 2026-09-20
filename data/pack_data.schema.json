@@ -260,8 +260,8 @@
         },
         "standalonePackage": {
             "type": "object",
-            "description": "A single purchasable SKU with no sibling tiers.",
-            "required": ["name", "category", "price", "deal_percentage", "purchase_limit", "limit_type", "contains"],
+            "description": "A single purchasable SKU with no sibling tiers. `deal_percentage` and `limit_type` are optional: some SKUs (e.g. plain diamond top-ups) have no in-game discount framing and no purchase cadence at all (paired with `purchase_limit: null`).",
+            "required": ["name", "category", "price", "purchase_limit", "contains"],
             "additionalProperties": false,
             "properties": {
                 "name": {
@@ -378,7 +378,8 @@
                 "shop_event",
                 "unlock_exclusive",
                 "special",
-                "special_event"
+                "special_event",
+                "diamond"
             ]
         },
         "exchangeShop": {
