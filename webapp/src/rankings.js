@@ -12,26 +12,44 @@ renderNav('rankings');
 applyStaticTranslations();
 
 const searchInput = document.getElementById('search-input');
-const typeFilterGroup = document.getElementById('type-filter-group');
-const typeFilterCheckboxes = Array.from(typeFilterGroup.querySelectorAll('input[type="checkbox"]'));
 const includeExchangeShopsCheckbox = document.getElementById('include-exchange-shops');
+const excludeDiamondsCheckbox = document.getElementById('exclude-diamonds');
+const excludeVipPointsCheckbox = document.getElementById('exclude-vip-points');
+const excludeAllianceChestsCheckbox = document.getElementById('exclude-alliance-chests');
 const rankingMeta = document.getElementById('ranking-meta');
 const rankingTable = document.getElementById('ranking-table');
 const rankingEmpty = document.getElementById('ranking-empty');
+
+const ALLIANCE_CHEST_PATTERN = /^lv\d+_alliance_chest$/;
 
 let rawData = null;
 let rankings = [];
 let itemsById = {};
 
-function matchesFilters(entry, search, types) {
-    if (!types.includes(entry.type)) {
-        return false;
-    }
+function matchesFilters(entry, search) {
     if (!search) {
         return true;
     }
     const haystack = `${entry.name} ${categoryLabel(entry.category)}`.toLowerCase();
     return haystack.includes(search);
+}
+
+function getExcludeItemIds() {
+    const excludeItemIds = new Set();
+    if (excludeDiamondsCheckbox.checked) {
+        excludeItemIds.add('diamonds');
+    }
+    if (excludeVipPointsCheckbox.checked) {
+        excludeItemIds.add('vip_points');
+    }
+    if (excludeAllianceChestsCheckbox.checked) {
+        for (const itemId of Object.keys(rawData?.items || {})) {
+            if (ALLIANCE_CHEST_PATTERN.test(itemId)) {
+                excludeItemIds.add(itemId);
+            }
+        }
+    }
+    return excludeItemIds;
 }
 
 function goldenBanknotes(text) {
@@ -139,14 +157,16 @@ function renderTable(filtered) {
 
 function applyFilters() {
     const search = searchInput.value.trim().toLowerCase();
-    const types = typeFilterCheckboxes.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value);
-    const filtered = rankings.filter((entry) => matchesFilters(entry, search, types));
+    const filtered = rankings.filter((entry) => matchesFilters(entry, search));
     renderTable(filtered);
 }
 
 function recompute() {
     itemsById = rawData.items || {};
-    const result = buildRanking(rawData, getLocale(), { excludeExchangeShops: !includeExchangeShopsCheckbox.checked });
+    const result = buildRanking(rawData, getLocale(), {
+        excludeExchangeShops: !includeExchangeShopsCheckbox.checked,
+        excludeItemIds: getExcludeItemIds(),
+    });
     rankings = result.rankings || [];
     const meta = result.metadata || {};
     const generatedAt = meta.generated_at ? new Date(meta.generated_at).toLocaleString(getLocale()) : '';
@@ -159,8 +179,10 @@ async function init() {
     recompute();
 
     searchInput.addEventListener('input', applyFilters);
-    typeFilterCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', applyFilters));
     includeExchangeShopsCheckbox.addEventListener('change', recompute);
+    [excludeDiamondsCheckbox, excludeVipPointsCheckbox, excludeAllianceChestsCheckbox].forEach((checkbox) =>
+        checkbox.addEventListener('change', recompute),
+    );
 
     window.addEventListener('localechange', () => {
         applyStaticTranslations();

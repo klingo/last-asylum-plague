@@ -18,19 +18,19 @@
                         <input id="search-input" type="search" data-i18n-placeholder="rankings.searchPlaceholder" />
                     </div>
                     <div class="field">
-                        <span class="field-label" data-i18n="rankings.typeLabel"></span>
-                        <div class="checkbox-group" id="type-filter-group">
+                        <span class="field-label" data-i18n="rankings.excludeItemsLabel"></span>
+                        <div class="checkbox-group" id="exclude-items-group">
                             <label class="checkbox-label">
-                                <input type="checkbox" value="package" checked />
-                                <span data-i18n="sourceType.package"></span>
+                                <input type="checkbox" id="exclude-diamonds" />
+                                <span data-i18n="rankings.excludeDiamonds"></span>
                             </label>
                             <label class="checkbox-label">
-                                <input type="checkbox" value="exchange_offer" checked />
-                                <span data-i18n="sourceType.exchange_offer"></span>
+                                <input type="checkbox" id="exclude-vip-points" checked />
+                                <span data-i18n="rankings.excludeVipPoints"></span>
                             </label>
                             <label class="checkbox-label">
-                                <input type="checkbox" value="bonus_tier" checked />
-                                <span data-i18n="sourceType.bonus_tier"></span>
+                                <input type="checkbox" id="exclude-alliance-chests" checked />
+                                <span data-i18n="rankings.excludeAllianceChests"></span>
                             </label>
                         </div>
                     </div>
