@@ -1083,6 +1083,58 @@
             },
             "category": "Special"
         },
+        "ur_adventure_chest": {
+            "name": {
+                "en": "UR Adventure Chest",
+                "de": ""
+            },
+            "category": "Special",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "red_amber_amulet": 1
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "ur_hero_omni_shard": 2
+                    },
+                    "probability": 0.015
+                },
+                {
+                    "contains": {
+                        "ur_hero_omni_shard": 1
+                    },
+                    "probability": 0.03
+                },
+                {
+                    "contains": {
+                        "resource_supply_ur": 1
+                    },
+                    "probability": 0.2
+                },
+                {
+                    "contains": {
+                        "stamina": 50
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "speedup": 25
+                    },
+                    "probability": 0.35
+                },
+                {
+                    "contains": {
+                        "gearstone": 50
+                    },
+                    "probability": 0.285
+                }
+            ]
+        },
         "ur_armor": {
             "name": {
                 "en": "UR Armor",
