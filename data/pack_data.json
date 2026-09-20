@@ -1832,6 +1832,21 @@
                 }
             }
         },
+        "era_of_revival_raven_essence_weekly_pass": {
+            "name": {
+                "en": "Era of Revival - Raven Essence Weekly Pass",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "limit_type": "weekly",
+            "purchase_limit": null,
+            "price": 499,
+            "deal_percentage": 6020,
+            "contains": {
+                "diamonds": 500,
+                "raven_essence": 105
+            }
+        },
         "exclusive_weapon": {
             "name": {
                 "en": "Exclusive Weapon",
@@ -2916,6 +2931,70 @@
                 }
             }
         },
+        "weekly_grain_pass": {
+            "name": {
+                "en": "Weekly Grain Pass",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "limit_type": "weekly",
+            "purchase_limit": null,
+            "price": 499,
+            "deal_percentage": 3430,
+            "contains": {
+                "diamonds": 500,
+                "grain_level_supply_ur": 21
+            }
+        },
+        "weekly_herb_pass": {
+            "name": {
+                "en": "Weekly Herb Pass",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "limit_type": "weekly",
+            "purchase_limit": null,
+            "price": 499,
+            "deal_percentage": 3430,
+            "contains": {
+                "diamonds": 500,
+                "herb_level_supply_ur": 21
+            }
+        },
+        "weekly_hero_exp_pass": {
+            "name": {
+                "en": "Weekly Hero EXP Pass",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "limit_type": "weekly",
+            "purchase_limit": null,
+            "price": 499,
+            "deal_percentage": 6850,
+            "contains": {
+                "diamonds": 500,
+                "antitoxin_level_supply_ur": 21
+            }
+        },
+        "weekly_pass": {
+            "name": {
+                "en": "Weekly Pass",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "limit_type": "weekly",
+            "purchase_limit": null,
+            "price": 1999,
+            "deal_percentage": 3510,
+            "contains": {
+                "diamonds": 2500,
+                "raven_essence": 105,
+                "antitoxin_level_supply_ur": 21,
+                "grain_level_supply_ur": 21,
+                "timber_level_supply_ur": 21,
+                "herb_level_supply_ur": 21
+            }
+        },
         "weekly_special": {
             "name": {
                 "en": "Jokers Weekly Special",
@@ -2983,6 +3062,21 @@
                         ]
                     }
                 }
+            }
+        },
+        "weekly_timber_pass": {
+            "name": {
+                "en": "Weekly Timber Pass",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "limit_type": "weekly",
+            "purchase_limit": null,
+            "price": 499,
+            "deal_percentage": 3430,
+            "contains": {
+                "diamonds": 500,
+                "timber_level_supply_ur": 21
             }
         }
     },

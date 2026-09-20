@@ -282,8 +282,9 @@
                     "minimum": 0
                 },
                 "purchase_limit": {
-                    "type": "integer",
-                    "minimum": 1
+                    "type": ["integer", "null"],
+                    "minimum": 1,
+                    "description": "null means no cap on purchase count (e.g. a repeatable weekly pass)."
                 },
                 "limit_type": {
                     "$ref": "#/definitions/limitType"
@@ -314,8 +315,9 @@
                     "minimum": 0
                 },
                 "purchase_limit": {
-                    "type": "integer",
-                    "minimum": 1
+                    "type": ["integer", "null"],
+                    "minimum": 1,
+                    "description": "null means no cap on purchase count (e.g. a repeatable weekly pass)."
                 },
                 "contains": {
                     "$ref": "#/definitions/itemQuantities"
