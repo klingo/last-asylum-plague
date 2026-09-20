@@ -67,4 +67,18 @@ function formatThousands(value, decimals) {
     return decPart ? `${sign}${groupedInt}.${decPart}` : `${sign}${groupedInt}`;
 }
 
-export { formatUnitPrice, formatUnitPriceColumn, formatThousands };
+/**
+ * For a list already sorted by rank (best first), flags every entry whose comparison `key`
+ * exactly matches the immediately preceding entry's — i.e. it's tied for the same rank and its
+ * rank number shouldn't be repeated on screen (competition ranking: 1, "", 3, not 1, 1, 3).
+ * `keys` are compared with `===`, so pass values already rounded/formatted to whatever
+ * precision is actually shown to the user (e.g. a rounded number or a formatted string) rather
+ * than raw floating-point results, which could differ by float noise despite looking identical.
+ * `null`/`undefined` keys (no comparable value at all, e.g. "N/A" rows) never tie with anything,
+ * including each other.
+ */
+function computeTieFlags(keys) {
+    return keys.map((key, index) => index > 0 && key !== null && key !== undefined && key === keys[index - 1]);
+}
+
+export { formatUnitPrice, formatUnitPriceColumn, formatThousands, computeTieFlags };

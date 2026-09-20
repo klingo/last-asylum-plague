@@ -5,7 +5,7 @@ import { createMarket, collectPackageSources, collectExchangeSources, packageDis
 import { createItemPicker } from './lib/item-picker';
 import { createMultiSelect } from './lib/multi-select';
 import { createItemImage, banknoteIconHtml } from './lib/images';
-import { formatUnitPriceColumn, formatThousands } from './lib/format';
+import { formatUnitPriceColumn, formatThousands, computeTieFlags } from './lib/format';
 import {
     t,
     getLocale,
@@ -180,9 +180,14 @@ function renderOptionsTable(rows, items, locale) {
     // Same shared-precision "/ Unit" column treatment as the Analyze page's Purchase Sources
     // table (see lib/format.js `formatUnitPriceColumn`).
     const perUnitDisplay = formatUnitPriceColumn(ordered.map((row) => row.unitCost));
+    // Competition ranking against the same displayed "/ Unit" value the table sorts by (see
+    // rankings.js for the equivalent on the Value Ranking page): ties share a rank, with every
+    // entry after the first in a tied run left blank instead of repeating the number.
+    const tieFlags = computeTieFlags(perUnitDisplay);
 
     const rowsHtml = ordered
         .map((row, index) => {
+            const rank = tieFlags[index] ? '' : index + 1;
             const item = items[row.itemId];
             const category = categoryLabel(item?.category);
             const priceCell = Number.isFinite(row.totalValue)
@@ -205,14 +210,15 @@ function renderOptionsTable(rows, items, locale) {
 
             return `
                 <tr>
+                    <td class="text-right table-col-rank">${rank}</td>
                     <td><span class="item-cell" data-item-id="${row.itemId}"></span></td>
                     <td>${typeCell}</td>
                     <td>${sourceCell}</td>
                     <td>${category}</td>
+                    <td>${daysCell}</td>
                     <td class="text-right">${priceCell}</td>
                     <td class="text-right">${formatThousands(row.qty)}</td>
                     <td class="text-right">${perUnitCell}</td>
-                    <td>${daysCell}</td>
                 </tr>
             `;
         })
@@ -221,14 +227,15 @@ function renderOptionsTable(rows, items, locale) {
     optionsTable.innerHTML = `
         <thead>
             <tr>
+                <th class="text-right table-col-rank">${t('rankings.table.rank')}</th>
                 <th>${t('choices.table.item')}</th>
                 <th>${t('analyze.table.type')}</th>
                 <th>${t('analyze.table.source')}</th>
                 <th>${t('analyze.table.category')}</th>
+                <th>${t('analyze.table.days')}</th>
                 <th class="text-right">${t('analyze.table.pricePerPurchase')}</th>
                 <th class="text-right">${t('analyze.table.yieldPerPurchase')}</th>
                 <th class="text-right">${t('analyze.table.perUnit', { icon: banknoteIconHtml() })}</th>
-                <th>${t('analyze.table.days')}</th>
             </tr>
         </thead>
         <tbody>${rowsHtml}</tbody>

@@ -94,11 +94,11 @@ function renderSourcesTable(sources) {
                     <td><span class="pill ${pillClass}">${typeLabel}</span></td>
                     <td>${source.name}${requiresIconHtml(source.requires, data?.packages || {}, data?.items || {}, getLocale())}</td>
                     <td>${categoryLabel(source.category)}</td>
+                    <td>${formatDays(source.availableDays)}</td>
                     <td class="text-right">${priceCell}</td>
                     <td class="text-right">${formatThousands(Number(source.yieldPerPurchase.toFixed(4)))}</td>
                     <td class="text-right">${pricePerUnitCell}</td>
                     <td class="text-right">${limitCell}</td>
-                    <td>${formatDays(source.availableDays)}</td>
                 </tr>
             `;
         })
@@ -110,11 +110,11 @@ function renderSourcesTable(sources) {
                 <th>${t('analyze.table.type')}</th>
                 <th>${t('analyze.table.source')}</th>
                 <th>${t('analyze.table.category')}</th>
+                <th>${t('analyze.table.days')}</th>
                 <th class="text-right">${t('analyze.table.pricePerPurchase')}</th>
                 <th class="text-right">${t('analyze.table.yieldPerPurchase')}</th>
                 <th class="text-right">${t('analyze.table.perUnit', { icon: banknoteIconHtml() })}</th>
                 <th class="text-right">${t('analyze.table.limitUnits')}</th>
-                <th>${t('analyze.table.days')}</th>
             </tr>
         </thead>
         <tbody>${rows}</tbody>

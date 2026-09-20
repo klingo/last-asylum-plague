@@ -470,6 +470,12 @@ tbody tr:hover {
     background: var(--panel-alt);
 }
 
+/* Keeps a "Rank" column as narrow as the Value Ranking page's fixed 50px grid track — plain
+   <table> auto-layout would otherwise let it balloon out with the table's other, wider columns. */
+.table-col-rank {
+    width: 50px;
+}
+
 .table-wrap {
     overflow-x: auto;
 }

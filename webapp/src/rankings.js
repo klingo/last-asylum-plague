@@ -6,7 +6,7 @@ import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
 import { requiresIconHtml } from './lib/requires-tooltip';
 import { t, getLocale, categoryLabel, sourceTypeLabel, applyStaticTranslations } from './lib/i18n';
-import { formatUnitPrice, formatThousands } from './lib/format';
+import { formatUnitPrice, formatThousands, computeTieFlags } from './lib/format';
 
 renderNav('rankings');
 applyStaticTranslations();
@@ -86,14 +86,21 @@ function renderTable(filtered) {
     }
     rankingEmpty.hidden = true;
 
+    // Competition ranking: entries tied on Value Ratio with the row directly above them (same
+    // rounded value, so a visible tie) show a blank rank instead of repeating the number — see
+    // `computeTieFlags`. `entry.rank` itself (used for data-rank/data-rank-details identity)
+    // always stays its true, unique global ordinal.
+    const tieFlags = computeTieFlags(filtered.map((entry) => entry.value_ratio));
+
     // Both the ranking rows and the nested "Details" breakdown below share the same
     // `.ranking-grid` column tracks (the breakdown uses `grid-template-columns: subgrid`), so
     // their columns always stay visually aligned instead of living in two separate tables.
     const rows = filtered
-        .map((entry) => {
+        .map((entry, index) => {
+            const rankLabel = tieFlags[index] ? '' : entry.rank;
             return `
                 <div class="ranking-grid__row" role="row" data-rank="${entry.rank}">
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.rank}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${rankLabel}</div>
                     <div class="ranking-grid__cell" role="cell">${entry.name}${requiresIconHtml(entry.requires, rawData?.packages || {}, itemsById, getLocale())}</div>
                     <div class="ranking-grid__cell" role="cell"><span class="pill pill--${entry.type}">${sourceTypeLabel(entry.type)}</span></div>
                     <div class="ranking-grid__cell" role="cell">${categoryLabel(entry.category)}</div>
