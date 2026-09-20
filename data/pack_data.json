@@ -3088,9 +3088,20 @@
                 }
             },
             "bonus_tiers": {
-                "50": {
-                    "stone_blade": 1,
-                    "dummy_entry": 1
+                "20": {
+                    "stone_blade": 20
+                },
+                "80": {
+                    "stone_blade": 40
+                },
+                "200": {
+                    "stone_blade": 100
+                },
+                "600": {
+                    "stone_blade": 300
+                },
+                "2000": {
+                    "gear_blueprint_mr": 10
                 }
             }
         },
