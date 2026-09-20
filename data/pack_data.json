@@ -469,6 +469,52 @@
             },
             "category": "Virtual"
         },
+        "mythic_era_reward": {
+            "name": {
+                "en": "Mythic Era Reward",
+                "de": ""
+            },
+            "category": "Special",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "awaken_shard_choice_chest": 1
+                    },
+                    "probability": 0.18
+                },
+                {
+                    "contains": {
+                        "awaken_shard_choice_chest": 2
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "awaken_shard_choice_chest": 5
+                    },
+                    "probability": 0.015
+                },
+                {
+                    "contains": {
+                        "awaken_shard_choice_chest": 10
+                    },
+                    "probability": 0.005
+                },
+                {
+                    "contains": {
+                        "skill_badge": 1250
+                    },
+                    "probability": 0.375
+                },
+                {
+                    "contains": {
+                        "gearstone": 1050
+                    },
+                    "probability": 0.375
+                }
+            ]
+        },
         "r_epigraph": {
             "name": {
                 "en": "R Epigraph",
