@@ -70,12 +70,22 @@ function marketExcludingBonusTier(packages, exchangeShops, items, locale, exclud
 /**
  * Values a flat `{itemId: qty}` map against `price`, pricing each item via `excludingMarket`
  * (see module header). See module header for the exclusive-item residual-split rule.
+ *
+ * Any item in `excludeItemIds` is still priced (informationally) and still gets its own
+ * breakdown row, but always contributes 0 to `total` and never enters the exclusive-item
+ * residual split — it's a deliberate opt-out from the value calculation, not a missing price,
+ * so it doesn't affect `complete` either.
  */
-function valueOfBundle(contentsMap, price, excludingMarket, items, locale) {
+function valueOfBundle(contentsMap, price, excludingMarket, items, locale, excludeItemIds) {
     const resolvable = [];
     const exclusive = [];
+    const excluded = [];
 
     for (const [itemId, qty] of contentsMap) {
+        if (excludeItemIds?.has(itemId)) {
+            excluded.push({ itemId, qty });
+            continue;
+        }
         const unitCost = getUnitCost(excludingMarket, itemId);
         if (unitCost === null) {
             exclusive.push({ itemId, qty });
@@ -115,6 +125,18 @@ function valueOfBundle(contentsMap, price, excludingMarket, items, locale) {
         }
     }
 
+    for (const { itemId, qty } of excluded) {
+        const unitCost = getUnitCost(excludingMarket, itemId);
+        breakdown.push({
+            item_id: itemId,
+            name: localizedName(items[itemId]?.name, locale) || itemId,
+            quantity: qty,
+            unit_cost: unitCost,
+            value: 0,
+            known: true,
+        });
+    }
+
     return { total, complete: exclusive.length === 0, breakdown };
 }
 
@@ -149,23 +171,6 @@ function mergedContentsOf(pkg, excludingMarket) {
     return merged;
 }
 
-// Drops any `excludeItemIds` entries from a contents map before it reaches `valueOfBundle`,
-// so those items neither contribute to the bundle's total value nor soak up any of the
-// unknown-item residual split (see module header). An empty map after filtering means the
-// bundle has nothing left to rank.
-function withoutExcludedItems(contentsMap, excludeItemIds) {
-    if (!excludeItemIds || excludeItemIds.size === 0) {
-        return contentsMap;
-    }
-    const filtered = new Map();
-    for (const [itemId, qty] of contentsMap) {
-        if (!excludeItemIds.has(itemId)) {
-            filtered.set(itemId, qty);
-        }
-    }
-    return filtered;
-}
-
 function rankPackages(packages, exchangeShops, items, locale, excludeItemIds) {
     const rankings = [];
 
@@ -176,11 +181,15 @@ function rankPackages(packages, exchangeShops, items, locale, excludeItemIds) {
         }
 
         const excludingMarket = marketExcludingPackage(packages, exchangeShops, items, locale, pkgId);
-        const merged = withoutExcludedItems(mergedContentsOf(pkg, excludingMarket), excludeItemIds);
-        if (merged.size === 0) {
-            continue;
-        }
-        const { total, complete, breakdown } = valueOfBundle(merged, price, excludingMarket, items, locale);
+        const merged = mergedContentsOf(pkg, excludingMarket);
+        const { total, complete, breakdown } = valueOfBundle(
+            merged,
+            price,
+            excludingMarket,
+            items,
+            locale,
+            excludeItemIds,
+        );
 
         rankings.push({
             type: 'package',
@@ -214,14 +223,12 @@ function rankExchangeOffers(exchangeShops, market, items, locale, excludeItemIds
 
         for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
             const offerItemId = offer.item_id || offerKey;
-            if (excludeItemIds?.has(offerItemId)) {
-                continue;
-            }
+            const isExcluded = excludeItemIds?.has(offerItemId) ?? false;
             // No self-exclusion here: an offer only ever hands over one declared item type, so
             // there's no bundling ambiguity to game — see module header.
             const unitCost = getUnitCost(market, offerItemId);
 
-            const totalValue = offer.quantity * (unitCost ?? 0);
+            const totalValue = isExcluded ? 0 : offer.quantity * (unitCost ?? 0);
             const price = offer.currency_cost * (currencyUnitCost ?? NaN);
             if (!Number.isFinite(price) || price <= 0) {
                 continue;
@@ -247,15 +254,15 @@ function rankExchangeOffers(exchangeShops, market, items, locale, excludeItemIds
                 limit_type: offer.limit_type,
                 available_days: null,
                 requires: null,
-                value_complete: unitCost !== null && currencyUnitCost !== null,
+                value_complete: (isExcluded || unitCost !== null) && currencyUnitCost !== null,
                 contains_breakdown: [
                     {
                         item_id: offerItemId,
                         name: localizedName(items[offerItemId]?.name, locale) || offerItemId,
                         quantity: offer.quantity,
                         unit_cost: unitCost,
-                        value: unitCost !== null ? Number(totalValue.toFixed(6)) : 0,
-                        known: unitCost !== null,
+                        value: isExcluded ? 0 : unitCost !== null ? Number(totalValue.toFixed(6)) : 0,
+                        known: isExcluded || unitCost !== null,
                     },
                 ],
             });
@@ -282,11 +289,6 @@ function rankBonusTiers(packages, exchangeShops, market, items, locale, excludeI
                 continue;
             }
 
-            const filteredContains = withoutExcludedItems(new Map(Object.entries(contains)), excludeItemIds);
-            if (filteredContains.size === 0) {
-                continue;
-            }
-
             const excludingMarket = marketExcludingBonusTier(
                 packages,
                 exchangeShops,
@@ -296,11 +298,12 @@ function rankBonusTiers(packages, exchangeShops, market, items, locale, excludeI
                 thresholdStr,
             );
             const { total, complete, breakdown } = valueOfBundle(
-                filteredContains,
+                new Map(Object.entries(contains)),
                 price,
                 excludingMarket,
                 items,
                 locale,
+                excludeItemIds,
             );
 
             const currencyName = localizedName(items[shop.currency_item_id]?.name, locale) || shop.currency_item_id;
@@ -342,11 +345,13 @@ function rankBonusTiers(packages, exchangeShops, market, items, locale, excludeI
  * shop-based — are left out of the rankings altogether rather than kept around with a
  * now-pointless price.
  *
- * `options.excludeItemIds`, when given, drops those item ids from every bundle's value/ratio
- * computation (see `withoutExcludedItems`) — e.g. near-universal filler currencies that would
- * otherwise pad every package's value regardless of its actual unique rewards. The market
- * itself is unaffected, so these items are still priced normally wherever something else needs
- * their cost (e.g. as a bundle's own excluded content elsewhere, or a shop's currency).
+ * `options.excludeItemIds`, when given, zeroes out those item ids' contribution to every
+ * bundle's value/ratio computation (see `valueOfBundle`) — e.g. near-universal filler
+ * currencies that would otherwise pad every package's value regardless of its actual unique
+ * rewards. They still get their own `contains_breakdown` row (with `value: 0`, so the item
+ * stays visible rather than silently vanishing from the breakdown) and are still priced
+ * informationally wherever something else needs their cost (e.g. a shop's currency); only their
+ * contribution to the bundle's own total is suppressed.
  */
 function buildRanking(data, locale = 'en', options = {}) {
     const { excludeExchangeShops = false, excludeItemIds = null } = options;

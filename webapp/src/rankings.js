@@ -25,6 +25,18 @@ const ALLIANCE_CHEST_PATTERN = /^lv\d+_alliance_chest$/;
 let rawData = null;
 let rankings = [];
 let itemsById = {};
+// Entry keys (see `entryKey`) whose "Details" row is currently expanded, so a re-render
+// triggered by something that doesn't change WHICH entries exist (search, an exclude-item
+// checkbox) can restore the same rows open instead of collapsing everything. Deliberately not
+// keyed by `entry.rank`: excluding an item changes value_ratio and can reorder the whole list,
+// so the entry that was open could end up at a different rank after recompute. Cleared
+// explicitly wherever the entry list itself can change (see includeExchangeShopsCheckbox's
+// listener).
+const expandedEntryKeys = new Set();
+
+function entryKey(entry) {
+    return `${entry.type}:${entry.id}`;
+}
 
 function matchesFilters(entry, search) {
     if (!search) {
@@ -88,8 +100,8 @@ function renderTable(filtered) {
 
     // Competition ranking: entries tied on Value Ratio with the row directly above them (same
     // rounded value, so a visible tie) show a blank rank instead of repeating the number — see
-    // `computeTieFlags`. `entry.rank` itself (used for data-rank/data-rank-details identity)
-    // always stays its true, unique global ordinal.
+    // `computeTieFlags`. `entry.rank` is purely the displayed number here; row identity for
+    // expand/collapse state uses the stable `entryKey`, not the (recompute-reorderable) rank.
     const tieFlags = computeTieFlags(filtered.map((entry) => entry.value_ratio));
 
     // Both the ranking rows and the nested "Details" breakdown below share the same
@@ -98,8 +110,9 @@ function renderTable(filtered) {
     const rows = filtered
         .map((entry, index) => {
             const rankLabel = tieFlags[index] ? '' : entry.rank;
+            const key = entryKey(entry);
             return `
-                <div class="ranking-grid__row" role="row" data-rank="${entry.rank}">
+                <div class="ranking-grid__row" role="row" data-entry-key="${key}">
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${rankLabel}</div>
                     <div class="ranking-grid__cell" role="cell">${entry.name}${requiresIconHtml(entry.requires, rawData?.packages || {}, itemsById, getLocale())}</div>
                     <div class="ranking-grid__cell" role="cell"><span class="pill pill--${entry.type}">${sourceTypeLabel(entry.type)}</span></div>
@@ -108,9 +121,9 @@ function renderTable(filtered) {
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(entry.total_value, 2)}</span> ${banknoteIconHtml()}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${formatThousands(entry.value_ratio, 4)}</div>
                     <div class="ranking-grid__cell" role="cell">${entry.value_complete ? `<span class="text-good">${t('common.yes')}</span>` : `<span class="text-bad">${t('common.no')}</span>`}</div>
-                    <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-rank="${entry.rank}">${t('common.details')}</button></div>
+                    <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-entry-key="${key}">${t('common.details')}</button></div>
                 </div>
-                <div class="ranking-grid__details" data-rank-details="${entry.rank}" hidden>
+                <div class="ranking-grid__details" data-entry-key-details="${key}" hidden>
                     <div class="ranking-grid__row">
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header">${t('rankings.table.item')}</div>
@@ -153,12 +166,29 @@ function renderTable(filtered) {
 
     rankingTable.querySelectorAll('.expand-toggle').forEach((button) => {
         button.addEventListener('click', () => {
-            const rank = button.getAttribute('data-rank');
-            const detailsSection = rankingTable.querySelector(`[data-rank-details="${rank}"]`);
+            const key = button.getAttribute('data-entry-key');
+            const detailsSection = rankingTable.querySelector(`[data-entry-key-details="${key}"]`);
             const isHidden = detailsSection.hidden;
             detailsSection.hidden = !isHidden;
             button.textContent = isHidden ? t('common.hide') : t('common.details');
+            if (isHidden) {
+                expandedEntryKeys.add(key);
+            } else {
+                expandedEntryKeys.delete(key);
+            }
         });
+    });
+
+    // Re-open whatever was expanded before this render, for entries still present now (e.g.
+    // still matching the search, or simply the same entry re-rendered with new value numbers).
+    expandedEntryKeys.forEach((key) => {
+        const detailsSection = rankingTable.querySelector(`[data-entry-key-details="${key}"]`);
+        const button = rankingTable.querySelector(`.expand-toggle[data-entry-key="${key}"]`);
+        if (!detailsSection || !button) {
+            return;
+        }
+        detailsSection.hidden = false;
+        button.textContent = t('common.hide');
     });
 }
 
@@ -186,7 +216,13 @@ async function init() {
     recompute();
 
     searchInput.addEventListener('input', applyFilters);
-    includeExchangeShopsCheckbox.addEventListener('change', recompute);
+    includeExchangeShopsCheckbox.addEventListener('change', () => {
+        // The entry list itself can change (exchange offers/bonus tiers appearing or
+        // disappearing entirely), so any previously expanded rows may no longer correspond to
+        // the same entry — collapse instead of risking a stale/misleading open row.
+        expandedEntryKeys.clear();
+        recompute();
+    });
     [excludeDiamondsCheckbox, excludeVipPointsCheckbox, excludeAllianceChestsCheckbox].forEach((checkbox) =>
         checkbox.addEventListener('change', recompute),
     );
