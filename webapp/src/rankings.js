@@ -19,6 +19,7 @@ const excludeAllianceChestsCheckbox = document.getElementById('exclude-alliance-
 const rankingMeta = document.getElementById('ranking-meta');
 const rankingTable = document.getElementById('ranking-table');
 const rankingEmpty = document.getElementById('ranking-empty');
+const loadingOverlay = document.getElementById('loading-overlay');
 
 const ALLIANCE_CHEST_PATTERN = /^lv\d+_alliance_chest$/;
 
@@ -198,6 +199,23 @@ function applyFilters() {
     renderTable(filtered);
 }
 
+// Bundle-aware pricing (see lib/ranking-core.js) can take a noticeable moment to recompute, so
+// any change that triggers it shows a blocking overlay first. `recompute()` itself is
+// synchronous, so simply toggling the overlay around a direct call would never actually get
+// painted — the browser wouldn't get a chance to render before the heavy computation blocked
+// the main thread. Deferring the computation one tick (setTimeout 0) lets the overlay's
+// `hidden = false` reach the screen first.
+function withLoadingOverlay(fn) {
+    loadingOverlay.hidden = false;
+    setTimeout(() => {
+        try {
+            fn();
+        } finally {
+            loadingOverlay.hidden = true;
+        }
+    }, 0);
+}
+
 function recompute() {
     itemsById = rawData.items || {};
     const result = buildRanking(rawData, getLocale(), {
@@ -213,7 +231,7 @@ function recompute() {
 
 async function init() {
     rawData = await loadPackData();
-    recompute();
+    withLoadingOverlay(recompute);
 
     searchInput.addEventListener('input', applyFilters);
     includeExchangeShopsCheckbox.addEventListener('change', () => {
@@ -221,15 +239,15 @@ async function init() {
         // disappearing entirely), so any previously expanded rows may no longer correspond to
         // the same entry — collapse instead of risking a stale/misleading open row.
         expandedEntryKeys.clear();
-        recompute();
+        withLoadingOverlay(recompute);
     });
     [excludeDiamondsCheckbox, excludeVipPointsCheckbox, excludeAllianceChestsCheckbox].forEach((checkbox) =>
-        checkbox.addEventListener('change', recompute),
+        checkbox.addEventListener('change', () => withLoadingOverlay(recompute)),
     );
 
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
-        recompute();
+        withLoadingOverlay(recompute);
     });
 }
 

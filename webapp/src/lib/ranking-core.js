@@ -171,7 +171,248 @@ function mergedContentsOf(pkg, excludingMarket) {
     return merged;
 }
 
-function rankPackages(packages, exchangeShops, items, locale, excludeItemIds) {
+// ---- Bundle-aware ("fair") pricing ---------------------------------------------------------
+// This is how the Value Ranking page prices every package/bonus-tier's own contents — a
+// self-contained algorithm, local to this file, that never touches pricing-core.js's
+// `createMarket`/`peekUnitCost` (reused here unchanged only as an input — see `naiveMarket`
+// below), so Analyze/Purchase Plan/Choices are entirely unaffected by it.
+//
+// The problem: `peekUnitCost` prices an item as `min(package.price / thatItem'sYieldFromPackage)`
+// across every package yielding it — i.e. it credits a package's ENTIRE price to a single item
+// it hands over, ignoring everything else that same purchase also gives you. That's a fine
+// approximation for a package that's essentially "one item + filler," but badly over-prices a
+// genuine multi-item bundle whenever it's used as a comparison source for pricing just ONE of
+// its own components: e.g. a 1999-Banknote pass bundling 6 different rewards makes each of
+// those rewards look like it alone costs up to 1999, wildly inflating the computed value of any
+// narrower single-item package selling one of the same rewards.
+//
+// The fix: apportion each bundle's price across everything it hands over, crediting an item
+// only with the LEFTOVER price after paying for the bundle's other contents at THEIR own
+// already-settled rate — the same "residual" principle `valueOfBundle` already uses for items
+// with no other source at all, generalized here into the market-pricing step itself.
+//
+// Doing this correctly requires an item to only ever be priced via a bundle once every OTHER
+// item that bundle also yields already has a final, settled price — otherwise the residual is
+// just a guess that could later turn out to have been computed from incomplete information,
+// with no way to retract it (an earlier iterative-refinement version of this function had
+// exactly that bug: an early low-quality estimate could never be un-set once something better
+// was learned later). So this resolves items with a Dijkstra-style greedy solve: repeatedly
+// settle whichever not-yet-settled item currently has the cheapest available candidate price,
+// where a bundle only OFFERS a candidate for its one remaining unsettled item once every other
+// item it contains has already been settled. Every settlement is therefore final the moment
+// it's made (same optimality argument as Dijkstra's shortest path: every not-yet-settled
+// candidate is bounded below by the current settlement frontier, so nothing settled so far can
+// ever be undercut later) — one pass, no iteration count or processing order to reason about.
+//
+// A bundle whose OTHER contents, at their settled rate, already account for its entire price
+// contributes NO usable candidate for whatever's left (a non-positive residual isn't "free," it
+// just means this bundle is uninformative about that item's price) — so that item simply stays
+// unsettled unless some OTHER bundle prices it fairly, which then correctly falls through to
+// `valueOfBundle`'s existing "exclusive item" residual-split when it's later valued.
+//
+// Only "pure" bundles participate as pricing sources: exchange offers (always exactly one
+// declared item type per offer) and `contains`-only packages/bonus tiers. Packages with a
+// `choice` block are deliberately excluded from being a pricing SOURCE for other items — which
+// option(s) they'd yield depends on prices that are themselves still being solved for, a
+// circularity not worth taking on for the small fraction of packages that use `choice`; they're
+// still valued normally (via `mergedContentsOf`/`valueOfBundle`) against whatever this
+// produces, same as any other package.
+
+// Wraps a plain `{itemId: price}` Map as a minimal market-like object, so the existing
+// `getUnitCost`/`mergedContentsOf` helpers can consume a fair-price snapshot exactly like a
+// real `createMarket()` market, without needing a second, parallel set of helpers.
+function priceMapAsMarket(priceMap) {
+    return {
+        peekUnitCost: (itemId) => {
+            const v = priceMap.get(itemId);
+            return Number.isFinite(v) ? v : NaN;
+        },
+    };
+}
+
+/**
+ * Computes a bundle-aware "fair" per-item price snapshot via the Dijkstra-style solve described
+ * above. `exclude` (optional `{ packageId }` or `{ shopId, thresholdStr }`) drops one specific
+ * bundle from participating at all, mirroring `marketExcludingPackage`/`marketExcludingBonusTier`'s
+ * self-reference guard: a bundle is never allowed to count as evidence for its own worth. Pass
+ * `null` for a shared, nothing-excluded snapshot (e.g. for exchange offers, which never
+ * self-reference anything).
+ */
+function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = null) {
+    // Same self-exclusion as the naive algorithm; used both for exchange-offer currency
+    // conversion below AND as the naive-price fallback for anything the strict Dijkstra solve
+    // below can never fire a candidate for (see the fallback loop at the end of this function).
+    const naiveMarket = exclude?.packageId
+        ? marketExcludingPackage(packages, exchangeShops, items, locale, exclude.packageId)
+        : exclude?.shopId
+          ? marketExcludingBonusTier(packages, exchangeShops, items, locale, exclude.shopId, exclude.thresholdStr)
+          : createMarket(packages, exchangeShops, items, {}, {}, locale);
+
+    // Every candidate bundle this solve can draw on: `{ price, contents: Map<itemId, qty> }`.
+    const bundles = [];
+
+    for (const [pkgId, pkg] of Object.entries(packages)) {
+        if (exclude?.packageId === pkgId || pkg.choice || !pkg.contains) {
+            continue;
+        }
+        if (!Number.isFinite(pkg.price) || pkg.price <= 0) {
+            continue;
+        }
+        bundles.push({ price: pkg.price, contents: new Map(Object.entries(pkg.contains)) });
+    }
+
+    for (const [shopId, shop] of Object.entries(exchangeShops)) {
+        const currencyUnitCost = naiveMarket.peekUnitCost(shop.currency_item_id);
+        if (!Number.isFinite(currencyUnitCost)) {
+            continue;
+        }
+
+        for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
+            const offerItemId = offer.item_id || offerKey;
+            const offerPrice = offer.currency_cost * currencyUnitCost;
+            if (!Number.isFinite(offerPrice) || offerPrice <= 0 || !(offer.quantity > 0)) {
+                continue;
+            }
+            bundles.push({ price: offerPrice, contents: new Map([[offerItemId, offer.quantity]]) });
+        }
+
+        for (const [thresholdStr, contains] of Object.entries(shop.bonus_tiers || {})) {
+            if (exclude?.shopId === shopId && exclude.thresholdStr === thresholdStr) {
+                continue;
+            }
+            const bundlePrice = Number(thresholdStr) * currencyUnitCost;
+            if (!Number.isFinite(bundlePrice) || bundlePrice <= 0) {
+                continue;
+            }
+            bundles.push({ price: bundlePrice, contents: new Map(Object.entries(contains)) });
+        }
+    }
+
+    // Every bundle a given item participates in, for both firing decisions (see
+    // `exhaustGenuineSettlements`) and the fallback-priority ordering below.
+    const bundleIndexesByItem = new Map();
+    for (let i = 0; i < bundles.length; i++) {
+        for (const itemId of bundles[i].contents.keys()) {
+            if (!bundleIndexesByItem.has(itemId)) {
+                bundleIndexesByItem.set(itemId, []);
+            }
+            bundleIndexesByItem.get(itemId).push(i);
+        }
+    }
+
+    const settled = new Map();
+
+    // Items some bundle actually got to make a residual determination for at some point,
+    // whether or not that residual was positive — see the fallback loop below. Once fully
+    // interleaved with the fallback fills (see below), a rejection recorded here reflects a
+    // determination made against fully-settled sibling prices, not a premature one — that's
+    // what distinguishes "every real source for this item turned out uninformative" (a
+    // deliberate finding: don't paper over it with the naive price, that's the exact distortion
+    // this whole algorithm exists to fix) from "nothing has priced this at all yet."
+    const attempted = new Set();
+
+    // Runs the strict Dijkstra solve — using ONLY genuine, bundle-derived candidates, never the
+    // naive fallback below — to full exhaustion against the CURRENT `settled` snapshot. A
+    // bundle offers a candidate for its one remaining unsettled item once every OTHER item it
+    // contains is settled; a non-positive residual means that bundle is uninformative for that
+    // item (not "free" — see module header) and simply offers nothing. Safe to call repeatedly
+    // as `settled` grows (e.g. after a single naive fallback fill below): recomputes pending
+    // counts from scratch each time rather than relying on incremental bookkeeping, so there's
+    // no risk of missing a bundle that only became fireable because of a just-added price.
+    function exhaustGenuineSettlements() {
+        let progress = true;
+        while (progress) {
+            progress = false;
+            const frontier = new Map();
+
+            for (const { price: bundlePrice, contents } of bundles) {
+                let otherValue = 0;
+                let remainingItemId = null;
+                let remainingQty = 0;
+                let unsettledCount = 0;
+                for (const [itemId, qty] of contents) {
+                    if (settled.has(itemId)) {
+                        otherValue += qty * settled.get(itemId);
+                    } else {
+                        unsettledCount++;
+                        remainingItemId = itemId;
+                        remainingQty = qty;
+                    }
+                }
+                if (unsettledCount !== 1 || remainingQty <= 0) {
+                    continue;
+                }
+                attempted.add(remainingItemId);
+                const residual = bundlePrice - otherValue;
+                if (residual > 0) {
+                    const candidate = residual / remainingQty;
+                    if (candidate < (frontier.get(remainingItemId) ?? Infinity)) {
+                        frontier.set(remainingItemId, candidate);
+                    }
+                }
+            }
+
+            while (frontier.size > 0) {
+                let bestItemId = null;
+                let bestPrice = Infinity;
+                for (const [itemId, candidatePrice] of frontier) {
+                    if (candidatePrice < bestPrice) {
+                        bestPrice = candidatePrice;
+                        bestItemId = itemId;
+                    }
+                }
+                frontier.delete(bestItemId);
+                settled.set(bestItemId, bestPrice);
+                progress = true;
+            }
+        }
+    }
+
+    exhaustGenuineSettlements();
+
+    // Anything still unsettled here is permanently stuck: no bundle containing it can EVER
+    // reach "exactly one unsettled item" without outside help, because at least one of its
+    // bundle-mates is ALSO stuck (this dataset leans heavily on multi-item bundles with no
+    // clean single-item anchor even for near-universal items like diamonds, so that's common,
+    // not a rare edge case). Left alone, this is what made every package containing such an
+    // item show value_ratio 1.0000 — `valueOfBundle`'s residual-split swallows the bundle's
+    // ENTIRE price the moment even one content item has no price at all.
+    //
+    // Break the deadlock one item at a time, filling in its naive per-item price (same
+    // self-exclusion as the naive algorithm) purely to unblock bundles waiting on it — then
+    // re-running the exhaustive solve before touching anything else, so any bundle that can
+    // NOW make a genuine, correctly-informed determination (including a legitimate rejection)
+    // gets to do so before a less-central item's naive fallback would otherwise preempt it.
+    // Processing in descending bundle-membership order tackles the most-blocking items
+    // (diamonds, VIP points, alliance chests, ...) first, which is what lets e.g. a combined
+    // pass's individual-item siblings settle genuinely off of a fallback-priced "diamonds"
+    // instead of the combined pass itself ever needing a naive fallback of its own.
+    const stuckByConnectivity = [...bundleIndexesByItem.keys()]
+        .filter((itemId) => !settled.has(itemId))
+        .sort((a, b) => bundleIndexesByItem.get(b).length - bundleIndexesByItem.get(a).length);
+
+    for (const itemId of stuckByConnectivity) {
+        if (settled.has(itemId)) {
+            continue; // resolved genuinely as a side effect of an earlier fallback fill's ripple
+        }
+        if (attempted.has(itemId)) {
+            // Some bundle already made a genuine (fully-informed, since it only just became
+            // fireable through the fallback fills processed so far) rejection for this item —
+            // respect it rather than silently overriding with the naive price.
+            continue;
+        }
+        const naive = naiveMarket.peekUnitCost(itemId);
+        if (!Number.isFinite(naive)) {
+            continue;
+        }
+        settled.set(itemId, naive);
+        exhaustGenuineSettlements();
+    }
+
+    return settled;
+}
+
+function rankPackages(packages, fairPricingExchangeShops, items, locale, excludeItemIds) {
     const rankings = [];
 
     for (const [pkgId, pkg] of Object.entries(packages)) {
@@ -180,7 +421,9 @@ function rankPackages(packages, exchangeShops, items, locale, excludeItemIds) {
             continue;
         }
 
-        const excludingMarket = marketExcludingPackage(packages, exchangeShops, items, locale, pkgId);
+        const excludingMarket = priceMapAsMarket(
+            buildFairPriceMap(packages, fairPricingExchangeShops, items, locale, { packageId: pkgId }),
+        );
         const merged = mergedContentsOf(pkg, excludingMarket);
         const { total, complete, breakdown } = valueOfBundle(
             merged,
@@ -215,11 +458,11 @@ function rankPackages(packages, exchangeShops, items, locale, excludeItemIds) {
     return rankings;
 }
 
-function rankExchangeOffers(exchangeShops, market, items, locale, excludeItemIds) {
+function rankExchangeOffers(exchangeShops, market, currencyMarket, items, locale, excludeItemIds) {
     const rankings = [];
 
     for (const [shopId, shop] of Object.entries(exchangeShops)) {
-        const currencyUnitCost = getUnitCost(market, shop.currency_item_id);
+        const currencyUnitCost = getUnitCost(currencyMarket, shop.currency_item_id);
 
         for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
             const offerItemId = offer.item_id || offerKey;
@@ -272,11 +515,19 @@ function rankExchangeOffers(exchangeShops, market, items, locale, excludeItemIds
     return rankings;
 }
 
-function rankBonusTiers(packages, exchangeShops, market, items, locale, excludeItemIds) {
+function rankBonusTiers(
+    packages,
+    exchangeShops,
+    fairPricingExchangeShops,
+    currencyMarket,
+    items,
+    locale,
+    excludeItemIds,
+) {
     const rankings = [];
 
     for (const [shopId, shop] of Object.entries(exchangeShops)) {
-        const currencyUnitCost = getUnitCost(market, shop.currency_item_id);
+        const currencyUnitCost = getUnitCost(currencyMarket, shop.currency_item_id);
 
         for (const [thresholdStr, contains] of Object.entries(shop.bonus_tiers || {})) {
             const threshold = Number(thresholdStr);
@@ -289,13 +540,8 @@ function rankBonusTiers(packages, exchangeShops, market, items, locale, excludeI
                 continue;
             }
 
-            const excludingMarket = marketExcludingBonusTier(
-                packages,
-                exchangeShops,
-                items,
-                locale,
-                shopId,
-                thresholdStr,
+            const excludingMarket = priceMapAsMarket(
+                buildFairPriceMap(packages, fairPricingExchangeShops, items, locale, { shopId, thresholdStr }),
             );
             const { total, complete, breakdown } = valueOfBundle(
                 new Map(Object.entries(contains)),
@@ -352,18 +598,44 @@ function rankBonusTiers(packages, exchangeShops, market, items, locale, excludeI
  * stays visible rather than silently vanishing from the breakdown) and are still priced
  * informationally wherever something else needs their cost (e.g. a shop's currency); only their
  * contribution to the bundle's own total is suppressed.
+ *
+ * Every package/bonus-tier's own contents are priced via `buildFairPriceMap` (see that
+ * function's header), not pricing-core.js's naive per-item market. That solve always draws on
+ * the FULL exchange-shop data as pricing evidence regardless of `excludeExchangeShops`, even
+ * though excluded shops' own offers/bonus tiers still won't appear as their own ranked rows —
+ * unlike a naive per-item market (which always finds SOME package-only price for nearly
+ * anything), the fair solve needs a bundle's every OTHER item to be fully settled before it can
+ * price the last one, so a sparser graph with exchange shops removed leaves most items unable
+ * to settle at all; since ANY unsettled item in a bundle makes `valueOfBundle`'s residual-split
+ * force that bundle's total to exactly equal its price, a sparser graph would otherwise turn
+ * into every single package showing value_ratio 1.0000.
  */
 function buildRanking(data, locale = 'en', options = {}) {
     const { excludeExchangeShops = false, excludeItemIds = null } = options;
     const items = data.items || {};
     const packages = data.packages || {};
     const exchangeShops = excludeExchangeShops ? {} : data.exchange_shops || {};
-    const market = createMarket(packages, exchangeShops, items, {}, {}, locale);
+    const fairPricingExchangeShops = data.exchange_shops || {};
+    // Shop currencies are always converted via the plain (naive) market — a currency that's
+    // itself only sold as part of a multi-item bundle can otherwise fail to settle under the
+    // stricter fair-pricing solve (see `buildFairPriceMap`'s header), which would wipe out every
+    // offer/bonus tier priced in that currency rather than just making their VALUE fair. Only
+    // what a bundle/offer *hands you* gets fair pricing.
+    const currencyMarket = createMarket(packages, exchangeShops, items, {}, {}, locale);
+    const market = priceMapAsMarket(buildFairPriceMap(packages, fairPricingExchangeShops, items, locale, null));
 
     const rankings = [
-        ...rankPackages(packages, exchangeShops, items, locale, excludeItemIds),
-        ...rankExchangeOffers(exchangeShops, market, items, locale, excludeItemIds),
-        ...rankBonusTiers(packages, exchangeShops, market, items, locale, excludeItemIds),
+        ...rankPackages(packages, fairPricingExchangeShops, items, locale, excludeItemIds),
+        ...rankExchangeOffers(exchangeShops, market, currencyMarket, items, locale, excludeItemIds),
+        ...rankBonusTiers(
+            packages,
+            exchangeShops,
+            fairPricingExchangeShops,
+            currencyMarket,
+            items,
+            locale,
+            excludeItemIds,
+        ),
     ]
         .filter((entry) => Number.isFinite(entry.value_ratio))
         .sort((a, b) => b.value_ratio - a.value_ratio)
