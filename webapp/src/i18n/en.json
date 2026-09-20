@@ -142,7 +142,8 @@
             "valueRatio": "Value Ratio",
             "complete": "Complete",
             "item": "Item",
-            "unitCost": "Unit Cost"
+            "unitCost": "Unit Cost",
+            "incomplete": "Incomplete"
         },
         "priceDisplay": {
             "package": "{price} {currency}",

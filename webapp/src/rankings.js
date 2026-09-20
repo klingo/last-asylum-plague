@@ -52,7 +52,7 @@ function breakdownRowsHtml(entry) {
                     <div class="ranking-grid__cell ranking-grid__cell--num">${item.unit_cost !== null ? `<span class="text-gold">${formatUnitPrice(item.unit_cost, { minDecimals: 4 })}</span> ${banknoteIconHtml()}` : t('common.unknown')}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num"><span class="text-gold">${formatThousands(item.value, 2)}</span> ${banknoteIconHtml()}</div>
                     <div class="ranking-grid__cell"></div>
-                    <div class="ranking-grid__cell"></div>
+                    <div class="ranking-grid__cell">${item.known === false ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''}</div>
                     <div class="ranking-grid__cell"></div>
                 </div>
             `,

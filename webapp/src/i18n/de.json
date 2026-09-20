@@ -142,7 +142,8 @@
             "valueRatio": "",
             "complete": "",
             "item": "",
-            "unitCost": ""
+            "unitCost": "",
+            "incomplete": ""
         },
         "priceDisplay": {
             "package": "",

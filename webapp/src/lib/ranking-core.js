@@ -95,6 +95,7 @@ function valueOfBundle(contentsMap, price, excludingMarket, items, locale) {
             quantity: qty,
             unit_cost: unitCost,
             value: Number(value.toFixed(6)),
+            known: true,
         });
     }
 
@@ -109,6 +110,7 @@ function valueOfBundle(contentsMap, price, excludingMarket, items, locale) {
                 quantity: qty,
                 unit_cost: perItemShare / qty,
                 value: Number(perItemShare.toFixed(6)),
+                known: false,
             });
         }
     }
@@ -230,6 +232,7 @@ function rankExchangeOffers(exchangeShops, market, items, locale) {
                         quantity: offer.quantity,
                         unit_cost: unitCost,
                         value: unitCost !== null ? Number(totalValue.toFixed(6)) : 0,
+                        known: unitCost !== null,
                     },
                 ],
             });
