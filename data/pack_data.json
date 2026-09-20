@@ -1936,7 +1936,7 @@
                 "en": "<Hero> Awaken Growth Pack",
                 "de": ""
             },
-            "category": "hero_exclusive",
+            "category": "unlock_exclusive",
             "limit_type": "exclusive",
             "tiers": {
                 "5": {
@@ -1959,7 +1959,7 @@
                 "en": "<Hero> Exclusive Weapon Pack",
                 "de": ""
             },
-            "category": "hero_exclusive",
+            "category": "unlock_exclusive",
             "limit_type": "exclusive",
             "tiers": {
                 "1": {
