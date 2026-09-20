@@ -1,6 +1,6 @@
 {
     "app": {
-        "title": "Last Asylum Pack Solver"
+        "title": "Last Asylum: Plague - Klingo's Pack Solver"
     },
     "nav": {
         "home": "Home",
@@ -77,7 +77,7 @@
     },
     "welcome": {
         "heading": "Welcome",
-        "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from the current pack data.",
+        "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from manually harvested pack data.",
         "analyzeDescription": "Pick any item and see every package or exchange offer that yields it, ranked by cost per unit, plus the cheapest purchase plan to reach a target quantity.",
         "rankingsDescription": "Browse every package, exchange offer, and bonus tier ranked by how much value it returns relative to its price, to spot the best deals at a glance.",
         "choicesDescription": "Pick a choice chest or package and see which of its reward options is worth the most, ranked by the cheapest cost to buy that same reward elsewhere."
