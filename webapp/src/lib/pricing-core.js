@@ -344,7 +344,7 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
             type: 'exchange',
             id: `${best.shopId}:${best.offerKey}`,
             name: `${localizedName(best.shop.name, locale)} - ${localizedName(items[best.offerItemId]?.name, locale) || best.offerItemId}`,
-            category: best.shop.category || (best.shop.event_id ? 'Event Exchange' : 'Exchange'),
+            category: best.shop.category || (best.shop.event_id ? 'event_exchange' : 'exchange'),
             availableDays: null,
             requires: null,
         };
@@ -566,7 +566,7 @@ function collectExchangeSources(
                 type: 'exchange',
                 id: `${shopId}:${offerKey}`,
                 name: `${localizedName(shop.name, locale)} - ${localizedName(items[offerItemId]?.name, locale) || offerItemId}`,
-                category: shop.category || (shop.event_id ? 'Event Exchange' : 'Exchange'),
+                category: shop.category || (shop.event_id ? 'event_exchange' : 'exchange'),
                 price: totalPrice,
                 priceDisplay: `${formatThousands(offer.currency_cost)} ${localizedName(items[shop.currency_item_id]?.name, locale) || shop.currency_item_id}`,
                 yieldPerPurchase: y,

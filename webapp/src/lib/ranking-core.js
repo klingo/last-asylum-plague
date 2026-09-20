@@ -208,7 +208,7 @@ function rankExchangeOffers(exchangeShops, market, items, locale) {
                 type: 'exchange_offer',
                 id: `${shopId}:${offerKey}`,
                 name: `${localizedName(shop.name, locale)} - ${localizedName(items[offerItemId]?.name, locale) || offerItemId}`,
-                category: shop.category || (shop.event_id ? 'Event Exchange' : 'Exchange'),
+                category: shop.category || (shop.event_id ? 'event_exchange' : 'exchange'),
                 price: Number(price.toFixed(6)),
                 price_display: t('rankings.priceDisplay.exchange', {
                     cost: formatThousands(offer.currency_cost),
@@ -278,7 +278,7 @@ function rankBonusTiers(packages, exchangeShops, market, items, locale) {
                 type: 'bonus_tier',
                 id: `${shopId}:bonus_tier_${thresholdStr}`,
                 name: `${localizedName(shop.name, locale)} - ${t('sourceType.bonus_tier')} (${thresholdStr} ${currencyName})`,
-                category: shop.category || (shop.event_id ? 'Event Exchange' : 'Exchange'),
+                category: shop.category || (shop.event_id ? 'event_exchange' : 'exchange'),
                 price: Number(price.toFixed(6)),
                 price_display: t('rankings.priceDisplay.bonusTier', {
                     threshold: formatThousands(threshold),

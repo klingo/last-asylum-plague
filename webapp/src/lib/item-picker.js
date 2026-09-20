@@ -275,7 +275,7 @@ function createItemPicker({ input, panel, clearButton, onChange }) {
         setItems(items) {
             const grouped = {};
             for (const [itemId, item] of Object.entries(items)) {
-                const category = item.category || 'Other';
+                const category = item.category || 'other';
                 if (!grouped[category]) {
                     grouped[category] = [];
                 }

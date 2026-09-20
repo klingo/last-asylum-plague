@@ -246,7 +246,7 @@
         },
         "itemCategory": {
             "type": "string",
-            "enum": ["Resource", "Hero", "Gear", "Special", "Speedup", "Virtual", "Curio"]
+            "enum": ["resource", "hero", "gear", "special", "speedup", "virtual", "curio"]
         },
         "package": {
             "oneOf": [
@@ -365,18 +365,18 @@
         "packageCategory": {
             "type": "string",
             "enum": [
-                "Daily Offer",
-                "Daily Must-Buy",
-                "Weekly Special",
-                "Premium Monthly Pass",
-                "Weekly Pass",
-                "Pack Shop",
-                "Value Event",
-                "Weekly Rotation",
-                "Shop Event",
-                "Hero Exclusive",
-                "Special",
-                "Special Event"
+                "daily_offer",
+                "daily_must_buy",
+                "weekly_special",
+                "premium_monthly_pass",
+                "weekly_pass",
+                "pack_shop",
+                "value_event",
+                "weekly_rotation",
+                "shop_event",
+                "hero_exclusive",
+                "special",
+                "special_event"
             ]
         },
         "exchangeShop": {
