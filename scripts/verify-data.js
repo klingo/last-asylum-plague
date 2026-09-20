@@ -9,7 +9,7 @@ const SCHEMA_PATH = path.join(__dirname, '..', 'data', 'pack_data.schema.json');
  * Validates data integrity of pack_data.json
  * - JSON Schema compliance (Ajv)
  * - Relational integrity (items, packages, exchange shops)
- * - Prerequisite resolution and cycle detection
+ * - Package tier ladder gap detection
  * - Drop table probability distributions
  */
 function verifyData() {
@@ -199,7 +199,7 @@ function verifyData() {
     });
 
     // 4. Package Relational Checks
-    checkCategory('Packages & Package Prerequisites', ({ reportError }) => {
+    checkCategory('Packages & Package Prerequisites', ({ reportError, reportWarning }) => {
         function checkContains(label, contains) {
             if (!contains || typeof contains !== 'object') {
                 return;
@@ -242,10 +242,33 @@ function verifyData() {
 
             if (pkg.tiers && typeof pkg.tiers === 'object') {
                 // Package family: each tier owns its own contains/choice.
+                const tierNums = Object.keys(pkg.tiers)
+                    .map(Number)
+                    .sort((a, b) => a - b);
                 for (const [tierNum, tier] of Object.entries(pkg.tiers)) {
                     const label = `Package "${pkgId}" tier ${tierNum}`;
                     checkContains(label, tier.contains);
                     checkChoice(label, tier.choice);
+                }
+
+                // Gaps in the tier ladder (e.g. tier 1-4 missing while only tier 5 exists,
+                // or tier 3 missing while tiers 1-2 and 4-5 exist) are allowed for
+                // not-yet-documented tiers, but worth flagging.
+                if (tierNums.length > 0) {
+                    const max = tierNums[tierNums.length - 1];
+                    const present = new Set(tierNums);
+                    const missing = [];
+                    for (let i = 1; i <= max; i++) {
+                        if (!present.has(i)) {
+                            missing.push(i);
+                        }
+                    }
+                    if (missing.length > 0) {
+                        reportWarning(
+                            'Package Tier Gap',
+                            `Package "${pkgId}" tier ladder is missing tier(s) ${missing.join(', ')} (present: ${tierNums.join(', ')}).`,
+                        );
+                    }
                 }
             } else {
                 checkContains(`Package "${pkgId}"`, pkg.contains);
