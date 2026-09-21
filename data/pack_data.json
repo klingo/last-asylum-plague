@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-09-20"
+        "last_updated": "2026-09-21"
     },
     "items": {
         "antitoxin": {
@@ -3094,7 +3094,25 @@
                                 "raven_essence": 70
                             },
                             {
+                                "tempered_steel": 280
+                            },
+                            {
                                 "resource_supply_ur": 14
+                            },
+                            {
+                                "recruit_ticket": 56
+                            },
+                            {
+                                "skill_badge": 2100
+                            },
+                            {
+                                "study_scroll": 84
+                            },
+                            {
+                                "antitoxin_level_supply_ssr": 49
+                            },
+                            {
+                                "stamina": 700
                             },
                             {
                                 "speedup": 3780
@@ -3123,7 +3141,25 @@
                                 "raven_essence": 70
                             },
                             {
+                                "tempered_steel": 280
+                            },
+                            {
                                 "resource_supply_ur": 14
+                            },
+                            {
+                                "recruit_ticket": 56
+                            },
+                            {
+                                "skill_badge": 2100
+                            },
+                            {
+                                "study_scroll": 84
+                            },
+                            {
+                                "antitoxin_level_supply_ssr": 49
+                            },
+                            {
+                                "stamina": 700
                             },
                             {
                                 "speedup": 3780
