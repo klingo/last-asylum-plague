@@ -3493,6 +3493,99 @@
                     "ur_hero_omni_shard": 20
                 }
             }
+        },
+        "vip_shop": {
+            "name": {
+                "en": "VIP Shop",
+                "de": ""
+            },
+            "currency_item_id": "diamonds",
+            "offers": {
+                "antitoxin_level_supply_ssr": {
+                    "item_id": "antitoxin_level_supply_ssr",
+                    "currency_cost": 158,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                },
+                "antitoxin_level_supply_ur": {
+                    "item_id": "antitoxin_level_supply_ur",
+                    "currency_cost": 480,
+                    "quantity": 1,
+                    "purchase_limit": 20,
+                    "limit_type": "weekly"
+                },
+                "brass": {
+                    "item_id": "brass",
+                    "currency_cost": 5,
+                    "quantity": 1,
+                    "purchase_limit": 100,
+                    "limit_type": "weekly"
+                },
+                "gearstone": {
+                    "item_id": "gearstone",
+                    "currency_cost": 4,
+                    "quantity": 1,
+                    "purchase_limit": 1480,
+                    "limit_type": "weekly"
+                },
+                "grain_level_supply_sr": {
+                    "item_id": "grain_level_supply_sr",
+                    "currency_cost": 40,
+                    "quantity": 1,
+                    "purchase_limit": 100,
+                    "limit_type": "weekly"
+                },
+                "herb_level_supply_sr": {
+                    "item_id": "herb_level_supply_sr",
+                    "currency_cost": 40,
+                    "quantity": 1,
+                    "purchase_limit": 100,
+                    "limit_type": "weekly"
+                },
+                "raven_essence": {
+                    "item_id": "raven_essence",
+                    "currency_cost": 398,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                },
+                "refined_iron": {
+                    "item_id": "refined_iron",
+                    "currency_cost": 16,
+                    "quantity": 1,
+                    "purchase_limit": 100,
+                    "limit_type": "weekly"
+                },
+                "skill_badge": {
+                    "item_id": "skill_badge",
+                    "currency_cost": 4,
+                    "quantity": 1,
+                    "purchase_limit": 1980,
+                    "limit_type": "weekly"
+                },
+                "tempered_steel": {
+                    "item_id": "tempered_steel",
+                    "currency_cost": 64,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                },
+                "timber_level_supply_sr": {
+                    "item_id": "timber_level_supply_sr",
+                    "currency_cost": 40,
+                    "quantity": 1,
+                    "purchase_limit": 100,
+                    "limit_type": "weekly"
+                },
+                "universal_curio_shard": {
+                    "item_id": "universal_curio_shard",
+                    "currency_cost": 99,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                }
+            }
         }
     },
     "events": {

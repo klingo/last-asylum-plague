@@ -129,6 +129,7 @@
         "searchPlaceholder": "",
         "pricingLabel": "",
         "includeExchangeShops": "",
+        "excludeWeeklyPasses": "",
         "excludeItemsLabel": "",
         "excludeDiamonds": "",
         "excludeVipPoints": "",

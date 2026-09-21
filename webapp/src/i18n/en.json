@@ -129,6 +129,7 @@
         "searchPlaceholder": "Filter by name or category",
         "pricingLabel": "Pricing",
         "includeExchangeShops": "Include Exchange Shops (and Bonus Tiers)",
+        "excludeWeeklyPasses": "Don't Trust Weekly Passes' Pricing",
         "excludeItemsLabel": "Exclude from Value",
         "excludeDiamonds": "Diamonds",
         "excludeVipPoints": "VIP Points",

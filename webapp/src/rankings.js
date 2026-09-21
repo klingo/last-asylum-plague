@@ -13,6 +13,7 @@ applyStaticTranslations();
 
 const searchInput = document.getElementById('search-input');
 const includeExchangeShopsCheckbox = document.getElementById('include-exchange-shops');
+const excludeWeeklyPassesCheckbox = document.getElementById('exclude-weekly-passes');
 const excludeDiamondsCheckbox = document.getElementById('exclude-diamonds');
 const excludeVipPointsCheckbox = document.getElementById('exclude-vip-points');
 const excludeAllianceChestsCheckbox = document.getElementById('exclude-alliance-chests');
@@ -72,7 +73,8 @@ function goldenBanknotes(text) {
 }
 
 function breakdownRowsHtml(entry) {
-    return entry.contains_breakdown
+    return [...entry.contains_breakdown]
+        .sort((a, b) => b.value - a.value)
         .map(
             (item) => `
                 <div class="ranking-grid__row">
@@ -221,6 +223,7 @@ function recompute() {
     const result = buildRanking(rawData, getLocale(), {
         excludeExchangeShops: !includeExchangeShopsCheckbox.checked,
         excludeItemIds: getExcludeItemIds(),
+        excludeWeeklyPasses: excludeWeeklyPassesCheckbox.checked,
     });
     rankings = result.rankings || [];
     const meta = result.metadata || {};
@@ -241,9 +244,12 @@ async function init() {
         expandedEntryKeys.clear();
         withLoadingOverlay(recompute);
     });
-    [excludeDiamondsCheckbox, excludeVipPointsCheckbox, excludeAllianceChestsCheckbox].forEach((checkbox) =>
-        checkbox.addEventListener('change', () => withLoadingOverlay(recompute)),
-    );
+    [
+        excludeDiamondsCheckbox,
+        excludeVipPointsCheckbox,
+        excludeAllianceChestsCheckbox,
+        excludeWeeklyPassesCheckbox,
+    ].forEach((checkbox) => checkbox.addEventListener('change', () => withLoadingOverlay(recompute)));
 
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
