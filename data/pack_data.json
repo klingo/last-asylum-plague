@@ -123,7 +123,10 @@
                 "en": "Brass",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "contains": {
+                "leather": 4
+            }
         },
         "cloth": {
             "name": {
@@ -446,7 +449,10 @@
                 "en": "Leather",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "contains": {
+                "cloth": 4
+            }
         },
         "lv1_alliance_chest": {
             "name": {
@@ -828,7 +834,10 @@
                 "en": "Refined Iron",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "contains": {
+                "brass": 4
+            }
         },
         "research_speedup": {
             "name": {
@@ -1153,7 +1162,10 @@
                 "en": "Tempered Steel",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "contains": {
+                "refined_iron": 4
+            }
         },
         "timber": {
             "name": {
