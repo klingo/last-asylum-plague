@@ -547,6 +547,58 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
     // a shaky variable was enough to pull otherwise well-evidenced items back down to zero. They
     // still get valued normally (via `valueOfBundle`) against whatever this produces, same as any
     // other bundle; they just don't get to shape anyone ELSE's price.
+    // `type: "choice"` items (e.g. "Resource Supply (UR)": pick 1 of grain/timber/herb level
+    // supply) are deliberately skipped by `regressionFill`'s identity rows above — "price =
+    // whichever option is worth the most" isn't a linear equality a least-squares solve can
+    // express — so without this they'd never get a price of their own at all, and would fall
+    // through to `valueOfBundle`'s "exclusive item" residual split for every package that
+    // contains them. That split can come out as exactly 0 whenever a bundle's OTHER contents
+    // already account for its entire price (as happened for Development Pack's own Resource
+    // Supply (UR), even though every one of its possible contents — grain/timber/herb — has a
+    // perfectly good price by this point), which reads as "this item is worthless" rather than
+    // "we didn't bother pricing it."
+    //
+    // Run after `regressionFill` (needs its output: the choice's own options are typically only
+    // priced via the joint regression, same as any other non-anchored item) and looped to a
+    // fixed point so a choice-of-choices chain resolves in as many passes as it needs: an item
+    // only settles once at least one of its options has every one of ITS contents already
+    // priced, then contributes a price to whatever depends on IT in turn. Matches the same
+    // "assume the optimistic best option" convention `mergedContentsOf` already uses for a
+    // PACKAGE's own choice block — the difference here is only that this prices the choice
+    // ITEM's own market value (for when it shows up as an ordinary `{itemId: qty}` entry inside
+    // some OTHER bundle's `contains`), not a specific package's pick from it.
+    function resolveChoiceContainerItems() {
+        let progress = true;
+        while (progress) {
+            progress = false;
+            for (const [itemId, item] of Object.entries(items)) {
+                if (settled.has(itemId) || item.type !== 'choice' || !item.choice?.choices?.length) {
+                    continue;
+                }
+                let best = null;
+                for (const choiceEntry of item.choice.choices) {
+                    let total = 0;
+                    let allKnown = true;
+                    for (const [subId, qty] of Object.entries(choiceEntry)) {
+                        const subPrice = settled.get(subId);
+                        if (!Number.isFinite(subPrice)) {
+                            allKnown = false;
+                            break;
+                        }
+                        total += qty * subPrice;
+                    }
+                    if (allKnown && (best === null || total > best)) {
+                        best = total;
+                    }
+                }
+                if (best !== null) {
+                    settled.set(itemId, best);
+                    progress = true;
+                }
+            }
+        }
+    }
+
     function regressionFill() {
         const rows = [];
 
@@ -585,6 +637,7 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
 
     exhaustGenuineSettlements(bundles, settled);
     regressionFill();
+    resolveChoiceContainerItems();
 
     return settled;
 }
