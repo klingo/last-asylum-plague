@@ -879,13 +879,13 @@
                 "select_count": 1,
                 "choices": [
                     {
-                        "grain": 169090
+                        "grain_level_supply_sr": 1
                     },
                     {
-                        "timber": 169090
+                        "timber_level_supply_sr": 1
                     },
                     {
-                        "herbs": 108470
+                        "herb_level_supply_sr": 1
                     }
                 ]
             }
@@ -901,13 +901,13 @@
                 "select_count": 1,
                 "choices": [
                     {
-                        "grain": 1352660
+                        "grain_level_supply_ssr": 1
                     },
                     {
-                        "timber": 1352660
+                        "timber_level_supply_ssr": 1
                     },
                     {
-                        "herbs": 867720
+                        "herb_level_supply_ssr": 1
                     }
                 ]
             }
@@ -923,13 +923,13 @@
                 "select_count": 1,
                 "choices": [
                     {
-                        "grain": 4057980
+                        "grain_level_supply_ur": 1
                     },
                     {
-                        "timber": 4057980
+                        "timber_level_supply_ur": 1
                     },
                     {
-                        "herbs": 2603150
+                        "herb_level_supply_ur": 1
                     }
                 ]
             }
