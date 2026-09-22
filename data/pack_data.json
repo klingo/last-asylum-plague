@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-09-21"
+        "last_updated": "2026-09-22"
     },
     "items": {
         "antitoxin": {
@@ -197,6 +197,13 @@
             },
             "category": "resource"
         },
+        "direct_relocate": {
+            "name": {
+                "en": "Direct Relocate",
+                "de": ""
+            },
+            "category": "special"
+        },
         "dragon_blood": {
             "name": {
                 "en": "Dragon Blood",
@@ -377,13 +384,6 @@
         "hero_awaken_shard": {
             "name": {
                 "en": "<Hero> Awaken Shard",
-                "de": ""
-            },
-            "category": "hero"
-        },
-        "hero_shard": {
-            "name": {
-                "en": "<Hero> Shard",
                 "de": ""
             },
             "category": "hero"
@@ -1035,6 +1035,21 @@
                 }
             ]
         },
+        "sr_hero_omni_shard": {
+            "name": {
+                "en": "SR Hero Omni Shard",
+                "de": ""
+            },
+            "category": "hero",
+            "substitutes_for": ["sr_hero_shard"]
+        },
+        "sr_hero_shard": {
+            "name": {
+                "en": "<Hero> Shard",
+                "de": ""
+            },
+            "category": "hero"
+        },
         "ssr_armor": {
             "name": {
                 "en": "SSR Armor",
@@ -1093,6 +1108,21 @@
                 "de": ""
             },
             "category": "gear"
+        },
+        "ssr_hero_omni_shard": {
+            "name": {
+                "en": "SSR Hero Omni Shard",
+                "de": ""
+            },
+            "category": "hero",
+            "substitutes_for": ["ssr_hero_shard"]
+        },
+        "ssr_hero_shard": {
+            "name": {
+                "en": "<Hero> Shard",
+                "de": ""
+            },
+            "category": "hero"
         },
         "ssr_sword": {
             "name": {
@@ -1447,7 +1477,7 @@
             },
             "category": "special",
             "contains": {
-                "hero_shard": 1
+                "ur_hero_shard": 1
             }
         },
         "ur_hero_omni_shard": {
@@ -1456,7 +1486,14 @@
                 "de": ""
             },
             "category": "hero",
-            "substitutes_for": ["hero_shard"]
+            "substitutes_for": ["ur_hero_shard"]
+        },
+        "ur_hero_shard": {
+            "name": {
+                "en": "<Hero> Shard",
+                "de": ""
+            },
+            "category": "hero"
         },
         "ur_sword": {
             "name": {
@@ -2185,7 +2222,7 @@
                     "purchase_limit": 1,
                     "contains": {
                         "diamonds": 700,
-                        "hero_shard": 10,
+                        "ur_hero_shard": 10,
                         "recruit_ticket": 10,
                         "antitoxin_level_supply_ssr": 6,
                         "vip_points": 700,
@@ -3522,6 +3559,20 @@
                     "purchase_limit": 100,
                     "limit_type": "weekly"
                 },
+                "direct_relocate": {
+                    "item_id": "direct_relocate",
+                    "currency_cost": 598,
+                    "quantity": 1,
+                    "purchase_limit": 4,
+                    "limit_type": "weekly"
+                },
+                "exclusive_weapon_omni_shard": {
+                    "item_id": "exclusive_weapon_omni_shard",
+                    "currency_cost": 298,
+                    "quantity": 1,
+                    "purchase_limit": 10,
+                    "limit_type": "weekly"
+                },
                 "gearstone": {
                     "item_id": "gearstone",
                     "currency_cost": 4,
@@ -3562,6 +3613,69 @@
                     "currency_cost": 4,
                     "quantity": 1,
                     "purchase_limit": 1980,
+                    "limit_type": "weekly"
+                },
+                "speedup_3h": {
+                    "item_id": "speedup",
+                    "currency_cost": 192,
+                    "quantity": 180,
+                    "purchase_limit": 25,
+                    "limit_type": "weekly"
+                },
+                "speedup_5m": {
+                    "item_id": "speedup",
+                    "currency_cost": 8,
+                    "quantity": 5,
+                    "purchase_limit": 190,
+                    "limit_type": "weekly"
+                },
+                "speedup_60m": {
+                    "item_id": "speedup",
+                    "currency_cost": 72,
+                    "quantity": 60,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                },
+                "speedup_8h": {
+                    "item_id": "speedup",
+                    "currency_cost": 478,
+                    "quantity": 480,
+                    "purchase_limit": 10,
+                    "limit_type": "weekly"
+                },
+                "sr_epigraph_chest": {
+                    "item_id": "sr_epigraph_chest",
+                    "currency_cost": 798,
+                    "quantity": 1,
+                    "purchase_limit": 10,
+                    "limit_type": "weekly"
+                },
+                "sr_hero_omni_shard": {
+                    "item_id": "sr_hero_omni_shard",
+                    "currency_cost": 40,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                },
+                "ssr_hero_omni_shard": {
+                    "item_id": "ssr_hero_omni_shard",
+                    "currency_cost": 198,
+                    "quantity": 1,
+                    "purchase_limit": 30,
+                    "limit_type": "weekly"
+                },
+                "stamina": {
+                    "item_id": "stamina",
+                    "currency_cost": 12,
+                    "quantity": 10,
+                    "purchase_limit": 24,
+                    "limit_type": "weekly"
+                },
+                "survivor_recruit_ticket": {
+                    "item_id": "survivor_recruit_ticket",
+                    "currency_cost": 198,
+                    "quantity": 1,
+                    "purchase_limit": 50,
                     "limit_type": "weekly"
                 },
                 "tempered_steel": {
