@@ -12,6 +12,8 @@
     --bad: #f2685c;
     --gold: #d4af37;
     --radius: 8px;
+    --series-a: #3987e5;
+    --series-b: #d95926;
 }
 
 * {
@@ -661,6 +663,14 @@ tbody tr:hover {
     font-size: 0.9rem;
 }
 
+/* Used on the (narrower, two-column) Compare page, whose plan grid omits the "Days" column
+   the full-width Analyze page's `.plan-grid` has room for. */
+.plan-grid--compact {
+    grid-template-columns:
+        minmax(160px, 2fr) minmax(90px, 1fr) minmax(70px, 1fr) minmax(90px, 1fr) minmax(90px, 1fr)
+        minmax(90px, 1fr) 70px;
+}
+
 .plan-grid__row {
     display: contents;
 }
@@ -818,6 +828,88 @@ tbody tr:hover {
     to {
         transform: rotate(360deg);
     }
+}
+
+.compare-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .compare-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+.compare-column h3 {
+    font-size: 0.95rem;
+    margin: 16px 0 8px;
+    color: var(--text-dim);
+}
+
+.compare-column h3:first-child {
+    margin-top: 0;
+}
+
+.compare-bar {
+    margin-top: 16px;
+}
+
+.compare-bar__track {
+    display: flex;
+    gap: 2px;
+    height: 28px;
+}
+
+.compare-bar__segment {
+    height: 100%;
+    min-width: 4px;
+    transition: width 0.2s ease;
+}
+
+.compare-bar__segment--a {
+    background: var(--series-a);
+    border-radius: 6px 0 0 6px;
+}
+
+.compare-bar__segment--b {
+    background: var(--series-b);
+    border-radius: 0 6px 6px 0;
+}
+
+.compare-bar__segment--a:only-child {
+    border-radius: 6px;
+}
+
+.compare-bar__labels {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.compare-bar__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.compare-bar__swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.compare-bar__swatch--a {
+    background: var(--series-a);
+}
+
+.compare-bar__swatch--b {
+    background: var(--series-b);
 }
 
 .app-footer {

@@ -907,4 +907,19 @@ function buildRanking(data, locale = 'en', options = {}) {
     };
 }
 
-export { buildRanking };
+/**
+ * Exposes the same bundle-aware "fair" per-item pricing `buildRanking` uses to value a
+ * package/bonus-tier's own contents (see module header) as a standalone market-like object
+ * (`{ peekUnitCost(itemId) }`), for callers that want a single item's fair Banknotes value
+ * without going through the full package/offer ranking (e.g. the item-vs-item Compare page).
+ * Always draws on the full exchange-shop data as pricing evidence, same as `buildRanking`.
+ */
+function createFairValueMarket(data, locale = 'en', options = {}) {
+    const { excludeWeeklyPasses = true } = options;
+    const items = data.items || {};
+    const packages = data.packages || {};
+    const exchangeShops = data.exchange_shops || {};
+    return priceMapAsMarket(buildFairPriceMap(packages, exchangeShops, items, locale, null, excludeWeeklyPasses));
+}
+
+export { buildRanking, createFairValueMarket };

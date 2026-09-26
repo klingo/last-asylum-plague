@@ -5,6 +5,7 @@
     "nav": {
         "home": "",
         "analyze": "",
+        "compare": "",
         "rankings": "",
         "choices": "",
         "language": ""
@@ -65,6 +66,7 @@
     "docTitle": {
         "welcome": "",
         "analyze": "",
+        "compare": "",
         "rankings": "",
         "choices": ""
     },
@@ -72,6 +74,8 @@
         "welcome": "",
         "analyzeGenerated": "",
         "analyzeDefault": "",
+        "compareGenerated": "",
+        "compareDefault": "",
         "rankings": "",
         "choicesGenerated": "",
         "choicesDefault": ""
@@ -80,6 +84,7 @@
         "heading": "",
         "intro": "",
         "analyzeDescription": "",
+        "compareDescription": "",
         "rankingsDescription": "",
         "choicesDescription": ""
     },
@@ -121,6 +126,29 @@
             "unitsGained": "",
             "cost": ""
         }
+    },
+    "compare": {
+        "heading": "",
+        "description": "",
+        "itemALabel": "",
+        "itemBLabel": "",
+        "itemSearchPlaceholder": "",
+        "quantityLabel": "",
+        "quantityPlaceholder": "",
+        "valueHeading": "",
+        "valueDescription": "",
+        "valuePrompt": "",
+        "valueSummary": "",
+        "valueSummaryEqual": "",
+        "valueFallbackNote": "",
+        "valueUnknownNote": "",
+        "costHeading": "",
+        "costDescription": "",
+        "planHeading": "",
+        "planDescription": "",
+        "sidePrompt": "",
+        "sideSourcesHeading": "",
+        "sidePlanHeading": ""
     },
     "rankings": {
         "heading": "",

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.compare"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="compare.heading"></h2>
+                <p class="text-dim" data-i18n="compare.description"></p>
+                <form id="compare-form">
+                    <div class="compare-columns">
+                        <div class="compare-column">
+                            <div class="form-row">
+                                <div class="field field--item">
+                                    <label for="item-search-a" data-i18n="compare.itemALabel"></label>
+                                    <div class="item-combobox">
+                                        <input
+                                            type="text"
+                                            id="item-search-a"
+                                            class="item-combobox__input"
+                                            role="combobox"
+                                            aria-expanded="false"
+                                            aria-autocomplete="list"
+                                            aria-controls="item-listbox-a"
+                                            autocomplete="off"
+                                            data-i18n-placeholder="compare.itemSearchPlaceholder"
+                                        />
+                                        <button
+                                            type="button"
+                                            id="item-search-clear-a"
+                                            class="item-combobox__clear"
+                                            tabindex="-1"
+                                            hidden
+                                        >
+                                            &times;
+                                        </button>
+                                        <div class="item-combobox__panel" id="item-listbox-a" role="listbox" hidden></div>
+                                    </div>
+                                </div>
+                                <div class="field field--narrow">
+                                    <label for="quantity-input-a" data-i18n="compare.quantityLabel"></label>
+                                    <input
+                                        id="quantity-input-a"
+                                        type="number"
+                                        min="1"
+                                        step="1"
+                                        data-i18n-placeholder="compare.quantityPlaceholder"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="compare-column">
+                            <div class="form-row">
+                                <div class="field field--item">
+                                    <label for="item-search-b" data-i18n="compare.itemBLabel"></label>
+                                    <div class="item-combobox">
+                                        <input
+                                            type="text"
+                                            id="item-search-b"
+                                            class="item-combobox__input"
+                                            role="combobox"
+                                            aria-expanded="false"
+                                            aria-autocomplete="list"
+                                            aria-controls="item-listbox-b"
+                                            autocomplete="off"
+                                            data-i18n-placeholder="compare.itemSearchPlaceholder"
+                                        />
+                                        <button
+                                            type="button"
+                                            id="item-search-clear-b"
+                                            class="item-combobox__clear"
+                                            tabindex="-1"
+                                            hidden
+                                        >
+                                            &times;
+                                        </button>
+                                        <div class="item-combobox__panel" id="item-listbox-b" role="listbox" hidden></div>
+                                    </div>
+                                </div>
+                                <div class="field field--narrow">
+                                    <label for="quantity-input-b" data-i18n="compare.quantityLabel"></label>
+                                    <input
+                                        id="quantity-input-b"
+                                        type="number"
+                                        min="1"
+                                        step="1"
+                                        data-i18n-placeholder="compare.quantityPlaceholder"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="field">
+                            <label for="event-select-button" data-i18n="analyze.eventsLabel"></label>
+                            <div class="multi-select">
+                                <button
+                                    type="button"
+                                    id="event-select-button"
+                                    class="multi-select__button"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                ></button>
+                                <div
+                                    class="multi-select__panel"
+                                    id="event-select-panel"
+                                    role="listbox"
+                                    aria-multiselectable="true"
+                                    hidden
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="field field--narrow">
+                            <label for="days-input" data-i18n="analyze.daysLabel"></label>
+                            <input id="days-input" type="number" min="1" step="1" value="1" />
+                        </div>
+                        <div class="field">
+                            <span class="field-label" data-i18n="analyze.exceedLimitLabel"></span>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="exceed-pack-limits-checkbox" />
+                                    <span data-i18n="analyze.exceedPackLimits"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="field field--reset">
+                            <button type="button" id="reset-btn" class="btn-secondary" data-i18n="analyze.reset"></button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="card" id="value-card" hidden>
+                <h2 data-i18n="compare.valueHeading"></h2>
+                <p class="text-dim" data-i18n="compare.valueDescription"></p>
+                <div class="empty-state" id="value-prompt" data-i18n="compare.valuePrompt"></div>
+                <div id="value-content" hidden>
+                    <div id="compare-bar" class="compare-bar"></div>
+                    <p class="summary-line" id="compare-summary"></p>
+                    <p class="footnote" id="compare-unknown-note" hidden></p>
+                </div>
+            </section>
+
+            <section class="card" id="cost-card" hidden>
+                <h2 data-i18n="compare.costHeading"></h2>
+                <p class="text-dim" data-i18n="compare.costDescription"></p>
+                <div class="compare-columns">
+                    <div class="compare-column" id="cost-column-a">
+                        <div class="empty-state" id="side-prompt-a" data-i18n="compare.sidePrompt"></div>
+                        <div id="side-content-a" hidden>
+                            <h3 id="sources-heading-a"></h3>
+                            <div id="sources-empty-a" class="empty-state" hidden data-i18n="analyze.sourcesEmpty"></div>
+                            <div class="table-wrap"><table id="sources-table-a"></table></div>
+                            <p class="footnote" data-i18n="analyze.sourcesFootnote"></p>
+                        </div>
+                    </div>
+                    <div class="compare-column" id="cost-column-b">
+                        <div class="empty-state" id="side-prompt-b" data-i18n="compare.sidePrompt"></div>
+                        <div id="side-content-b" hidden>
+                            <h3 id="sources-heading-b"></h3>
+                            <div id="sources-empty-b" class="empty-state" hidden data-i18n="analyze.sourcesEmpty"></div>
+                            <div class="table-wrap"><table id="sources-table-b"></table></div>
+                            <p class="footnote" data-i18n="analyze.sourcesFootnote"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" id="plan-card" hidden>
+                <h2 data-i18n="compare.planHeading"></h2>
+                <p class="text-dim" data-i18n="compare.planDescription"></p>
+                <div class="compare-columns">
+                    <div class="compare-column" id="plan-column-a">
+                        <div class="empty-state" id="plan-prompt-a" data-i18n="compare.sidePrompt"></div>
+                        <div id="plan-content-a" hidden>
+                            <h3 id="plan-heading-a"></h3>
+                            <div class="table-wrap">
+                                <div id="plan-table-a" class="plan-grid plan-grid--compact" role="table"></div>
+                            </div>
+                            <p class="summary-line" id="plan-summary-a"></p>
+                            <p class="message-box message-box--warning" id="plan-warning-a" hidden></p>
+                        </div>
+                    </div>
+                    <div class="compare-column" id="plan-column-b">
+                        <div class="empty-state" id="plan-prompt-b" data-i18n="compare.sidePrompt"></div>
+                        <div id="plan-content-b" hidden>
+                            <h3 id="plan-heading-b"></h3>
+                            <div class="table-wrap">
+                                <div id="plan-table-b" class="plan-grid plan-grid--compact" role="table"></div>
+                            </div>
+                            <p class="summary-line" id="plan-summary-b"></p>
+                            <p class="message-box message-box--warning" id="plan-warning-b" hidden></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="app-footer" data-i18n="footer.compareDefault"></footer>
+        <script type="module" src="/src/compare.js"></script>
+    </body>
+</html>

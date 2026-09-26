@@ -5,6 +5,7 @@
     "nav": {
         "home": "Home",
         "analyze": "Analyze Item Value",
+        "compare": "Compare Items",
         "rankings": "Value Ranking",
         "choices": "Best Choice Pick",
         "language": "Language"
@@ -65,6 +66,7 @@
     "docTitle": {
         "welcome": "Last Asylum Pack Solver",
         "analyze": "Analyze Item Value - Last Asylum Pack Solver",
+        "compare": "Compare Items - Last Asylum Pack Solver",
         "rankings": "Value Ranking - Last Asylum Pack Solver",
         "choices": "Best Choice Pick - Last Asylum Pack Solver"
     },
@@ -72,6 +74,8 @@
         "welcome": "Last Asylum Pack Solver — computed live from pack_data.json",
         "analyzeGenerated": "Last Asylum Pack Solver — data generated from pack_data.json (updated {date})",
         "analyzeDefault": "Last Asylum Pack Solver — data generated from pack_data.json",
+        "compareGenerated": "Last Asylum Pack Solver — data generated from pack_data.json (updated {date})",
+        "compareDefault": "Last Asylum Pack Solver — data generated from pack_data.json",
         "rankings": "Last Asylum Pack Solver — ranking computed live from pack_data.json",
         "choicesGenerated": "Last Asylum Pack Solver — data generated from pack_data.json (updated {date})",
         "choicesDefault": "Last Asylum Pack Solver — data generated from pack_data.json"
@@ -80,6 +84,7 @@
         "heading": "Welcome",
         "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from manually harvested pack data.",
         "analyzeDescription": "Pick any item and see every package or exchange offer that yields it, ranked by cost per unit, plus the cheapest purchase plan to reach a target quantity.",
+        "compareDescription": "Pick two items and quantities and compare how much value each provides, plus the cheapest purchase plan for each side by side.",
         "rankingsDescription": "Browse every package, exchange offer, and bonus tier ranked by how much value it returns relative to its price, to spot the best deals at a glance.",
         "choicesDescription": "Pick a choice chest or package and see which of its reward options is worth the most, ranked by the cheapest cost to buy that same reward elsewhere."
     },
@@ -121,6 +126,29 @@
             "unitsGained": "Units Gained",
             "cost": "Cost ({icon})"
         }
+    },
+    "compare": {
+        "heading": "Compare Items",
+        "description": "Pick two items and how many of each you want, plus (optionally) active events, a planning horizon, and whether purchase limits may be exceeded. This shows which item provides more value for the quantity chosen, and the cheapest purchase plan for each side.",
+        "itemALabel": "Item A",
+        "itemBLabel": "Item B",
+        "itemSearchPlaceholder": "Search items…",
+        "quantityLabel": "Quantity",
+        "quantityPlaceholder": "e.g. 10",
+        "valueHeading": "Value Comparison",
+        "valueDescription": "Value is each item's bundle-aware fair Banknotes price (the same pricing the Value Ranking page uses) multiplied by its quantity.",
+        "valuePrompt": "Select both items above to compare their value.",
+        "valueSummary": "{leader} provides {ratio}× more value than {other}: {leaderValue} {icon} vs {otherValue} {icon}.",
+        "valueSummaryEqual": "{itemA} and {itemB} provide equal value: {value} {icon} each.",
+        "valueFallbackNote": "No bundle-aware fair price known for: {items}. Showing a simplified cheapest-source estimate instead.",
+        "valueUnknownNote": "No known purchasable source at all for: {items}. Value shown as 0 for those.",
+        "costHeading": "Purchase Comparison",
+        "costDescription": "Every known purchase source for each item, computed independently per item (same sources Analyze Item Value shows).",
+        "planHeading": "Optimal Purchase Plan",
+        "planDescription": "The cheapest purchase plan to reach each side's quantity, computed independently per item (same logic as Analyze Item Value).",
+        "sidePrompt": "Select an item above to see this.",
+        "sideSourcesHeading": "{item} — Purchase Sources",
+        "sidePlanHeading": "{item} — Optimal Purchase Plan"
     },
     "rankings": {
         "heading": "Value Ranking",
