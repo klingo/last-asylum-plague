@@ -190,6 +190,13 @@
                 ]
             }
         },
+        "diamond_golden_egg": {
+            "name": {
+                "en": "Diamond Golden Egg",
+                "de": ""
+            },
+            "category": "special"
+        },
         "diamonds": {
             "name": {
                 "en": "Diamonds",
@@ -3389,8 +3396,8 @@
                     "purchase_limit": 2000,
                     "limit_type": "weekly"
                 },
-                "curio_chest": {
-                    "item_id": "curio_chest",
+                "curio_chest_ur": {
+                    "item_id": "curio_chest_ur",
                     "currency_cost": 70,
                     "quantity": 1,
                     "purchase_limit": 1,
@@ -3410,8 +3417,8 @@
                     "purchase_limit": 20,
                     "limit_type": "weekly"
                 },
-                "raven_fruits": {
-                    "item_id": "raven_fruits",
+                "raven_fruit": {
+                    "item_id": "raven_fruit",
                     "currency_cost": 20,
                     "quantity": 100000,
                     "purchase_limit": 50,
