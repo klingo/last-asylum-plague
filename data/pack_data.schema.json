@@ -441,7 +441,14 @@
         },
         "eventId": {
             "type": "string",
-            "enum": ["blades_out", "strange_bazaar", "surprise_encounter", "weekly_special", "mystic_cabinet"]
+            "enum": [
+                "blades_out",
+                "strange_bazaar",
+                "surprise_encounter",
+                "weekly_special",
+                "mystic_cabinet",
+                "full_moon_night"
+            ]
         },
         "event": {
             "type": "object",

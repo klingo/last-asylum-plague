@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-09-22"
+        "last_updated": "2026-09-26"
     },
     "items": {
         "antitoxin": {
@@ -590,6 +590,13 @@
             },
             "category": "virtual"
         },
+        "moon_coin": {
+            "name": {
+                "en": "Moon Coin",
+                "de": ""
+            },
+            "category": "special"
+        },
         "mythic_era_reward": {
             "name": {
                 "en": "Mythic Era Reward",
@@ -1144,6 +1151,13 @@
                 "de": ""
             },
             "category": "resource"
+        },
+        "star_moon_sigil": {
+            "name": {
+                "en": "Star Moon Sigil",
+                "de": ""
+            },
+            "category": "special"
         },
         "stone_blade": {
             "name": {
@@ -2280,6 +2294,128 @@
                 }
             }
         },
+        "moon_coin_deluxe_pack": {
+            "name": {
+                "en": "Moon Coin Special Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "full_moon_night",
+            "price": 999,
+            "deal_percentage": 4200,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 1000,
+                "moon_coin": 16,
+                "vip_points": 1000
+            }
+        },
+        "moon_coin_majestic_pack": {
+            "name": {
+                "en": "Moon Coin Majestic Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "full_moon_night",
+            "price": 4999,
+            "deal_percentage": 3771,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 5000,
+                "moon_coin": 65,
+                "vip_points": 5000,
+                "diamond_golden_egg": 2
+            }
+        },
+        "moon_coin_premium_pack": {
+            "name": {
+                "en": "Moon Coin Premium Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "full_moon_night",
+            "price": 499,
+            "deal_percentage": 5200,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "moon_coin": 10,
+                "vip_points": 500
+            }
+        },
+        "moon_coin_rare_pack": {
+            "name": {
+                "en": "Moon Coin Special Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "full_moon_night",
+            "price": 1999,
+            "deal_percentage": 4350,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 2000,
+                "moon_coin": 30,
+                "vip_points": 1000,
+                "diamond_golden_egg": 1
+            }
+        },
+        "moon_coin_special_pack": {
+            "name": {
+                "en": "Moon Coin Special Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "full_moon_night",
+            "price": 199,
+            "deal_percentage": 6450,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 200,
+                "moon_coin": 5,
+                "vip_points": 200
+            }
+        },
+        "moon_coin_supreme_pack": {
+            "name": {
+                "en": "Moon Coin Supreme Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "full_moon_night",
+            "price": 9999,
+            "deal_percentage": 3690,
+            "purchase_limit": 5,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 10000,
+                "moon_coin": 130,
+                "vip_points": 10000,
+                "diamond_golden_egg": 3
+            }
+        },
+        "moon_coin_value_pack": {
+            "name": {
+                "en": "Moon Coin Value Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "full_moon_night",
+            "price": 99,
+            "deal_percentage": 7700,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 100,
+                "moon_coin": 3,
+                "vip_points": 100
+            }
+        },
         "mystic_cabinet_i": {
             "name": {
                 "en": "Mystic Cabinet I",
@@ -3238,6 +3374,86 @@
         }
     },
     "exchange_shops": {
+        "starry_bazaar": {
+            "name": {
+                "en": "Starry Bazaar",
+                "de": ""
+            },
+            "event_id": "full_moon_night",
+            "currency_item_id": "star_moon_sigil",
+            "offers": {
+                "antitoxin_level_supply_ssr": {
+                    "item_id": "antitoxin_level_supply_ssr",
+                    "currency_cost": 5,
+                    "quantity": 1,
+                    "purchase_limit": 2000,
+                    "limit_type": "weekly"
+                },
+                "curio_chest": {
+                    "item_id": "curio_chest",
+                    "currency_cost": 70,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "gearstone": {
+                    "item_id": "gearstone",
+                    "currency_cost": 5,
+                    "quantity": 100,
+                    "purchase_limit": 2000,
+                    "limit_type": "weekly"
+                },
+                "raven_essence": {
+                    "item_id": "raven_essence",
+                    "currency_cost": 50,
+                    "quantity": 20,
+                    "purchase_limit": 20,
+                    "limit_type": "weekly"
+                },
+                "raven_fruits": {
+                    "item_id": "raven_fruits",
+                    "currency_cost": 20,
+                    "quantity": 100000,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                },
+                "resource_supply_ssr": {
+                    "item_id": "resource_supply_ssr",
+                    "currency_cost": 5,
+                    "quantity": 1,
+                    "purchase_limit": 2000,
+                    "limit_type": "weekly"
+                },
+                "speedup_3h": {
+                    "item_id": "speedup",
+                    "currency_cost": 5,
+                    "quantity": 180,
+                    "purchase_limit": 200,
+                    "limit_type": "weekly"
+                },
+                "speedup_60m": {
+                    "item_id": "speedup",
+                    "currency_cost": 2,
+                    "quantity": 60,
+                    "purchase_limit": 2000,
+                    "limit_type": "weekly"
+                },
+                "universal_curio_shard": {
+                    "item_id": "universal_curio_shard",
+                    "currency_cost": 600,
+                    "quantity": 1000,
+                    "purchase_limit": 3,
+                    "limit_type": "weekly"
+                },
+                "ur_hero_and_awaken_choice_chest": {
+                    "item_id": "ur_hero_and_awaken_choice_chest",
+                    "currency_cost": 60,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                }
+            }
+        },
         "stone_blade_exchange_shop": {
             "name": {
                 "en": "Stone Blade Exchange Shop",
@@ -3706,6 +3922,13 @@
         "blades_out": {
             "name": {
                 "en": "Blades Out",
+                "de": ""
+            },
+            "category": "shop_event"
+        },
+        "full_moon_night": {
+            "name": {
+                "en": "Full Moon Night",
                 "de": ""
             },
             "category": "shop_event"
