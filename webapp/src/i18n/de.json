@@ -210,6 +210,8 @@
         "empty": "",
         "selectPrompt": "",
         "pointsSuffix": "",
+        "fallbackLabel": "",
+        "fallbackCheckboxText": "",
         "note": "",
         "table": {
             "tier": "",
@@ -219,7 +221,9 @@
             "valueRatio": "",
             "complete": "",
             "item": "",
-            "unitCost": ""
+            "unitCost": "",
+            "estimated": "",
+            "estimatedShort": ""
         }
     }
 }

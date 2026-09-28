@@ -11,6 +11,7 @@ renderNav('spend-rewards');
 applyStaticTranslations();
 
 const trackSelect = document.getElementById('track-select');
+const fallbackCheckbox = document.getElementById('fallback-checkbox');
 const tiersPrompt = document.getElementById('tiers-prompt');
 const tiersEmpty = document.getElementById('tiers-empty');
 const tiersWrap = document.getElementById('tiers-wrap');
@@ -59,7 +60,13 @@ function breakdownRowsHtml(tier) {
                     <div class="ranking-grid__cell ranking-grid__cell--num">${item.unit_cost !== null ? `<span class="text-gold">${formatUnitPrice(item.unit_cost, { minDecimals: 4 })}</span> ${banknoteIconHtml()}` : t('common.unknown')}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num"><span class="text-gold">${formatThousands(item.value, 2)}</span> ${banknoteIconHtml()}</div>
                     <div class="ranking-grid__cell"></div>
-                    <div class="ranking-grid__cell">${item.known === false ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''}</div>
+                    <div class="ranking-grid__cell">${
+                        item.known === false
+                            ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>`
+                            : item.estimated
+                              ? `<span class="text-warn">${t('spendRewards.table.estimated')}</span>`
+                              : ''
+                    }</div>
                     <div class="ranking-grid__cell"></div>
                 </div>
             `,
@@ -107,7 +114,13 @@ function renderTiers(track) {
                             <span class="ratio-bar"><span class="ratio-bar__fill" style="width: ${(ratioFraction * 100).toFixed(1)}%; background: ${ratioColor}"></span></span>
                         </div>
                     </div>
-                    <div class="ranking-grid__cell" role="cell">${tier.value_complete ? `<span class="text-good">${t('common.yes')}</span>` : `<span class="text-bad">${t('common.no')}</span>`}</div>
+                    <div class="ranking-grid__cell" role="cell">${
+                        tier.value_complete
+                            ? tier.value_estimated
+                                ? `<span class="text-warn">${t('spendRewards.table.estimatedShort')}</span>`
+                                : `<span class="text-good">${t('common.yes')}</span>`
+                            : `<span class="text-bad">${t('common.no')}</span>`
+                    }</div>
                     <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-tier-key="${key}">${t('common.details')}</button></div>
                 </div>
                 <div class="ranking-grid__details" data-tier-key-details="${key}" hidden>
@@ -197,7 +210,7 @@ function withLoadingOverlay(fn) {
 
 function recompute() {
     itemsById = rawData.items || {};
-    const result = buildSpendRewardTracks(rawData, getLocale());
+    const result = buildSpendRewardTracks(rawData, getLocale(), { useNaiveFallback: fallbackCheckbox.checked });
     tracks = result.tracks || [];
     populateTrackSelect();
 
@@ -228,6 +241,8 @@ async function init() {
         expandedTierKeys.clear();
         withLoadingOverlay(recompute);
     });
+
+    fallbackCheckbox.addEventListener('change', () => withLoadingOverlay(recompute));
 
     window.addEventListener('localechange', () => {
         applyStaticTranslations();

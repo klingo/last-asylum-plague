@@ -854,6 +854,29 @@ function cheapestCostForPoints(conversions, targetPoints) {
 }
 
 /**
+ * Wraps the strict, bundle-fair `fairMarket` with a lower-confidence fallback: whenever the fair
+ * solve has no price at all for an item (see `buildFairPriceMap`'s header for why that's common —
+ * e.g. an item only ever sold via a shop currency that never genuinely settles), falls back to
+ * `naiveMarket`'s plain price-per-yield estimate instead of leaving it unpriced. That naive price
+ * can OVERCOUNT (it credits a whole bundle's price to one item, the exact distortion the fair
+ * solve exists to avoid), so callers must track which items this fallback actually kicked in for
+ * (compare `getUnitCost(fairMarket, id)` vs this wrapper) and surface that distinctly rather than
+ * presenting a fallback price with the same confidence as a real fair-solved one.
+ */
+function withNaiveFallback(fairMarket, naiveMarket) {
+    return {
+        peekUnitCost: (itemId) => {
+            const fairCost = getUnitCost(fairMarket, itemId);
+            if (fairCost !== null) {
+                return fairCost;
+            }
+            const naiveCost = getUnitCost(naiveMarket, itemId);
+            return naiveCost !== null ? naiveCost : NaN;
+        },
+    };
+}
+
+/**
  * Values every tier of every standalone `spend_reward_tracks` entry (see data schema) — ladders
  * of cumulative spend during an event, unrelated to any package or exchange shop. Each tier's
  * "price" is the INCREMENTAL Banknotes needed on top of the previous tier (not the cumulative
@@ -865,16 +888,23 @@ function cheapestCostForPoints(conversions, targetPoints) {
  * way packages/bonus tiers do — they're one-off event rewards, not a genuine market source for
  * anyone else's price — so no self-reference exclusion is needed and every tier can safely share
  * one fair-price market snapshot.
+ *
+ * `options.useNaiveFallback` (default `false`) turns on `withNaiveFallback` above for items the
+ * fair solve alone can't price; breakdown rows priced this way get `estimated: true` (and a tier
+ * is `value_estimated: true` if any of its rows are), so callers can flag them as a rougher
+ * approximation rather than a real fair-solved value.
  */
 function buildSpendRewardTracks(data, locale = 'en', options = {}) {
-    const { excludeItemIds = null, excludeWeeklyPasses = true } = options;
+    const { excludeItemIds = null, excludeWeeklyPasses = true, useNaiveFallback = false } = options;
     const items = data.items || {};
     const packages = data.packages || {};
     const exchangeShops = data.exchange_shops || {};
     const spendRewardTracks = data.spend_reward_tracks || {};
-    const market = priceMapAsMarket(
+    const fairMarket = priceMapAsMarket(
         buildFairPriceMap(packages, exchangeShops, items, locale, null, excludeWeeklyPasses),
     );
+    const naiveMarket = useNaiveFallback ? createMarket(packages, exchangeShops, items, {}, {}, locale) : null;
+    const market = naiveMarket ? withNaiveFallback(fairMarket, naiveMarket) : fairMarket;
 
     const tracks = Object.entries(spendRewardTracks).map(([trackId, track]) => {
         const conversions = Array.isArray(track.conversions) && track.conversions.length > 0 ? track.conversions : null;
@@ -907,6 +937,17 @@ function buildSpendRewardTracks(data, locale = 'en', options = {}) {
                 excludeItemIds,
             );
 
+            if (naiveMarket) {
+                for (const row of breakdown) {
+                    if (
+                        getUnitCost(fairMarket, row.item_id) === null &&
+                        getUnitCost(naiveMarket, row.item_id) !== null
+                    ) {
+                        row.estimated = true;
+                    }
+                }
+            }
+
             tiers.push({
                 threshold,
                 step_points: conversions ? gap : null,
@@ -914,6 +955,7 @@ function buildSpendRewardTracks(data, locale = 'en', options = {}) {
                 total_value: Number(total.toFixed(2)),
                 value_ratio: Number((total / stepCost).toFixed(4)),
                 value_complete: complete,
+                value_estimated: breakdown.some((row) => row.estimated),
                 contains_breakdown: breakdown,
             });
         }
