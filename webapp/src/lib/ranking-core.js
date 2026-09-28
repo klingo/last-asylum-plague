@@ -250,15 +250,32 @@ function isFillerItem(itemId) {
     return itemId === 'diamonds' || itemId === 'vip_points' || ALLIANCE_CHEST_ID_PATTERN.test(itemId);
 }
 
-// Turns a bundle's contents into one regression row: filler items are dropped outright, and
-// anything already `settled` is folded into the target instead of kept as a variable, so the row
-// only ever asks the solve to explain the LEFTOVER price with whatever's still unresolved.
-// Returns null if nothing in the bundle is still unresolved (nothing for this row to contribute).
-function buildRegressionRow(contentsMap, price, settled) {
+// Raw resources that are only ever handed over pre-packaged inside a "Level Supply" wrapper item
+// (herb_level_supply_sr/ssr/ur, grain_level_supply_ur, ...), each an exact-equality identity row
+// in `regressionFill` below (e.g. "herb_level_supply_ur = 2,603,150 herbs"). A wrapper's own price
+// is well-anchored (it's typically the sole unresolved item across many same-ratio bundles, e.g.
+// the grain/timber/herb-level-supply triples — see that function's header), so the identity rows
+// alone are reliable evidence for the raw resource underneath. The trouble is the rare OTHER
+// package that also lists the raw resource directly, bundled alongside several other items with
+// no clean anchor of their own (found in practice: "ur_gear_crafting" bundles herbs with speedup,
+// tempered_steel, and resource_supply_ur, none independently well-priced) — in the single joint
+// least-squares solve, that one noisy row can outweigh the many clean wrapper-identity rows and
+// drag the raw resource's fitted price negative (dropped), taking every wrapper item that depends
+// on it down too. So these three are dropped like `isFillerItem` items specifically from PACKAGE
+// bundle rows (never seen as evidence there), while remaining full-fledged regression unknowns in
+// their own wrapper items' identity rows — see the two `buildRegressionRow` call sites below.
+const RAW_RESOURCE_WRAPPED_ITEMS = new Set(['herbs', 'grain', 'timber']);
+
+// Turns a bundle's contents into one regression row: filler items (plus, if `extraDropIds` is
+// given, those too) are dropped outright, and anything already `settled` is folded into the
+// target instead of kept as a variable, so the row only ever asks the solve to explain the
+// LEFTOVER price with whatever's still unresolved. Returns null if nothing in the bundle is
+// still unresolved (nothing for this row to contribute).
+function buildRegressionRow(contentsMap, price, settled, extraDropIds = null) {
     let knownValue = 0;
     const coeffs = new Map();
     for (const [itemId, qty] of contentsMap) {
-        if (isFillerItem(itemId)) {
+        if (isFillerItem(itemId) || extraDropIds?.has(itemId)) {
             continue;
         }
         if (settled.has(itemId)) {
@@ -606,7 +623,7 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
             if (bundle.kind !== 'package') {
                 continue;
             }
-            const row = buildRegressionRow(bundle.contents, bundle.price, settled);
+            const row = buildRegressionRow(bundle.contents, bundle.price, settled, RAW_RESOURCE_WRAPPED_ITEMS);
             if (row) {
                 rows.push(row);
             }
@@ -616,6 +633,8 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
             if (!item.contains || item.type === 'choice' || item.type === 'random' || isFillerItem(itemId)) {
                 continue;
             }
+            // No `extraDropIds` here: unlike the package-bundle rows above, an identity row is
+            // exactly where a raw resource in `RAW_RESOURCE_WRAPPED_ITEMS` is SUPPOSED to be priced.
             const identity = new Map([
                 [itemId, 1],
                 ...Object.entries(item.contains).map(([subId, qty]) => [subId, -qty]),
