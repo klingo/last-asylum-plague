@@ -343,6 +343,13 @@
             },
             "category": "virtual"
         },
+        "healing_speedup": {
+            "name": {
+                "en": "Healing Speedup",
+                "de": ""
+            },
+            "category": "speedup"
+        },
         "herb_level_supply_sr": {
             "name": {
                 "en": "Herb Level Supply (SR)",
@@ -1018,6 +1025,46 @@
             },
             "category": "speedup"
         },
+        "speedup_supply": {
+            "name": {
+                "en": "Speedup Supply",
+                "de": ""
+            },
+            "category": "virtual",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "speedup": 5
+                    },
+                    "probability": 0.25
+                },
+                {
+                    "contains": {
+                        "construction_speedup": 5
+                    },
+                    "probability": 0.3
+                },
+                {
+                    "contains": {
+                        "research_speedup": 5
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "training_speedup": 5
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "healing_speedup": 5
+                    },
+                    "probability": 0.15
+                }
+            ]
+        },
         "sr_epigraph": {
             "name": {
                 "en": "SR Epigraph",
@@ -1268,6 +1315,13 @@
                 "de": ""
             },
             "category": "virtual"
+        },
+        "training_speedup": {
+            "name": {
+                "en": "Training Speedup",
+                "de": ""
+            },
+            "category": "speedup"
         },
         "twin_dragon_brooch": {
             "name": {
@@ -2074,6 +2128,40 @@
                         "antitoxin_level_supply_ssr": 10,
                         "vip_points": 500,
                         "lv2_alliance_chest": 1
+                    }
+                }
+            }
+        },
+        "gear_pass": {
+            "name": {
+                "en": "Gear Pass",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "limit_type": "weekly",
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 10500,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "tempered_steel": 150,
+                        "resource_supply_ssr": 33,
+                        "gearstone": 12300,
+                        "speedup_supply": 90,
+                        "lv2_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 1999,
+                    "deal_percentage": 8159,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "tempered_steel": 300,
+                        "resource_supply_ssr": 77,
+                        "gearstone": 37500,
+                        "speedup_supply": 100,
+                        "lv4_alliance_chest": 1
                     }
                 }
             }
