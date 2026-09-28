@@ -748,6 +748,39 @@ tbody tr:hover {
     font-size: 0.9rem;
 }
 
+.spend-reward-grid {
+    display: grid;
+    grid-template-columns: minmax(190px, 1.6fr) minmax(90px, 0.5fr) minmax(120px, 1fr) minmax(110px, 1fr) minmax(
+            90px,
+            0.8fr
+        ) 90px 80px;
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+.ratio-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    width: 100%;
+}
+
+.ratio-bar {
+    width: 100%;
+    max-width: 70px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--panel-alt);
+    overflow: hidden;
+}
+
+.ratio-bar__fill {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+}
+
 .ranking-grid__row {
     display: contents;
 }

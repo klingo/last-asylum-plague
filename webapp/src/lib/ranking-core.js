@@ -827,6 +827,111 @@ function rankBonusTiers(
 }
 
 /**
+ * Cheapest Banknote spend to earn AT LEAST `targetPoints` of an event's own spend-tracking
+ * currency, given its `conversions` (each a freely repeatable `{price, points}` denomination —
+ * see `spendRewardTrack`'s schema doc for why real Banknotes don't always convert 1:1 into that
+ * currency). Solved via the classic unbounded-coin-change-for-at-least-N recurrence: `dp[p]` is
+ * the cheapest way to reach at least `p` points, where buying a denomination from a state already
+ * at or past `p - points` (clamped to 0, i.e. "even from scratch") is always a valid way to reach
+ * `p` — that clamp is what correctly prices deliberate overshoot (e.g. a single big denomination
+ * covering a small remaining gap more cheaply than several small ones would).
+ */
+function cheapestCostForPoints(conversions, targetPoints) {
+    if (!Number.isFinite(targetPoints) || targetPoints <= 0) {
+        return 0;
+    }
+    const dp = new Array(targetPoints + 1).fill(Infinity);
+    dp[0] = 0;
+    for (let points = 1; points <= targetPoints; points++) {
+        for (const conversion of conversions) {
+            const reachedFrom = dp[Math.max(0, points - conversion.points)];
+            if (Number.isFinite(reachedFrom) && reachedFrom + conversion.price < dp[points]) {
+                dp[points] = reachedFrom + conversion.price;
+            }
+        }
+    }
+    return dp[targetPoints];
+}
+
+/**
+ * Values every tier of every standalone `spend_reward_tracks` entry (see data schema) — ladders
+ * of cumulative spend during an event, unrelated to any package or exchange shop. Each tier's
+ * "price" is the INCREMENTAL Banknotes needed on top of the previous tier (not the cumulative
+ * total), since that's the actual marginal spend decision a player faces: "if I spend this much
+ * more, what do I get for it?" A track without `conversions` is priced directly in Banknotes
+ * (threshold deltas); one with `conversions` has its `tiers` keyed by the event's own
+ * spend-tracking currency instead, with each gap's Banknote cost solved via
+ * `cheapestCostForPoints`. Tiers never feed back into `buildFairPriceMap`'s evidence graph the
+ * way packages/bonus tiers do — they're one-off event rewards, not a genuine market source for
+ * anyone else's price — so no self-reference exclusion is needed and every tier can safely share
+ * one fair-price market snapshot.
+ */
+function buildSpendRewardTracks(data, locale = 'en', options = {}) {
+    const { excludeItemIds = null, excludeWeeklyPasses = true } = options;
+    const items = data.items || {};
+    const packages = data.packages || {};
+    const exchangeShops = data.exchange_shops || {};
+    const spendRewardTracks = data.spend_reward_tracks || {};
+    const market = priceMapAsMarket(
+        buildFairPriceMap(packages, exchangeShops, items, locale, null, excludeWeeklyPasses),
+    );
+
+    const tracks = Object.entries(spendRewardTracks).map(([trackId, track]) => {
+        const conversions = Array.isArray(track.conversions) && track.conversions.length > 0 ? track.conversions : null;
+        const thresholds = Object.keys(track.tiers || {})
+            .map(Number)
+            .filter((threshold) => Number.isFinite(threshold) && threshold > 0)
+            .sort((a, b) => a - b);
+
+        let previousThreshold = 0;
+        const tiers = [];
+        for (const threshold of thresholds) {
+            const contains = track.tiers[String(threshold)];
+            const gap = threshold - previousThreshold;
+            previousThreshold = threshold;
+            if (!Number.isFinite(gap) || gap <= 0) {
+                continue;
+            }
+
+            const stepCost = conversions ? cheapestCostForPoints(conversions, gap) : gap;
+            if (!Number.isFinite(stepCost) || stepCost <= 0) {
+                continue;
+            }
+
+            const { total, complete, breakdown } = valueOfBundle(
+                new Map(Object.entries(contains)),
+                stepCost,
+                market,
+                items,
+                locale,
+                excludeItemIds,
+            );
+
+            tiers.push({
+                threshold,
+                step_points: conversions ? gap : null,
+                step_cost: Number(stepCost.toFixed(6)),
+                total_value: Number(total.toFixed(2)),
+                value_ratio: Number((total / stepCost).toFixed(4)),
+                value_complete: complete,
+                contains_breakdown: breakdown,
+            });
+        }
+
+        return { id: trackId, name: localizedName(track.name, locale) || trackId, uses_points: !!conversions, tiers };
+    });
+
+    return {
+        metadata: {
+            generated_at: new Date().toISOString(),
+            source_last_updated: data.metadata?.last_updated || null,
+            currency: data.metadata?.currency || t('currency.banknotes'),
+        },
+        tracks,
+    };
+}
+
+/**
  * Builds the full live ranking of packages/exchange offers/bonus tiers from raw pack data.
  * Mirrors the shape of the (now retired) output/value_ranking.json for a drop-in swap.
  *
@@ -922,4 +1027,4 @@ function createFairValueMarket(data, locale = 'en', options = {}) {
     return priceMapAsMarket(buildFairPriceMap(packages, exchangeShops, items, locale, null, excludeWeeklyPasses));
 }
 
-export { buildRanking, createFairValueMarket };
+export { buildRanking, createFairValueMarket, buildSpendRewardTracks };

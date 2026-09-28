@@ -4417,5 +4417,119 @@
             },
             "category": "special_event"
         }
+    },
+    "spend_reward_tracks": {
+        "ancient_recipe": {
+            "name": {
+                "en": "Ancient Recipe",
+                "de": ""
+            },
+            "conversions": [
+                {
+                    "price": 99,
+                    "points": 100
+                },
+                {
+                    "price": 199,
+                    "points": 200
+                },
+                {
+                    "price": 399,
+                    "points": 400
+                },
+                {
+                    "price": 499,
+                    "points": 500
+                },
+                {
+                    "price": 1999,
+                    "points": 2000
+                },
+                {
+                    "price": 2499,
+                    "points": 2500
+                },
+                {
+                    "price": 4999,
+                    "points": 5000
+                },
+                {
+                    "price": 9999,
+                    "points": 10000
+                }
+            ],
+            "tiers": {
+                "2000": {
+                    "ur_hero_omni_shard": 5,
+                    "gearstone": 500,
+                    "skill_badge": 500,
+                    "herb_level_supply_ssr": 2,
+                    "resource_supply_sr": 2
+                },
+                "5000": {
+                    "ur_hero_omni_shard": 10,
+                    "gearstone": 1000,
+                    "skill_badge": 1000,
+                    "herb_level_supply_ssr": 4,
+                    "resource_supply_sr": 4
+                },
+                "10000": {
+                    "ur_hero_omni_shard": 20,
+                    "gearstone": 1500,
+                    "skill_badge": 1500,
+                    "herb_level_supply_ssr": 6,
+                    "resource_supply_sr": 6
+                },
+                "20000": {
+                    "gear_blueprint_ur": 5,
+                    "gearstone": 2000,
+                    "skill_badge": 2000,
+                    "herb_level_supply_ssr": 8,
+                    "resource_supply_sr": 8
+                },
+                "40000": {
+                    "ur_hero_omni_shard": 40,
+                    "gearstone": 4000,
+                    "skill_badge": 4000,
+                    "herb_level_supply_ssr": 10,
+                    "resource_supply_sr": 10
+                },
+                "70000": {
+                    "gear_blueprint_ur": 10,
+                    "gearstone": 6000,
+                    "skill_badge": 6000,
+                    "herb_level_supply_ssr": 12,
+                    "resource_supply_sr": 12
+                },
+                "100000": {
+                    "gear_blueprint_ur": 10,
+                    "gearstone": 8000,
+                    "skill_badge": 8000,
+                    "herb_level_supply_ssr": 14,
+                    "resource_supply_sr": 14
+                },
+                "130000": {
+                    "gear_blueprint_ur": 10,
+                    "gearstone": 10000,
+                    "skill_badge": 10000,
+                    "herb_level_supply_ssr": 16,
+                    "resource_supply_sr": 16
+                },
+                "180000": {
+                    "gear_blueprint_ur": 5,
+                    "stone_blade": 500,
+                    "gearstone": 12000,
+                    "herb_level_supply_ssr": 18,
+                    "resource_supply_sr": 18
+                },
+                "250000": {
+                    "gear_blueprint_ur": 10,
+                    "stone_blade": 500,
+                    "gearstone": 15000,
+                    "herb_level_supply_ssr": 20,
+                    "resource_supply_sr": 20
+                }
+            }
+        }
     }
 }

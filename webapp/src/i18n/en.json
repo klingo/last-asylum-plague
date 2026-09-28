@@ -8,6 +8,7 @@
         "compare": "Compare Items",
         "rankings": "Value Ranking",
         "choices": "Best Choice Pick",
+        "spendRewards": "Spend Rewards",
         "language": "Language"
     },
     "common": {
@@ -68,7 +69,8 @@
         "analyze": "Analyze Item Value - Last Asylum Pack Solver",
         "compare": "Compare Items - Last Asylum Pack Solver",
         "rankings": "Value Ranking - Last Asylum Pack Solver",
-        "choices": "Best Choice Pick - Last Asylum Pack Solver"
+        "choices": "Best Choice Pick - Last Asylum Pack Solver",
+        "spendRewards": "Spend Rewards - Last Asylum Pack Solver"
     },
     "footer": {
         "welcome": "Last Asylum Pack Solver — computed live from pack_data.json",
@@ -78,7 +80,8 @@
         "compareDefault": "Last Asylum Pack Solver — data generated from pack_data.json",
         "rankings": "Last Asylum Pack Solver — ranking computed live from pack_data.json",
         "choicesGenerated": "Last Asylum Pack Solver — data generated from pack_data.json (updated {date})",
-        "choicesDefault": "Last Asylum Pack Solver — data generated from pack_data.json"
+        "choicesDefault": "Last Asylum Pack Solver — data generated from pack_data.json",
+        "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json"
     },
     "welcome": {
         "heading": "Welcome",
@@ -86,7 +89,8 @@
         "analyzeDescription": "Pick any item and see every package or exchange offer that yields it, ranked by cost per unit, plus the cheapest purchase plan to reach a target quantity.",
         "compareDescription": "Pick two items and quantities and compare how much value each provides, plus the cheapest purchase plan for each side by side.",
         "rankingsDescription": "Browse every package, exchange offer, and bonus tier ranked by how much value it returns relative to its price, to spot the best deals at a glance.",
-        "choicesDescription": "Pick a choice chest or package and see which of its reward options is worth the most, ranked by the cheapest cost to buy that same reward elsewhere."
+        "choicesDescription": "Pick a choice chest or package and see which of its reward options is worth the most, ranked by the cheapest cost to buy that same reward elsewhere.",
+        "spendRewardsDescription": "Pick a cumulative spend-reward event track and see each tier's marginal Banknote cost, value, and ratio — to spot the point where spending more stops paying off."
     },
     "analyze": {
         "heading": "Analyze Item Value",
@@ -196,6 +200,26 @@
         "optionsEmpty": "This item has no choice options.",
         "table": {
             "item": "Item"
+        }
+    },
+    "spendRewards": {
+        "heading": "Spend Rewards",
+        "description": "Pick an event's cumulative spend-reward track. Each tier's cost is only the EXTRA Banknotes needed on top of the previous tier (not the full amount spent so far), so you can see the marginal value returned for spending further.",
+        "trackLabel": "Reward Track",
+        "trackPlaceholder": "Select a track…",
+        "empty": "No spend reward tracks defined yet.",
+        "selectPrompt": "Select a reward track above to see its tiers.",
+        "pointsSuffix": "pts",
+        "note": "Value ratio = tier value / step cost, where step cost is the extra Banknotes needed on top of the previous tier. Higher ratio means a better marginal deal; entries marked incomplete contain at least one item with no known purchasable source elsewhere, so value is a lower-bound estimate.",
+        "table": {
+            "tier": "Tier",
+            "threshold": "Spend Threshold",
+            "stepCost": "Step Cost",
+            "value": "Value ({icon})",
+            "valueRatio": "Value Ratio",
+            "complete": "Complete",
+            "item": "Item",
+            "unitCost": "Unit Cost"
         }
     }
 }

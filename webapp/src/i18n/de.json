@@ -8,6 +8,7 @@
         "compare": "",
         "rankings": "",
         "choices": "",
+        "spendRewards": "",
         "language": ""
     },
     "common": {
@@ -68,7 +69,8 @@
         "analyze": "",
         "compare": "",
         "rankings": "",
-        "choices": ""
+        "choices": "",
+        "spendRewards": ""
     },
     "footer": {
         "welcome": "",
@@ -78,7 +80,8 @@
         "compareDefault": "",
         "rankings": "",
         "choicesGenerated": "",
-        "choicesDefault": ""
+        "choicesDefault": "",
+        "spendRewards": ""
     },
     "welcome": {
         "heading": "",
@@ -86,7 +89,8 @@
         "analyzeDescription": "",
         "compareDescription": "",
         "rankingsDescription": "",
-        "choicesDescription": ""
+        "choicesDescription": "",
+        "spendRewardsDescription": ""
     },
     "analyze": {
         "heading": "",
@@ -196,6 +200,26 @@
         "optionsEmpty": "",
         "table": {
             "item": ""
+        }
+    },
+    "spendRewards": {
+        "heading": "",
+        "description": "",
+        "trackLabel": "",
+        "trackPlaceholder": "",
+        "empty": "",
+        "selectPrompt": "",
+        "pointsSuffix": "",
+        "note": "",
+        "table": {
+            "tier": "",
+            "threshold": "",
+            "stepCost": "",
+            "value": "",
+            "valueRatio": "",
+            "complete": "",
+            "item": "",
+            "unitCost": ""
         }
     }
 }

@@ -94,6 +94,7 @@ function verifyData() {
     const packages = data.packages || {};
     const exchangeShops = data.exchange_shops || {};
     const events = data.events || {};
+    const spendRewardTracks = data.spend_reward_tracks || {};
 
     const itemKeys = new Set(Object.keys(items));
     const packageKeys = new Set(Object.keys(packages));
@@ -332,7 +333,27 @@ function verifyData() {
         }
     });
 
-    // 6. Events Relational Checks
+    // 6. Spend Reward Track Relational Checks
+    checkCategory('Spend Reward Tracks', ({ reportError }) => {
+        for (const [trackId, track] of Object.entries(spendRewardTracks)) {
+            for (const [threshold, contains] of Object.entries(track.tiers || {})) {
+                if (!contains || typeof contains !== 'object') {
+                    continue;
+                }
+                for (const itemId of Object.keys(contains)) {
+                    referencedItemKeys.add(itemId);
+                    if (!itemKeys.has(itemId)) {
+                        reportError(
+                            'Spend Reward Reference',
+                            `Spend reward track "${trackId}" tier "${threshold}" contains unresolvable item: "${itemId}"`,
+                        );
+                    }
+                }
+            }
+        }
+    });
+
+    // 7. Events Relational Checks
     checkCategory('Events', ({ reportWarning }) => {
         for (const eventId of eventKeys) {
             if (!referencedEventKeys.has(eventId)) {
@@ -344,7 +365,7 @@ function verifyData() {
         }
     });
 
-    // 7. Report Unreferenced Items (Informational / Warnings)
+    // 8. Report Unreferenced Items (Informational / Warnings)
     checkCategory('Unreferenced Items', ({ reportWarning }) => {
         for (const itemId of itemKeys) {
             if (!referencedItemKeys.has(itemId)) {

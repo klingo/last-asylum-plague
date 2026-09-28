@@ -16,6 +16,7 @@ export default defineConfig({
                 compare: resolve(__dirname, 'compare.html'),
                 rankings: resolve(__dirname, 'rankings.html'),
                 choices: resolve(__dirname, 'choices.html'),
+                spendRewards: resolve(__dirname, 'spend-rewards.html'),
             },
         },
     },

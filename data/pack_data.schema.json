@@ -45,6 +45,16 @@
             "additionalProperties": {
                 "$ref": "#/definitions/event"
             }
+        },
+        "spend_reward_tracks": {
+            "type": "object",
+            "description": "Standalone (not tied to a package or event) ladders of cumulative real-money Banknote spend during an event: reach a tier's spend threshold and get that tier's reward. Independent of `packages`/`events` on purpose.",
+            "propertyNames": {
+                "$ref": "#/definitions/id"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/spendRewardTrack"
+            }
         }
     },
     "definitions": {
@@ -461,6 +471,47 @@
                 },
                 "category": {
                     "$ref": "#/definitions/packageCategory"
+                }
+            }
+        },
+        "spendRewardTrack": {
+            "type": "object",
+            "description": "A ladder of cumulative spend tiers. Buying this tier's reward is assumed to require having already reached every lower threshold present in the same track's `tiers` map. Without `conversions`, `tiers` is keyed by the total Banknotes spent (in this event) needed to reach that tier. With `conversions`, real-money Banknotes don't convert 1:1 into this event's own spend-tracking currency (e.g. buying a 499-Banknote pack might grant 500 tracked points) — `tiers` is then keyed by that currency's cumulative amount instead, and the Banknote cost of each tier is solved for as the cheapest combination of `conversions` purchases covering the gap.",
+            "required": ["name", "tiers"],
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/localizedString"
+                },
+                "conversions": {
+                    "type": "array",
+                    "description": "The purchasable Banknote denominations this event offers for earning its own spend-tracking currency, e.g. `{price: 499, points: 500}` for a 499-Banknote pack granting 500 tracked points. Assumed freely repeatable (no purchase limit) during the event.",
+                    "items": {
+                        "type": "object",
+                        "required": ["price", "points"],
+                        "additionalProperties": false,
+                        "properties": {
+                            "price": {
+                                "type": "integer",
+                                "minimum": 1
+                            },
+                            "points": {
+                                "type": "integer",
+                                "minimum": 1
+                            }
+                        }
+                    },
+                    "minItems": 1
+                },
+                "tiers": {
+                    "type": "object",
+                    "propertyNames": {
+                        "$ref": "#/definitions/tierNumber"
+                    },
+                    "additionalProperties": {
+                        "$ref": "#/definitions/itemQuantities"
+                    },
+                    "minProperties": 1
                 }
             }
         }

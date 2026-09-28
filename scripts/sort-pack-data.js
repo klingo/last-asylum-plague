@@ -18,7 +18,7 @@ function sortByNumericKey(object) {
 if (fs.existsSync(DATA_PATH)) {
     const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
 
-    for (const sectionName of ['items', 'packages', 'exchange_shops', 'events']) {
+    for (const sectionName of ['items', 'packages', 'exchange_shops', 'events', 'spend_reward_tracks']) {
         if (isObject(data[sectionName])) {
             data[sectionName] = sortByKey(data[sectionName]);
         }
@@ -37,6 +37,15 @@ if (fs.existsSync(DATA_PATH)) {
     for (const pkg of Object.values(data.packages ?? {})) {
         if (isObject(pkg.tiers)) {
             pkg.tiers = sortByNumericKey(pkg.tiers);
+        }
+    }
+
+    for (const track of Object.values(data.spend_reward_tracks ?? {})) {
+        if (isObject(track.tiers)) {
+            track.tiers = sortByNumericKey(track.tiers);
+        }
+        if (Array.isArray(track.conversions)) {
+            track.conversions = [...track.conversions].sort((a, b) => a.price - b.price);
         }
     }
 
