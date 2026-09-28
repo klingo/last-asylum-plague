@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-09-26"
+        "last_updated": "2026-09-28"
     },
     "items": {
         "antitoxin": {
@@ -828,6 +828,13 @@
                 "de": ""
             },
             "category": "gear"
+        },
+        "recluse_coin": {
+            "name": {
+                "en": "Recluse Coin",
+                "de": ""
+            },
+            "category": "special"
         },
         "recruit_ticket": {
             "name": {
@@ -2761,6 +2768,91 @@
                 }
             }
         },
+        "recluse_coin_deluxe_pack": {
+            "name": {
+                "en": "Recluse Coin Deluxe Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "recluse_merchant",
+            "price": 999,
+            "deal_percentage": 3200,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 1000,
+                "recluse_coin": 1000,
+                "vip_points": 1000
+            }
+        },
+        "recluse_coin_majestic_pack": {
+            "name": {
+                "en": "Recluse Coin Majestic Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "recluse_merchant",
+            "price": 4999,
+            "deal_percentage": 3200,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 5000,
+                "recluse_coin": 5000,
+                "vip_points": 5000
+            }
+        },
+        "recluse_coin_premium_pack": {
+            "name": {
+                "en": "Recluse Coin Premium Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "recluse_merchant",
+            "price": 499,
+            "deal_percentage": 5200,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "recluse_coin": 800,
+                "vip_points": 500
+            }
+        },
+        "recluse_coin_rare_pack": {
+            "name": {
+                "en": "Recluse Coin Rare Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "recluse_merchant",
+            "price": 1999,
+            "deal_percentage": 3200,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 2000,
+                "recluse_coin": 2000,
+                "vip_points": 2000
+            }
+        },
+        "recluse_coin_supreme_pack": {
+            "name": {
+                "en": "Recluse Coin Supreme Pack",
+                "de": ""
+            },
+            "category": "shop_event",
+            "event_id": "recluse_merchant",
+            "price": 9999,
+            "deal_percentage": 3200,
+            "purchase_limit": 5,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 10000,
+                "recluse_coin": 10000,
+                "vip_points": 10000
+            }
+        },
         "research_special_pack": {
             "name": {
                 "en": "Research Special Pack",
@@ -3381,6 +3473,37 @@
         }
     },
     "exchange_shops": {
+        "recluse_merchant": {
+            "name": {
+                "en": "Recluse Merchant",
+                "de": ""
+            },
+            "event_id": "recluse_merchant",
+            "currency_item_id": "recluse_coin",
+            "offers": {
+                "gearstone": {
+                    "item_id": "gearstone",
+                    "currency_cost": 600,
+                    "quantity": 2000,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "raven_essence": {
+                    "item_id": "raven_essence",
+                    "currency_cost": 500,
+                    "quantity": 15,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "timber_level_supply_ur": {
+                    "item_id": "timber_level_supply_ur",
+                    "currency_cost": 120,
+                    "quantity": 5,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                }
+            }
+        },
         "starry_bazaar": {
             "name": {
                 "en": "Starry Bazaar",
@@ -3946,6 +4069,13 @@
                 "de": ""
             },
             "category": "special_event"
+        },
+        "recluse_merchant": {
+            "name": {
+                "en": "Recluse Merchant",
+                "de": ""
+            },
+            "category": "shop_event"
         },
         "strange_bazaar": {
             "name": {

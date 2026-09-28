@@ -447,7 +447,8 @@
                 "surprise_encounter",
                 "weekly_special",
                 "mystic_cabinet",
-                "full_moon_night"
+                "full_moon_night",
+                "recluse_merchant"
             ]
         },
         "event": {
