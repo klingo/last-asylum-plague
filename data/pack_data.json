@@ -3481,6 +3481,69 @@
             "event_id": "recluse_merchant",
             "currency_item_id": "recluse_coin",
             "offers": {
+                "awaken_shard_choice_chest_great": {
+                    "item_id": "awaken_shard_choice_chest",
+                    "currency_cost": 60,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "awaken_shard_choice_chest_normal": {
+                    "item_id": "awaken_shard_choice_chest",
+                    "currency_cost": 1000,
+                    "quantity": 10,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "curio_chest_ur_great_600": {
+                    "item_id": "curio_chest_ur",
+                    "currency_cost": 600,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "curio_chest_ur_great_800": {
+                    "item_id": "curio_chest_ur",
+                    "currency_cost": 800,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "curio_chest_ur_normal": {
+                    "item_id": "curio_chest_ur",
+                    "currency_cost": 1000,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "excl_weapon_shard_choice_chest_great": {
+                    "item_id": "excl_weapon_shard_choice_chest",
+                    "currency_cost": 60,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "excl_weapon_shard_choice_chest_normal": {
+                    "item_id": "excl_weapon_shard_choice_chest",
+                    "currency_cost": 1000,
+                    "quantity": 10,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "gear_blueprint_ur_great": {
+                    "item_id": "gear_blueprint_ur",
+                    "currency_cost": 600,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "gear_blueprint_ur_normal": {
+                    "item_id": "gear_blueprint_ur",
+                    "currency_cost": 4000,
+                    "quantity": 5,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
                 "gearstone": {
                     "item_id": "gearstone",
                     "currency_cost": 600,
@@ -3488,10 +3551,122 @@
                     "purchase_limit": 1,
                     "limit_type": "daily"
                 },
-                "raven_essence": {
+                "gearstone_great": {
+                    "item_id": "gearstone",
+                    "currency_cost": 50,
+                    "quantity": 420,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "grain_level_supply_ur": {
+                    "item_id": "grain_level_supply_ur",
+                    "currency_cost": 120,
+                    "quantity": 5,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "raven_essence_great": {
+                    "item_id": "raven_essence",
+                    "currency_cost": 500,
+                    "quantity": 25,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "raven_essence_normal": {
                     "item_id": "raven_essence",
                     "currency_cost": 500,
                     "quantity": 15,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "resource_supply_ssr_great": {
+                    "item_id": "resource_supply_ssr",
+                    "currency_cost": 50,
+                    "quantity": 2,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "resource_supply_ur": {
+                    "item_id": "resource_supply_ur",
+                    "currency_cost": 500,
+                    "quantity": 6,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "skill_badge_great": {
+                    "item_id": "skill_badge",
+                    "currency_cost": 50,
+                    "quantity": 500,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "skill_badge_normal": {
+                    "item_id": "skill_badge",
+                    "currency_cost": 500,
+                    "quantity": 2500,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "speedup_5m_great": {
+                    "item_id": "speedup",
+                    "currency_cost": 10,
+                    "quantity": 65,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "speedup_5m2_great": {
+                    "item_id": "speedup",
+                    "currency_cost": 10,
+                    "quantity": 50,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "speedup_60m_normal": {
+                    "item_id": "speedup",
+                    "currency_cost": 800,
+                    "quantity": 1860,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "ssr_epigraph_chest_great": {
+                    "item_id": "ssr_epigraph_chest",
+                    "currency_cost": 250,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "ssr_epigraph_chest_normal": {
+                    "item_id": "ssr_epigraph_chest",
+                    "currency_cost": 500,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "study_scroll_great": {
+                    "item_id": "study_scroll",
+                    "currency_cost": 300,
+                    "quantity": 100,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "study_scroll_normal": {
+                    "item_id": "study_scroll",
+                    "currency_cost": 500,
+                    "quantity": 50,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "tempered_steel_great": {
+                    "item_id": "tempered_steel",
+                    "currency_cost": 150,
+                    "quantity": 30,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "tempered_steel_normal": {
+                    "item_id": "tempered_steel",
+                    "currency_cost": 700,
+                    "quantity": 100,
                     "purchase_limit": 1,
                     "limit_type": "daily"
                 },
@@ -3499,6 +3674,62 @@
                     "item_id": "timber_level_supply_ur",
                     "currency_cost": 120,
                     "quantity": 5,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "universal_curio_shard_great": {
+                    "item_id": "universal_curio_shard",
+                    "currency_cost": 200,
+                    "quantity": 30,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "universal_curio_shard_normal": {
+                    "item_id": "universal_curio_shard",
+                    "currency_cost": 500,
+                    "quantity": 50,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "ur_epigraph_chest_great": {
+                    "item_id": "ur_epigraph_chest",
+                    "currency_cost": 1500,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "ur_epigraph_chest_normal": {
+                    "item_id": "ur_epigraph_chest",
+                    "currency_cost": 3000,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "ur_epigraph_choice_chest_great": {
+                    "item_id": "ur_epigraph_choice_chest",
+                    "currency_cost": 3000,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "ur_epigraph_choice_chest_normal": {
+                    "item_id": "ur_epigraph_choice_chest",
+                    "currency_cost": 4000,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "ur_hero_omni_shard_great": {
+                    "item_id": "ur_hero_omni_shard",
+                    "currency_cost": 60,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "ur_hero_omni_shard_normal": {
+                    "item_id": "ur_hero_omni_shard",
+                    "currency_cost": 1000,
+                    "quantity": 10,
                     "purchase_limit": 1,
                     "limit_type": "daily"
                 }
