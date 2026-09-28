@@ -912,6 +912,11 @@ function withNaiveFallback(fairMarket, naiveMarket) {
  * fair solve alone can't price; breakdown rows priced this way get `estimated: true` (and a tier
  * is `value_estimated: true` if any of its rows are), so callers can flag them as a rougher
  * approximation rather than a real fair-solved value.
+ *
+ * Each tier's `cumulative_cost` is the running sum of `step_cost` up to and including that tier
+ * (i.e. the total Banknotes spent to reach it from zero) — a plain running total, not a fresh
+ * `cheapestCostForPoints` solve over the full threshold, so it always agrees with the Step Cost
+ * column a caller displays alongside it.
  */
 function buildSpendRewardTracks(data, locale = 'en', options = {}) {
     const { excludeItemIds = null, excludeWeeklyPasses = true, useNaiveFallback = false } = options;
@@ -933,6 +938,7 @@ function buildSpendRewardTracks(data, locale = 'en', options = {}) {
             .sort((a, b) => a - b);
 
         let previousThreshold = 0;
+        let cumulativeCost = 0;
         const tiers = [];
         for (const threshold of thresholds) {
             const contains = track.tiers[String(threshold)];
@@ -946,6 +952,11 @@ function buildSpendRewardTracks(data, locale = 'en', options = {}) {
             if (!Number.isFinite(stepCost) || stepCost <= 0) {
                 continue;
             }
+            // Running total of step costs so far, i.e. the Banknotes actually spent to reach THIS
+            // tier by taking every gap in sequence — not a fresh `cheapestCostForPoints` solve
+            // over the full cumulative threshold, which (via overshoot) can be cheaper than the
+            // sum of independently-solved gaps and would then contradict the Step Cost column.
+            cumulativeCost += stepCost;
 
             const { total, complete, breakdown } = valueOfBundle(
                 new Map(Object.entries(contains)),
@@ -971,6 +982,7 @@ function buildSpendRewardTracks(data, locale = 'en', options = {}) {
                 threshold,
                 step_points: conversions ? gap : null,
                 step_cost: Number(stepCost.toFixed(6)),
+                cumulative_cost: Number(cumulativeCost.toFixed(6)),
                 total_value: Number(total.toFixed(2)),
                 value_ratio: Number((total / stepCost).toFixed(4)),
                 value_complete: complete,

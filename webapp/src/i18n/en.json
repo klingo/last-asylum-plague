@@ -210,6 +210,7 @@
         "empty": "No spend reward tracks defined yet.",
         "selectPrompt": "Select a reward track above to see its tiers.",
         "pointsSuffix": "pts",
+        "tierLabel": "Tier {tier}",
         "fallbackLabel": "Unpriced Items",
         "fallbackCheckboxText": "Estimate with rough fallback pricing",
         "note": "Value ratio = tier value / step cost, where step cost is the extra Banknotes needed on top of the previous tier. Higher ratio means a better marginal deal; entries marked incomplete contain at least one item with no known purchasable source elsewhere, so value is a lower-bound estimate. Entries marked \"Estimated\" (only when the fallback checkbox above is enabled) priced at least one item using a rougher, non-bundle-fair estimate instead of leaving it unpriced — treat those values as a looser approximation.",

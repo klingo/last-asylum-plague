@@ -98,14 +98,15 @@ function renderTiers(track) {
             const key = tierKey(track.id, tier);
             const ratioFraction = ratioBarFraction(tier.value_ratio, maxRatio);
             const ratioColor = ratioBarColor(ratioFraction);
+            const tierLabel = t('spendRewards.tierLabel', { tier: index + 1 });
             return `
                 <div class="ranking-grid__row" role="row" data-tier-key="${key}">
-                    <div class="ranking-grid__cell" role="cell">${t('common.tierSuffix', { tier: index + 1 })}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${
+                    <div class="ranking-grid__cell" role="cell">${
                         track.uses_points
-                            ? `<span class="text-gold">${formatThousands(tier.threshold)}</span>&nbsp;${t('spendRewards.pointsSuffix')}`
-                            : `<span class="text-gold">${formatThousands(tier.threshold)}</span> ${banknoteIconHtml()}`
+                            ? `${tierLabel} (<span class="text-gold">${formatThousands(tier.threshold)}</span>&nbsp;${t('spendRewards.pointsSuffix')})`
+                            : tierLabel
                     }</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(tier.cumulative_cost, 2)}</span> ${banknoteIconHtml()}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(tier.step_cost, 2)}</span> ${banknoteIconHtml()}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(tier.total_value, 2)}</span> ${banknoteIconHtml()}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">
