@@ -251,21 +251,21 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
         return ledger.get(key);
     }
 
+    // "Exceed pack limits" never applies here: it exists only to model buying MORE of the
+    // real-money packages that sell an event's currency, never the in-shop offers that SPEND
+    // that currency. An exchange offer's own purchase_limit always applies, scaled only by the
+    // "days" planning horizon, regardless of `exceedEventPackLimits`.
     function offerCapacity(shopId, offerKey, offer) {
         const key = offerLedgerKey(shopId, offerKey);
         if (!ledger.has(key)) {
             const shop = exchangeShops[shopId];
-            if (isEventActive(shop && shop.event_id) && exceedEventPackLimits) {
-                ledger.set(key, Infinity);
-            } else {
-                const capacity = effectiveCapacity(
-                    offer.purchase_limit,
-                    offer.limit_type,
-                    Boolean(shop && shop.event_id),
-                    normalizedLimitOptions,
-                );
-                ledger.set(key, capacity);
-            }
+            const capacity = effectiveCapacity(
+                offer.purchase_limit,
+                offer.limit_type,
+                Boolean(shop && shop.event_id),
+                normalizedLimitOptions,
+            );
+            ledger.set(key, capacity);
         }
         return ledger.get(key);
     }
@@ -575,20 +575,15 @@ function collectPackageSources(
     return sources;
 }
 
-function collectExchangeSources(
-    targetId,
-    exchangeShops,
-    items,
-    getItemCost,
-    limitOptions = {},
-    activeEventIds = null,
-    exceedEventPackLimits = false,
-) {
+// "Exceed pack limits" is deliberately NOT a parameter here (unlike `collectPackageSources`
+// above): it exists only to model buying MORE of the real-money packages that sell an event's
+// currency, never the in-shop offers that SPEND it — an exchange offer's own purchase_limit
+// always applies, scaled only by the "days" planning horizon. See `offerCapacity` in
+// `createMarket` above for the same rule applied to actual purchase simulation.
+function collectExchangeSources(targetId, exchangeShops, items, getItemCost, limitOptions = {}) {
     const normalizedLimitOptions = normalizeLimitOptions(limitOptions);
     const sources = [];
     for (const [shopId, shop] of Object.entries(exchangeShops)) {
-        const eventActive = Boolean(shop.event_id) && (!activeEventIds || activeEventIds.has(shop.event_id));
-        const overridden = eventActive && exceedEventPackLimits;
         for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
             const offerItemId = offer.item_id || offerKey;
             const y = offer.quantity * rawYield(offerItemId, targetId, new Set(), items);
@@ -597,14 +592,12 @@ function collectExchangeSources(
             }
             const currencyUnitCost = getItemCost(shop.currency_item_id);
             const totalPrice = offer.currency_cost * currencyUnitCost;
-            const capacity = overridden
-                ? Infinity
-                : effectiveCapacity(
-                      offer.purchase_limit,
-                      offer.limit_type,
-                      Boolean(shop.event_id),
-                      normalizedLimitOptions,
-                  );
+            const capacity = effectiveCapacity(
+                offer.purchase_limit,
+                offer.limit_type,
+                Boolean(shop.event_id),
+                normalizedLimitOptions,
+            );
             sources.push({
                 type: 'exchange',
                 id: `${shopId}:${offerKey}`,
@@ -618,7 +611,7 @@ function collectExchangeSources(
                 limitType: offer.limit_type,
                 availableDays: null,
                 requires: null,
-                limitIgnored: overridden,
+                limitIgnored: false,
                 purchaseCapacity: capacity,
             });
         }

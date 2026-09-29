@@ -327,8 +327,6 @@ function renderSide(side, targetItemId, targetQuantity, activeEventIds, exceedEv
         market.peekUnitCost,
         limitOptions,
         locale,
-        activeEventIds,
-        exceedEventPackLimits,
     );
 
     const allSources = [...packageSources, ...exchangeSources].filter((s) => Number.isFinite(s.pricePerUnit));

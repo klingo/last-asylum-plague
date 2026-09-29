@@ -9,6 +9,7 @@
         "rankings": "",
         "choices": "",
         "spendRewards": "",
+        "eventOffers": "",
         "language": ""
     },
     "common": {
@@ -70,7 +71,8 @@
         "compare": "",
         "rankings": "",
         "choices": "",
-        "spendRewards": ""
+        "spendRewards": "",
+        "eventOffers": ""
     },
     "footer": {
         "welcome": "",
@@ -81,7 +83,8 @@
         "rankings": "",
         "choicesGenerated": "",
         "choicesDefault": "",
-        "spendRewards": ""
+        "spendRewards": "",
+        "eventOffers": ""
     },
     "welcome": {
         "heading": "",
@@ -90,7 +93,8 @@
         "compareDescription": "",
         "rankingsDescription": "",
         "choicesDescription": "",
-        "spendRewardsDescription": ""
+        "spendRewardsDescription": "",
+        "eventOffersDescription": ""
     },
     "analyze": {
         "heading": "",
@@ -223,6 +227,43 @@
             "complete": "",
             "item": "",
             "unitCost": "",
+            "estimated": "",
+            "estimatedShort": ""
+        }
+    },
+    "eventOffers": {
+        "heading": "",
+        "description": "",
+        "eventLabel": "",
+        "eventPlaceholder": "",
+        "empty": "",
+        "selectPrompt": "",
+        "daysLabel": "",
+        "exceedLimitLabel": "",
+        "exceedPackLimits": "",
+        "fallbackLabel": "",
+        "fallbackCheckboxText": "",
+        "offersHeading": "",
+        "offersNote": "",
+        "bonusTiersHeading": "",
+        "bonusTiersDescription": "",
+        "tierLabel": "",
+        "table": {
+            "tier": "",
+            "item": "",
+            "currencyCost": "",
+            "cumulativeCost": "",
+            "stepCost": "",
+            "cost": "",
+            "value": "",
+            "valueRatio": "",
+            "maxRatio": "",
+            "maxQuantity": "",
+            "maxCost": "",
+            "maxValue": "",
+            "status": "",
+            "unitCost": "",
+            "unreachable": "",
             "estimated": "",
             "estimatedShort": ""
         }

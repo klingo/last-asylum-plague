@@ -140,7 +140,7 @@ function buildOptionRows(choiceSource, items, packages, exchangeShops, locale, a
             ? collectPackageSources(itemId, pricingPackages, items, {}, locale, activeEventIds, false)
             : [];
         const exchangeSources = itemId
-            ? collectExchangeSources(itemId, activeShops, items, market.peekUnitCost, {}, locale, activeEventIds, false)
+            ? collectExchangeSources(itemId, activeShops, items, market.peekUnitCost, {}, locale)
             : [];
         const bestSource = [...packageSources, ...exchangeSources]
             .filter((s) => Number.isFinite(s.pricePerUnit))

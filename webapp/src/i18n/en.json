@@ -9,6 +9,7 @@
         "rankings": "Value Ranking",
         "choices": "Best Choice Pick",
         "spendRewards": "Spend Rewards",
+        "eventOffers": "Event Offers",
         "language": "Language"
     },
     "common": {
@@ -70,7 +71,8 @@
         "compare": "Compare Items - Last Asylum Pack Solver",
         "rankings": "Value Ranking - Last Asylum Pack Solver",
         "choices": "Best Choice Pick - Last Asylum Pack Solver",
-        "spendRewards": "Spend Rewards - Last Asylum Pack Solver"
+        "spendRewards": "Spend Rewards - Last Asylum Pack Solver",
+        "eventOffers": "Event Offers - Last Asylum Pack Solver"
     },
     "footer": {
         "welcome": "Last Asylum Pack Solver — computed live from pack_data.json",
@@ -81,7 +83,8 @@
         "rankings": "Last Asylum Pack Solver — ranking computed live from pack_data.json",
         "choicesGenerated": "Last Asylum Pack Solver — data generated from pack_data.json (updated {date})",
         "choicesDefault": "Last Asylum Pack Solver — data generated from pack_data.json",
-        "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json"
+        "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json",
+        "eventOffers": "Last Asylum Pack Solver — event offers computed live from pack_data.json"
     },
     "welcome": {
         "heading": "Welcome",
@@ -90,7 +93,8 @@
         "compareDescription": "Pick two items and quantities and compare how much value each provides, plus the cheapest purchase plan for each side by side.",
         "rankingsDescription": "Browse every package, exchange offer, and bonus tier ranked by how much value it returns relative to its price, to spot the best deals at a glance.",
         "choicesDescription": "Pick a choice chest or package and see which of its reward options is worth the most, ranked by the cheapest cost to buy that same reward elsewhere.",
-        "spendRewardsDescription": "Pick a cumulative spend-reward event track and see each tier's marginal Banknote cost, value, and ratio — to spot the point where spending more stops paying off."
+        "spendRewardsDescription": "Pick a cumulative spend-reward event track and see each tier's marginal Banknote cost, value, and ratio — to spot the point where spending more stops paying off.",
+        "eventOffersDescription": "Pick an event and see every shop offer's value against its actual Banknote cost, converted from the event currency using the same capacity-aware purchase logic as Analyze Item Value."
     },
     "analyze": {
         "heading": "Analyze Item Value",
@@ -223,6 +227,43 @@
             "complete": "Complete",
             "item": "Item",
             "unitCost": "Unit Cost",
+            "estimated": "Estimated",
+            "estimatedShort": "Est."
+        }
+    },
+    "eventOffers": {
+        "heading": "Event Offers",
+        "description": "Pick an event to see every shop offer's value against what it actually costs in Banknotes, converted from the event currency via the cheapest still-available currency package(s) — Days / Exceed event limits below only control how much of that currency-SELLING capacity is available; an offer's own purchase limit (how much of it you can SPEND currency on) is never exceeded.",
+        "eventLabel": "Event",
+        "eventPlaceholder": "Select an event…",
+        "empty": "No events with purchasable offers found.",
+        "selectPrompt": "Select an event above to see its offers.",
+        "daysLabel": "Over how many days",
+        "exceedLimitLabel": "Purchase limits",
+        "exceedPackLimits": "Exceed event limits",
+        "fallbackLabel": "Unpriced Items",
+        "fallbackCheckboxText": "Estimate with rough fallback pricing",
+        "offersHeading": "Offers",
+        "offersNote": "Value ratio = offer value / Banknote cost. Higher ratio means a better deal. Cost is simulated independently per offer, as if it were the only thing bought today: the cheapest currency package covers it, using up its own purchase limit (within the selected Days / Exceed event limits) before falling back to a pricier one — \"Unreachable\" means the offer's currency can't be fully afforded within the chosen horizon even then. Max Ratio is the same calculation, but for buying this offer all the way up to its OWN purchase limit (over the selected Days — an offer's own limit is never exceeded, unlike the currency packages) instead of just once — a single small purchase often pays for a whole currency package it barely uses, so Max Ratio better reflects the offer's real value once that package's cost is spread over every purchase it actually affords; \"N/A\" means even the full purchase limit's currency need can't be fully afforded within the chosen horizon.",
+        "bonusTiersHeading": "Bonus Tiers",
+        "bonusTiersDescription": "Cumulative currency milestones this shop also offers, priced the same way as the offers above but on their own separate currency budget. Step cost is only the EXTRA Banknotes needed on top of the previous tier.",
+        "tierLabel": "Tier {tier}",
+        "table": {
+            "tier": "Tier",
+            "item": "Item",
+            "currencyCost": "Currency Cost",
+            "cumulativeCost": "Cumulative Cost",
+            "stepCost": "Step Cost",
+            "cost": "Cost ({icon})",
+            "value": "Value ({icon})",
+            "valueRatio": "Value Ratio",
+            "maxRatio": "Max Ratio",
+            "maxQuantity": "×{quantity}",
+            "maxCost": "Max Cost ({icon})",
+            "maxValue": "Max Value ({icon})",
+            "status": "Status",
+            "unitCost": "Unit Cost",
+            "unreachable": "Unreachable",
             "estimated": "Estimated",
             "estimatedShort": "Est."
         }

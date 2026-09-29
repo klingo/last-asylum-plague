@@ -750,10 +750,20 @@ tbody tr:hover {
 
 .spend-reward-grid {
     display: grid;
-    grid-template-columns: minmax(190px, 1.6fr) minmax(90px, 0.5fr) minmax(120px, 1fr) minmax(110px, 1fr) minmax(
-            90px,
-            0.8fr
-        ) 90px 80px;
+    grid-template-columns:
+        minmax(190px, 1.6fr) minmax(90px, 0.5fr) minmax(120px, 1fr) minmax(110px, 1fr) minmax(90px, 0.8fr)
+        90px 80px;
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+/* Same shape as `.spend-reward-grid`, with one extra narrow numeric column for the Event Offers
+   page's "Max Ratio" (value ratio when buying up to the offer's own purchase limit). */
+.event-offers-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(190px, 1.6fr) minmax(90px, 0.4fr) minmax(110px, 0.9fr) minmax(100px, 0.9fr) minmax(85px, 0.7fr)
+        minmax(85px, 0.7fr) 90px 80px;
     width: 100%;
     font-size: 0.9rem;
 }
@@ -764,6 +774,10 @@ tbody tr:hover {
     align-items: flex-end;
     gap: 3px;
     width: 100%;
+}
+
+.ratio-display__note {
+    font-size: 0.72rem;
 }
 
 .ratio-bar {

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.eventOffers"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="eventOffers.heading"></h2>
+                <p class="text-dim" data-i18n="eventOffers.description"></p>
+                <div class="form-row">
+                    <div class="field field--wide">
+                        <label for="event-select" data-i18n="eventOffers.eventLabel"></label>
+                        <select id="event-select"></select>
+                    </div>
+                    <div class="field field--narrow">
+                        <label for="days-input" data-i18n="eventOffers.daysLabel"></label>
+                        <input id="days-input" type="number" min="1" step="1" value="1" />
+                    </div>
+                    <div class="field">
+                        <span class="field-label" data-i18n="eventOffers.exceedLimitLabel"></span>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="exceed-pack-limits-checkbox" />
+                            <span data-i18n="eventOffers.exceedPackLimits"></span>
+                        </label>
+                    </div>
+                    <div class="field">
+                        <span class="field-label" data-i18n="eventOffers.fallbackLabel"></span>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="fallback-checkbox" />
+                            <span data-i18n="eventOffers.fallbackCheckboxText"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div id="offers-prompt" class="empty-state" data-i18n="eventOffers.selectPrompt"></div>
+                <div id="offers-empty" class="empty-state" hidden data-i18n="eventOffers.empty"></div>
+                <div id="offers-wrap" hidden>
+                    <h2 data-i18n="eventOffers.offersHeading"></h2>
+                    <div class="table-wrap"><div id="offers-table" class="event-offers-grid" role="table"></div></div>
+                    <p class="footnote" data-i18n="eventOffers.offersNote"></p>
+                </div>
+            </section>
+
+            <section class="card" id="bonus-tiers-section" hidden>
+                <h2 data-i18n="eventOffers.bonusTiersHeading"></h2>
+                <p class="text-dim" data-i18n="eventOffers.bonusTiersDescription"></p>
+                <div class="table-wrap"><div id="bonus-tiers-table" class="spend-reward-grid" role="table"></div></div>
+            </section>
+        </main>
+        <footer class="app-footer" data-i18n="footer.eventOffers"></footer>
+        <div id="loading-overlay" class="loading-overlay" hidden aria-hidden="true">
+            <div class="spinner"></div>
+        </div>
+        <script type="module" src="/src/event-offers.js"></script>
+    </body>
+</html>

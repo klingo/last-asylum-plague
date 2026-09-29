@@ -17,6 +17,7 @@ export default defineConfig({
                 rankings: resolve(__dirname, 'rankings.html'),
                 choices: resolve(__dirname, 'choices.html'),
                 spendRewards: resolve(__dirname, 'spend-rewards.html'),
+                eventOffers: resolve(__dirname, 'event-offers.html'),
             },
         },
     },

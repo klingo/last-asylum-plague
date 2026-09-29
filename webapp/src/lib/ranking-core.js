@@ -1005,6 +1005,154 @@ function buildSpendRewardTracks(data, locale = 'en', options = {}) {
 }
 
 /**
+ * Values every offer and bonus tier in ONE event's exchange shop (see data schema:
+ * `exchange_shops[*].event_id`/`offers`/`bonus_tiers`) — for the Event Offers page. Unlike
+ * `buildSpendRewardTracks`, this event's shop IS part of `buildFairPriceMap`'s evidence graph
+ * (see that function's header): a regular offer's own direct-trust rate already competes fairly
+ * against every other posted rate for the same item, so an underpriced-relative-to-market offer
+ * naturally comes out with `total_value` below its own cost — no self-reference guard needed,
+ * same as `rankExchangeOffers`. A bonus tier still needs one, same as `rankBonusTiers`: its own
+ * bundle is excluded from the fair-price snapshot used to value it (`exclude: { shopId,
+ * thresholdStr }`), recomputed per tier since each excludes a different bundle.
+ *
+ * Banknote costs are deliberately NOT computed here — that needs `pricing-core.js`'s
+ * capacity-aware `createMarket`/`purchase-plan.js` (a "days" planning horizon plus an "exceed
+ * event limits" override, so a currency sold via several purchase-limited package tiers prices
+ * correctly instead of assuming the best rate is always available). The caller (`event-offers.js`)
+ * computes those and passes them in as `options.offerCosts`/`options.bonusTierStepCosts` (each a
+ * `Map<key, costOrNaN>`, keyed by offer key / threshold string, `NaN` meaning "not reachable
+ * within the chosen horizon") — this function only handles fair-value pricing of what each
+ * offer/tier hands over, same as every other builder in this file.
+ */
+function buildEventOffers(data, eventId, locale = 'en', options = {}) {
+    const {
+        useNaiveFallback = false,
+        excludeWeeklyPasses = true,
+        offerCosts = new Map(),
+        bonusTierStepCosts = new Map(),
+    } = options;
+    const items = data.items || {};
+    const packages = data.packages || {};
+    const exchangeShops = data.exchange_shops || {};
+    const shopEntry = Object.entries(exchangeShops).find(([, shop]) => shop.event_id === eventId);
+    if (!shopEntry) {
+        return { shopId: null, currencyItemId: null, shopName: null, offers: [], bonusTiers: [] };
+    }
+    const [shopId, shop] = shopEntry;
+
+    const fairMarket = priceMapAsMarket(
+        buildFairPriceMap(packages, exchangeShops, items, locale, null, excludeWeeklyPasses),
+    );
+    const naiveMarket = useNaiveFallback ? createMarket(packages, exchangeShops, items, {}, {}, locale) : null;
+    const market = naiveMarket ? withNaiveFallback(fairMarket, naiveMarket) : fairMarket;
+
+    // Flags any breakdown row priced only via the naive fallback (the strict fair solve had
+    // nothing for it) as `estimated`, comparing against whichever fair-price snapshot was
+    // actually used to value that row (offers share one; bonus tiers each get their own).
+    function flagEstimated(breakdown, excludingFairMarket) {
+        if (!naiveMarket) {
+            return;
+        }
+        for (const row of breakdown) {
+            if (
+                getUnitCost(excludingFairMarket, row.item_id) === null &&
+                getUnitCost(naiveMarket, row.item_id) !== null
+            ) {
+                row.estimated = true;
+            }
+        }
+    }
+
+    const offers = Object.entries(shop.offers || {})
+        .map(([offerKey, offer]) => {
+            const offerItemId = offer.item_id || offerKey;
+            const cost = offerCosts.get(offerKey);
+            const costReachable = Number.isFinite(cost);
+            const { total, complete, breakdown } = valueOfBundle(
+                new Map([[offerItemId, offer.quantity]]),
+                costReachable ? cost : 0,
+                market,
+                items,
+                locale,
+                null,
+            );
+            flagEstimated(breakdown, fairMarket);
+
+            return {
+                id: `${shopId}:${offerKey}`,
+                item_id: offerItemId,
+                name: localizedName(items[offerItemId]?.name, locale) || offerItemId,
+                currency_cost: offer.currency_cost,
+                quantity: offer.quantity,
+                cost: costReachable ? Number(cost.toFixed(6)) : null,
+                cost_reachable: costReachable,
+                total_value: Number(total.toFixed(2)),
+                value_ratio: costReachable ? Number((total / cost).toFixed(4)) : null,
+                value_complete: complete,
+                value_estimated: breakdown.some((row) => row.estimated),
+                contains_breakdown: breakdown,
+            };
+        })
+        .sort((a, b) => a.currency_cost - b.currency_cost);
+
+    const thresholds = Object.keys(shop.bonus_tiers || {})
+        .map(Number)
+        .filter((threshold) => Number.isFinite(threshold) && threshold > 0)
+        .sort((a, b) => a - b);
+
+    let previousThreshold = 0;
+    let cumulativeCost = 0;
+    const bonusTiers = thresholds.map((threshold) => {
+        const thresholdStr = String(threshold);
+        const contains = shop.bonus_tiers[thresholdStr];
+        const gap = threshold - previousThreshold;
+        previousThreshold = threshold;
+
+        const stepCost = bonusTierStepCosts.get(thresholdStr);
+        const costReachable = Number.isFinite(stepCost);
+        if (costReachable) {
+            cumulativeCost += stepCost;
+        }
+
+        const excludingFairMarket = priceMapAsMarket(
+            buildFairPriceMap(packages, exchangeShops, items, locale, { shopId, thresholdStr }, excludeWeeklyPasses),
+        );
+        const excludingMarket = naiveMarket ? withNaiveFallback(excludingFairMarket, naiveMarket) : excludingFairMarket;
+
+        const { total, complete, breakdown } = valueOfBundle(
+            new Map(Object.entries(contains)),
+            costReachable ? stepCost : 0,
+            excludingMarket,
+            items,
+            locale,
+            null,
+        );
+        flagEstimated(breakdown, excludingFairMarket);
+
+        return {
+            threshold,
+            step_points: gap,
+            step_cost: costReachable ? Number(stepCost.toFixed(6)) : null,
+            cost_reachable: costReachable,
+            cumulative_cost: Number(cumulativeCost.toFixed(6)),
+            total_value: Number(total.toFixed(2)),
+            value_ratio: costReachable ? Number((total / stepCost).toFixed(4)) : null,
+            value_complete: complete,
+            value_estimated: breakdown.some((row) => row.estimated),
+            contains_breakdown: breakdown,
+        };
+    });
+
+    return {
+        shopId,
+        currencyItemId: shop.currency_item_id,
+        shopName: localizedName(shop.name, locale) || shopId,
+        offers,
+        bonusTiers,
+    };
+}
+
+/**
  * Builds the full live ranking of packages/exchange offers/bonus tiers from raw pack data.
  * Mirrors the shape of the (now retired) output/value_ranking.json for a drop-in swap.
  *
@@ -1100,4 +1248,4 @@ function createFairValueMarket(data, locale = 'en', options = {}) {
     return priceMapAsMarket(buildFairPriceMap(packages, exchangeShops, items, locale, null, excludeWeeklyPasses));
 }
 
-export { buildRanking, createFairValueMarket, buildSpendRewardTracks };
+export { buildRanking, createFairValueMarket, buildSpendRewardTracks, buildEventOffers };
