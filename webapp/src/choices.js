@@ -1,7 +1,13 @@
 import './style.css';
 import { renderNav } from './nav';
 import { loadPackData } from './lib/data';
-import { createMarket, collectPackageSources, collectExchangeSources, packageDisplayName } from './lib/pricing-core';
+import {
+    createMarket,
+    collectPackageSources,
+    collectExchangeSources,
+    packageDisplayName,
+    displaySourceType,
+} from './lib/pricing-core';
 import { createItemPicker } from './lib/item-picker';
 import { createMultiSelect } from './lib/multi-select';
 import { createItemImage, banknoteIconHtml } from './lib/images';
@@ -121,7 +127,18 @@ function buildOptionRows(choiceSource, items, packages, exchangeShops, locale, a
     const pricingPackages = choiceSource.excludePackageId
         ? Object.fromEntries(Object.entries(packages).filter(([id]) => id !== choiceSource.excludePackageId))
         : packages;
-    const market = createMarket(pricingPackages, exchangeShops, items, {}, { activeEventIds }, locale);
+    // `excludePasses`: this is a VALUATION (which option is objectively worth more), not a
+    // purchase-plan simulation, so a pass or rare special offer shouldn't get to set an item's
+    // "unit cost" just because its price, credited entirely to one bundled item, happens to divide
+    // out cheaply — see lib/pricing-core.js's `isUnreliablePricingCategory` header for why.
+    const market = createMarket(
+        pricingPackages,
+        exchangeShops,
+        items,
+        {},
+        { activeEventIds, excludePasses: true },
+        locale,
+    );
 
     const activeShops = {};
     for (const [shopId, shop] of Object.entries(exchangeShops)) {
@@ -137,7 +154,7 @@ function buildOptionRows(choiceSource, items, packages, exchangeShops, locale, a
         const totalValue = Number.isFinite(unitCost) ? qty * unitCost : NaN;
 
         const packageSources = itemId
-            ? collectPackageSources(itemId, pricingPackages, items, {}, locale, activeEventIds, false)
+            ? collectPackageSources(itemId, pricingPackages, items, {}, locale, activeEventIds, false, true)
             : [];
         const exchangeSources = itemId
             ? collectExchangeSources(itemId, activeShops, items, market.peekUnitCost, {}, locale)
@@ -197,13 +214,16 @@ function renderOptionsTable(rows, items, locale) {
                 perUnitDisplay[index] !== null
                     ? `<span class="text-gold">${perUnitDisplay[index]}</span> ${banknoteIconHtml()}`
                     : t('common.notAvailable');
-            const pillClass = row.bestSource
-                ? row.bestSource.type === 'exchange'
+            const bestSourceDisplayType = row.bestSource
+                ? displaySourceType(row.bestSource.type, row.bestSource.category)
+                : null;
+            const pillClass = bestSourceDisplayType
+                ? bestSourceDisplayType === 'exchange'
                     ? 'pill--exchange_offer'
-                    : `pill--${row.bestSource.type}`
+                    : `pill--${bestSourceDisplayType}`
                 : '';
-            const typeCell = row.bestSource
-                ? `<span class="pill ${pillClass}">${sourceTypeLabel(row.bestSource.type)}</span>`
+            const typeCell = bestSourceDisplayType
+                ? `<span class="pill ${pillClass}">${sourceTypeLabel(bestSourceDisplayType)}</span>`
                 : t('common.notAvailable');
             const sourceCell = row.bestSource ? row.bestSource.name : t('common.notAvailable');
             const daysCell = row.bestSource ? formatDays(row.bestSource.availableDays) : t('common.notAvailable');

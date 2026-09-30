@@ -13,6 +13,40 @@ const DATA_PATH = path.join(__dirname, '..', '..', 'data', 'pack_data.json');
  * find the cheapest Banknotes cost to obtain a single unit of any item.
  */
 
+// A package in one of these categories is a repeatable subscription (weekly/monthly), not a
+// one-off top-up SKU: its price is only worth paying because it also renews itself as a login
+// commitment, not because that price is a fair reference rate for whatever it happens to bundle.
+const PASS_CATEGORIES = new Set(['weekly_pass', 'premium_monthly_pass']);
+function isPassCategory(category) {
+    return PASS_CATEGORIES.has(category);
+}
+
+// `special_event` packages (e.g. "Jokers Weekly Special", the three "Mystic Cabinet" tiers) are
+// each tied to a real, tracked `event_id` and either `limit_type: "exclusive"` (buy once, ever) or
+// `"event"` (buy once per event run) — genuinely one-off or rarely-recurring offers, never a
+// standing SKU a player can rely on being there. A price shaped by "grab this now, it won't be
+// back for a while" scarcity is unreliable pricing evidence for the same underlying reason a
+// subscription's is: discounted for a reason unrelated to what its contents are actually worth,
+// just via FOMO/limited-availability instead of a recurring commitment. Kept distinct from
+// `PASS_CATEGORIES` (rather than merged into it) since the webapp mirror (`pricing-core.js`) uses
+// this same split to give each its own display label ("Pass" vs "Special") — see that file's
+// `displaySourceType`, which has no CLI equivalent.
+const SPECIAL_CATEGORIES = new Set(['special_event']);
+function isSpecialCategory(category) {
+    return SPECIAL_CATEGORIES.has(category);
+}
+
+// The umbrella check for "don't trust this package's price as pricing evidence" — passes AND
+// specials, see both Sets' headers above. Used wherever a caller wants a VALUATION (what's this
+// one item actually worth) via `createMarket`'s `excludePasses` option / `collectPackageSources`'s
+// `excludePasses` param / `buildItemCostResolver` (always excludes) — but never excluded from an
+// actual purchase-plan simulation (`scripts/analyze-item-value.js`, `market.purchase()`), since
+// both are genuinely real purchase options a player could choose, whatever their pricing
+// reliability.
+function isUnreliablePricingCategory(category) {
+    return isPassCategory(category) || isSpecialCategory(category);
+}
+
 /**
  * `pack_data.json` authors a package "family" (e.g. a T1/T2 daily offer ladder) as one object
  * with a `tiers` map keyed by tier number, so a not-yet-known tier can be left out without
@@ -213,6 +247,11 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
     // capacity), regardless of limit_type. Anything not tied to a currently active event
     // always adheres to its purchase_limit, scaled only by the "days" planning horizon below.
     const exceedEventPackLimits = Boolean(options.exceedEventPackLimits);
+    // See `isUnreliablePricingCategory` above: when set, a pass or special-offer package is
+    // treated as having zero purchase capacity, removing it from
+    // `peekUnitCost`/`findCheapestSource`/`purchase` entirely. Meant for callers computing a
+    // VALUATION (e.g. `buildItemCostResolver`), never for an actual purchase-plan simulation.
+    const excludePasses = Boolean(options.excludePasses);
     const normalizedLimitOptions = normalizeLimitOptions(limitOptions);
     const ledger = new Map();
 
@@ -234,7 +273,9 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
     function packageCapacity(pkgId, pkg) {
         const key = packageLedgerKey(pkgId);
         if (!ledger.has(key)) {
-            if (pkg.event_id && activeEventIds && !activeEventIds.has(pkg.event_id)) {
+            if (excludePasses && isUnreliablePricingCategory(pkg.category)) {
+                ledger.set(key, 0);
+            } else if (pkg.event_id && activeEventIds && !activeEventIds.has(pkg.event_id)) {
                 ledger.set(key, 0);
             } else if (isEventActive(pkg.event_id) && exceedEventPackLimits) {
                 ledger.set(key, Infinity);
@@ -497,7 +538,7 @@ function createMarket(packages, exchangeShops, items, limitOptions = {}, options
  * around `createMarket()` for callers that only need a one-off snapshot cost (e.g. ranking).
  */
 function buildItemCostResolver(packages, exchangeShops, items) {
-    const market = createMarket(packages, exchangeShops, items);
+    const market = createMarket(packages, exchangeShops, items, {}, { excludePasses: true });
     return (itemId) => market.peekUnitCost(itemId);
 }
 
@@ -541,10 +582,14 @@ function collectPackageSources(
     limitOptions = {},
     activeEventIds = null,
     exceedEventPackLimits = false,
+    excludePasses = false,
 ) {
     const normalizedLimitOptions = normalizeLimitOptions(limitOptions);
     const sources = [];
     for (const [pkgId, pkg] of Object.entries(packages)) {
+        if (excludePasses && isUnreliablePricingCategory(pkg.category)) {
+            continue;
+        }
         if (pkg.event_id && activeEventIds && !activeEventIds.has(pkg.event_id)) {
             continue;
         }
@@ -627,6 +672,9 @@ module.exports = {
     DATA_PATH,
     loadData,
     packageDisplayName,
+    isPassCategory,
+    isSpecialCategory,
+    isUnreliablePricingCategory,
     resolveYieldFromContains,
     resolveYieldFromChoice,
     resolveYieldFromSubstitutes,

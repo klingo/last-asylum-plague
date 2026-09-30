@@ -119,6 +119,24 @@ function verifyData() {
                 }
             }
 
+            // Check value_equivalent (pricing-only "worth N of another item" fact — see
+            // ranking-core.js's regressionFill for how this derives an otherwise-unpriceable
+            // item's value from the referenced item's own market price).
+            if (item.value_equivalent && typeof item.value_equivalent === 'object') {
+                for (const subItemId of Object.keys(item.value_equivalent)) {
+                    referencedItemKeys.add(subItemId);
+                    if (!itemKeys.has(subItemId)) {
+                        reportError(
+                            'Item Reference',
+                            `Item "${itemId}" value_equivalent references unresolvable item: "${subItemId}"`,
+                        );
+                    }
+                    if (subItemId === itemId) {
+                        reportError('Item Loop', `Item "${itemId}" is value-equivalent to itself.`);
+                    }
+                }
+            }
+
             // Check choice pools
             if (item.choice && Array.isArray(item.choice.choices)) {
                 for (let i = 0; i < item.choice.choices.length; i++) {

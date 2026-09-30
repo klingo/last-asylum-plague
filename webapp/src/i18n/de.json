@@ -61,6 +61,8 @@
     },
     "sourceType": {
         "package": "",
+        "pass": "",
+        "special": "",
         "exchange": "",
         "exchange_offer": "",
         "bonus_tier": ""

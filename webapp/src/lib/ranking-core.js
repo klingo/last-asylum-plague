@@ -31,7 +31,7 @@
  */
 
 import { Matrix, solve as solveLinearSystem } from 'ml-matrix';
-import { createMarket, packageDisplayName } from './pricing-core';
+import { createMarket, packageDisplayName, isUnreliablePricingCategory } from './pricing-core';
 import { localizedName, t } from './i18n';
 import { formatThousands } from './format';
 
@@ -357,9 +357,11 @@ function solveNonNegativeLeastSquares(rows) {
  * from participating at all (it's simply never added to `bundles` below) — a self-reference
  * guard, since a bundle is never allowed to count as evidence for its own worth. Pass `null` for
  * a shared, nothing-excluded snapshot (e.g. for exchange offers, which never self-reference
- * anything). `excludeWeeklyPasses` (default `true`) controls whether `category: "weekly_pass"`
- * packages are allowed to be a pricing source at all — see the module header for why they
- * default to excluded.
+ * anything). `excludeWeeklyPasses` (default `true`) controls whether an unreliable-pricing-category
+ * package (`weekly_pass`, `premium_monthly_pass`, OR `special_event` — see `pricing-core.js`'s
+ * `isUnreliablePricingCategory`; the option keeps its original name since that's what the Value
+ * Ranking page's checkbox is already wired to) is allowed to be a pricing source at all — see the
+ * module header for why they default to excluded.
  */
 function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = null, excludeWeeklyPasses = true) {
     // Every candidate bundle the real-money packages can offer: `{ price, contents: Map<itemId,
@@ -372,7 +374,7 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
             exclude?.packageId === pkgId ||
             pkg.choice ||
             !pkg.contains ||
-            (excludeWeeklyPasses && pkg.category === 'weekly_pass')
+            (excludeWeeklyPasses && isUnreliablePricingCategory(pkg.category))
         ) {
             continue;
         }
@@ -380,6 +382,84 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
             continue;
         }
         packageBundles.push({ price: pkg.price, contents: new Map(Object.entries(pkg.contains)), kind: 'package' });
+    }
+
+    // Upper bound on any item's fair price: the cheapest SINGLE bundle that could hand it over,
+    // evaluated as if that bundle contained NOTHING else — the rest of that bundle's contents have
+    // non-negative value, so the item's true per-unit worth is at most price/quantity from it,
+    // hence at most the CHEAPEST such bound across every bundle containing it. Used to clamp
+    // `regressionFill`'s and `resolveChoiceContainerItems`'s output only (via `settleClamped`
+    // below) — NOT `exhaustGenuineSettlements`'s. Regression's joint least-squares fit has no
+    // awareness of this bound at all: it minimizes total error across every bundle at once, which
+    // can (and in practice did, for `raven_essence`) push one variable's fitted price above what
+    // any single bundle containing it could ever justify — exactly the failure this cap exists to
+    // catch. A genuine settlement, by contrast, is already a residual against its OWN bundle's
+    // price (so it can never exceed that bundle's cap by construction) and is deliberately treated
+    // as this file's most-trusted tier; cross-checking it against some OTHER, unrelated bundle's
+    // cap here would second-guess that trust hierarchy rather than fix the regression-specific
+    // problem this was introduced for (found in testing: it dragged an already-correct genuine
+    // settlement for `diamonds` down via an unrelated bundle's much cheaper implied rate — a
+    // separate question about residual-chain consistency, not what this cap is meant to address).
+    //
+    // Deliberately NOT `pricing-core.js`'s general per-item market either (tried first, then
+    // reverted): that one recursively chases whichever currency is cheapest to acquire, and a
+    // currency's own "cheapest" naive price can ITSELF be an under-priced whole-bundle-credited
+    // guess — exactly the distortion this file exists to correct. Chaining two such guesses
+    // together (package -> currency -> offer -> target item) can UNDERSHOOT the true price rather
+    // than bound it; found in practice, it pulled `raven_essence`'s genuinely-settled price down by
+    // more than half. Staying to a single hop — one package's own declared contents, or one
+    // exchange offer/bonus tier priced via a currency THIS solve has already genuinely settled
+    // (`currencyPrices`, populated below before any cap is ever consulted for real) — keeps every
+    // cap mathematically valid, never dependent on some other naively-guessed price.
+    function naiveCap(itemId) {
+        let best = null;
+        const consider = (candidate) => {
+            if (Number.isFinite(candidate) && candidate >= 0 && (best === null || candidate < best)) {
+                best = candidate;
+            }
+        };
+        for (const pkg of Object.values(packages)) {
+            // A pass's or special's price isn't a fair one-hop reference rate either (see
+            // `isUnreliablePricingCategory`) — same reasoning as excluding it from
+            // `packageBundles` above.
+            if (isUnreliablePricingCategory(pkg.category)) {
+                continue;
+            }
+            const qty = pkg.contains?.[itemId];
+            if (qty > 0 && Number.isFinite(pkg.price) && pkg.price > 0) {
+                consider(pkg.price / qty);
+            }
+        }
+        for (const shop of Object.values(exchangeShops)) {
+            const currencyUnitCost = currencyPrices.get(shop.currency_item_id);
+            if (!Number.isFinite(currencyUnitCost)) {
+                continue;
+            }
+            for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
+                if ((offer.item_id || offerKey) === itemId && offer.quantity > 0) {
+                    consider((offer.currency_cost * currencyUnitCost) / offer.quantity);
+                }
+            }
+            for (const [thresholdStr, contains] of Object.entries(shop.bonus_tiers || {})) {
+                const qty = contains[itemId];
+                const threshold = Number(thresholdStr);
+                if (qty > 0 && Number.isFinite(threshold) && threshold > 0) {
+                    consider((threshold * currencyUnitCost) / qty);
+                }
+            }
+        }
+        return best;
+    }
+    const naiveCapCache = new Map();
+    function cachedNaiveCap(itemId) {
+        if (!naiveCapCache.has(itemId)) {
+            naiveCapCache.set(itemId, naiveCap(itemId));
+        }
+        return naiveCapCache.get(itemId);
+    }
+    function settleClamped(target, itemId, price) {
+        const cap = cachedNaiveCap(itemId);
+        target.set(itemId, cap !== null ? Math.min(price, cap) : price);
     }
 
     // Runs the strict Dijkstra solve against `bundles`/`settled` to full exhaustion, using ONLY
@@ -463,23 +543,76 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
         }
     }
 
+    // A package whose ONLY non-filler content is a single shop currency (e.g. "Recluse Coin
+    // Premium Pack": diamonds + recluse_coin + vip_points, nothing else) is a clean, single-purpose
+    // "buy this currency" SKU: there's no other real reward competing for credit, so — unlike a
+    // generic multi-item residual — its ENTIRE price can be trusted as that currency's direct
+    // rate, same trust tier as a genuine exchange offer (`kind: 'exchange'` below). This exists
+    // because a currency sold ONLY ever bundled with filler (never alone, and never alongside
+    // anything ELSE genuinely unsettled) can otherwise never reach `exhaustGenuineSettlements`'s
+    // "exactly one unsettled item" bar: `vip_points` in particular has no clean single-item source
+    // of its own anywhere in this dataset, so a diamonds+currency+vip_points bundle never reduces
+    // to one unknown, and the currency (and therefore its whole shop) stays unpriced forever.
+    //
+    // Deliberately NOT a blanket "drop filler and credit the rest" rule (that was tried and
+    // rejected): applying it to a bundle's OWN sole content breaks that item's own settlement (a
+    // pure-diamonds package would have diamonds dropped as filler too, leaving nothing to settle),
+    // and crediting a currency-pack's full price after SUBTRACTING diamonds at its already-settled
+    // real rate produces near-zero currency prices (these packs are deliberately generous with
+    // diamonds relative to buying diamonds alone, so "market rate" diamonds would eat the whole
+    // price). Requiring every OTHER item to be filler — not merely treating filler as free — avoids
+    // both: a currency pack's own filler is genuinely never the point of the purchase, while a
+    // pack that ALSO hands over a real reward (e.g. Strange Bazaar's `resource_supply_general`
+    // alongside `strange_coin`) correctly does NOT qualify, since crediting 100% of its price to
+    // just the currency would reproduce the exact "residual dumped on one item" distortion the
+    // trust-tiering here exists to avoid — that currency simply stays unsettled, same as today.
+    function pureCurrencySellingBundles() {
+        const pureBundles = [];
+        for (const pkg of Object.values(packages)) {
+            // A pass's or special's price isn't a fair currency rate either (see
+            // `isUnreliablePricingCategory`) — same reasoning as excluding it from
+            // `packageBundles` above.
+            if (
+                !pkg.contains ||
+                !Number.isFinite(pkg.price) ||
+                pkg.price <= 0 ||
+                isUnreliablePricingCategory(pkg.category)
+            ) {
+                continue;
+            }
+            for (const shop of Object.values(exchangeShops)) {
+                const currencyId = shop.currency_item_id;
+                const qty = pkg.contains[currencyId];
+                if (!qty) {
+                    continue;
+                }
+                const isPure = Object.keys(pkg.contains).every((id) => id === currencyId || isFillerItem(id));
+                if (isPure) {
+                    pureBundles.push({ price: pkg.price, contents: new Map([[currencyId, qty]]), kind: 'exchange' });
+                }
+            }
+        }
+        return pureBundles;
+    }
+
     // A shop's currency needs a price before its offers/bonus tiers can become candidate bundles
     // at all (an offer's own bundle price is `currency_cost * currencyUnitCost`). That price has
     // to be trustworthy: crediting a whole sibling package's price to the currency alone
     // reintroduces the exact distortion this algorithm exists to avoid, so only a GENUINE
     // settlement counts — never a regression estimate. Solved here as a throwaway, package-only
-    // pass, entirely separate from the real `settled` map below: this determines WHICH currencies
-    // are usable and at what price, but none of ITS other (non-currency) settlements are allowed
-    // to leak into the real solve — otherwise an item could settle prematurely here, from
-    // packages alone, before a same-quality-or-better exchange-offer candidate for that same item
-    // even exists to compete (an earlier version of this function had exactly that bug: raven
-    // essence settled off a single generous weekly pass before a direct VIP-shop exchange rate —
-    // 10,000x higher — ever got a chance to weigh in). Building the FULL bundle list up front,
-    // below, and only then running the real solve once is what avoids that ordering trap.
+    // pass (plus the pure-currency-pack bundles above), entirely separate from the real `settled`
+    // map below: this determines WHICH currencies are usable and at what price, but none of ITS
+    // other (non-currency) settlements are allowed to leak into the real solve — otherwise an item
+    // could settle prematurely here, from packages alone, before a same-quality-or-better
+    // exchange-offer candidate for that same item even exists to compete (an earlier version of
+    // this function had exactly that bug: raven essence settled off a single generous weekly pass
+    // before a direct VIP-shop exchange rate — 10,000x higher — ever got a chance to weigh in).
+    // Building the FULL bundle list up front, below, and only then running the real solve once is
+    // what avoids that ordering trap.
     const currencyPrices = new Map();
     {
         const bootstrapSettled = new Map();
-        exhaustGenuineSettlements(packageBundles, bootstrapSettled);
+        exhaustGenuineSettlements([...packageBundles, ...pureCurrencySellingBundles()], bootstrapSettled);
         for (const shop of Object.values(exchangeShops)) {
             if (bootstrapSettled.has(shop.currency_item_id)) {
                 currencyPrices.set(shop.currency_item_id, bootstrapSettled.get(shop.currency_item_id));
@@ -609,7 +742,7 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
                     }
                 }
                 if (best !== null) {
-                    settled.set(itemId, best);
+                    settleClamped(settled, itemId, best);
                     progress = true;
                 }
             }
@@ -645,12 +778,36 @@ function buildFairPriceMap(packages, exchangeShops, items, locale, exclude = nul
             }
         }
 
+        // `value_equivalent` (schema: item field, shaped like `contains`) is a PURELY pricing-side
+        // fact, not an actual reward: "treat this item as worth this many of that other item,"
+        // used for things whose real contents can never be priced (e.g. a `choice` item whose
+        // every option hands over a unique hero shard with no market of its own). Same identity-row
+        // math as the `contains` loop above, but deliberately NOT gated on `item.type` — a choice
+        // or random item is exactly the case this exists for. Since `regressionFill` only ever runs
+        // after every genuinely-priced item has already settled (`exhaustGenuineSettlements`,
+        // above), and `buildRegressionRow` folds settled items into the row's target rather than
+        // keeping them as variables, this can only ever DERIVE `itemId`'s price from the referenced
+        // item's already-fixed price — never the other way around.
+        for (const [itemId, item] of Object.entries(items)) {
+            if (!item.value_equivalent || isFillerItem(itemId)) {
+                continue;
+            }
+            const identity = new Map([
+                [itemId, 1],
+                ...Object.entries(item.value_equivalent).map(([subId, qty]) => [subId, -qty]),
+            ]);
+            const row = buildRegressionRow(identity, 0, settled);
+            if (row) {
+                rows.push(row);
+            }
+        }
+
         if (rows.length === 0) {
             return;
         }
 
         for (const [itemId, price] of solveNonNegativeLeastSquares(rows)) {
-            settled.set(itemId, price);
+            settleClamped(settled, itemId, price);
         }
     }
 
@@ -927,7 +1084,13 @@ function buildSpendRewardTracks(data, locale = 'en', options = {}) {
     const fairMarket = priceMapAsMarket(
         buildFairPriceMap(packages, exchangeShops, items, locale, null, excludeWeeklyPasses),
     );
-    const naiveMarket = useNaiveFallback ? createMarket(packages, exchangeShops, items, {}, {}, locale) : null;
+    // `excludePasses`: this fallback only fires when the strict fair solve found NO price at all
+    // for an item, so it's purely a VALUATION estimate, never a purchase recommendation — a
+    // pass's or special's price shouldn't get to set that estimate (see
+    // `isUnreliablePricingCategory`).
+    const naiveMarket = useNaiveFallback
+        ? createMarket(packages, exchangeShops, items, {}, { excludePasses: true }, locale)
+        : null;
     const market = naiveMarket ? withNaiveFallback(fairMarket, naiveMarket) : fairMarket;
 
     const tracks = Object.entries(spendRewardTracks).map(([trackId, track]) => {
@@ -1043,7 +1206,13 @@ function buildEventOffers(data, eventId, locale = 'en', options = {}) {
     const fairMarket = priceMapAsMarket(
         buildFairPriceMap(packages, exchangeShops, items, locale, null, excludeWeeklyPasses),
     );
-    const naiveMarket = useNaiveFallback ? createMarket(packages, exchangeShops, items, {}, {}, locale) : null;
+    // `excludePasses`: this fallback only fires when the strict fair solve found NO price at all
+    // for an item, so it's purely a VALUATION estimate, never a purchase recommendation — a
+    // pass's or special's price shouldn't get to set that estimate (see
+    // `isUnreliablePricingCategory`).
+    const naiveMarket = useNaiveFallback
+        ? createMarket(packages, exchangeShops, items, {}, { excludePasses: true }, locale)
+        : null;
     const market = naiveMarket ? withNaiveFallback(fairMarket, naiveMarket) : fairMarket;
 
     // Flags any breakdown row priced only via the naive fallback (the strict fair solve had
@@ -1197,8 +1366,10 @@ function buildRanking(data, locale = 'en', options = {}) {
     // itself only sold as part of a multi-item bundle can otherwise fail to settle under the
     // stricter fair-pricing solve (see `buildFairPriceMap`'s header), which would wipe out every
     // offer/bonus tier priced in that currency rather than just making their VALUE fair. Only
-    // what a bundle/offer *hands you* gets fair pricing.
-    const currencyMarket = createMarket(packages, exchangeShops, items, {}, {}, locale);
+    // what a bundle/offer *hands you* gets fair pricing. `excludePasses` here too: this price
+    // feeds `value_ratio`'s denominator, so a pass- or special-subsidized currency rate would make
+    // an offer look like a far better deal than it actually is (see `isUnreliablePricingCategory`).
+    const currencyMarket = createMarket(packages, exchangeShops, items, {}, { excludePasses: true }, locale);
     const market = priceMapAsMarket(
         buildFairPriceMap(packages, fairPricingExchangeShops, items, locale, null, excludeWeeklyPasses),
     );

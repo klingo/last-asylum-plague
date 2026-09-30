@@ -1518,6 +1518,9 @@
                         "ur_epigraph_shard": 100
                     }
                 ]
+            },
+            "value_equivalent": {
+                "ur_epigraph_shard": 800
             }
         },
         "ur_epigraph_shard": {
@@ -2096,7 +2099,7 @@
                 "en": "Exclusive Weapon Pass",
                 "de": ""
             },
-            "category": "value_event",
+            "category": "weekly_pass",
             "price": 1999,
             "deal_percentage": 8159,
             "purchase_limit": 1,

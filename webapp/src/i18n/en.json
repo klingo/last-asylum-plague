@@ -61,6 +61,8 @@
     },
     "sourceType": {
         "package": "Package",
+        "pass": "Pass",
+        "special": "Special",
         "exchange": "Exchange offer",
         "exchange_offer": "Exchange offer",
         "bonus_tier": "Bonus tier"
@@ -165,7 +167,7 @@
         "searchPlaceholder": "Filter by name or category",
         "pricingLabel": "Pricing",
         "includeExchangeShops": "Include Exchange Shops (and Bonus Tiers)",
-        "excludeWeeklyPasses": "Don't Trust Weekly Passes' Pricing",
+        "excludeWeeklyPasses": "Don't Trust Passes'/Specials' Pricing",
         "excludeItemsLabel": "Exclude from Value",
         "excludeDiamonds": "Diamonds",
         "excludeVipPoints": "VIP Points",

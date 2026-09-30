@@ -1,7 +1,13 @@
 import './style.css';
 import { renderNav } from './nav';
 import { loadPackData } from './lib/data';
-import { createMarket, collectPackageSources, collectExchangeSources, buildItemCostResolver } from './lib/pricing-core';
+import {
+    createMarket,
+    collectPackageSources,
+    collectExchangeSources,
+    buildItemCostResolver,
+    displaySourceType,
+} from './lib/pricing-core';
 import { buildPurchasePlan } from './lib/purchase-plan';
 import { createFairValueMarket } from './lib/ranking-core';
 import { createItemImage, banknoteIconHtml } from './lib/images';
@@ -122,8 +128,9 @@ function renderSourcesTable(tableEl, sources) {
                 source.type === 'exchange'
                     ? source.priceDisplay
                     : `<span class="text-gold">${formatThousands(source.price)}</span> ${banknoteIconHtml()}`;
-            const pillClass = source.type === 'exchange' ? 'pill--exchange_offer' : `pill--${source.type}`;
-            const typeLabel = sourceTypeLabel(source.type);
+            const displayType = displaySourceType(source.type, source.category);
+            const pillClass = displayType === 'exchange' ? 'pill--exchange_offer' : `pill--${displayType}`;
+            const typeLabel = sourceTypeLabel(displayType);
             const pricePerUnitCell =
                 perUnitDisplay[index] !== null
                     ? `<span class="text-gold">${perUnitDisplay[index]}</span> ${banknoteIconHtml()}`

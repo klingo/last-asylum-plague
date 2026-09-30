@@ -2,6 +2,7 @@ import './style.css';
 import { renderNav } from './nav';
 import { loadPackData } from './lib/data';
 import { buildRanking } from './lib/ranking-core';
+import { displaySourceType } from './lib/pricing-core';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
 import { requiresIconHtml } from './lib/requires-tooltip';
@@ -114,11 +115,12 @@ function renderTable(filtered) {
         .map((entry, index) => {
             const rankLabel = tieFlags[index] ? '' : entry.rank;
             const key = entryKey(entry);
+            const displayType = displaySourceType(entry.type, entry.category);
             return `
                 <div class="ranking-grid__row" role="row" data-entry-key="${key}">
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${rankLabel}</div>
                     <div class="ranking-grid__cell" role="cell">${entry.name}${requiresIconHtml(entry.requires, rawData?.packages || {}, itemsById, getLocale())}</div>
-                    <div class="ranking-grid__cell" role="cell"><span class="pill pill--${entry.type}">${sourceTypeLabel(entry.type)}</span></div>
+                    <div class="ranking-grid__cell" role="cell"><span class="pill pill--${displayType}">${sourceTypeLabel(displayType)}</span></div>
                     <div class="ranking-grid__cell" role="cell">${categoryLabel(entry.category)}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${goldenBanknotes(entry.price_display)}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(entry.total_value, 2)}</span> ${banknoteIconHtml()}</div>

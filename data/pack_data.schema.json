@@ -154,6 +154,9 @@
                 },
                 "substitutes_for": {
                     "$ref": "#/definitions/substitutesFor"
+                },
+                "value_equivalent": {
+                    "$ref": "#/definitions/itemQuantities"
                 }
             }
         },
@@ -196,6 +199,9 @@
                 },
                 "substitutes_for": {
                     "$ref": "#/definitions/substitutesFor"
+                },
+                "value_equivalent": {
+                    "$ref": "#/definitions/itemQuantities"
                 }
             }
         },
@@ -238,6 +244,9 @@
                 },
                 "substitutes_for": {
                     "$ref": "#/definitions/substitutesFor"
+                },
+                "value_equivalent": {
+                    "$ref": "#/definitions/itemQuantities"
                 }
             }
         },

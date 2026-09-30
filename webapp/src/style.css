@@ -11,6 +11,8 @@
     --warn: #f2c14e;
     --bad: #f2685c;
     --gold: #d4af37;
+    --purple: #b389f9;
+    --teal: #4fd6c4;
     --radius: 8px;
     --series-a: #3987e5;
     --series-b: #d95926;
@@ -583,6 +585,22 @@ tbody tr:hover {
 .pill--package {
     color: var(--good);
     border-color: var(--good);
+}
+
+/* A weekly/monthly pass is still a "package" for purchase-flattening logic (see
+   lib/pricing-core.js's `displaySourceType`), but its price isn't a fair reference rate the same
+   way a one-off package's is, so it gets its own color (not the reassuring green) pill. */
+.pill--pass {
+    color: var(--purple);
+    border-color: var(--purple);
+}
+
+/* A `special_event` package: a one-off or rarely-recurring event deal rather than an
+   always-available package (see lib/pricing-core.js's `isSpecialCategory`) — a different concept
+   from a subscription "Pass", so it gets its own color rather than sharing the purple pass pill. */
+.pill--special {
+    color: var(--teal);
+    border-color: var(--teal);
 }
 
 .pill--exchange,

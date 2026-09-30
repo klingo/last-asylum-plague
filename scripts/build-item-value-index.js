@@ -50,7 +50,7 @@ function buildItemValueIndex(data) {
 
     const itemEntries = {};
     for (const [itemId, item] of Object.entries(items)) {
-        const packageSources = collectPackageSources(itemId, packages, items);
+        const packageSources = collectPackageSources(itemId, packages, items, {}, null, false, true);
         const exchangeSources = collectExchangeSources(itemId, exchangeShops, items, getItemCost);
 
         const sources = [...packageSources, ...exchangeSources]

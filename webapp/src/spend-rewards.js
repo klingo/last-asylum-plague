@@ -39,14 +39,16 @@ function ratioBarColor(fraction) {
     return `rgb(${channel(RATIO_BAD_RGB[0], RATIO_GOOD_RGB[0])}, ${channel(RATIO_BAD_RGB[1], RATIO_GOOD_RGB[1])}, ${channel(RATIO_BAD_RGB[2], RATIO_GOOD_RGB[2])})`;
 }
 
-// Scales a tier's ratio-bar fill from 0 (ratio 1.000, the "break-even" floor) to 1 (this
-// track's own best ratio among its CURRENTLY displayed tiers) — a fixed floor but a relative
-// ceiling, since there's no natural upper bound on value ratio to anchor 100% to otherwise.
+// Scales a tier's ratio-bar fill from 0 (ratio 0, "worthless") to 1 (this track's own best ratio
+// among its CURRENTLY displayed tiers) — a fixed floor but a relative ceiling, since there's no
+// natural upper bound on value ratio to anchor 100% to otherwise. Deliberately not anchored to 1.0
+// ("break-even"): a below-1 ratio is still a real, non-zero amount of value, and pinning it to the
+// same 0-fill as an actually worthless tier would visually flatten that distinction.
 function ratioBarFraction(ratio, maxRatio) {
-    if (!Number.isFinite(ratio) || maxRatio <= 1) {
+    if (!Number.isFinite(ratio) || maxRatio <= 0) {
         return 0;
     }
-    return Math.min(1, Math.max(0, (ratio - 1) / (maxRatio - 1)));
+    return Math.min(1, Math.max(0, ratio / maxRatio));
 }
 
 function breakdownRowsHtml(tier) {
