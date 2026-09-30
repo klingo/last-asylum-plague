@@ -1886,7 +1886,7 @@
                     "deal_percentage": 4140,
                     "purchase_limit": 1,
                     "contains": {
-                        "diamonds": 100,
+                        "diamonds": 1000,
                         "resource_supply_ur": 10,
                         "timber_level_supply_ur": 4,
                         "grain_level_supply_ur": 4,
@@ -3512,7 +3512,7 @@
                     }
                 },
                 "2": {
-                    "price": 499,
+                    "price": 999,
                     "deal_percentage": 8530,
                     "purchase_limit": 1,
                     "contains": {
