@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-09-28"
+        "last_updated": "2026-09-30"
     },
     "items": {
         "antitoxin": {
@@ -1023,7 +1023,8 @@
                 "en": "Speedup",
                 "de": ""
             },
-            "category": "speedup"
+            "category": "speedup",
+            "substitutes_for": ["construction_speedup", "research_speedup", "training_speedup", "healing_speedup"]
         },
         "speedup_supply": {
             "name": {
