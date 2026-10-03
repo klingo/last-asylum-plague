@@ -81,4 +81,27 @@ function computeTieFlags(keys) {
     return keys.map((key, index) => index > 0 && key !== null && key !== undefined && key === keys[index - 1]);
 }
 
-export { formatUnitPrice, formatUnitPriceColumn, formatThousands, computeTieFlags };
+/**
+ * Formats a worth/points value that can span many orders of magnitude (raw resources are worth
+ * fractions of a millionth per unit, a Lv.5 raven item thousands): whole numbers with thousand
+ * separators from 100 up, 2 decimals from 1 up, and `digits` significant digits below 1.
+ */
+function formatSignificant(value, digits = 3) {
+    if (!Number.isFinite(value)) {
+        return null;
+    }
+    const abs = Math.abs(value);
+    if (abs === 0) {
+        return '0';
+    }
+    if (abs >= 100) {
+        return formatThousands(value, 0);
+    }
+    if (abs >= 1) {
+        return formatThousands(value, 2);
+    }
+    const decimals = Math.min(12, digits - 1 - Math.floor(Math.log10(abs)));
+    return value.toFixed(decimals);
+}
+
+export { formatUnitPrice, formatUnitPriceColumn, formatThousands, formatSignificant, computeTieFlags };

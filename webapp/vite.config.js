@@ -12,12 +12,11 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 welcome: resolve(__dirname, 'index.html'),
-                analyze: resolve(__dirname, 'analyze.html'),
-                compare: resolve(__dirname, 'compare.html'),
                 rankings: resolve(__dirname, 'rankings.html'),
+                items: resolve(__dirname, 'items.html'),
                 choices: resolve(__dirname, 'choices.html'),
+                compare: resolve(__dirname, 'compare.html'),
                 spendRewards: resolve(__dirname, 'spend-rewards.html'),
-                eventOffers: resolve(__dirname, 'event-offers.html'),
             },
         },
     },

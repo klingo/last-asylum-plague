@@ -5,13 +5,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "analyze-item-value": "node scripts/analyze-item-value.js",
-        "build-item-value-index": "node scripts/build-item-value-index.js",
         "copy-pack-data": "node scripts/copy-pack-data.js",
         "format": "prettier --write \"**/*.{js,jsx,json,css}\"",
         "lint": "eslint .",
         "prepare": "husky",
-        "rank-packages": "node scripts/rank-packages.js",
         "sort-pack-data": "node scripts/sort-pack-data.js",
         "update-last-updated": "node scripts/update-last-updated.js",
         "verify-data": "node scripts/verify-data.js",

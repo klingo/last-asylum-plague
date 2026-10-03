@@ -1,144 +1,163 @@
 import './style.css';
 import { renderNav } from './nav';
 import { loadPackData } from './lib/data';
-import { buildSpendRewardTracks } from './lib/ranking-core';
+import { buildValuation, modelSummaryText, planOptions } from './lib/valuation';
+import { solveWeeklyPlan } from './lib/planner.js';
+import { mountValuationPanel } from './lib/valuation-panel';
+import { withLoading } from './lib/loading';
+import { trackTiers, trackPointsForPrice } from './lib/spend-tracks.js';
+import { itemDisplayName } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
-import { enableInfoTooltips } from './lib/tooltip';
-import { t, getLocale, categoryLabel, applyStaticTranslations } from './lib/i18n';
-import { formatUnitPrice, formatThousands } from './lib/format';
+import { t, getLocale, localizedName, categoryLabel, applyStaticTranslations } from './lib/i18n';
+import { formatThousands, formatSignificant } from './lib/format';
+import { ratioBarHtml } from './lib/ratio-bar';
 
 renderNav('spend-rewards');
 applyStaticTranslations();
 
 const trackSelect = document.getElementById('track-select');
-const fallbackCheckbox = document.getElementById('fallback-checkbox');
 const tiersPrompt = document.getElementById('tiers-prompt');
 const tiersEmpty = document.getElementById('tiers-empty');
 const tiersWrap = document.getElementById('tiers-wrap');
 const tiersTable = document.getElementById('tiers-table');
 const tiersNote = document.getElementById('tiers-note');
-const loadingOverlay = document.getElementById('loading-overlay');
 
-let rawData = null;
-let itemsById = {};
-let tracks = [];
-// Tier keys (see `tierKey`) whose "Details" row is currently expanded, restored across a
-// re-render triggered by something that doesn't change which tiers exist (a locale switch).
-const expandedTierKeys = new Set();
+let data = null;
+let settings = null;
+let valuation = null;
+const expandedKeys = new Set();
 
-function tierKey(trackId, tier) {
-    return `${trackId}:${tier.threshold}`;
-}
-
-// --bad -> --good (see style.css) in RGB, interpolated per tier's ratio-bar fill below.
-const RATIO_BAD_RGB = [242, 104, 92];
-const RATIO_GOOD_RGB = [99, 214, 138];
-
-function ratioBarColor(fraction) {
-    const channel = (from, to) => Math.round(from + (to - from) * fraction);
-    return `rgb(${channel(RATIO_BAD_RGB[0], RATIO_GOOD_RGB[0])}, ${channel(RATIO_BAD_RGB[1], RATIO_GOOD_RGB[1])}, ${channel(RATIO_BAD_RGB[2], RATIO_GOOD_RGB[2])})`;
-}
-
-// Scales a tier's ratio-bar fill from 0 (ratio 0, "worthless") to 1 (this track's own best ratio
-// among its CURRENTLY displayed tiers) — a fixed floor but a relative ceiling, since there's no
-// natural upper bound on value ratio to anchor 100% to otherwise. Deliberately not anchored to 1.0
-// ("break-even"): a below-1 ratio is still a real, non-zero amount of value, and pinning it to the
-// same 0-fill as an actually worthless tier would visually flatten that distinction.
-function ratioBarFraction(ratio, maxRatio) {
-    if (!Number.isFinite(ratio) || maxRatio <= 0) {
-        return 0;
-    }
-    return Math.min(1, Math.max(0, ratio / maxRatio));
-}
+const gold = (text) => `<span class="text-gold">${text}</span> ${banknoteIconHtml()}`;
 
 function breakdownRowsHtml(tier) {
-    return [...tier.contains_breakdown]
-        .sort((a, b) => b.value - a.value)
+    const locale = getLocale();
+    return tier.value.parts
+        .map((part) => ({ ...part, worth: part.qty * (valuation.worth(part.id) ?? 0) }))
+        .sort((a, b) => b.worth - a.worth)
         .map(
-            (item) => `
+            (part) => `
                 <div class="ranking-grid__row">
-                    <div class="ranking-grid__cell item-cell"><span class="breakdown-icon" data-item-id="${item.item_id}"></span>${item.name} &times;${item.quantity}</div>
-                    <div class="ranking-grid__cell">${categoryLabel(itemsById[item.item_id]?.category)}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num">${item.unit_cost !== null ? `<span class="text-gold">${formatUnitPrice(item.unit_cost, { minDecimals: 4 })}</span> ${banknoteIconHtml()}` : t('common.unknown')}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num"><span class="text-gold">${formatThousands(item.value, 2)}</span> ${banknoteIconHtml()}</div>
+                    <div class="ranking-grid__cell item-cell"><span class="breakdown-icon" data-item-id="${part.id}"></span>${itemDisplayName(data.items, part.id, locale)} &times;${formatSignificant(part.qty)}</div>
+                    <div class="ranking-grid__cell">${categoryLabel(data.items[part.id]?.category)}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num">${formatSignificant(valuation.points(part.id)) ?? t('common.unknown')}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num">${gold(formatSignificant(part.worth))}</div>
                     <div class="ranking-grid__cell"></div>
-                    <div class="ranking-grid__cell">${
-                        item.known === false
-                            ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>`
-                            : item.estimated
-                              ? `<span class="text-warn">${t('spendRewards.table.estimated')}</span>`
-                              : ''
-                    }</div>
+                    <div class="ranking-grid__cell">${valuation.worth(part.id) === null ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''}</div>
                     <div class="ranking-grid__cell"></div>
-                </div>
-            `,
+                </div>`,
         )
         .join('');
 }
 
-function renderTiers(track) {
-    if (!track || track.tiers.length === 0) {
+/**
+ * What each tier step is worth: the weekly plan at the tier's total spend (with the track running)
+ * minus the plan at the previous tier's total, i.e. the best packs the extra Banknotes still buy
+ * plus the tier reward, in Banknotes at your weekly spend. Ratio = that ÷ the step's Banknotes:
+ * at least 1 = the step is as good as your last Banknote at your weekly spend.
+ */
+function stepAnalysis(track, trackId) {
+    const activeTrackIds = new Set([trackId]);
+    const reachedTier = (plan, tier) =>
+        plan.trackTiersReached.some((r) => r.trackId === trackId && r.threshold === tier.threshold);
+    let previousPoints = 0;
+    let previousSpent = 0;
+    return trackTiers(track).map((tier) => {
+        // Spend about the threshold's worth of Banknotes (track points per Banknote ~1, rounded down
+        // by the pack prices), a little more if the packs on sale can't quite reach it.
+        let budget = Math.max(tier.cumulativeCost, trackPointsBudget(track, tier.threshold));
+        let plan = null;
+        for (let attempt = 0; attempt < 4; attempt++) {
+            plan = solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { budget, activeTrackIds }));
+            if (reachedTier(plan, tier)) {
+                break;
+            }
+            budget = Math.ceil(budget * 1.02);
+        }
+        const stepCost = plan.spent - previousSpent;
+        const stepWorth = (plan.totalPoints - previousPoints) / valuation.rate;
+        previousPoints = plan.totalPoints;
+        previousSpent = plan.spent;
+        const reached = reachedTier(plan, tier);
+        const reward = valuation.bundle({ contains: tier.rewards }, 0);
+        return {
+            ...tier,
+            cumulativeCost: plan.spent,
+            stepCost,
+            reward,
+            reached,
+            stepWorth,
+            packsWorth: stepWorth - (reached ? reward.worth : 0),
+            ratio: stepCost > 0 ? stepWorth / stepCost : null,
+        };
+    });
+}
+
+/** Banknotes that earn `points` track points at the track's typical rate. */
+function trackPointsBudget(track, points) {
+    const perBanknote = trackPointsForPrice(track, 1000) / 1000;
+    return Math.ceil(points / perBanknote);
+}
+
+let stepCache = { key: null, tiers: null };
+
+function render() {
+    const trackId = trackSelect.value;
+    const track = data.spend_reward_tracks?.[trackId];
+    tiersPrompt.hidden = Boolean(track);
+    if (!track) {
         tiersWrap.hidden = true;
         tiersNote.hidden = true;
-        tiersPrompt.hidden = true;
-        tiersEmpty.hidden = false;
+        tiersEmpty.hidden = true;
         return;
     }
-    tiersPrompt.hidden = true;
-    tiersEmpty.hidden = true;
-    tiersWrap.hidden = false;
-    tiersNote.hidden = false;
-    tiersNote.textContent = t('spendRewards.note');
+    const usesPoints = Array.isArray(track.conversions) && track.conversions.length > 0;
+    const cacheKey = `${trackId}|${JSON.stringify(settings)}`;
+    if (stepCache.key !== cacheKey) {
+        stepCache = { key: cacheKey, tiers: stepAnalysis(track, trackId) };
+    }
+    const tiers = stepCache.tiers.map((tier) => ({ ...tier, value: tier.reward }));
+    tiersEmpty.hidden = tiers.length > 0;
+    tiersWrap.hidden = tiers.length === 0;
+    tiersNote.hidden = tiers.length === 0;
+    const lastWorthIt = tiers.reduce((last, tier, index) => (tier.ratio >= 1 ? index : last), -1);
+    const verdict =
+        lastWorthIt >= 0
+            ? t('spendRewards.verdict', {
+                  tier: lastWorthIt + 1,
+                  total: formatThousands(tiers[lastWorthIt].cumulativeCost, 0),
+              })
+            : t('spendRewards.verdictNone');
+    tiersNote.textContent = `${verdict} ${t('spendRewards.note')} ${modelSummaryText(valuation)}`;
 
-    const maxRatio = track.tiers.reduce(
-        (max, tier) => (Number.isFinite(tier.value_ratio) ? Math.max(max, tier.value_ratio) : max),
-        1,
-    );
-
-    const rows = track.tiers
+    const maxRatio = Math.max(1, ...tiers.map((tier) => tier.ratio).filter(Number.isFinite));
+    const rows = tiers
         .map((tier, index) => {
-            const key = tierKey(track.id, tier);
-            const ratioFraction = ratioBarFraction(tier.value_ratio, maxRatio);
-            const ratioColor = ratioBarColor(ratioFraction);
-            const tierLabel = t('spendRewards.tierLabel', { tier: index + 1 });
+            const key = `${trackId}:${tier.threshold}`;
+            const label = t('spendRewards.tierLabel', { tier: index + 1 });
             return `
-                <div class="ranking-grid__row" role="row" data-tier-key="${key}">
-                    <div class="ranking-grid__cell" role="cell">${
-                        track.uses_points
-                            ? `${tierLabel} (<span class="text-gold">${formatThousands(tier.threshold)}</span>&nbsp;${t('spendRewards.pointsSuffix')})`
-                            : tierLabel
-                    }</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(tier.cumulative_cost, 2)}</span> ${banknoteIconHtml()}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(tier.step_cost, 2)}</span> ${banknoteIconHtml()}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(tier.total_value, 2)}</span> ${banknoteIconHtml()}</div>
+                <div class="ranking-grid__row" role="row">
+                    <div class="ranking-grid__cell" role="cell">${usesPoints ? `${label} (<span class="text-gold">${formatThousands(tier.threshold)}</span>&nbsp;${t('spendRewards.pointsSuffix')})` : label}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.cumulativeCost, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.stepCost, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.packsWorth, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.reached ? gold(formatThousands(tier.reward.worth, 0)) : `<span class="text-dim">${t('spendRewards.notReached')}</span>`}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">
-                        <div class="ratio-display">
-                            <span>${formatThousands(tier.value_ratio, 4)}</span>
-                            <span class="ratio-bar"><span class="ratio-bar__fill" style="width: ${(ratioFraction * 100).toFixed(1)}%; background: ${ratioColor}"></span></span>
-                        </div>
+                        ${ratioBarHtml(tier.ratio, maxRatio)}
                     </div>
-                    <div class="ranking-grid__cell" role="cell">${
-                        tier.value_complete
-                            ? tier.value_estimated
-                                ? `<span class="text-warn">${t('spendRewards.table.estimatedShort')}</span>`
-                                : `<span class="text-good">${t('common.yes')}</span>`
-                            : `<span class="text-bad">${t('common.no')}</span>`
-                    }</div>
-                    <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-tier-key="${key}">${t('common.details')}</button></div>
+                    <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-tier-key="${key}">${expandedKeys.has(key) ? t('common.hide') : t('common.details')}</button></div>
                 </div>
-                <div class="ranking-grid__details" data-tier-key-details="${key}" hidden>
+                <div class="ranking-grid__details" data-tier-key-details="${key}" ${expandedKeys.has(key) ? '' : 'hidden'}>
                     <div class="ranking-grid__row">
                         <div class="ranking-grid__cell ranking-grid__cell--header">${t('spendRewards.table.item')}</div>
                         <div class="ranking-grid__cell ranking-grid__cell--header">${t('rankings.table.category')}</div>
-                        <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('spendRewards.table.unitCost')}</div>
-                        <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('spendRewards.table.value', { icon: banknoteIconHtml() })}</div>
+                        <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('rankings.table.pointsEach')}</div>
+                        <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('rankings.table.worth')}</div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                     </div>
                     ${breakdownRowsHtml(tier)}
-                </div>
-            `;
+                </div>`;
         })
         .join('');
 
@@ -147,110 +166,71 @@ function renderTiers(track) {
             <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader">${t('spendRewards.table.tier')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('spendRewards.table.threshold')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('spendRewards.table.stepCost')}</div>
-            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('spendRewards.table.value', { icon: banknoteIconHtml() })}</div>
-            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('spendRewards.table.valueRatio')}</div>
-            <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader">${t('spendRewards.table.complete')}</div>
+            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('spendRewards.table.packs')}</div>
+            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('spendRewards.table.worth')}</div>
+            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('spendRewards.table.ratio')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader"></div>
         </div>
-        ${rows}
-    `;
+        ${rows}`;
 
     tiersTable.querySelectorAll('[data-item-id]').forEach((placeholder) => {
         const itemId = placeholder.getAttribute('data-item-id');
-        const img = createItemImage(itemId, itemId, 'item-icon item-icon--sm');
-        placeholder.replaceWith(img);
+        placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
     });
-    enableInfoTooltips(tiersTable);
-
     tiersTable.querySelectorAll('.expand-toggle').forEach((button) => {
         button.addEventListener('click', () => {
             const key = button.getAttribute('data-tier-key');
-            const detailsSection = tiersTable.querySelector(`[data-tier-key-details="${key}"]`);
-            const isHidden = detailsSection.hidden;
-            detailsSection.hidden = !isHidden;
-            button.textContent = isHidden ? t('common.hide') : t('common.details');
-            if (isHidden) {
-                expandedTierKeys.add(key);
+            const details = tiersTable.querySelector(`[data-tier-key-details="${key}"]`);
+            details.hidden = !details.hidden;
+            button.textContent = details.hidden ? t('common.details') : t('common.hide');
+            if (details.hidden) {
+                expandedKeys.delete(key);
             } else {
-                expandedTierKeys.delete(key);
+                expandedKeys.add(key);
             }
         });
-    });
-
-    expandedTierKeys.forEach((key) => {
-        const detailsSection = tiersTable.querySelector(`[data-tier-key-details="${key}"]`);
-        const button = tiersTable.querySelector(`.expand-toggle[data-tier-key="${key}"]`);
-        if (!detailsSection || !button) {
-            return;
-        }
-        detailsSection.hidden = false;
-        button.textContent = t('common.hide');
     });
 }
 
 function populateTrackSelect() {
-    const previousValue = trackSelect.value;
-    const optionsHtml = tracks.map((track) => `<option value="${track.id}">${track.name}</option>`).join('');
-    trackSelect.innerHTML = `<option value="" disabled ${previousValue ? '' : 'selected'}>${t('spendRewards.trackPlaceholder')}</option>${optionsHtml}`;
-    if (tracks.some((track) => track.id === previousValue)) {
-        trackSelect.value = previousValue;
+    const previous = trackSelect.value;
+    const options = Object.entries(data.spend_reward_tracks || {})
+        .map(([id, track]) => `<option value="${id}">${localizedName(track.name)}</option>`)
+        .join('');
+    trackSelect.innerHTML = `<option value="" disabled ${previous ? '' : 'selected'}>${t('spendRewards.trackPlaceholder')}</option>${options}`;
+    if (previous && data.spend_reward_tracks?.[previous]) {
+        trackSelect.value = previous;
     }
 }
 
-// Bundle-aware pricing (see lib/ranking-core.js) can take a noticeable moment to recompute, so
-// any change that triggers it shows a blocking overlay first (see rankings.js for why the
-// setTimeout is needed for the overlay to actually paint before the heavy synchronous work runs).
-function withLoadingOverlay(fn) {
-    loadingOverlay.hidden = false;
-    setTimeout(() => {
-        try {
-            fn();
-        } finally {
-            loadingOverlay.hidden = true;
-        }
-    }, 0);
-}
-
-function recompute() {
-    itemsById = rawData.items || {};
-    const result = buildSpendRewardTracks(rawData, getLocale(), { useNaiveFallback: fallbackCheckbox.checked });
-    tracks = result.tracks || [];
-    populateTrackSelect();
-
-    if (tracks.length === 0) {
-        tiersPrompt.hidden = true;
-        tiersWrap.hidden = true;
-        tiersNote.hidden = true;
-        tiersEmpty.hidden = false;
-        return;
-    }
-
-    const selected = tracks.find((track) => track.id === trackSelect.value);
-    if (!selected) {
-        tiersEmpty.hidden = true;
-        tiersWrap.hidden = true;
-        tiersNote.hidden = true;
-        tiersPrompt.hidden = false;
-        return;
-    }
-    renderTiers(selected);
+async function recompute() {
+    await withLoading(async () => {
+        valuation = await buildValuation(data, settings);
+        render();
+    });
 }
 
 async function init() {
-    rawData = await loadPackData();
-    withLoadingOverlay(recompute);
-
-    trackSelect.addEventListener('change', () => {
-        expandedTierKeys.clear();
-        withLoadingOverlay(recompute);
+    data = await loadPackData();
+    const panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        fields: ['budget', 'events', 'passes'],
+        onChange: (next) => {
+            settings = next;
+            recompute();
+        },
     });
-
-    fallbackCheckbox.addEventListener('change', () => withLoadingOverlay(recompute));
-
+    settings = panel.getSettings();
+    populateTrackSelect();
+    trackSelect.addEventListener('change', () => {
+        expandedKeys.clear();
+        withLoading(render);
+    });
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
-        withLoadingOverlay(recompute);
+        populateTrackSelect();
+        render();
     });
+    await recompute();
 }
 
 init().catch((error) => {

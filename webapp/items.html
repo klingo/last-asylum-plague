@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.items"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="items.heading"></h2>
+                <p class="text-dim" data-i18n="items.description"></p>
+                <ul class="text-dim explainer">
+                    <li data-i18n="items.explainUnknown"></li>
+                    <li data-i18n="items.explainUncertain"></li>
+                </ul>
+                <div id="valuation-panel"></div>
+                <div class="form-row">
+                    <div class="field field--wide">
+                        <label for="search-input" data-i18n="items.searchLabel"></label>
+                        <input id="search-input" type="search" data-i18n-placeholder="items.searchPlaceholder" />
+                    </div>
+                    <div class="field">
+                        <span class="field-label" data-i18n="items.showLabel"></span>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="changed-only" />
+                                <span data-i18n="items.changedOnly"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="field field--reset">
+                        <button
+                            type="button"
+                            id="reset-priorities"
+                            class="btn-secondary"
+                            data-i18n="items.reset"
+                        ></button>
+                    </div>
+                </div>
+                <p class="summary-line" id="items-summary"></p>
+            </section>
+
+            <section class="card">
+                <nav class="category-jump" id="category-jump"></nav>
+                <div class="table-wrap"><table id="items-table"></table></div>
+                <div id="items-empty" class="empty-state" hidden data-i18n="items.empty"></div>
+                <p class="footnote" data-i18n="items.footnote"></p>
+            </section>
+        </main>
+        <footer class="app-footer" data-i18n="footer.items"></footer>
+        <div id="loading-overlay" class="loading-overlay" hidden aria-hidden="true">
+            <div class="spinner"></div>
+        </div>
+        <script type="module" src="/src/items.js"></script>
+    </body>
+</html>

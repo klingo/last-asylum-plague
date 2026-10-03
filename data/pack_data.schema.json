@@ -157,6 +157,14 @@
                 },
                 "value_equivalent": {
                     "$ref": "#/definitions/itemQuantities"
+                },
+                "reversible": {
+                    "type": "boolean",
+                    "description": "When true, `contains` works in both directions: the item can be broken down into its contents AND crafted back from them (e.g. 4 Leather <-> 1 Brass). Without it, `contains` only means \"opens into\"."
+                },
+                "crafted_from": {
+                    "$ref": "#/definitions/itemQuantities",
+                    "description": "Recipe: the item can be crafted from these ingredients (e.g. 9 Lv.1 Sharp Beaks -> 1 Lv.3 Sharp Beak). Used by the planners; in the valuation it caps the item's worth at the ingredients' worth."
                 }
             }
         },
@@ -303,7 +311,7 @@
                 "purchase_limit": {
                     "type": ["integer", "null"],
                     "minimum": 1,
-                    "description": "null means no cap on purchase count (e.g. a repeatable weekly pass)."
+                    "description": "null means no cap on purchase count (e.g. a plain diamond top-up)."
                 },
                 "limit_type": {
                     "$ref": "#/definitions/limitType"
@@ -316,6 +324,19 @@
                 },
                 "choice": {
                     "$ref": "#/definitions/choicePool"
+                },
+                "delivery_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "The rewards arrive daily over this many days; `contains` is the total over all of them (e.g. a 7-day calendar pack). Passes without it use their category period (weekly 7, monthly 30)."
+                },
+                "exclusive_group": {
+                    "$ref": "#/definitions/id",
+                    "description": "Packages sharing this group are mutually exclusive: only one of them can be bought (per event run, or per week without an event), e.g. the calendar packs of an event."
+                },
+                "seasonal": {
+                    "type": "boolean",
+                    "description": "Only on sale some of the time (e.g. a seasonal pass such as the Gear Pass). Users tick whether it is on sale right now; packages without it are always available (within their limits)."
                 }
             }
         },
@@ -336,7 +357,7 @@
                 "purchase_limit": {
                     "type": ["integer", "null"],
                     "minimum": 1,
-                    "description": "null means no cap on purchase count (e.g. a repeatable weekly pass)."
+                    "description": "null means no cap on purchase count (e.g. a plain diamond top-up)."
                 },
                 "contains": {
                     "$ref": "#/definitions/itemQuantities"
@@ -376,6 +397,19 @@
                         "$ref": "#/definitions/packageTier"
                     },
                     "minProperties": 1
+                },
+                "delivery_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "The rewards arrive daily over this many days; `contains` is the total over all of them (e.g. a 7-day calendar pack). Passes without it use their category period (weekly 7, monthly 30)."
+                },
+                "exclusive_group": {
+                    "$ref": "#/definitions/id",
+                    "description": "Packages sharing this group are mutually exclusive: only one of them can be bought (per event run, or per week without an event), e.g. the calendar packs of an event."
+                },
+                "seasonal": {
+                    "type": "boolean",
+                    "description": "Only on sale some of the time (e.g. a seasonal pass such as the Gear Pass). Users tick whether it is on sale right now; packages without it are always available (within their limits)."
                 }
             }
         },
@@ -428,7 +462,10 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "object",
-                        "additionalProperties": { "type": "integer", "minimum": 1 }
+                        "additionalProperties": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
                     }
                 }
             }
@@ -467,7 +504,8 @@
                 "weekly_special",
                 "mystic_cabinet",
                 "full_moon_night",
-                "recluse_merchant"
+                "recluse_merchant",
+                "calendar_event"
             ]
         },
         "event": {

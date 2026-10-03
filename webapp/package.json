@@ -13,7 +13,7 @@
         "vite": "^6.4.3"
     },
     "dependencies": {
-        "last-asylum-plague": "file:..",
-        "ml-matrix": "^6.15.0"
+        "highs": "^1.15.3",
+        "last-asylum-plague": "file:.."
     }
 }

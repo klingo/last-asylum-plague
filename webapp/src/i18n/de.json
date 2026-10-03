@@ -4,27 +4,25 @@
     },
     "nav": {
         "home": "",
-        "analyze": "",
-        "compare": "",
         "rankings": "",
         "choices": "",
         "spendRewards": "",
-        "eventOffers": "",
-        "language": ""
+        "language": "",
+        "items": "",
+        "compare": ""
     },
     "common": {
         "unlimited": "",
         "unknown": "",
         "notAvailable": "",
-        "yes": "",
-        "no": "",
         "details": "",
         "hide": "",
         "dash": "",
         "anyDay": "",
         "tierSuffix": "",
         "loadError": "",
-        "fetchError": ""
+        "fetchError": "",
+        "reset": ""
     },
     "weekday": {
         "monday": "",
@@ -43,6 +41,7 @@
         "hero": "",
         "gear": "",
         "special": "",
+        "curio": "",
         "special_event": "",
         "speedup": "",
         "virtual": "",
@@ -65,134 +64,73 @@
         "special": "",
         "exchange": "",
         "exchange_offer": "",
-        "bonus_tier": ""
+        "bonus_tier": "",
+        "conversion": ""
     },
     "docTitle": {
         "welcome": "",
-        "analyze": "",
-        "compare": "",
         "rankings": "",
         "choices": "",
         "spendRewards": "",
-        "eventOffers": ""
+        "items": "",
+        "compare": ""
     },
     "footer": {
         "welcome": "",
-        "analyzeGenerated": "",
-        "analyzeDefault": "",
-        "compareGenerated": "",
-        "compareDefault": "",
         "rankings": "",
-        "choicesGenerated": "",
-        "choicesDefault": "",
+        "choices": "",
         "spendRewards": "",
-        "eventOffers": ""
+        "items": "",
+        "compare": ""
     },
     "welcome": {
         "heading": "",
         "intro": "",
-        "analyzeDescription": "",
-        "compareDescription": "",
         "rankingsDescription": "",
         "choicesDescription": "",
         "spendRewardsDescription": "",
-        "eventOffersDescription": ""
+        "itemsDescription": "",
+        "compareDescription": ""
     },
     "analyze": {
         "heading": "",
-        "description": "",
-        "itemLabel": "",
-        "itemSearchPlaceholder": "",
         "itemSearchClear": "",
-        "eventsLabel": "",
-        "eventsNoneSelected": "",
-        "eventsSelectedCount": "",
-        "quantityLabel": "",
-        "quantityPlaceholder": "",
-        "daysLabel": "",
-        "exceedLimitLabel": "",
-        "exceedPackLimits": "",
-        "reset": "",
-        "sourcesHeading": "",
-        "sourcesEmpty": "",
-        "sourcesFootnote": "",
-        "planHeading": "",
-        "planEmpty": "",
-        "planSummary": "",
-        "planWarning": "",
-        "detailsIntro": "",
-        "detailsIntroFallback": "",
         "table": {
-            "type": "",
-            "source": "",
-            "category": "",
-            "pricePerPurchase": "",
-            "yieldPerPurchase": "",
-            "perUnit": "",
-            "limitUnits": "",
-            "days": "",
-            "requiresTooltip": "",
-            "purchases": "",
-            "unitsGained": "",
-            "cost": ""
+            "requiresTooltip": ""
         }
-    },
-    "compare": {
-        "heading": "",
-        "description": "",
-        "itemALabel": "",
-        "itemBLabel": "",
-        "itemSearchPlaceholder": "",
-        "quantityLabel": "",
-        "quantityPlaceholder": "",
-        "valueHeading": "",
-        "valueDescription": "",
-        "valuePrompt": "",
-        "valueSummary": "",
-        "valueSummaryEqual": "",
-        "valueFallbackNote": "",
-        "valueUnknownNote": "",
-        "costHeading": "",
-        "costDescription": "",
-        "planHeading": "",
-        "planDescription": "",
-        "sidePrompt": "",
-        "sideSourcesHeading": "",
-        "sidePlanHeading": ""
     },
     "rankings": {
         "heading": "",
         "description": "",
         "searchLabel": "",
         "searchPlaceholder": "",
-        "pricingLabel": "",
         "includeExchangeShops": "",
-        "excludeWeeklyPasses": "",
-        "excludeItemsLabel": "",
-        "excludeDiamonds": "",
-        "excludeVipPoints": "",
-        "excludeAllianceChests": "",
         "empty": "",
         "meta": "",
-        "note": "",
         "table": {
             "rank": "",
             "name": "",
             "type": "",
             "category": "",
             "price": "",
-            "value": "",
-            "valueRatio": "",
-            "complete": "",
             "item": "",
-            "unitCost": "",
-            "incomplete": ""
+            "incomplete": "",
+            "worth": "",
+            "ratio": "",
+            "pointsEach": "",
+            "perWeek": "",
+            "buy": ""
         },
-        "priceDisplay": {
-            "package": "",
-            "exchange": "",
-            "bonusTier": ""
-        }
+        "showLabel": "",
+        "bonusTierName": "",
+        "once": "",
+        "section": {
+            "bonus": "",
+            "unknown": ""
+        },
+        "buyMonthly": "",
+        "planSummary": "",
+        "buyNoFit": ""
     },
     "choices": {
         "heading": "",
@@ -205,8 +143,20 @@
         "selectCountHintAll": "",
         "optionsEmpty": "",
         "table": {
-            "item": ""
-        }
+            "rank": "",
+            "option": "",
+            "category": "",
+            "points": "",
+            "worth": "",
+            "vsBest": "",
+            "package": "",
+            "price": "",
+            "ratio": "",
+            "gain": ""
+        },
+        "groupName": "",
+        "groupHint": "",
+        "incomplete": ""
     },
     "spendRewards": {
         "heading": "",
@@ -217,57 +167,80 @@
         "selectPrompt": "",
         "pointsSuffix": "",
         "tierLabel": "",
-        "fallbackLabel": "",
-        "fallbackCheckboxText": "",
         "note": "",
         "table": {
             "tier": "",
             "threshold": "",
             "stepCost": "",
-            "value": "",
-            "valueRatio": "",
-            "complete": "",
             "item": "",
-            "unitCost": "",
-            "estimated": "",
-            "estimatedShort": ""
-        }
+            "worth": "",
+            "ratio": "",
+            "packs": ""
+        },
+        "notReached": "",
+        "verdict": "",
+        "verdictNone": ""
     },
-    "eventOffers": {
+    "valuation": {
+        "budgetLabel": "",
+        "eventsLabel": "",
+        "summary": "",
+        "summaryUnbound": "",
+        "passesLabel": ""
+    },
+    "conversion": {
+        "open": "",
+        "craft": "",
+        "recipe": "",
+        "pick": "",
+        "substitute": ""
+    },
+    "items": {
         "heading": "",
         "description": "",
-        "eventLabel": "",
-        "eventPlaceholder": "",
+        "searchLabel": "",
+        "searchPlaceholder": "",
+        "showLabel": "",
+        "changedOnly": "",
+        "reset": "",
         "empty": "",
-        "selectPrompt": "",
-        "daysLabel": "",
-        "exceedLimitLabel": "",
-        "exceedPackLimits": "",
-        "fallbackLabel": "",
-        "fallbackCheckboxText": "",
-        "offersHeading": "",
-        "offersNote": "",
-        "bonusTiersHeading": "",
-        "bonusTiersDescription": "",
-        "tierLabel": "",
+        "footnote": "",
+        "summary": "",
+        "uncertain": "",
+        "uncertainTitle": "",
+        "dependsOn": "",
+        "onlyFrom": "",
+        "priority": {
+            "none": "",
+            "low": "",
+            "normal": "",
+            "high": ""
+        },
         "table": {
-            "tier": "",
             "item": "",
-            "currencyCost": "",
-            "cumulativeCost": "",
-            "stepCost": "",
-            "cost": "",
-            "value": "",
-            "valueRatio": "",
-            "maxRatio": "",
-            "maxQuantity": "",
-            "maxCost": "",
-            "maxValue": "",
-            "status": "",
-            "unitCost": "",
-            "unreachable": "",
-            "estimated": "",
-            "estimatedShort": ""
-        }
+            "priority": "",
+            "worth": ""
+        },
+        "explainUnknown": "",
+        "explainUncertain": ""
+    },
+    "compare": {
+        "heading": "",
+        "description": "",
+        "sideA": "",
+        "sideB": "",
+        "searchPlaceholder": "",
+        "amount": "",
+        "daysLabel": "",
+        "resultHeading": "",
+        "worth": "",
+        "cost": "",
+        "extras": "",
+        "net": "",
+        "how": "",
+        "unreachable": "",
+        "verdictWorth": "",
+        "verdictCost": "",
+        "note": ""
     }
 }

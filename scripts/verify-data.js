@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { pathToFileURL } = require('url');
 const Ajv = require('ajv');
 
 const DATA_PATH = path.join(__dirname, '..', 'data', 'pack_data.json');
@@ -11,8 +12,10 @@ const SCHEMA_PATH = path.join(__dirname, '..', 'data', 'pack_data.schema.json');
  * - Relational integrity (items, packages, exchange shops)
  * - Package tier ladder gap detection
  * - Drop table probability distributions
+ * - Item points fitted from the deal % (webapp/src/lib/point-fit.js) and items whose worth can't be
+ *   resolved (webapp/src/lib/item-values.js)
  */
-function verifyData() {
+async function verifyData() {
     console.log('Starting Pack Data Verification...\n');
 
     let totalErrorCount = 0;
@@ -119,9 +122,24 @@ function verifyData() {
                 }
             }
 
-            // Check value_equivalent (pricing-only "worth N of another item" fact — see
-            // ranking-core.js's regressionFill for how this derives an otherwise-unpriceable
-            // item's value from the referenced item's own market price).
+            // Check crafted_from (recipe: the item can be crafted from these ingredients).
+            if (item.crafted_from && typeof item.crafted_from === 'object') {
+                for (const subItemId of Object.keys(item.crafted_from)) {
+                    referencedItemKeys.add(subItemId);
+                    if (!itemKeys.has(subItemId)) {
+                        reportError(
+                            'Item Reference',
+                            `Item "${itemId}" crafted_from references unresolvable item: "${subItemId}"`,
+                        );
+                    }
+                    if (subItemId === itemId) {
+                        reportError('Item Loop', `Item "${itemId}" is crafted from itself.`);
+                    }
+                }
+            }
+
+            // Check value_equivalent (valuation-only "worth N of another item" fact, see
+            // webapp/src/lib/item-values.js).
             if (item.value_equivalent && typeof item.value_equivalent === 'object') {
                 for (const subItemId of Object.keys(item.value_equivalent)) {
                     referencedItemKeys.add(subItemId);
@@ -294,6 +312,30 @@ function verifyData() {
                 checkChoice(`Package "${pkgId}"`, pkg.choice);
             }
         }
+
+        // Mutually exclusive groups (only one member can be bought): need at least two members that
+        // share the same event and limit type, or "one of them" means nothing.
+        const groups = new Map();
+        for (const [pkgId, pkg] of Object.entries(packages)) {
+            if (pkg.exclusive_group) {
+                if (!groups.has(pkg.exclusive_group)) {
+                    groups.set(pkg.exclusive_group, []);
+                }
+                groups.get(pkg.exclusive_group).push([pkgId, pkg]);
+            }
+        }
+        for (const [groupId, members] of groups) {
+            if (members.length < 2) {
+                reportWarning('Exclusive Group', `Group "${groupId}" has only one package (${members[0][0]}).`);
+            }
+            const signatures = new Set(members.map(([, pkg]) => `${pkg.event_id || ''}|${pkg.limit_type || ''}`));
+            if (signatures.size > 1) {
+                reportError(
+                    'Exclusive Group',
+                    `Group "${groupId}" mixes events/limit types: ${members.map(([id]) => id).join(', ')}.`,
+                );
+            }
+        }
     });
 
     // 5. Exchange Shop Relational Checks
@@ -395,6 +437,58 @@ function verifyData() {
         }
     });
 
+    // 9. Points fitted from the deal % (webapp/src/lib/point-fit.js), and items whose worth can't
+    // be resolved from them (not in any pack with a deal %, and nothing to derive one from).
+    // Currencies are valued by what they buy, so they're skipped here.
+    const libDir = path.join(__dirname, '..', 'webapp', 'src', 'lib');
+    const { fitItemPoints, fitSensitivity, isDependent } = await import(
+        pathToFileURL(path.join(libDir, 'point-fit.js')).href
+    );
+    const { resolveItemValues } = await import(pathToFileURL(path.join(libDir, 'item-values.js')).href);
+    const { currencyItemIds } = await import(pathToFileURL(path.join(libDir, 'catalog.js')).href);
+    const fit = fitItemPoints(data);
+    const { diagnostics } = fit;
+    const percent = (value) => `${(value * 100).toFixed(1)}%`;
+    console.log('Fitting Item Points from Deal %...');
+    console.log(
+        `  - ${diagnostics.parameters} values from ${diagnostics.equations} equations; packs match within ${percent(diagnostics.medianError)} (median), ${percent(diagnostics.p90Error)} (90th percentile).`,
+    );
+    const worst = [...diagnostics.packages].sort((a, b) => Math.abs(b.ratio - 1) - Math.abs(a.ratio - 1)).slice(0, 5);
+    console.log(`  - Furthest off: ${worst.map((p) => `${p.id} (${p.ratio.toFixed(2)}x)`).join(', ')}`);
+    const uncertain = [...fit.points].filter(([, entry]) => entry.uncertain).map(([id]) => id);
+    console.log(`  - Uncertain (barely determined by the packs): ${uncertain.join(', ') || 'none'}`);
+    const sensitivity = fitSensitivity(data, fit);
+    const dependent = [...sensitivity]
+        .filter(([, s]) => isDependent(s))
+        .sort((a, b) => b[1].factor - a[1].factor)
+        .map(
+            ([id, s]) =>
+                `${id} (${Number.isFinite(s.factor) ? `x${s.factor.toFixed(1)} without` : 'only from'} ${s.family})`,
+        );
+    console.log(`  - Depends on a single pack: ${dependent.join(', ') || 'none'}\n`);
+
+    const currencyIds = currencyItemIds(exchangeShops);
+    const zeroCurrencies = Object.fromEntries([...currencyIds].map((id) => [id, 0]));
+    const resolved = resolveItemValues(items, { basePoints: fit.points, currencyIds, currencyValues: zeroCurrencies });
+    checkCategory('Item Worth', ({ reportWarning }) => {
+        for (const [itemId, entry] of resolved) {
+            if (!items[itemId]) {
+                continue; // unresolvable references are reported above
+            }
+            if (entry.value === null) {
+                reportWarning(
+                    'Unknown Worth',
+                    `Item "${itemId}" (${items[itemId].name.en}) is in no pack with a deal % and has nothing to derive a worth from.`,
+                );
+            } else if (entry.incomplete) {
+                reportWarning(
+                    'Partial Worth',
+                    `Item "${itemId}" (${items[itemId].name.en}) contains items of unknown worth.`,
+                );
+            }
+        }
+    });
+
     return finish(totalErrorCount, totalWarningCount, {
         totalItems: itemKeys.size,
         totalPackages: packageKeys.size,
@@ -430,4 +524,7 @@ function finish(errorCount, warningCount, stats = {}) {
     }
 }
 
-verifyData();
+verifyData().catch((error) => {
+    console.error(error);
+    process.exit(1);
+});

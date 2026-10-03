@@ -1,54 +1,57 @@
 # Last Asylum Pack Solver
 
-CLI scripts to analyze packages/exchange shops from `data/pack_data.json` (Last Asylum: Plague), plus a small
-static webapp (in `webapp/`) that renders the same analysis in the browser and is deployed to GitHub Pages.
+A small static webapp (in `webapp/`) that values items, packages and exchange-shop offers from
+`data/pack_data.json` (Last Asylum: Plague), computed live in the browser and deployed to GitHub Pages.
 
-## CLI scripts
+## How worth is calculated
 
-See `package.json` for the full list. The most relevant ones:
+Almost every pack gives about one diamond per Banknote plus "bonus" items, so a pack's price can't be split across
+its contents without a common value scale. The tool uses one:
 
-- `npm run analyze-item-value -- <item_id> [target_quantity]` — best way to buy a given item.
-- `npm run rank-packages` — ranks every package/exchange offer/bonus tier by value for money, writing
-  `output/value_ranking.json`.
+- **Points** — every item has a relative worth in points (diamonds = 1). Nothing is hardcoded: base items are
+  fitted live from the game's own deal percentages (every pack says what its contents are worth in diamonds;
+  exchange-shop prices are used as weak extra hints), everything else is derived from what it contains (chests:
+  expected contents, choice chests: best option, omni shards: the shard they replace, crafting chains: 4:1).
+  Recipes (`crafted_from`, e.g. 800 UR Epigraph Shards → any UR Epigraph IV, 9 Lv.1 → 1 Lv.3 raven gear) cap an
+  item at its crafting cost. Moon Coins, Star Moon Sigils and Surprise Emblems are not modelled. Diamonds and event
+  coins have no points of their own: they are worth what their shop offers buy (diamonds: the VIP shop).
+- **Your priorities** — on My Items each item is Don't care (0%), Low (50%), Normal (100%) or High (200%) of its
+  worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and Direct Relocate
+  start at Don't care.
+- **Banknote worth** — one weekly optimisation (linear program, [HiGHS](https://highs.dev/) compiled to
+  WebAssembly): the best purchases for your weekly Banknote spend within all purchase limits, passes and the events
+  you tick. Worth = points ÷ what your last Banknote buys; diamonds and coins at what one more unit could still buy
+  this week (0 once the shops are exhausted). A ratio of 1.0 or more = worth buying at your weekly spend.
 
-## Webapp
+## Pages
 
-The `webapp/` folder is a small [Vite](https://vitejs.dev/) app with four pages:
+- **Ranking** (`rankings.html`) — every package and pass (optionally exchange offers) ranked by worth ÷ price,
+  with how much you can spend on each per week and what to buy ("Buy / week": the best whole purchases for your
+  exact weekly spend); shop bonus tiers and entries of unknown worth are listed unranked.
+- **My Items** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
+- **Best Choice Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
+  packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.
+- **Compare** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get
+  it within N days (crafting, choices and shops included; weekly limits reset on Monday).
+- **Spend Rewards** (`spend-rewards.html`) — per tier of a spend track, what the extra Banknotes buy (the best packs
+  still available at that total spend) plus the tier reward, as a step ratio: spend more while it's 1.0 or more.
 
-- **Welcome** (`index.html`) — a landing page introducing the tool and linking to the pages below.
-- **Analyze Item Value** (`analyze.html`) — pick an item, an amount, and optionally exceed purchase limits; renders
-  the same purchase-plan calculation as `analyze-item-value.js`, directly in the page.
-- **Value Ranking** (`rankings.html`) — a searchable, filterable ranking of every package/exchange offer/bonus
-  tier by value for money.
-- **Best Choice Pick** (`choices.html`) — pick a choice chest or package (anything that lets you select one or more
-  rewards from a pool) and see its options ranked by what each reward would cost to buy elsewhere, so you know
-  which pick is worth the most.
-
-All three analysis pages compute everything live in the browser from `data/pack_data.json`; nothing is
-pre-generated. This matters because the effective cost of buying an item is dynamic: it depends on the target
-quantity and on shared purchase-limit capacities (e.g. a cheap "100 Strange Coins" exchange offer that's capped at
-once per day still only covers the first 100 coins needed — the rest has to come from a pricier source), so it
-can't be flattened into a single static number ahead of time. See `webapp/src/lib/pricing-core.js` (`createMarket`)
-for the purchase-simulation logic, ported from `scripts/lib/pricing.js`: the CLI is CommonJS/Node and the webapp is
-browser-only ESM, so the two are mirrored by hand rather than literally shared — see `CLAUDE.md` for details.
-
-Both analysis pages show per-item images where available: drop a `<item_id>.png` file into
-`webapp/public/assets/items/` and it will be picked up automatically (items without an image fall back to a
-placeholder icon).
+Weekly spend, events, seasonal passes on sale (e.g. the Gear Pass) and item priorities are shared by all pages
+(saved in the browser). Item images:
+drop a `<item_id>.png` into `webapp/public/assets/items/` (placeholder otherwise).
 
 ### Running locally
 
 ```bash
-npm run copy-pack-data         # copies data/pack_data.json into webapp/public/data
 npm run webapp:install         # first time only
-npm run webapp:dev             # starts the Vite dev server
+npm run webapp:dev             # copies data/pack_data.json into webapp/public/data, starts the Vite dev server
+npm run verify-data            # validates pack_data.json (schema, references, deal % fit, items without a worth)
 ```
 
 ### Deploying to GitHub Pages
 
 `.github/workflows/deploy-webapp.yml` copies the current `data/pack_data.json` and builds the webapp, then deploys
-it on every push to `main`, or manually via "Run workflow". Since the webapp computes everything live from that
-data, the deployed site is always in sync with `data/pack_data.json` at deploy time, with no separate ranking
-generation step to keep up to date.
+it on every push to `master`, or manually via "Run workflow". Since the webapp computes everything live from that
+data, the deployed site is always in sync with `data/pack_data.json` at deploy time.
 
 One-time repository setup: in **Settings → Pages**, set **Source** to **GitHub Actions**.

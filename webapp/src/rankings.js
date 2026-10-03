@@ -1,148 +1,249 @@
 import './style.css';
 import { renderNav } from './nav';
 import { loadPackData } from './lib/data';
-import { buildRanking } from './lib/ranking-core';
-import { displaySourceType } from './lib/pricing-core';
+import { buildValuation, modelSummaryText } from './lib/valuation';
+import { mountValuationPanel } from './lib/valuation-panel';
+import { withLoading } from './lib/loading';
+import { packageWeeklyCapacity, offerWeeklyCapacity, isUnavailablePass } from './lib/catalog.js';
+import { packageDisplayName, itemDisplayName, offerDisplayName, displaySourceType } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
 import { requiresIconHtml } from './lib/requires-tooltip';
-import { t, getLocale, categoryLabel, sourceTypeLabel, applyStaticTranslations } from './lib/i18n';
-import { formatUnitPrice, formatThousands, computeTieFlags } from './lib/format';
+import { t, getLocale, localizedName, categoryLabel, sourceTypeLabel, applyStaticTranslations } from './lib/i18n';
+import { formatThousands, formatSignificant, computeTieFlags } from './lib/format';
+import { ratioBarHtml } from './lib/ratio-bar';
 
 renderNav('rankings');
 applyStaticTranslations();
 
 const searchInput = document.getElementById('search-input');
 const includeExchangeShopsCheckbox = document.getElementById('include-exchange-shops');
-const excludeWeeklyPassesCheckbox = document.getElementById('exclude-weekly-passes');
-const excludeDiamondsCheckbox = document.getElementById('exclude-diamonds');
-const excludeVipPointsCheckbox = document.getElementById('exclude-vip-points');
-const excludeAllianceChestsCheckbox = document.getElementById('exclude-alliance-chests');
 const rankingMeta = document.getElementById('ranking-meta');
 const rankingTable = document.getElementById('ranking-table');
 const rankingEmpty = document.getElementById('ranking-empty');
-const loadingOverlay = document.getElementById('loading-overlay');
 
-const ALLIANCE_CHEST_PATTERN = /^lv\d+_alliance_chest$/;
+let data = null;
+let settings = null;
+let valuation = null;
+let entries = [];
+const expandedKeys = new Set();
 
-let rawData = null;
-let rankings = [];
-let itemsById = {};
-// Entry keys (see `entryKey`) whose "Details" row is currently expanded, so a re-render
-// triggered by something that doesn't change WHICH entries exist (search, an exclude-item
-// checkbox) can restore the same rows open instead of collapsing everything. Deliberately not
-// keyed by `entry.rank`: excluding an item changes value_ratio and can reorder the whole list,
-// so the entry that was open could end up at a different rank after recompute. Cleared
-// explicitly wherever the entry list itself can change (see includeExchangeShopsCheckbox's
-// listener).
-const expandedEntryKeys = new Set();
+const gold = (text) => `<span class="text-gold">${text}</span> ${banknoteIconHtml()}`;
 
-function entryKey(entry) {
-    return `${entry.type}:${entry.id}`;
+/**
+ * How many of an entry the best plan for your weekly spend buys: "×N", "1 / month" for the monthly
+ * pass (the plan counts 7/30 of it per week), "doesn't fit" for a good deal (ratio clearly above 1.0) the
+ * plan leaves out because whole purchases don't fit the exact spend, or ''.
+ */
+function buyHtml(count, entry) {
+    if (!(count > 1e-6)) {
+        return entry.rank && entry.ratio > 1.005 ? `<span class="text-dim">${t('rankings.buyNoFit')}</span>` : '';
+    }
+    const whole = Math.round(count);
+    const text = Math.abs(count - whole) < 1e-6 ? `×${formatThousands(whole)}` : t('rankings.buyMonthly');
+    return `<span class="text-good">${text}</span>`;
 }
 
-function matchesFilters(entry, search) {
-    if (!search) {
-        return true;
+/** How much can go into an entry per week: "once", "unlimited" or an amount. */
+function perWeekHtml(capacity, limitType, amountHtml) {
+    if (limitType === 'exclusive' || limitType === 'event') {
+        return t('rankings.once');
     }
-    const haystack = `${entry.name} ${categoryLabel(entry.category)}`.toLowerCase();
-    return haystack.includes(search);
+    if (!Number.isFinite(capacity)) {
+        return t('common.unlimited');
+    }
+    return amountHtml(capacity);
 }
 
-function getExcludeItemIds() {
-    const excludeItemIds = new Set();
-    if (excludeDiamondsCheckbox.checked) {
-        excludeItemIds.add('diamonds');
+/**
+ * Every rankable purchase: packages, plus exchange offers and shop bonus tiers when enabled.
+ * Only complete, purchasable entries get a rank; bonus tiers come free with spending coins and
+ * entries containing items of unknown worth can't be compared, so both are listed after them.
+ */
+function buildEntries() {
+    const locale = getLocale();
+    // Everything on sale this week: packages of switched-off events are hidden; once-only packs are
+    // listed (as "once") even though they don't count toward the weekly market.
+    const activeEventIds = new Set(settings.activeEvents);
+    const unavailablePasses = new Set(settings.unavailablePasses);
+    const capacityRules = { activeEventIds, includePasses: true, includeExclusives: true };
+    const result = [];
+    const planned = new Map(valuation.plan.purchases.map((p) => [`package:${p.id}`, p.count]));
+    for (const e of valuation.plan.exchanges) {
+        planned.set(`exchange:${e.shopId}:${e.offerKey}`, e.count);
     }
-    if (excludeVipPointsCheckbox.checked) {
-        excludeItemIds.add('vip_points');
+
+    for (const [id, pkg] of Object.entries(data.packages)) {
+        if (
+            !(pkg.price > 0) ||
+            (pkg.event_id && !activeEventIds.has(pkg.event_id)) ||
+            isUnavailablePass(id, pkg, unavailablePasses)
+        ) {
+            continue;
+        }
+        const b = valuation.bundle(pkg, pkg.price);
+        const capacity = packageWeeklyCapacity(pkg, capacityRules);
+        result.push({
+            key: `package:${id}`,
+            section: b.incomplete ? 'unknown' : 'ranked',
+            type: displaySourceType('package', pkg.category),
+            category: pkg.category,
+            name: packageDisplayName(pkg, locale),
+            requires: pkg.requires,
+            priceHtml: gold(formatThousands(pkg.price)),
+            perWeekHtml: perWeekHtml(capacity, pkg.limit_type, (n) => gold(formatThousands(n * pkg.price, 0))),
+            worth: b.worth,
+            ratio: b.ratio,
+            parts: b.parts,
+        });
     }
-    if (excludeAllianceChestsCheckbox.checked) {
-        for (const itemId of Object.keys(rawData?.items || {})) {
-            if (ALLIANCE_CHEST_PATTERN.test(itemId)) {
-                excludeItemIds.add(itemId);
+
+    if (includeExchangeShopsCheckbox.checked) {
+        for (const [shopId, shop] of Object.entries(data.exchange_shops || {})) {
+            if (shop.event_id && !activeEventIds.has(shop.event_id)) {
+                continue;
+            }
+            const coinWorth = valuation.worth(shop.currency_item_id);
+            if (!(coinWorth > 0)) {
+                continue; // currency without a worth (or in surplus): nothing to compare against
+            }
+            const coinName = itemDisplayName(data.items, shop.currency_item_id, locale);
+            for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
+                const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
+                const paid = offer.currency_cost * coinWorth;
+                const capacity = offerWeeklyCapacity(offer, shop);
+                result.push({
+                    key: `exchange:${shopId}:${offerKey}`,
+                    section: b.incomplete ? 'unknown' : 'ranked',
+                    type: 'exchange_offer',
+                    category: shop.event_id ? 'event_exchange' : 'exchange',
+                    name: offerDisplayName(shop, offer, data.items, locale),
+                    priceHtml: `${formatThousands(offer.currency_cost)} ${coinName}`,
+                    perWeekHtml: perWeekHtml(
+                        capacity,
+                        offer.limit_type,
+                        (n) => `${formatThousands(n * offer.currency_cost, 0)} ${coinName}`,
+                    ),
+                    worth: b.worth,
+                    ratio: b.worth / paid,
+                    parts: b.parts,
+                });
+            }
+            let previous = 0;
+            for (const threshold of Object.keys(shop.bonus_tiers || {})
+                .map(Number)
+                .sort((a, b) => a - b)) {
+                const step = threshold - previous;
+                previous = threshold;
+                const b = valuation.bundle({ contains: shop.bonus_tiers[String(threshold)] }, 0);
+                result.push({
+                    key: `bonus:${shopId}:${threshold}`,
+                    section: 'bonus',
+                    type: 'bonus_tier',
+                    category: 'event_exchange',
+                    name: `${localizedName(shop.name, locale)} - ${t('rankings.bonusTierName', { threshold: formatThousands(threshold) })}`,
+                    priceHtml: `${formatThousands(step)} ${coinName}`,
+                    perWeekHtml: t('common.dash'),
+                    worth: b.worth,
+                    // Bonus on top of what the step's coins already buy.
+                    ratio: b.worth / (step * coinWorth),
+                    parts: b.parts,
+                });
             }
         }
     }
-    return excludeItemIds;
+
+    const ranked = result
+        .filter((entry) => entry.section === 'ranked' && Number.isFinite(entry.ratio))
+        .sort((a, b) => b.ratio - a.ratio)
+        .map((entry, index) => ({ rank: index + 1, ...entry }));
+    const others = (section) =>
+        result
+            .filter((entry) => entry.section === section)
+            .sort((a, b) => (b.ratio || 0) - (a.ratio || 0) || a.name.localeCompare(b.name));
+    return [...ranked, ...others('bonus'), ...others('unknown')].map((entry) => ({
+        ...entry,
+        buy: planned.get(entry.key) || 0,
+    }));
 }
 
-function goldenBanknotes(text) {
-    const currency = t('currency.banknotes');
-    const pattern = new RegExp(`([\\d.,']+)\\s*${currency}`, 'g');
-    return text.replace(pattern, (match, amount) => `<span class="text-gold">${amount}</span> ${banknoteIconHtml()}`);
+function ratioHtml(entry, maxRatio) {
+    if (entry.section === 'bonus') {
+        return `+${formatThousands(entry.ratio * 100, 1)}%`;
+    }
+    if (entry.section === 'unknown') {
+        return t('common.dash');
+    }
+    return ratioBarHtml(entry.ratio, maxRatio);
 }
 
 function breakdownRowsHtml(entry) {
-    return [...entry.contains_breakdown]
-        .sort((a, b) => b.value - a.value)
+    const locale = getLocale();
+    return entry.parts
+        .map((part) => ({ ...part, worth: part.qty * (valuation.worth(part.id) ?? 0) }))
+        .sort((a, b) => b.worth - a.worth)
         .map(
-            (item) => `
+            (part) => `
                 <div class="ranking-grid__row">
                     <div class="ranking-grid__cell"></div>
-                    <div class="ranking-grid__cell item-cell"><span class="breakdown-icon" data-item-id="${item.item_id}"></span>${item.name} &times;${item.quantity}</div>
+                    <div class="ranking-grid__cell item-cell"><span class="breakdown-icon" data-item-id="${part.id}"></span>${itemDisplayName(data.items, part.id, locale)} &times;${formatSignificant(part.qty)}</div>
                     <div class="ranking-grid__cell"></div>
-                    <div class="ranking-grid__cell">${categoryLabel(itemsById[item.item_id]?.category)}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num">${item.unit_cost !== null ? `<span class="text-gold">${formatUnitPrice(item.unit_cost, { minDecimals: 4 })}</span> ${banknoteIconHtml()}` : t('common.unknown')}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num"><span class="text-gold">${formatThousands(item.value, 2)}</span> ${banknoteIconHtml()}</div>
+                    <div class="ranking-grid__cell">${categoryLabel(data.items[part.id]?.category)}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num">${formatSignificant(valuation.points(part.id)) ?? t('common.unknown')}</div>
                     <div class="ranking-grid__cell"></div>
-                    <div class="ranking-grid__cell">${item.known === false ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''}</div>
                     <div class="ranking-grid__cell"></div>
-                </div>
-            `,
+                    <div class="ranking-grid__cell ranking-grid__cell--num">${gold(formatSignificant(part.worth))}</div>
+                    <div class="ranking-grid__cell">${valuation.worth(part.id) === null ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''}</div>
+                    <div class="ranking-grid__cell"></div>
+                </div>`,
         )
         .join('');
 }
 
 function renderTable(filtered) {
+    rankingEmpty.hidden = filtered.length > 0;
     if (filtered.length === 0) {
         rankingTable.innerHTML = '';
-        rankingEmpty.hidden = false;
         return;
     }
-    rankingEmpty.hidden = true;
-
-    // Competition ranking: entries tied on Value Ratio with the row directly above them (same
-    // rounded value, so a visible tie) show a blank rank instead of repeating the number — see
-    // `computeTieFlags`. `entry.rank` is purely the displayed number here; row identity for
-    // expand/collapse state uses the stable `entryKey`, not the (recompute-reorderable) rank.
-    const tieFlags = computeTieFlags(filtered.map((entry) => entry.value_ratio));
-
-    // Both the ranking rows and the nested "Details" breakdown below share the same
-    // `.ranking-grid` column tracks (the breakdown uses `grid-template-columns: subgrid`), so
-    // their columns always stay visually aligned instead of living in two separate tables.
+    const tieFlags = computeTieFlags(filtered.map((entry) => (entry.rank ? entry.ratio.toFixed(4) : entry.key)));
+    const maxRatio = Math.max(1, ...filtered.filter((entry) => entry.rank).map((entry) => entry.ratio));
+    let lastSection = null;
     const rows = filtered
         .map((entry, index) => {
-            const rankLabel = tieFlags[index] ? '' : entry.rank;
-            const key = entryKey(entry);
-            const displayType = displaySourceType(entry.type, entry.category);
-            return `
-                <div class="ranking-grid__row" role="row" data-entry-key="${key}">
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${rankLabel}</div>
-                    <div class="ranking-grid__cell" role="cell">${entry.name}${requiresIconHtml(entry.requires, rawData?.packages || {}, itemsById, getLocale())}</div>
-                    <div class="ranking-grid__cell" role="cell"><span class="pill pill--${displayType}">${sourceTypeLabel(displayType)}</span></div>
+            const heading =
+                entry.section !== lastSection && entry.section !== 'ranked'
+                    ? `<div class="ranking-grid__section">${t(`rankings.section.${entry.section}`)}</div>`
+                    : '';
+            lastSection = entry.section;
+            return `${heading}
+                <div class="ranking-grid__row" role="row">
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.rank && !tieFlags[index] ? entry.rank : ''}</div>
+                    <div class="ranking-grid__cell" role="cell">${entry.name}${requiresIconHtml(entry.requires, data.packages, data.items, getLocale())}</div>
+                    <div class="ranking-grid__cell" role="cell"><span class="pill pill--${entry.type}">${sourceTypeLabel(entry.type)}</span></div>
                     <div class="ranking-grid__cell" role="cell">${categoryLabel(entry.category)}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${goldenBanknotes(entry.price_display)}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell"><span class="text-gold">${formatThousands(entry.total_value, 2)}</span> ${banknoteIconHtml()}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${formatThousands(entry.value_ratio, 4)}</div>
-                    <div class="ranking-grid__cell" role="cell">${entry.value_complete ? `<span class="text-good">${t('common.yes')}</span>` : `<span class="text-bad">${t('common.no')}</span>`}</div>
-                    <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-entry-key="${key}">${t('common.details')}</button></div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.priceHtml}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.perWeekHtml}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${buyHtml(entry.buy, entry)}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(entry.worth, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${ratioHtml(entry, maxRatio)}</div>
+                    <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-entry-key="${entry.key}">${expandedKeys.has(entry.key) ? t('common.hide') : t('common.details')}</button></div>
                 </div>
-                <div class="ranking-grid__details" data-entry-key-details="${key}" hidden>
+                <div class="ranking-grid__details" data-entry-key-details="${entry.key}" ${expandedKeys.has(entry.key) ? '' : 'hidden'}>
                     <div class="ranking-grid__row">
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header">${t('rankings.table.item')}</div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header">${t('rankings.table.category')}</div>
-                        <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('rankings.table.unitCost')}</div>
-                        <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('rankings.table.value', { icon: banknoteIconHtml() })}</div>
+                        <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('rankings.table.pointsEach')}</div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
+                        <div class="ranking-grid__cell ranking-grid__cell--header"></div>
+                        <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('rankings.table.worth')}</div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                     </div>
                     ${breakdownRowsHtml(entry)}
-                </div>
-            `;
+                </div>`;
         })
         .join('');
 
@@ -153,110 +254,79 @@ function renderTable(filtered) {
             <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader">${t('rankings.table.type')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader">${t('rankings.table.category')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.price')}</div>
-            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.value', { icon: banknoteIconHtml() })}</div>
-            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.valueRatio')}</div>
-            <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader">${t('rankings.table.complete')}</div>
+            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.perWeek')}</div>
+            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.buy')}</div>
+            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.worth')}</div>
+            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.ratio')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader"></div>
         </div>
-        ${rows}
-    `;
+        ${rows}`;
 
-    // Populate item images (real DOM nodes, can't be inlined into the HTML string above).
     rankingTable.querySelectorAll('[data-item-id]').forEach((placeholder) => {
         const itemId = placeholder.getAttribute('data-item-id');
-        const img = createItemImage(itemId, itemId, 'item-icon item-icon--sm');
-        placeholder.replaceWith(img);
+        placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
     });
     enableInfoTooltips(rankingTable);
-
     rankingTable.querySelectorAll('.expand-toggle').forEach((button) => {
         button.addEventListener('click', () => {
             const key = button.getAttribute('data-entry-key');
-            const detailsSection = rankingTable.querySelector(`[data-entry-key-details="${key}"]`);
-            const isHidden = detailsSection.hidden;
-            detailsSection.hidden = !isHidden;
-            button.textContent = isHidden ? t('common.hide') : t('common.details');
-            if (isHidden) {
-                expandedEntryKeys.add(key);
+            const details = rankingTable.querySelector(`[data-entry-key-details="${key}"]`);
+            details.hidden = !details.hidden;
+            button.textContent = details.hidden ? t('common.details') : t('common.hide');
+            if (details.hidden) {
+                expandedKeys.delete(key);
             } else {
-                expandedEntryKeys.delete(key);
+                expandedKeys.add(key);
             }
         });
-    });
-
-    // Re-open whatever was expanded before this render, for entries still present now (e.g.
-    // still matching the search, or simply the same entry re-rendered with new value numbers).
-    expandedEntryKeys.forEach((key) => {
-        const detailsSection = rankingTable.querySelector(`[data-entry-key-details="${key}"]`);
-        const button = rankingTable.querySelector(`.expand-toggle[data-entry-key="${key}"]`);
-        if (!detailsSection || !button) {
-            return;
-        }
-        detailsSection.hidden = false;
-        button.textContent = t('common.hide');
     });
 }
 
 function applyFilters() {
     const search = searchInput.value.trim().toLowerCase();
-    const filtered = rankings.filter((entry) => matchesFilters(entry, search));
-    renderTable(filtered);
+    renderTable(
+        entries.filter(
+            (entry) => !search || `${entry.name} ${categoryLabel(entry.category)}`.toLowerCase().includes(search),
+        ),
+    );
 }
 
-// Bundle-aware pricing (see lib/ranking-core.js) can take a noticeable moment to recompute, so
-// any change that triggers it shows a blocking overlay first. `recompute()` itself is
-// synchronous, so simply toggling the overlay around a direct call would never actually get
-// painted — the browser wouldn't get a chance to render before the heavy computation blocked
-// the main thread. Deferring the computation one tick (setTimeout 0) lets the overlay's
-// `hidden = false` reach the screen first.
-function withLoadingOverlay(fn) {
-    loadingOverlay.hidden = false;
-    setTimeout(() => {
-        try {
-            fn();
-        } finally {
-            loadingOverlay.hidden = true;
-        }
-    }, 0);
-}
-
-function recompute() {
-    itemsById = rawData.items || {};
-    const result = buildRanking(rawData, getLocale(), {
-        excludeExchangeShops: !includeExchangeShopsCheckbox.checked,
-        excludeItemIds: getExcludeItemIds(),
-        excludeWeeklyPasses: excludeWeeklyPassesCheckbox.checked,
-    });
-    rankings = result.rankings || [];
-    const meta = result.metadata || {};
-    const generatedAt = meta.generated_at ? new Date(meta.generated_at).toLocaleString(getLocale()) : '';
-    rankingMeta.textContent = `${t('rankings.meta', { count: meta.entry_count ?? rankings.length, date: generatedAt })} ${meta.note || ''}`;
+function rebuild() {
+    entries = buildEntries();
+    const rankedCount = entries.filter((entry) => entry.rank).length;
+    const plan = valuation.plan;
+    rankingMeta.textContent = `${t('rankings.planSummary', {
+        purchases: formatThousands(plan.purchases.length),
+        spent: formatThousands(plan.spent, 0),
+        budget: formatThousands(plan.budget, 0),
+        exchanges: formatThousands(plan.exchanges.length),
+    })} ${t('rankings.meta', { count: rankedCount })} ${modelSummaryText(valuation)}`;
     applyFilters();
 }
 
-async function init() {
-    rawData = await loadPackData();
-    withLoadingOverlay(recompute);
-
-    searchInput.addEventListener('input', applyFilters);
-    includeExchangeShopsCheckbox.addEventListener('change', () => {
-        // The entry list itself can change (exchange offers/bonus tiers appearing or
-        // disappearing entirely), so any previously expanded rows may no longer correspond to
-        // the same entry — collapse instead of risking a stale/misleading open row.
-        expandedEntryKeys.clear();
-        withLoadingOverlay(recompute);
+async function recompute() {
+    await withLoading(async () => {
+        valuation = await buildValuation(data, settings);
+        rebuild();
     });
-    [
-        excludeDiamondsCheckbox,
-        excludeVipPointsCheckbox,
-        excludeAllianceChestsCheckbox,
-        excludeWeeklyPassesCheckbox,
-    ].forEach((checkbox) => checkbox.addEventListener('change', () => withLoadingOverlay(recompute)));
+}
 
+async function init() {
+    data = await loadPackData();
+    const panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        onChange: (next) => {
+            settings = next;
+            recompute();
+        },
+    });
+    settings = panel.getSettings();
+    searchInput.addEventListener('input', applyFilters);
+    includeExchangeShopsCheckbox.addEventListener('change', rebuild);
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
-        withLoadingOverlay(recompute);
+        rebuild();
     });
+    await recompute();
 }
 
 init().catch((error) => {

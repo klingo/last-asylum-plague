@@ -12,17 +12,11 @@
             <section class="card">
                 <h2 data-i18n="spendRewards.heading"></h2>
                 <p class="text-dim" data-i18n="spendRewards.description"></p>
+                <div id="valuation-panel"></div>
                 <div class="form-row">
                     <div class="field field--wide">
                         <label for="track-select" data-i18n="spendRewards.trackLabel"></label>
                         <select id="track-select"></select>
-                    </div>
-                    <div class="field">
-                        <span class="field-label" data-i18n="spendRewards.fallbackLabel"></span>
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="fallback-checkbox" />
-                            <span data-i18n="spendRewards.fallbackCheckboxText"></span>
-                        </label>
                     </div>
                 </div>
             </section>
@@ -30,7 +24,9 @@
             <section class="card">
                 <div id="tiers-prompt" class="empty-state" data-i18n="spendRewards.selectPrompt"></div>
                 <div id="tiers-empty" class="empty-state" hidden data-i18n="spendRewards.empty"></div>
-                <div id="tiers-wrap" class="table-wrap" hidden><div id="tiers-table" class="spend-reward-grid" role="table"></div></div>
+                <div id="tiers-wrap" class="table-wrap" hidden>
+                    <div id="tiers-table" class="spend-reward-grid" role="table"></div>
+                </div>
                 <p class="footnote" id="tiers-note" hidden></p>
             </section>
         </main>

@@ -5,7 +5,7 @@
  * once the markup is in the DOM.
  */
 import { localizedName, t } from './i18n';
-import { packageDisplayName } from './pricing-core';
+import { packageDisplayName } from './labels';
 
 // Small "i in a circle" icon; the button itself carries the accessible name (aria-label), so
 // the SVG is purely decorative.
@@ -24,6 +24,12 @@ function getResolvedRequiresName(requiresId, packages, items, locale) {
     return localizedName(items[requiresId]?.name, locale) || requiresId;
 }
 
+/** Info-icon button showing `text` as tooltip (pair with `enableInfoTooltips()`). */
+function infoIconHtml(text) {
+    const label = String(text).replace(/"/g, '&quot;');
+    return `<button type="button" class="info-icon" data-tooltip="${label}" aria-label="${label}">${INFO_ICON_SVG}</button>`;
+}
+
 /**
  * Returns the info-icon button markup for `requiresId`, or `''` when there's nothing to show.
  */
@@ -36,4 +42,4 @@ function requiresIconHtml(requiresId, packages, items, locale) {
     return `<button type="button" class="info-icon" data-tooltip="${label}" aria-label="${label}">${INFO_ICON_SVG}</button>`;
 }
 
-export { requiresIconHtml, getResolvedRequiresName };
+export { requiresIconHtml, getResolvedRequiresName, infoIconHtml };

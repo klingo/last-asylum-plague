@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-09-30"
+        "last_updated": "2026-10-04"
     },
     "items": {
         "antitoxin": {
@@ -126,7 +126,8 @@
             "category": "gear",
             "contains": {
                 "leather": 4
-            }
+            },
+            "reversible": true
         },
         "cloth": {
             "name": {
@@ -195,7 +196,10 @@
                 "en": "Diamond Golden Egg",
                 "de": ""
             },
-            "category": "special"
+            "category": "special",
+            "contains": {
+                "diamonds": 400
+            }
         },
         "diamonds": {
             "name": {
@@ -248,21 +252,30 @@
                 "en": "Frenzied Flock IV - Ranger",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "frenzied_flock_iv_warlock": {
             "name": {
                 "en": "Frenzied Flock IV - Warlock",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "frenzied_flock_iv_warrior": {
             "name": {
                 "en": "Frenzied Flock IV - Warrior",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "gear_blueprint_mr": {
             "name": {
@@ -327,21 +340,30 @@
                 "en": "Guard of Nature IV - Ranger",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "guard_of_nature_iv_warlock": {
             "name": {
                 "en": "Guard of Nature IV - Warlock",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "guard_of_nature_iv_warrior": {
             "name": {
                 "en": "Guard of Nature IV - Warrior",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "healing_speedup": {
             "name": {
@@ -466,7 +488,8 @@
             "category": "gear",
             "contains": {
                 "cloth": 4
-            }
+            },
+            "reversible": true
         },
         "lv1_alliance_chest": {
             "name": {
@@ -475,12 +498,93 @@
             },
             "category": "virtual"
         },
+        "lv1_attackers_claw": {
+            "name": {
+                "en": "Lv.1 Attacker's Claw",
+                "de": ""
+            },
+            "category": "gear"
+        },
+        "lv1_eye_of_perception": {
+            "name": {
+                "en": "Lv.1 Eye of perception",
+                "de": ""
+            },
+            "category": "gear"
+        },
+        "lv1_feather_of_the_night": {
+            "name": {
+                "en": "Lv.1 Feather of the Night",
+                "de": ""
+            },
+            "category": "gear"
+        },
+        "lv1_heart_of_wisdom": {
+            "name": {
+                "en": "Lv.1 Heart of Wisdom",
+                "de": ""
+            },
+            "category": "gear"
+        },
         "lv1_raven_gear_chest": {
             "name": {
                 "en": "Lv.1 Raven Gear Chest",
                 "de": ""
             },
-            "category": "special"
+            "category": "special",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "lv1_attackers_claw": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv1_eye_of_perception": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv1_feather_of_the_night": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv1_heart_of_wisdom": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv1_sharp_beak": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv1_tail_of_wind": 1
+                    },
+                    "probability": 0.16667
+                }
+            ]
+        },
+        "lv1_sharp_beak": {
+            "name": {
+                "en": "Lv.1 Sharp Beak",
+                "de": ""
+            },
+            "category": "gear"
+        },
+        "lv1_tail_of_wind": {
+            "name": {
+                "en": "Lv.1 Tail of Wind",
+                "de": ""
+            },
+            "category": "gear"
         },
         "lv2_alliance_chest": {
             "name": {
@@ -496,12 +600,111 @@
             },
             "category": "virtual"
         },
+        "lv3_attackers_claw": {
+            "name": {
+                "en": "Lv.3 Attacker's Claw",
+                "de": ""
+            },
+            "category": "gear",
+            "crafted_from": {
+                "lv1_attackers_claw": 9
+            }
+        },
+        "lv3_eye_of_perception": {
+            "name": {
+                "en": "Lv.3 Eye of perception",
+                "de": ""
+            },
+            "category": "gear",
+            "crafted_from": {
+                "lv1_eye_of_perception": 9
+            }
+        },
+        "lv3_feather_of_the_night": {
+            "name": {
+                "en": "Lv.3 Feather of the Night",
+                "de": ""
+            },
+            "category": "gear",
+            "crafted_from": {
+                "lv1_feather_of_the_night": 9
+            }
+        },
+        "lv3_heart_of_wisdom": {
+            "name": {
+                "en": "Lv.3 Heart of Wisdom",
+                "de": ""
+            },
+            "category": "gear",
+            "crafted_from": {
+                "lv1_heart_of_wisdom": 9
+            }
+        },
         "lv3_raven_gear_chest": {
             "name": {
                 "en": "Lv.3 Raven Gear Chest",
                 "de": ""
             },
-            "category": "special"
+            "category": "special",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "lv3_attackers_claw": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv3_eye_of_perception": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv3_feather_of_the_night": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv3_heart_of_wisdom": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv3_sharp_beak": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv3_tail_of_wind": 1
+                    },
+                    "probability": 0.16667
+                }
+            ]
+        },
+        "lv3_sharp_beak": {
+            "name": {
+                "en": "Lv.3 Sharp Beak",
+                "de": ""
+            },
+            "category": "gear",
+            "crafted_from": {
+                "lv1_sharp_beak": 9
+            }
+        },
+        "lv3_tail_of_wind": {
+            "name": {
+                "en": "Lv.3 Tail of Wind",
+                "de": ""
+            },
+            "category": "gear",
+            "crafted_from": {
+                "lv1_tail_of_wind": 9
+            }
         },
         "lv4_alliance_chest": {
             "name": {
@@ -519,38 +722,89 @@
         },
         "lv5_attackers_claw": {
             "name": {
-                "en": "Attacker's Claw",
+                "en": "Lv.5 Attacker's Claw",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "crafted_from": {
+                "lv3_attackers_claw": 9
+            }
         },
         "lv5_eye_of_perception": {
             "name": {
-                "en": "Eye of perception",
+                "en": "Lv.5 Eye of perception",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "crafted_from": {
+                "lv3_eye_of_perception": 9
+            }
         },
         "lv5_feather_of_the_night": {
             "name": {
-                "en": "Feather of the Night",
+                "en": "Lv.5 Feather of the Night",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "crafted_from": {
+                "lv3_feather_of_the_night": 9
+            }
         },
         "lv5_heart_of_wisdom": {
             "name": {
-                "en": "Heart of Wisdom",
+                "en": "Lv.5 Heart of Wisdom",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "crafted_from": {
+                "lv3_heart_of_wisdom": 9
+            }
         },
         "lv5_raven_gear_chest": {
             "name": {
                 "en": "Lv.5 Raven Gear Chest",
                 "de": ""
             },
-            "category": "special"
+            "category": "special",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "lv5_attackers_claw": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv5_eye_of_perception": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv5_feather_of_the_night": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv5_heart_of_wisdom": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv5_sharp_beak": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv5_tail_of_wind": 1
+                    },
+                    "probability": 0.16667
+                }
+            ]
         },
         "lv5_raven_gear_choice_chest": {
             "name": {
@@ -585,17 +839,23 @@
         },
         "lv5_sharp_beak": {
             "name": {
-                "en": "Sharp Beak",
+                "en": "Lv.5 Sharp Beak",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "crafted_from": {
+                "lv3_sharp_beak": 9
+            }
         },
         "lv5_tail_of_wind": {
             "name": {
-                "en": "Tail of Wind",
+                "en": "Lv.5 Tail of Wind",
                 "de": ""
             },
-            "category": "gear"
+            "category": "gear",
+            "crafted_from": {
+                "lv3_tail_of_wind": 9
+            }
         },
         "lv6_alliance_chest": {
             "name": {
@@ -662,21 +922,30 @@
                 "en": "Protective Charm IV - Ranger",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "protective_charm_iv_warlock": {
             "name": {
                 "en": "Protective Charm IV - Warlock",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "protective_charm_iv_warrior": {
             "name": {
                 "en": "Protective Charm IV - Warrior",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "r_epigraph": {
             "name": {
@@ -865,7 +1134,8 @@
             "category": "gear",
             "contains": {
                 "brass": 4
-            }
+            },
+            "reversible": true
         },
         "research_speedup": {
             "name": {
@@ -967,21 +1237,30 @@
                 "en": "Reversal Power IV - Ranger",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "reversal_power_iv_warlock": {
             "name": {
                 "en": "Reversal Power IV - Warlock",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "reversal_power_iv_warrior": {
             "name": {
                 "en": "Reversal Power IV - Warrior",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "crafted_from": {
+                "ur_epigraph_shard": 800
+            }
         },
         "rock_loot": {
             "name": {
@@ -1271,7 +1550,8 @@
             "category": "gear",
             "contains": {
                 "refined_iron": 4
-            }
+            },
+            "reversible": true
         },
         "timber": {
             "name": {
@@ -1457,7 +1737,82 @@
                 "en": "UR Epigraph Chest",
                 "de": ""
             },
-            "category": "special"
+            "category": "special",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "guard_of_nature_iv_warrior": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "frenzied_flock_iv_warrior": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "reversal_power_iv_warrior": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "protective_charm_iv_warrior": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "guard_of_nature_iv_ranger": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "frenzied_flock_iv_ranger": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "reversal_power_iv_ranger": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "protective_charm_iv_ranger": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "guard_of_nature_iv_warlock": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "frenzied_flock_iv_warlock": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "reversal_power_iv_warlock": 1
+                    },
+                    "probability": 0.08333
+                },
+                {
+                    "contains": {
+                        "protective_charm_iv_warlock": 1
+                    },
+                    "probability": 0.08333
+                }
+            ]
         },
         "ur_epigraph_choice_chest": {
             "name": {
@@ -1795,6 +2150,100 @@
                 }
             }
         },
+        "calendar_gift_gear_pack": {
+            "name": {
+                "en": "Calendar Gift: Gear Pack",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "calendar_event",
+            "exclusive_group": "calendar_gift",
+            "delivery_days": 30,
+            "price": 2499,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 2500,
+                "vip_points": 2500,
+                "resource_supply_general": 30,
+                "lv4_alliance_chest": 1,
+                "random_gearstone_supply": 27,
+                "gearstone": 10500,
+                "stamina": 1200,
+                "refined_iron": 150
+            }
+        },
+        "calendar_gift_hero_pack": {
+            "name": {
+                "en": "Calendar Gift: Hero Pack",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "calendar_event",
+            "exclusive_group": "calendar_gift",
+            "delivery_days": 30,
+            "price": 2499,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 2500,
+                "vip_points": 2500,
+                "resource_supply_general": 30,
+                "lv4_alliance_chest": 1,
+                "ur_hero_omni_shard": 55,
+                "stamina": 1200,
+                "recruit_ticket": 20,
+                "antitoxin_level_supply_ssr": 35,
+                "skill_badge": 6000
+            }
+        },
+        "calendar_gift_inscription_pack": {
+            "name": {
+                "en": "Calendar Gift: Inscription Pack",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "calendar_event",
+            "exclusive_group": "calendar_gift",
+            "delivery_days": 30,
+            "price": 2499,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 2500,
+                "vip_points": 2500,
+                "resource_supply_general": 30,
+                "lv4_alliance_chest": 1,
+                "ssr_epigraph_chest": 8,
+                "stamina": 1200,
+                "ur_epigraph_chest": 2,
+                "raven_evolve_guide": 18,
+                "raven_essence": 30
+            }
+        },
+        "calendar_gift_raven_pack": {
+            "name": {
+                "en": "Calendar Gift: Raven Pack",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "calendar_event",
+            "exclusive_group": "calendar_gift",
+            "delivery_days": 30,
+            "price": 2499,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 2500,
+                "vip_points": 2500,
+                "resource_supply_general": 30,
+                "lv4_alliance_chest": 1,
+                "raven_essence": 140,
+                "stamina": 1200,
+                "lv1_raven_gear_chest": 21,
+                "raven_fruit": 1200000
+            }
+        },
         "curio_boost": {
             "name": {
                 "en": "Curio Boost",
@@ -2046,7 +2495,7 @@
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
-            "purchase_limit": null,
+            "purchase_limit": 1,
             "price": 499,
             "deal_percentage": 6020,
             "contains": {
@@ -2112,7 +2561,8 @@
                 "diamonds": 2000,
                 "skill_badge": 2500,
                 "resource_supply_general": 105
-            }
+            },
+            "seasonal": true
         },
         "exp_special_pack": {
             "name": {
@@ -2168,7 +2618,8 @@
                         "lv4_alliance_chest": 1
                     }
                 }
-            }
+            },
+            "seasonal": true
         },
         "hero_awaken": {
             "name": {
@@ -2402,7 +2853,7 @@
         },
         "moon_coin_deluxe_pack": {
             "name": {
-                "en": "Moon Coin Special Pack",
+                "en": "Moon Coin Deluxe Pack",
                 "de": ""
             },
             "category": "shop_event",
@@ -2454,7 +2905,7 @@
         },
         "moon_coin_rare_pack": {
             "name": {
-                "en": "Moon Coin Special Pack",
+                "en": "Moon Coin Rare Pack",
                 "de": ""
             },
             "category": "shop_event",
@@ -2466,7 +2917,7 @@
             "contains": {
                 "diamonds": 2000,
                 "moon_coin": 30,
-                "vip_points": 1000,
+                "vip_points": 2000,
                 "diamond_golden_egg": 1
             }
         },
@@ -3398,7 +3849,7 @@
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
-            "purchase_limit": null,
+            "purchase_limit": 1,
             "price": 499,
             "deal_percentage": 3430,
             "contains": {
@@ -3413,7 +3864,7 @@
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
-            "purchase_limit": null,
+            "purchase_limit": 1,
             "price": 499,
             "deal_percentage": 3430,
             "contains": {
@@ -3428,7 +3879,7 @@
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
-            "purchase_limit": null,
+            "purchase_limit": 1,
             "price": 499,
             "deal_percentage": 6850,
             "contains": {
@@ -3443,7 +3894,7 @@
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
-            "purchase_limit": null,
+            "purchase_limit": 1,
             "price": 1999,
             "deal_percentage": 3510,
             "contains": {
@@ -3567,7 +4018,7 @@
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
-            "purchase_limit": null,
+            "purchase_limit": 1,
             "price": 499,
             "deal_percentage": 3430,
             "contains": {
@@ -4390,6 +4841,13 @@
                 "de": ""
             },
             "category": "shop_event"
+        },
+        "calendar_event": {
+            "name": {
+                "en": "Calendar Gift",
+                "de": ""
+            },
+            "category": "special_event"
         },
         "full_moon_night": {
             "name": {
