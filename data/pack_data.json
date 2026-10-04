@@ -503,28 +503,28 @@
                 "en": "Lv.1 Attacker's Claw",
                 "de": ""
             },
-            "category": "gear"
+            "category": "raven_gear"
         },
         "lv1_eye_of_perception": {
             "name": {
                 "en": "Lv.1 Eye of perception",
                 "de": ""
             },
-            "category": "gear"
+            "category": "raven_gear"
         },
         "lv1_feather_of_the_night": {
             "name": {
                 "en": "Lv.1 Feather of the Night",
                 "de": ""
             },
-            "category": "gear"
+            "category": "raven_gear"
         },
         "lv1_heart_of_wisdom": {
             "name": {
                 "en": "Lv.1 Heart of Wisdom",
                 "de": ""
             },
-            "category": "gear"
+            "category": "raven_gear"
         },
         "lv1_raven_gear_chest": {
             "name": {
@@ -577,14 +577,14 @@
                 "en": "Lv.1 Sharp Beak",
                 "de": ""
             },
-            "category": "gear"
+            "category": "raven_gear"
         },
         "lv1_tail_of_wind": {
             "name": {
                 "en": "Lv.1 Tail of Wind",
                 "de": ""
             },
-            "category": "gear"
+            "category": "raven_gear"
         },
         "lv2_alliance_chest": {
             "name": {
@@ -605,7 +605,7 @@
                 "en": "Lv.3 Attacker's Claw",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv1_attackers_claw": 9
             }
@@ -615,7 +615,7 @@
                 "en": "Lv.3 Eye of perception",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv1_eye_of_perception": 9
             }
@@ -625,7 +625,7 @@
                 "en": "Lv.3 Feather of the Night",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv1_feather_of_the_night": 9
             }
@@ -635,7 +635,7 @@
                 "en": "Lv.3 Heart of Wisdom",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv1_heart_of_wisdom": 9
             }
@@ -691,7 +691,7 @@
                 "en": "Lv.3 Sharp Beak",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv1_sharp_beak": 9
             }
@@ -701,7 +701,7 @@
                 "en": "Lv.3 Tail of Wind",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv1_tail_of_wind": 9
             }
@@ -725,7 +725,7 @@
                 "en": "Lv.5 Attacker's Claw",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv3_attackers_claw": 9
             }
@@ -735,7 +735,7 @@
                 "en": "Lv.5 Eye of perception",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv3_eye_of_perception": 9
             }
@@ -745,7 +745,7 @@
                 "en": "Lv.5 Feather of the Night",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv3_feather_of_the_night": 9
             }
@@ -755,7 +755,7 @@
                 "en": "Lv.5 Heart of Wisdom",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv3_heart_of_wisdom": 9
             }
@@ -842,7 +842,7 @@
                 "en": "Lv.5 Sharp Beak",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv3_sharp_beak": 9
             }
@@ -852,7 +852,7 @@
                 "en": "Lv.5 Tail of Wind",
                 "de": ""
             },
-            "category": "gear",
+            "category": "raven_gear",
             "crafted_from": {
                 "lv3_tail_of_wind": 9
             }

@@ -40,6 +40,7 @@
         "resource": "Resource",
         "hero": "Hero",
         "gear": "Gear",
+        "raven_gear": "Raven Gear",
         "special": "Special",
         "curio": "Curio",
         "special_event": "Special Event",
