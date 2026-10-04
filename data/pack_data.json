@@ -2692,7 +2692,7 @@
                     "contains": {
                         "diamonds": 10000,
                         "hero_awaken_shard": 160,
-                        "resource_supply_ssr": 1600,
+                        "resource_supply_ssr": 160,
                         "skill_badge": 8000,
                         "vip_points": 10000,
                         "lv6_alliance_chest": 1
