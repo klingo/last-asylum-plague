@@ -273,7 +273,7 @@
         },
         "itemCategory": {
             "type": "string",
-            "enum": ["resource", "hero", "gear", "raven_gear", "special", "speedup", "virtual", "curio"]
+            "enum": ["resource", "hero", "gear", "raven_gear", "special", "speedup", "virtual", "curio", "epigraph"]
         },
         "package": {
             "oneOf": [

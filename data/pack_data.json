@@ -252,7 +252,7 @@
                 "en": "Frenzied Flock IV - Ranger",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -262,7 +262,7 @@
                 "en": "Frenzied Flock IV - Warlock",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -272,7 +272,7 @@
                 "en": "Frenzied Flock IV - Warrior",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -340,7 +340,7 @@
                 "en": "Guard of Nature IV - Ranger",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -350,7 +350,7 @@
                 "en": "Guard of Nature IV - Warlock",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -360,7 +360,7 @@
                 "en": "Guard of Nature IV - Warrior",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -922,7 +922,7 @@
                 "en": "Protective Charm IV - Ranger",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -932,7 +932,7 @@
                 "en": "Protective Charm IV - Warlock",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -942,7 +942,7 @@
                 "en": "Protective Charm IV - Warrior",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -1725,16 +1725,80 @@
             },
             "category": "virtual"
         },
-        "ur_epigraph": {
-            "name": {
-                "en": "UR Epigraph",
-                "de": ""
-            },
-            "category": "special"
-        },
         "ur_epigraph_chest": {
             "name": {
                 "en": "UR Epigraph Chest",
+                "de": ""
+            },
+            "category": "special",
+            "contains": {
+                "ur_epigraph_random": 1
+            }
+        },
+        "ur_epigraph_choice_chest": {
+            "name": {
+                "en": "UR Epigraph Choice Chest",
+                "de": ""
+            },
+            "category": "special",
+            "type": "choice",
+            "choice": {
+                "select_count": 1,
+                "choices": [
+                    {
+                        "guard_of_nature_iv_warrior": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "frenzied_flock_iv_warrior": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "reversal_power_iv_warrior": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "protective_charm_iv_warrior": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "guard_of_nature_iv_ranger": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "frenzied_flock_iv_ranger": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "reversal_power_iv_ranger": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "protective_charm_iv_ranger": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "guard_of_nature_iv_warlock": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "frenzied_flock_iv_warlock": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "reversal_power_iv_warlock": 1,
+                        "ur_epigraph_shard": 100
+                    },
+                    {
+                        "protective_charm_iv_warlock": 1,
+                        "ur_epigraph_shard": 100
+                    }
+                ]
+            }
+        },
+        "ur_epigraph_random": {
+            "name": {
+                "en": "Random UR Epigraph",
                 "de": ""
             },
             "category": "special",
@@ -1813,70 +1877,6 @@
                     "probability": 0.08333
                 }
             ]
-        },
-        "ur_epigraph_choice_chest": {
-            "name": {
-                "en": "UR Epigraph Choice Chest",
-                "de": ""
-            },
-            "category": "special",
-            "type": "choice",
-            "choice": {
-                "select_count": 1,
-                "choices": [
-                    {
-                        "guard_of_nature_iv_warrior": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "frenzied_flock_iv_warrior": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "reversal_power_iv_warrior": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "protective_charm_iv_warrior": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "guard_of_nature_iv_ranger": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "frenzied_flock_iv_ranger": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "reversal_power_iv_ranger": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "protective_charm_iv_ranger": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "guard_of_nature_iv_warlock": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "frenzied_flock_iv_warlock": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "reversal_power_iv_warlock": 1,
-                        "ur_epigraph_shard": 100
-                    },
-                    {
-                        "protective_charm_iv_warlock": 1,
-                        "ur_epigraph_shard": 100
-                    }
-                ]
-            },
-            "value_equivalent": {
-                "ur_epigraph_shard": 800
-            }
         },
         "ur_epigraph_shard": {
             "name": {
