@@ -1393,7 +1393,7 @@
         },
         "sr_hero_shard": {
             "name": {
-                "en": "<Hero> Shard",
+                "en": "<Hero> Shard (SR)",
                 "de": ""
             },
             "category": "hero"
@@ -1467,7 +1467,7 @@
         },
         "ssr_hero_shard": {
             "name": {
-                "en": "<Hero> Shard",
+                "en": "<Hero> Shard (SSR)",
                 "de": ""
             },
             "category": "hero"
@@ -1931,7 +1931,7 @@
         },
         "ur_hero_shard": {
             "name": {
-                "en": "<Hero> Shard",
+                "en": "<Hero> Shard (UR)",
                 "de": ""
             },
             "category": "hero"

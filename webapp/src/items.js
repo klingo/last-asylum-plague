@@ -32,6 +32,21 @@ let currencies = new Set();
 // Leave-one-out results of the deal % fit (computed in the background after the first render).
 let sensitivity = null;
 
+/**
+ * Items made of other items (chests, supplies, choice chests, omni shards, the gear-material chain
+ * above Cloth): their worth follows the items they contain, so they aren't listed — unless they
+ * still have a priority of their own (e.g. from the old ignore list), so it can be seen and reset.
+ */
+function isDerived(item) {
+    return Boolean(
+        item.value_equivalent ||
+        (item.type === 'random' && item.drop_table) ||
+        (item.type === 'choice' && item.choice) ||
+        item.contains ||
+        item.substitutes_for,
+    );
+}
+
 function priorityOf(id) {
     return panel.getSettings().priorities[id] || 'normal';
 }
@@ -96,7 +111,7 @@ function render() {
     const locale = getLocale();
     const search = searchInput.value.trim().toLowerCase();
     const rows = Object.entries(data.items)
-        .filter(([id]) => !currencies.has(id))
+        .filter(([id, item]) => !currencies.has(id) && (!isDerived(item) || priorityOf(id) !== 'normal'))
         .map(([id, item]) => ({ id, item, name: itemDisplayName(data.items, id, locale) }))
         .filter(({ id }) => !changedOnly.checked || priorityOf(id) !== 'normal')
         .filter(
@@ -137,7 +152,7 @@ function render() {
                     .map(
                         ({ id, name }) => `
                 <tr>
-                    <td><span class="item-cell"><span data-item-id="${id}"></span>${name}</span></td>
+                    <td><span class="item-cell"><span data-item-id="${id}"></span>${name}${isDerived(data.items[id]) ? ` <span class="text-dim">(${t('items.derivedNote')})</span>` : ''}</span></td>
                     <td>${priorityHtml(id)}</td>
                     <td class="text-right">${worthHtml(id)}${uncertainHtml(id)}</td>
                 </tr>`,

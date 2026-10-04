@@ -198,7 +198,7 @@
     },
     "items": {
         "heading": "My Items",
-        "description": "How much each item matters to you. \"Don't care\" counts it as worthless, \"Low\" at half, \"High\" at double its usual worth. Chests, choices and packs containing an item follow automatically, on every page.",
+        "description": "How much each item matters to you. \"Don't care\" counts it as worthless, \"Low\" at half, \"High\" at double its usual worth. Only base items are listed: chests, supplies, choice chests and omni shards follow the items they contain (e.g. Antitoxin Level Supplies follow Antitoxin; Brass, Leather, Refined Iron and Tempered Steel follow Cloth). Everything follows automatically, on every page.",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
         "showLabel": "Show",
@@ -223,7 +223,8 @@
             "worth": "Worth"
         },
         "explainUnknown": "Unknown = there's nothing to base a worth on: the item isn't in any pack with a deal %, can't be derived from other items and has no recipe (or it's deliberately not modelled, like Moon Coins). It counts as 0 inside packs.",
-        "explainUncertain": "A number with \"uncertain\" is the best estimate, but it rests on thin evidence: the packs barely tell it apart from other items, or it depends on a single pack. Hover the info icon for the reason. If it looks off to you, use Low or High to correct it."
+        "explainUncertain": "A number with \"uncertain\" is the best estimate, but it rests on thin evidence: the packs barely tell it apart from other items, or it depends on a single pack. Hover the info icon for the reason. If it looks off to you, use Low or High to correct it.",
+        "derivedNote": "made of other items; set those instead and reset this one to Normal"
     },
     "compare": {
         "heading": "Compare",
