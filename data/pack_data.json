@@ -2646,6 +2646,58 @@
             "category": "unlock_exclusive",
             "limit_type": "exclusive",
             "tiers": {
+                "1": {
+                    "price": 999,
+                    "deal_percentage": 4220,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "hero_awaken_shard": 20,
+                        "resource_supply_ssr": 20,
+                        "skill_badge": 1000,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 1999,
+                    "deal_percentage": 4220,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 2000,
+                        "hero_awaken_shard": 40,
+                        "resource_supply_ssr": 40,
+                        "skill_badge": 2000,
+                        "vip_points": 2000,
+                        "lv4_alliance_chest": 1
+                    }
+                },
+                "3": {
+                    "price": 4999,
+                    "deal_percentage": 3610,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 5000,
+                        "hero_awaken_shard": 80,
+                        "resource_supply_ssr": 80,
+                        "skill_badge": 4000,
+                        "vip_points": 5000,
+                        "lv5_alliance_chest": 1
+                    }
+                },
+                "4": {
+                    "price": 9999,
+                    "deal_percentage": 3610,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 10000,
+                        "hero_awaken_shard": 160,
+                        "resource_supply_ssr": 1600,
+                        "skill_badge": 8000,
+                        "vip_points": 10000,
+                        "lv6_alliance_chest": 1
+                    }
+                },
                 "5": {
                     "price": 9999,
                     "deal_percentage": 3610,
@@ -2824,6 +2876,28 @@
                         "lv2_alliance_chest": 1
                     }
                 }
+            }
+        },
+        "login_rewards": {
+            "name": {
+                "en": "Login Rewards",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "price": 99,
+            "deal_percentage": 8159,
+            "purchase_limit": 1,
+            "limit_type": "weekly",
+            "contains": {
+                "diamonds": 250,
+                "speedup": 540,
+                "skill_badge": 200,
+                "research_speedup": 120,
+                "training_speedup": 120,
+                "construction_speedup": 120,
+                "raven_essence": 2,
+                "ur_hero_omni_shard": 2,
+                "lv2_alliance_chest": 1
             }
         },
         "might_special_pack": {
