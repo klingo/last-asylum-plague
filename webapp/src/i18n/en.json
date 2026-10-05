@@ -66,8 +66,8 @@
     "sourceType": {
         "package": "Package",
         "pass": "Pass",
-        "exchange": "Exchange offer",
-        "exchange_offer": "Exchange offer",
+        "exchange": "Exchange",
+        "exchange_offer": "Exchange",
         "bonus_tier": "Bonus tier",
         "conversion": "Conversion",
         "top_up": "Top-up",

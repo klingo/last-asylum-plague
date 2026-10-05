@@ -125,6 +125,7 @@ function buildEntries() {
                     section: b.incomplete ? 'unknown' : 'ranked',
                     type: 'exchange_offer',
                     category: shop.event_id ? 'event_exchange' : 'exchange',
+                    categoryName: localizedName(shop.name, locale),
                     name: offerDisplayName(shop, offer, data.items, locale),
                     priceHtml: `${formatThousands(offer.currency_cost)} ${coinName}`,
                     perWeekHtml: perWeekHtml(
@@ -149,6 +150,7 @@ function buildEntries() {
                     section: 'bonus',
                     type: 'bonus_tier',
                     category: 'event_exchange',
+                    categoryName: localizedName(shop.name, locale),
                     name: `${localizedName(shop.name, locale)} - ${t('rankings.bonusTierName', { threshold: formatThousands(threshold) })}`,
                     priceHtml: `${formatThousands(step)} ${coinName}`,
                     perWeekHtml: t('common.dash'),
@@ -229,7 +231,7 @@ function renderTable(filtered) {
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.rank && !tieFlags[index] ? entry.rank : ''}</div>
                     <div class="ranking-grid__cell" role="cell">${entry.name}${requiresIconHtml(entry.requires, data.packages, data.items, getLocale())}</div>
                     <div class="ranking-grid__cell" role="cell"><span class="pill pill--${entry.type}">${sourceTypeLabel(entry.type)}</span></div>
-                    <div class="ranking-grid__cell" role="cell">${categoryLabel(entry.category)}${entry.availableDays?.length ? infoIconHtml(formatDays(entry.availableDays)) : ''}</div>
+                    <div class="ranking-grid__cell" role="cell">${entry.categoryName ?? categoryLabel(entry.category)}${entry.availableDays?.length ? infoIconHtml(formatDays(entry.availableDays)) : ''}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.priceHtml}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.perWeekHtml}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${buyHtml(entry.buy, entry)}</div>
@@ -294,7 +296,9 @@ function applyFilters() {
     const search = searchInput.value.trim().toLowerCase();
     renderTable(
         entries.filter(
-            (entry) => !search || `${entry.name} ${categoryLabel(entry.category)}`.toLowerCase().includes(search),
+            (entry) =>
+                !search ||
+                `${entry.name} ${entry.categoryName ?? categoryLabel(entry.category)}`.toLowerCase().includes(search),
         ),
     );
 }
