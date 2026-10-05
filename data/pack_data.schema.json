@@ -328,7 +328,7 @@
                 "delivery_days": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "The rewards arrive daily over this many days; `contains` is the total over all of them (e.g. a 7-day calendar pack). Passes without it use their category period (weekly 7, monthly 30)."
+                    "description": "The rewards arrive daily over this many days; `contains` is the total over all of them. Set on every pass (7 for weekly passes, 30 for the monthly pass) and on calendar packs; a package with it and no event counts as a pass."
                 },
                 "exclusive_group": {
                     "$ref": "#/definitions/id",
@@ -401,7 +401,7 @@
                 "delivery_days": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "The rewards arrive daily over this many days; `contains` is the total over all of them (e.g. a 7-day calendar pack). Passes without it use their category period (weekly 7, monthly 30)."
+                    "description": "The rewards arrive daily over this many days; `contains` is the total over all of them. Set on every pass (7 for weekly passes, 30 for the monthly pass) and on calendar packs; a package with it and no event counts as a pass."
                 },
                 "exclusive_group": {
                     "$ref": "#/definitions/id",
@@ -419,19 +419,20 @@
         },
         "packageCategory": {
             "type": "string",
+            "description": "Where the package is bought in the game (the shop tab). Display only. `weekly_rotation` = the unnamed weekday offers, `unlock_exclusive` = hero unlock packs without a named place.",
             "enum": [
                 "daily_offer",
                 "daily_must_buy",
                 "weekly_special",
-                "premium_monthly_pass",
-                "weekly_pass",
-                "pack_shop",
-                "value_event",
                 "weekly_rotation",
-                "shop_event",
-                "unlock_exclusive",
-                "special",
+                "weekly_pass",
+                "premium_monthly_pass",
+                "value_event",
+                "pack_shop",
                 "special_event",
+                "season_event",
+                "calendar_gift",
+                "unlock_exclusive",
                 "diamond"
             ]
         },

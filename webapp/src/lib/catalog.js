@@ -15,26 +15,19 @@
  * the Monday-based weeks it touches (weekly limits reset on Monday).
  */
 
-const PASS_CATEGORIES = new Set(['weekly_pass', 'premium_monthly_pass']);
-
 const DAYS_PER_WEEK = 7;
 const DAYS_PER_MONTH = 30;
 // Monday first: weekly limits reset on Monday, so a weekday's index is its offset into the week.
 const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
-function isPassCategory(category) {
-    return PASS_CATEGORIES.has(category);
+/** A pass: delivers its rewards over several days (`delivery_days`) and isn't tied to an event. */
+function isPass(pkg) {
+    return Boolean(pkg.delivery_days) && !pkg.event_id;
 }
 
-/** Days over which a package delivers its `contains` (calendar packs, passes); 1 = all at once. */
+/** Days over which a package delivers its `contains` (passes, calendar packs); 1 = all at once. */
 function deliveryPeriod(pkg) {
-    if (pkg.delivery_days) {
-        return pkg.delivery_days;
-    }
-    if (isPassCategory(pkg.category)) {
-        return pkg.limit_type === 'monthly' ? DAYS_PER_MONTH : DAYS_PER_WEEK;
-    }
-    return 1;
+    return pkg.delivery_days || 1;
 }
 
 /**
@@ -111,7 +104,7 @@ function packageWeeklyCapacity(pkg, { activeEventIds = null, includePasses = tru
     } else if (pkg.limit_type === 'exclusive' && !includeExclusives) {
         return 0;
     }
-    if (isPassCategory(pkg.category) && !includePasses) {
+    if (isPass(pkg) && !includePasses) {
         return 0;
     }
     return perWeek(pkg.purchase_limit, pkg.limit_type, pkg.available_days);
@@ -201,9 +194,8 @@ function packageCapacityForDays(
 }
 
 export {
-    PASS_CATEGORIES,
     DAYS_PER_WEEK,
-    isPassCategory,
+    isPass,
     expandPackageFamilies,
     packageFamilyId,
     isUnavailablePass,

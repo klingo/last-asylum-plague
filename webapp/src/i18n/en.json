@@ -53,21 +53,27 @@
         "premium_monthly_pass": "Premium Monthly Pass",
         "weekly_pass": "Weekly Pass",
         "value_event": "Value Event",
-        "weekly_rotation": "Weekly Rotation",
-        "shop_event": "Shop Event",
-        "unlock_exclusive": "Unlock Exclusive",
+        "weekly_rotation": "Weekday Offers",
+        "unlock_exclusive": "-",
         "event_exchange": "Event Exchange",
         "exchange": "Exchange",
-        "other": "Other"
+        "other": "Other",
+        "diamond": "Diamond",
+        "calendar_gift": "Calendar Gift",
+        "season_event": "Season Event",
+        "pack_shop": "Pack Shop"
     },
     "sourceType": {
         "package": "Package",
         "pass": "Pass",
-        "special": "Special",
         "exchange": "Exchange offer",
         "exchange_offer": "Exchange offer",
         "bonus_tier": "Bonus tier",
-        "conversion": "Conversion"
+        "conversion": "Conversion",
+        "top_up": "Top-up",
+        "event": "Event",
+        "unlock": "Unlock",
+        "seasonal_pass": "Seasonal pass"
     },
     "docTitle": {
         "welcome": "Last Asylum Pack Solver",

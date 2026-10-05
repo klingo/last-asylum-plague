@@ -5,11 +5,19 @@ import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
 import { packageWeeklyCapacity, offerWeeklyCapacity, isUnavailablePass } from './lib/catalog.js';
-import { packageDisplayName, itemDisplayName, offerDisplayName, displaySourceType } from './lib/labels';
+import { packageDisplayName, itemDisplayName, offerDisplayName, purchaseType } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
-import { requiresIconHtml } from './lib/requires-tooltip';
-import { t, getLocale, localizedName, categoryLabel, sourceTypeLabel, applyStaticTranslations } from './lib/i18n';
+import { requiresIconHtml, infoIconHtml } from './lib/requires-tooltip';
+import {
+    t,
+    getLocale,
+    localizedName,
+    categoryLabel,
+    sourceTypeLabel,
+    formatDays,
+    applyStaticTranslations,
+} from './lib/i18n';
 import { formatThousands, formatSignificant, computeTieFlags } from './lib/format';
 import { ratioBarHtml } from './lib/ratio-bar';
 
@@ -86,10 +94,11 @@ function buildEntries() {
         result.push({
             key: `package:${id}`,
             section: b.incomplete ? 'unknown' : 'ranked',
-            type: displaySourceType('package', pkg.category),
+            type: purchaseType(pkg),
             category: pkg.category,
             name: packageDisplayName(pkg, locale),
             requires: pkg.requires,
+            availableDays: pkg.available_days,
             priceHtml: gold(formatThousands(pkg.price)),
             perWeekHtml: perWeekHtml(capacity, pkg.limit_type, (n) => gold(formatThousands(n * pkg.price, 0))),
             worth: b.worth,
@@ -221,7 +230,7 @@ function renderTable(filtered) {
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.rank && !tieFlags[index] ? entry.rank : ''}</div>
                     <div class="ranking-grid__cell" role="cell">${entry.name}${requiresIconHtml(entry.requires, data.packages, data.items, getLocale())}</div>
                     <div class="ranking-grid__cell" role="cell"><span class="pill pill--${entry.type}">${sourceTypeLabel(entry.type)}</span></div>
-                    <div class="ranking-grid__cell" role="cell">${categoryLabel(entry.category)}</div>
+                    <div class="ranking-grid__cell" role="cell">${categoryLabel(entry.category)}${entry.availableDays?.length ? infoIconHtml(formatDays(entry.availableDays)) : ''}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.priceHtml}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.perWeekHtml}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${buyHtml(entry.buy, entry)}</div>

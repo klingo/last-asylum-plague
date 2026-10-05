@@ -2030,7 +2030,7 @@
                 "en": "Blades Out Deluxe Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "blades_out",
             "price": 999,
             "deal_percentage": 3550,
@@ -2050,7 +2050,7 @@
                 "en": "Blades Out Premium Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "blades_out",
             "price": 4999,
             "deal_percentage": 3550,
@@ -2070,7 +2070,7 @@
                 "en": "Blades Out Rare Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "blades_out",
             "price": 1999,
             "deal_percentage": 3550,
@@ -2090,7 +2090,7 @@
                 "en": "Blades Out Select Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "blades_out",
             "price": 499,
             "deal_percentage": 3550,
@@ -2110,7 +2110,7 @@
                 "en": "Blades Out Ultimate Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "blades_out",
             "price": 9999,
             "deal_percentage": 3550,
@@ -2155,7 +2155,7 @@
                 "en": "Calendar Gift: Gear Pack",
                 "de": ""
             },
-            "category": "special_event",
+            "category": "calendar_gift",
             "event_id": "calendar_event",
             "exclusive_group": "calendar_gift",
             "delivery_days": 30,
@@ -2178,7 +2178,7 @@
                 "en": "Calendar Gift: Hero Pack",
                 "de": ""
             },
-            "category": "special_event",
+            "category": "calendar_gift",
             "event_id": "calendar_event",
             "exclusive_group": "calendar_gift",
             "delivery_days": 30,
@@ -2202,7 +2202,7 @@
                 "en": "Calendar Gift: Inscription Pack",
                 "de": ""
             },
-            "category": "special_event",
+            "category": "calendar_gift",
             "event_id": "calendar_event",
             "exclusive_group": "calendar_gift",
             "delivery_days": 30,
@@ -2226,7 +2226,7 @@
                 "en": "Calendar Gift: Raven Pack",
                 "de": ""
             },
-            "category": "special_event",
+            "category": "calendar_gift",
             "event_id": "calendar_event",
             "exclusive_group": "calendar_gift",
             "delivery_days": 30,
@@ -2501,7 +2501,8 @@
             "contains": {
                 "diamonds": 500,
                 "raven_essence": 105
-            }
+            },
+            "delivery_days": 7
         },
         "exclusive_weapon": {
             "name": {
@@ -2548,7 +2549,7 @@
                 "en": "Exclusive Weapon Pass",
                 "de": ""
             },
-            "category": "weekly_pass",
+            "category": "value_event",
             "price": 1999,
             "deal_percentage": 8159,
             "purchase_limit": 1,
@@ -2562,7 +2563,8 @@
                 "skill_badge": 2500,
                 "resource_supply_general": 105
             },
-            "seasonal": true
+            "seasonal": true,
+            "delivery_days": 7
         },
         "exp_special_pack": {
             "name": {
@@ -2591,7 +2593,7 @@
                 "en": "Falcon Tower Pass",
                 "de": ""
             },
-            "category": "weekly_pass",
+            "category": "value_event",
             "limit_type": "weekly",
             "tiers": {
                 "1": {
@@ -2609,14 +2611,15 @@
                     }
                 }
             },
-            "seasonal": true
+            "seasonal": true,
+            "delivery_days": 7
         },
         "gear_pass": {
             "name": {
                 "en": "Gear Pass",
                 "de": ""
             },
-            "category": "weekly_pass",
+            "category": "value_event",
             "limit_type": "weekly",
             "tiers": {
                 "1": {
@@ -2644,7 +2647,8 @@
                     }
                 }
             },
-            "seasonal": true
+            "seasonal": true,
+            "delivery_days": 7
         },
         "hero_awaken": {
             "name": {
@@ -2908,7 +2912,7 @@
                 "en": "Login Rewards",
                 "de": ""
             },
-            "category": "weekly_pass",
+            "category": "value_event",
             "price": 99,
             "deal_percentage": 8159,
             "purchase_limit": 1,
@@ -2923,7 +2927,8 @@
                 "raven_essence": 2,
                 "ur_hero_omni_shard": 2,
                 "lv2_alliance_chest": 1
-            }
+            },
+            "delivery_days": 7
         },
         "might_special_pack": {
             "name": {
@@ -2955,7 +2960,7 @@
                 "en": "Moon Coin Deluxe Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "full_moon_night",
             "price": 999,
             "deal_percentage": 4200,
@@ -2972,7 +2977,7 @@
                 "en": "Moon Coin Majestic Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "full_moon_night",
             "price": 4999,
             "deal_percentage": 3771,
@@ -2990,7 +2995,7 @@
                 "en": "Moon Coin Premium Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "full_moon_night",
             "price": 499,
             "deal_percentage": 5200,
@@ -3007,7 +3012,7 @@
                 "en": "Moon Coin Rare Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "full_moon_night",
             "price": 1999,
             "deal_percentage": 4350,
@@ -3025,7 +3030,7 @@
                 "en": "Moon Coin Special Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "full_moon_night",
             "price": 199,
             "deal_percentage": 6450,
@@ -3042,7 +3047,7 @@
                 "en": "Moon Coin Supreme Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "full_moon_night",
             "price": 9999,
             "deal_percentage": 3690,
@@ -3060,7 +3065,7 @@
                 "en": "Moon Coin Value Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "full_moon_night",
             "price": 99,
             "deal_percentage": 7700,
@@ -3077,7 +3082,7 @@
                 "en": "Mystic Cabinet I",
                 "de": ""
             },
-            "category": "special_event",
+            "category": "season_event",
             "limit_type": "exclusive",
             "event_id": "mystic_cabinet",
             "tiers": {
@@ -3126,7 +3131,7 @@
                 "en": "Mystic Cabinet II",
                 "de": ""
             },
-            "category": "special_event",
+            "category": "season_event",
             "limit_type": "exclusive",
             "event_id": "mystic_cabinet",
             "tiers": {
@@ -3149,7 +3154,7 @@
                 "en": "Mystic Cabinet III",
                 "de": ""
             },
-            "category": "special_event",
+            "category": "season_event",
             "limit_type": "exclusive",
             "event_id": "mystic_cabinet",
             "tiers": {
@@ -3231,7 +3236,8 @@
                 "brass": 6000,
                 "vip_points": 2500,
                 "lv4_alliance_chest": 1
-            }
+            },
+            "delivery_days": 30
         },
         "premium_timber_pack": {
             "name": {
@@ -3427,7 +3433,7 @@
                 "en": "Recluse Coin Deluxe Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "recluse_merchant",
             "price": 999,
             "deal_percentage": 3200,
@@ -3444,7 +3450,7 @@
                 "en": "Recluse Coin Majestic Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "recluse_merchant",
             "price": 4999,
             "deal_percentage": 3200,
@@ -3461,7 +3467,7 @@
                 "en": "Recluse Coin Premium Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "recluse_merchant",
             "price": 499,
             "deal_percentage": 5200,
@@ -3478,7 +3484,7 @@
                 "en": "Recluse Coin Rare Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "recluse_merchant",
             "price": 1999,
             "deal_percentage": 3200,
@@ -3495,7 +3501,7 @@
                 "en": "Recluse Coin Supreme Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "recluse_merchant",
             "price": 9999,
             "deal_percentage": 3200,
@@ -3636,7 +3642,7 @@
                 "en": "Strange Bazaar Exquisite Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "strange_bazaar",
             "price": 999,
             "deal_percentage": 3160,
@@ -3654,7 +3660,7 @@
                 "en": "Strange Bazaar Select Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "strange_bazaar",
             "price": 499,
             "deal_percentage": 5000,
@@ -3693,7 +3699,7 @@
                 "en": "Surprise Encounter Exquisite Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "surprise_encounter",
             "price": 999,
             "deal_percentage": 3410,
@@ -3711,7 +3717,7 @@
                 "en": "Surprise Encounter Premium Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "surprise_encounter",
             "price": 4999,
             "deal_percentage": 3410,
@@ -3729,7 +3735,7 @@
                 "en": "Surprise Encounter Rare Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "surprise_encounter",
             "price": 1999,
             "deal_percentage": 3410,
@@ -3747,7 +3753,7 @@
                 "en": "Surprise Encounter Select Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "surprise_encounter",
             "price": 499,
             "deal_percentage": 5610,
@@ -3765,7 +3771,7 @@
                 "en": "Surprise Encounter Ultimate Pack",
                 "de": ""
             },
-            "category": "shop_event",
+            "category": "special_event",
             "event_id": "surprise_encounter",
             "price": 9999,
             "deal_percentage": 3410,
@@ -3783,7 +3789,7 @@
                 "en": "Survivor Pack",
                 "de": ""
             },
-            "category": "special",
+            "category": "pack_shop",
             "price": 499,
             "deal_percentage": 2240,
             "purchase_limit": 1,
@@ -3954,7 +3960,8 @@
             "contains": {
                 "diamonds": 500,
                 "grain_level_supply_ur": 21
-            }
+            },
+            "delivery_days": 7
         },
         "weekly_herb_pass": {
             "name": {
@@ -3969,7 +3976,8 @@
             "contains": {
                 "diamonds": 500,
                 "herb_level_supply_ur": 21
-            }
+            },
+            "delivery_days": 7
         },
         "weekly_hero_exp_pass": {
             "name": {
@@ -3984,7 +3992,8 @@
             "contains": {
                 "diamonds": 500,
                 "antitoxin_level_supply_ur": 21
-            }
+            },
+            "delivery_days": 7
         },
         "weekly_pass": {
             "name": {
@@ -4003,7 +4012,8 @@
                 "grain_level_supply_ur": 21,
                 "timber_level_supply_ur": 21,
                 "herb_level_supply_ur": 21
-            }
+            },
+            "delivery_days": 7
         },
         "weekly_special": {
             "name": {
@@ -4123,7 +4133,8 @@
             "contains": {
                 "diamonds": 500,
                 "timber_level_supply_ur": 21
-            }
+            },
+            "delivery_days": 7
         }
     },
     "exchange_shops": {
@@ -4939,49 +4950,49 @@
                 "en": "Blades Out",
                 "de": ""
             },
-            "category": "shop_event"
+            "category": "special_event"
         },
         "calendar_event": {
             "name": {
                 "en": "Calendar Gift",
                 "de": ""
             },
-            "category": "special_event"
+            "category": "calendar_gift"
         },
         "full_moon_night": {
             "name": {
                 "en": "Full Moon Night",
                 "de": ""
             },
-            "category": "shop_event"
+            "category": "special_event"
         },
         "mystic_cabinet": {
             "name": {
                 "en": "Mystic Cabinet",
                 "de": ""
             },
-            "category": "special_event"
+            "category": "season_event"
         },
         "recluse_merchant": {
             "name": {
                 "en": "Recluse Merchant",
                 "de": ""
             },
-            "category": "shop_event"
+            "category": "special_event"
         },
         "strange_bazaar": {
             "name": {
                 "en": "Strange Bazaar",
                 "de": ""
             },
-            "category": "shop_event"
+            "category": "special_event"
         },
         "surprise_encounter": {
             "name": {
                 "en": "Surprise Encounter",
                 "de": ""
             },
-            "category": "shop_event"
+            "category": "special_event"
         },
         "weekly_special": {
             "name": {

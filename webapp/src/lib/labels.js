@@ -4,7 +4,7 @@
  * except the `...Text` variants for plain-text use (e.g. the item picker).
  */
 import { localizedName, t } from './i18n';
-import { isPassCategory } from './catalog.js';
+import { isPass } from './catalog.js';
 import { formatThousands } from './format';
 
 function escapeHtml(text) {
@@ -33,17 +33,24 @@ function offerDisplayName(shop, offer, items, locale) {
 }
 
 /**
- * Pill type for a source row: packages that are passes or special-event offers get their own
- * pill; everything else keeps its type ('package', 'exchange', 'bonus_tier').
+ * What kind of purchase a (flattened) package is, for its Type pill. The first matching rule wins:
+ * diamond top-up, event pack (only while its event runs), once-only unlock, seasonal pass, pass,
+ * plain package. Derived from the data, so nothing extra has to be maintained.
  */
-function displaySourceType(type, category) {
-    if (type !== 'package') {
-        return type;
+function purchaseType(pkg) {
+    if (pkg.category === 'diamond') {
+        return 'top_up';
     }
-    if (isPassCategory(category)) {
-        return 'pass';
+    if (pkg.event_id) {
+        return 'event';
     }
-    return category === 'special_event' ? 'special' : type;
+    if (pkg.limit_type === 'exclusive') {
+        return 'unlock';
+    }
+    if (isPass(pkg)) {
+        return pkg.seasonal ? 'seasonal_pass' : 'pass';
+    }
+    return 'package';
 }
 
 /** "Item ×qty + Item ×qty" label of a choice option / ingredient list. */
@@ -85,7 +92,7 @@ export {
     packageDisplayName,
     itemDisplayName,
     offerDisplayName,
-    displaySourceType,
+    purchaseType,
     todayWeekdayIndex,
     conversionLabel,
 };

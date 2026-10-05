@@ -54,20 +54,26 @@
         "weekly_pass": "",
         "value_event": "",
         "weekly_rotation": "",
-        "shop_event": "",
         "unlock_exclusive": "",
         "event_exchange": "",
         "exchange": "",
-        "other": ""
+        "other": "",
+        "diamond": "",
+        "calendar_gift": "",
+        "season_event": "",
+        "pack_shop": ""
     },
     "sourceType": {
         "package": "",
         "pass": "",
-        "special": "",
         "exchange": "",
         "exchange_offer": "",
         "bonus_tier": "",
-        "conversion": ""
+        "conversion": "",
+        "top_up": "",
+        "event": "",
+        "unlock": "",
+        "seasonal_pass": ""
     },
     "docTitle": {
         "welcome": "",
