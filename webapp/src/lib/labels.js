@@ -34,8 +34,8 @@ function offerDisplayName(shop, offer, items, locale) {
 
 /**
  * What kind of purchase a (flattened) package is, for its Type pill. The first matching rule wins:
- * diamond top-up, event pack (only while its event runs), once-only unlock, seasonal pass, pass,
- * plain package. Derived from the data, so nothing extra has to be maintained.
+ * diamond top-up, event pack (only while its event runs), once-only unlock, lifetime-limited pack,
+ * seasonal pass, pass, plain package. Derived from the data, so nothing extra has to be maintained.
  */
 function purchaseType(pkg) {
     if (pkg.category === 'diamond') {
@@ -44,8 +44,11 @@ function purchaseType(pkg) {
     if (pkg.event_id) {
         return 'event';
     }
-    if (pkg.limit_type === 'exclusive') {
+    if (pkg.category === 'unlock_exclusive') {
         return 'unlock';
+    }
+    if (pkg.limit_type === 'lifetime') {
+        return 'limited';
     }
     if (isPass(pkg)) {
         return pkg.seasonal ? 'seasonal_pass' : 'pass';

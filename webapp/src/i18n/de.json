@@ -61,7 +61,8 @@
         "diamond": "",
         "calendar_gift": "",
         "season_event": "",
-        "pack_shop": ""
+        "pack_shop": "",
+        "clinic_development_pack": ""
     },
     "sourceType": {
         "package": "",
@@ -73,7 +74,8 @@
         "top_up": "",
         "event": "",
         "unlock": "",
-        "seasonal_pass": ""
+        "seasonal_pass": "",
+        "limited": ""
     },
     "docTitle": {
         "welcome": "",
@@ -136,7 +138,8 @@
         },
         "buyMonthly": "",
         "planSummary": "",
-        "buyNoFit": ""
+        "buyNoFit": "",
+        "lifetimeTotal": ""
     },
     "choices": {
         "heading": "",

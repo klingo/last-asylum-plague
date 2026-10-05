@@ -546,6 +546,12 @@ tbody tr:hover {
     border-color: var(--gold);
 }
 
+.pill--limited {
+    color: var(--gold);
+    border-color: var(--gold);
+    border-style: dashed;
+}
+
 .pill--top_up {
     color: var(--text-dim);
 }

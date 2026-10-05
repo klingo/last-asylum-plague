@@ -61,7 +61,8 @@
         "diamond": "Diamond",
         "calendar_gift": "Calendar Gift",
         "season_event": "Season Event",
-        "pack_shop": "Pack Shop"
+        "pack_shop": "Pack Shop",
+        "clinic_development_pack": "Clinic Development Pack"
     },
     "sourceType": {
         "package": "Package",
@@ -73,7 +74,8 @@
         "top_up": "Top-up",
         "event": "Event",
         "unlock": "Unlock",
-        "seasonal_pass": "Seasonal pass"
+        "seasonal_pass": "Seasonal pass",
+        "limited": "Limited"
     },
     "docTitle": {
         "welcome": "Last Asylum Pack Solver",
@@ -136,7 +138,8 @@
         },
         "buyMonthly": "1 / month",
         "planSummary": "Best plan for your weekly spend: {purchases} different packs for {spent} of {budget} Banknotes (\"Buy / week\" column), plus {exchanges} shop purchases with the diamonds and coins they give.",
-        "buyNoFit": "doesn't fit"
+        "buyNoFit": "doesn't fit",
+        "lifetimeTotal": "{count}× total"
     },
     "choices": {
         "heading": "Best Choice Pick",

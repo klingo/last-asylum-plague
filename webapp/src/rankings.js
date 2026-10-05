@@ -53,8 +53,11 @@ function buyHtml(count, entry) {
 
 /** How much can go into an entry per week: "once", "unlimited" or an amount. */
 function perWeekHtml(capacity, limitType, amountHtml) {
-    if (limitType === 'exclusive' || limitType === 'event') {
+    if (limitType === 'event' || (limitType === 'lifetime' && capacity === 1)) {
         return t('rankings.once');
+    }
+    if (limitType === 'lifetime') {
+        return t('rankings.lifetimeTotal', { count: formatThousands(capacity) });
     }
     if (!Number.isFinite(capacity)) {
         return t('common.unlimited');

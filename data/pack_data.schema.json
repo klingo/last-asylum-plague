@@ -109,7 +109,8 @@
         },
         "limitType": {
             "type": "string",
-            "enum": ["daily", "weekly", "monthly", "exclusive", "event"]
+            "enum": ["daily", "weekly", "monthly", "lifetime", "event"],
+            "description": "`lifetime` = `purchase_limit` purchases ever, never resets (hero unlocks, 3 Copper Coin packs); `event` = `purchase_limit` purchases per run of the package's event."
         },
         "weekday": {
             "type": "string",
@@ -450,6 +451,7 @@
                 "special_event",
                 "season_event",
                 "calendar_gift",
+                "clinic_development_pack",
                 "unlock_exclusive",
                 "diamond"
             ]

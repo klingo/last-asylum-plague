@@ -143,6 +143,13 @@
             },
             "category": "speedup"
         },
+        "copper_coin": {
+            "name": {
+                "en": "Copper Coin",
+                "de": ""
+            },
+            "category": "virtual"
+        },
         "curio_chest_ssr": {
             "name": {
                 "en": "Curio Chest (SSR)",
@@ -2240,6 +2247,57 @@
                 "raven_fruit": 1200000
             }
         },
+        "copper_coin_pack_24h": {
+            "name": {
+                "en": "24h Copper Coin Pack",
+                "de": ""
+            },
+            "category": "clinic_development_pack",
+            "price": 499,
+            "deal_percentage": 5600,
+            "purchase_limit": 3,
+            "limit_type": "lifetime",
+            "contains": {
+                "copper_coin": 5700000,
+                "vip_points": 500,
+                "construction_speedup": 125,
+                "resource_supply_general": 25
+            }
+        },
+        "copper_coin_pack_6h": {
+            "name": {
+                "en": "6h Copper Coin Pack",
+                "de": ""
+            },
+            "category": "clinic_development_pack",
+            "price": 199,
+            "deal_percentage": 4490,
+            "purchase_limit": 3,
+            "limit_type": "lifetime",
+            "contains": {
+                "copper_coin": 1400000,
+                "vip_points": 200,
+                "construction_speedup": 50,
+                "resource_supply_general": 10
+            }
+        },
+        "copper_coin_pack_72h": {
+            "name": {
+                "en": "72h Copper Coin Pack",
+                "de": ""
+            },
+            "category": "clinic_development_pack",
+            "price": 999,
+            "deal_percentage": 3350,
+            "purchase_limit": 3,
+            "limit_type": "lifetime",
+            "contains": {
+                "copper_coin": 17000000,
+                "vip_points": 1000,
+                "construction_speedup": 250,
+                "resource_supply_general": 50
+            }
+        },
         "curio_boost": {
             "name": {
                 "en": "Curio Boost",
@@ -2669,7 +2727,7 @@
                 "de": ""
             },
             "category": "unlock_exclusive",
-            "limit_type": "exclusive",
+            "limit_type": "lifetime",
             "tiers": {
                 "1": {
                     "price": 999,
@@ -2744,7 +2802,7 @@
                 "de": ""
             },
             "category": "unlock_exclusive",
-            "limit_type": "exclusive",
+            "limit_type": "lifetime",
             "tiers": {
                 "1": {
                     "price": 499,
@@ -2801,7 +2859,20 @@
                 "5": {
                     "price": 9999,
                     "deal_percentage": 3610,
-                    "purchase_limit": 2,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 10000,
+                        "exclusive_weapon_shard": 160,
+                        "antitoxin_level_supply_sr": 200,
+                        "skill_badge": 5000,
+                        "vip_points": 10000,
+                        "lv6_alliance_chest": 1
+                    }
+                },
+                "6": {
+                    "price": 9999,
+                    "deal_percentage": 3610,
+                    "purchase_limit": 1,
                     "contains": {
                         "diamonds": 10000,
                         "exclusive_weapon_shard": 160,
@@ -3079,7 +3150,7 @@
                 "de": ""
             },
             "category": "season_event",
-            "limit_type": "exclusive",
+            "limit_type": "event",
             "event_id": "mystic_cabinet",
             "tiers": {
                 "1": {
@@ -3128,7 +3199,7 @@
                 "de": ""
             },
             "category": "season_event",
-            "limit_type": "exclusive",
+            "limit_type": "event",
             "event_id": "mystic_cabinet",
             "tiers": {
                 "1": {
@@ -3151,7 +3222,7 @@
                 "de": ""
             },
             "category": "season_event",
-            "limit_type": "exclusive",
+            "limit_type": "event",
             "event_id": "mystic_cabinet",
             "tiers": {
                 "1": {
