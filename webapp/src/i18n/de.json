@@ -114,6 +114,8 @@
         "description": "",
         "searchLabel": "",
         "searchPlaceholder": "",
+        "showLabel": "",
+        "showVipShop": "",
         "empty": "",
         "meta": "",
         "table": {

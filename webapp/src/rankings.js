@@ -25,6 +25,7 @@ renderNav('rankings');
 applyStaticTranslations();
 
 const searchInput = document.getElementById('search-input');
+const showVipShop = document.getElementById('show-vip-shop');
 const rankingMeta = document.getElementById('ranking-meta');
 const rankingTable = document.getElementById('ranking-table');
 const rankingEmpty = document.getElementById('ranking-empty');
@@ -127,6 +128,7 @@ function buildEntries() {
                 section: b.incomplete ? 'unknown' : 'ranked',
                 type: 'exchange_offer',
                 category: shop.event_id ? 'event_exchange' : 'exchange',
+                vipShop: !shop.event_id,
                 categoryName: localizedName(shop.name, locale),
                 name: offerDisplayName(shop, offer, data.items, locale),
                 priceHtml: `${formatThousands(offer.currency_cost)} ${coinName}`,
@@ -298,8 +300,11 @@ function applyFilters() {
     renderTable(
         entries.filter(
             (entry) =>
-                !search ||
-                `${entry.name} ${entry.categoryName ?? categoryLabel(entry.category)}`.toLowerCase().includes(search),
+                (showVipShop.checked || !entry.vipShop) &&
+                (!search ||
+                    `${entry.name} ${entry.categoryName ?? categoryLabel(entry.category)}`
+                        .toLowerCase()
+                        .includes(search)),
         ),
     );
 }
@@ -334,6 +339,7 @@ async function init() {
     });
     settings = panel.getSettings();
     searchInput.addEventListener('input', applyFilters);
+    showVipShop.addEventListener('change', applyFilters);
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
         rebuild();

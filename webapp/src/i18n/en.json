@@ -111,9 +111,11 @@
     },
     "rankings": {
         "heading": "Ranking",
-        "description": "Every package, pass and exchange offer (VIP Shop always, event shops while their event is ticked) ranked by worth relative to price. Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). \"Buy / week\" shows what to buy: the best combination of whole purchases for your exact weekly spend, within their limits. Ratio = how a pack compares with the last Banknote of that plan: 1.0 or more = a good deal at your spend (\"doesn't fit\" = good, but the plan couldn't fit it into your exact spend; with a little more it would be in), below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Per week\" is how much you could spend on it per week. Packs of events you haven't ticked are hidden; once-only packs are shown as \"once\". Shop bonus tiers and entries containing items of unknown worth are listed below the ranking, unranked.",
+        "description": "Every package, pass and exchange offer (event shops while their event is ticked, the VIP Shop when \"VIP Shop offers\" is ticked) ranked by worth relative to price. Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). \"Buy / week\" shows what to buy: the best combination of whole purchases for your exact weekly spend, within their limits. Ratio = how a pack compares with the last Banknote of that plan: 1.0 or more = a good deal at your spend (\"doesn't fit\" = good, but the plan couldn't fit it into your exact spend; with a little more it would be in), below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Per week\" is how much you could spend on it per week. Packs of events you haven't ticked are hidden; once-only packs are shown as \"once\". Shop bonus tiers and entries containing items of unknown worth are listed below the ranking, unranked.",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
+        "showLabel": "Show",
+        "showVipShop": "VIP Shop offers",
         "empty": "No entries match your filters.",
         "meta": "{count} entries.",
         "table": {
