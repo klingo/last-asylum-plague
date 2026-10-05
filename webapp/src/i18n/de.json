@@ -194,7 +194,8 @@
         "eventsLabel": "",
         "summary": "",
         "summaryUnbound": "",
-        "passesLabel": ""
+        "passesLabel": "",
+        "passesNone": ""
     },
     "conversion": {
         "open": "",

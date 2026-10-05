@@ -62,11 +62,12 @@ function packageFamilyId(id, pkg) {
 }
 
 /**
- * True for a seasonal package (`seasonal: true`, e.g. the Gear Pass) the user marked as not on sale
- * right now (`unavailablePasses`: Set of family ids). Packages without the flag are always available.
+ * True for a seasonal package (`seasonal: true`, e.g. the Gear Pass) that isn't the one on sale right
+ * now. Only one seasonal pass is on sale at a time: `seasonalPass` is its family id (null = none;
+ * undefined = don't filter, e.g. for scripts). Packages without the flag are always available.
  */
-function isUnavailablePass(id, pkg, unavailablePasses) {
-    return Boolean(pkg.seasonal) && Boolean(unavailablePasses?.size) && unavailablePasses.has(packageFamilyId(id, pkg));
+function isSeasonalOff(id, pkg, seasonalPass) {
+    return seasonalPass !== undefined && Boolean(pkg.seasonal) && packageFamilyId(id, pkg) !== seasonalPass;
 }
 
 /** Every item used as an exchange-shop currency (diamonds, event coins, ...). */
@@ -198,7 +199,7 @@ export {
     isPass,
     expandPackageFamilies,
     packageFamilyId,
-    isUnavailablePass,
+    isSeasonalOff,
     currencyItemIds,
     packageWeeklyCapacity,
     offerWeeklyCapacity,

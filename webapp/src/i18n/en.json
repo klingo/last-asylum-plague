@@ -194,7 +194,8 @@
         "eventsLabel": "Events this week",
         "summary": "At a weekly spend of {budget} Banknotes, your last Banknote buys {rate} points, so worth = points ÷ {rate}.",
         "summaryUnbound": "Everything worth buying this week costs only {spent} of your {budget} Banknotes; the weakest pack bought returns {rate} points per Banknote, so worth = points ÷ {rate}.",
-        "passesLabel": "Seasonal passes on sale"
+        "passesLabel": "Seasonal pass on sale",
+        "passesNone": "None"
     },
     "conversion": {
         "open": "Open {item}",

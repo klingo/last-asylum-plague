@@ -23,6 +23,24 @@ function passFamilies(packages) {
 
 const ALL_FIELDS = ['budget', 'events', 'passes'];
 
+/** One choice out of `entries` plus "None" (value ''). */
+function radioGroupHtml(name, labelKey, noneKey, entries) {
+    if (entries.length === 0) {
+        return '';
+    }
+    const radios = [['', null], ...entries]
+        .map(
+            ([id, entry]) =>
+                `<label class="checkbox-label"><input type="radio" name="${name}" value="${id}" /><span ${entry ? '' : `data-i18n="${noneKey}"`}>${entry ? localizedName(entry.name) : ''}</span></label>`,
+        )
+        .join('');
+    return `
+        <div class="field">
+            <span class="field-label" data-i18n="${labelKey}"></span>
+            <div class="checkbox-group">${radios}</div>
+        </div>`;
+}
+
 function checkboxGroupHtml(name, labelKey, entries) {
     if (entries.length === 0) {
         return '';
@@ -58,7 +76,7 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
                         : ''
                 }
                 ${show.has('events') ? checkboxGroupHtml('vp-event', 'valuation.eventsLabel', sorted(data.events)) : ''}
-                ${show.has('passes') ? checkboxGroupHtml('vp-pass', 'valuation.passesLabel', sorted(Object.fromEntries(passFamilies(data.packages)))) : ''}
+                ${show.has('passes') ? radioGroupHtml('vp-pass', 'valuation.passesLabel', 'valuation.passesNone', sorted(Object.fromEntries(passFamilies(data.packages)))) : ''}
             </div>`;
         applyStaticTranslations(container);
         const budgetInput = container.querySelector('#vp-budget');
@@ -77,13 +95,10 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
                 );
             }
         }
-        // Seasonal passes: ticked = on sale; stored as the unticked ones.
-        const passBoxes = [...container.querySelectorAll('input[name="vp-pass"]')];
-        for (const box of passBoxes) {
-            box.checked = !settings.unavailablePasses.includes(box.value);
-            box.addEventListener('change', () =>
-                update({ unavailablePasses: passBoxes.filter((b) => !b.checked).map((b) => b.value) }),
-            );
+        // The one seasonal pass on sale ('' = none).
+        for (const radio of container.querySelectorAll('input[name="vp-pass"]')) {
+            radio.checked = radio.value === (settings.seasonalPass || '');
+            radio.addEventListener('change', () => update({ seasonalPass: radio.value || null }));
         }
     }
 

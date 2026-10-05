@@ -4,7 +4,7 @@ import { loadPackData } from './lib/data';
 import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
-import { packageWeeklyCapacity, offerWeeklyCapacity, isUnavailablePass } from './lib/catalog.js';
+import { packageWeeklyCapacity, offerWeeklyCapacity, isSeasonalOff } from './lib/catalog.js';
 import { packageDisplayName, itemDisplayName, offerDisplayName, purchaseType } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
@@ -73,7 +73,6 @@ function buildEntries() {
     // Everything on sale this week: packages of switched-off events are hidden; once-only packs are
     // listed (as "once") even though they don't count toward the weekly market.
     const activeEventIds = new Set(settings.activeEvents);
-    const unavailablePasses = new Set(settings.unavailablePasses);
     const capacityRules = { activeEventIds, includePasses: true, includeExclusives: true };
     const result = [];
     const planned = new Map(valuation.plan.purchases.map((p) => [`package:${p.id}`, p.count]));
@@ -85,7 +84,7 @@ function buildEntries() {
         if (
             !(pkg.price > 0) ||
             (pkg.event_id && !activeEventIds.has(pkg.event_id)) ||
-            isUnavailablePass(id, pkg, unavailablePasses)
+            isSeasonalOff(id, pkg, settings.seasonalPass)
         ) {
             continue;
         }
@@ -183,7 +182,7 @@ function ratioHtml(entry, maxRatio) {
     if (entry.section === 'unknown') {
         return t('common.dash');
     }
-    return ratioBarHtml(entry.ratio, maxRatio);
+    return ratioBarHtml(entry.ratio, maxRatio, { digits: 3 });
 }
 
 function breakdownRowsHtml(entry) {

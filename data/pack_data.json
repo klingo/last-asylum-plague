@@ -2156,12 +2156,11 @@
                 "de": ""
             },
             "category": "calendar_gift",
-            "event_id": "calendar_event",
             "exclusive_group": "calendar_gift",
             "delivery_days": 30,
             "price": 2499,
             "purchase_limit": 1,
-            "limit_type": "event",
+            "limit_type": "monthly",
             "contains": {
                 "diamonds": 2500,
                 "vip_points": 2500,
@@ -2179,12 +2178,11 @@
                 "de": ""
             },
             "category": "calendar_gift",
-            "event_id": "calendar_event",
             "exclusive_group": "calendar_gift",
             "delivery_days": 30,
             "price": 2499,
             "purchase_limit": 1,
-            "limit_type": "event",
+            "limit_type": "monthly",
             "contains": {
                 "diamonds": 2500,
                 "vip_points": 2500,
@@ -2203,12 +2201,11 @@
                 "de": ""
             },
             "category": "calendar_gift",
-            "event_id": "calendar_event",
             "exclusive_group": "calendar_gift",
             "delivery_days": 30,
             "price": 2499,
             "purchase_limit": 1,
-            "limit_type": "event",
+            "limit_type": "monthly",
             "contains": {
                 "diamonds": 2500,
                 "vip_points": 2500,
@@ -2227,12 +2224,11 @@
                 "de": ""
             },
             "category": "calendar_gift",
-            "event_id": "calendar_event",
             "exclusive_group": "calendar_gift",
             "delivery_days": 30,
             "price": 2499,
             "purchase_limit": 1,
-            "limit_type": "event",
+            "limit_type": "monthly",
             "contains": {
                 "diamonds": 2500,
                 "vip_points": 2500,
@@ -4951,13 +4947,6 @@
                 "de": ""
             },
             "category": "special_event"
-        },
-        "calendar_event": {
-            "name": {
-                "en": "Calendar Gift",
-                "de": ""
-            },
-            "category": "calendar_gift"
         },
         "full_moon_night": {
             "name": {

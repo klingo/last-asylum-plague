@@ -5,7 +5,7 @@ import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
 import { solveNeeds } from './lib/acquire.js';
-import { isUnavailablePass } from './lib/catalog.js';
+import { isSeasonalOff } from './lib/catalog.js';
 import {
     packageDisplayName,
     itemDisplayName,
@@ -48,12 +48,11 @@ const gold = (value, digits = 0) =>
         ? `<span class="text-gold">${formatThousands(value, digits)}</span> ${banknoteIconHtml()}`
         : t('common.notAvailable');
 
-/** Package ids of the passes marked as not on sale. */
+/** Package ids of the seasonal passes that aren't on sale right now. */
 function unavailablePassIds() {
-    const unavailable = new Set(settings.unavailablePasses);
     return new Set(
         Object.entries(data.packages)
-            .filter(([id, pkg]) => isUnavailablePass(id, pkg, unavailable))
+            .filter(([id, pkg]) => isSeasonalOff(id, pkg, settings.seasonalPass))
             .map(([id]) => id),
     );
 }

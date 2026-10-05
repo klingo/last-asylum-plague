@@ -28,7 +28,7 @@ import {
     currencyItemIds,
     packageWeeklyCapacity,
     offerWeeklyCapacity,
-    isUnavailablePass,
+    isSeasonalOff,
 } from './catalog.js';
 import { createModel, addTerm, solveModel, varName } from './lp.js';
 import { trackPointsForPrice } from './spend-tracks.js';
@@ -67,8 +67,8 @@ function currencyFlows(contents, items, values, currencyIds, out = new Map(), fa
  * options: `budget` (Banknotes/week), `activeEventIds` (Set; events running this week),
  * `includePasses`, `includeExclusives`, `ignored` (Set of item ids forced to 0 points),
  * `weights` (personal item weights), `basePoints` (point-fit.js; fitted here if not given),
- * `activeTrackIds` (Set of spend reward tracks running this week), `unavailablePasses` (Set of pass
- * family ids not on sale).
+ * `activeTrackIds` (Set of spend reward tracks running this week), `seasonalPass` (family id of the
+ * seasonal pass on sale; null = none, undefined = all).
  */
 function solveWeeklyPlan(highs, data, options = {}) {
     const {
@@ -80,7 +80,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         weights = null,
         basePoints = fitItemPoints(data).points,
         activeTrackIds = new Set(),
-        unavailablePasses = new Set(),
+        seasonalPass = undefined,
     } = options;
     const items = data.items || {};
     const packages = expandPackageFamilies(data.packages || {});
@@ -114,12 +114,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         const capacity = packageWeeklyCapacity(pkg, availability);
         // Plain diamond top-ups are the worst deal in the game (diamonds only feed the VIP shop);
         // left out so leftover budget isn't "filled" with them.
-        if (
-            !(capacity > 0) ||
-            !(pkg.price > 0) ||
-            pkg.category === 'diamond' ||
-            isUnavailablePass(id, pkg, unavailablePasses)
-        ) {
+        if (!(capacity > 0) || !(pkg.price > 0) || pkg.category === 'diamond' || isSeasonalOff(id, pkg, seasonalPass)) {
             continue;
         }
         if (pkg.requires && !packageVars.has(pkg.requires) && packages[pkg.requires]) {

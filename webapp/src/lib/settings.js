@@ -28,7 +28,7 @@ const DEFAULT_NONE_ITEMS = [
 const DEFAULT_SETTINGS = {
     budget: 20000, // Banknotes per week
     activeEvents: [], // event ids running this week
-    unavailablePasses: [], // seasonal pass family ids not on sale right now; all other passes are always available
+    seasonalPass: null, // family id of the one seasonal pass on sale right now (null = none); other passes are always on sale
     priorities: Object.fromEntries(DEFAULT_NONE_ITEMS.map((id) => [id, 'none'])), // itemId -> level ('normal' omitted)
 };
 
@@ -54,7 +54,10 @@ function loadSettings() {
     if (Number.isFinite(stored.budget) && stored.budget >= 0) {
         settings.budget = stored.budget;
     }
-    for (const key of ['activeEvents', 'unavailablePasses']) {
+    if (typeof stored.seasonalPass === 'string') {
+        settings.seasonalPass = stored.seasonalPass;
+    }
+    for (const key of ['activeEvents']) {
         if (Array.isArray(stored[key])) {
             settings[key] = stored[key].filter((id) => typeof id === 'string');
         }
