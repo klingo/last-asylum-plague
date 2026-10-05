@@ -7,7 +7,7 @@ const STORAGE_KEY = 'lasps_valuation';
 const SETTINGS_VERSION = 3;
 
 // How much an item matters to the user, as a factor on its worth (after the deal % fit).
-const PRIORITY_WEIGHTS = { none: 0, low: 0.5, normal: 1, high: 2 };
+const PRIORITY_WEIGHTS = { none: 0, low: 0.5, normal: 1, high: 1.5 };
 const PRIORITY_LEVELS = ['none', 'low', 'normal', 'high'];
 
 // Worth nothing to a typical player, so "Don't care" unless changed. They still count in the

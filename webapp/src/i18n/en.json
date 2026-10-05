@@ -206,7 +206,7 @@
     },
     "items": {
         "heading": "Item Priorities",
-        "description": "How much each item matters to you. \"Don't care\" counts it as worthless, \"Low\" at half, \"High\" at double its usual worth. Only base items are listed: chests, supplies, choice chests and omni shards follow the items they contain (e.g. Antitoxin Level Supplies follow Antitoxin; Brass, Leather, Refined Iron and Tempered Steel follow Cloth). Everything follows automatically, on every page.",
+        "description": "How much each item matters to you. \"Don't care\" counts it as worthless, \"Low\" at half, \"High\" at 1.5 times its usual worth. Only base items are listed: chests, supplies, choice chests and omni shards follow the items they contain (e.g. Antitoxin Level Supplies follow Antitoxin; Brass, Leather, Refined Iron and Tempered Steel follow Cloth). Everything follows automatically, on every page.",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
         "showLabel": "Show",

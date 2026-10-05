@@ -16,7 +16,7 @@ its contents without a common value scale. The tool uses one:
   item at its crafting cost. Moon Coins, Star Moon Sigils and Surprise Emblems are not modelled. Diamonds and event
   coins have no points of their own: they are worth what their shop offers buy (diamonds: the VIP shop).
 - **Your priorities** — on the Item Priorities page each item is Don't care (0%), Low (50%), Normal (100%) or High
-  (200%) of its worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and
+  (150%) of its worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and
   Direct Relocate start at Don't care.
 - **Banknote worth** — one weekly optimisation (linear program, [HiGHS](https://highs.dev/) compiled to
   WebAssembly): the best purchases for your weekly Banknote spend within all purchase limits, passes and the events

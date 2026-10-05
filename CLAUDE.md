@@ -42,7 +42,7 @@ structure (`contains` = sum, random `drop_table` = expected value, `choice` = be
 best target, `value_equivalent` = sum of the listed items, `reversible` crafting chains propagate one value both
 ways, `crafted_from` recipes cap an item at its ingredients and weakly tie it to them). `fitSensitivity` (leave one
 pack family out) flags values that hinge on one pack. The user's item priorities (`settings.js`: Don't care / Low /
-Normal / High = 0 / 50 / 100 / 200 %) multiply values after the fit (`weights` in `item-values.js`); VIP points,
+Normal / High = 0 / 50 / 100 / 150 %) multiply values after the fit (`weights` in `item-values.js`); VIP points,
 alliance chests, ... start at Don't care — they stay in the fit (the deal % counts them). Moon Coins, Star Moon
 Sigils and Surprise Emblems are deliberately unmodelled (`UNMODELLED_ITEMS`). Currencies (diamonds, event coins)
 have no points of their own — they're worth only what their shop offers buy.
