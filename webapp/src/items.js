@@ -206,7 +206,8 @@ async function init() {
     data = await loadPackData();
     currencies = currencyItemIds(data.exchange_shops);
     panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
-        fields: ['budget'],
+        // No controls here: the worth column uses the weekly spend set on the Ranking page.
+        fields: [],
         onChange: (settings) => recompute(settings),
     });
     // One listener for every priority radio in the table.

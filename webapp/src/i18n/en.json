@@ -8,7 +8,7 @@
         "choices": "Best Choice Pick",
         "spendRewards": "Spend Rewards",
         "language": "Language",
-        "items": "My Items",
+        "items": "Item Priorities",
         "compare": "Compare"
     },
     "common": {
@@ -80,7 +80,7 @@
         "rankings": "Ranking - Last Asylum Pack Solver",
         "choices": "Best Choice Pick - Last Asylum Pack Solver",
         "spendRewards": "Spend Rewards - Last Asylum Pack Solver",
-        "items": "My Items - Last Asylum Pack Solver",
+        "items": "Item Priorities - Last Asylum Pack Solver",
         "compare": "Compare - Last Asylum Pack Solver"
     },
     "footer": {
@@ -109,7 +109,7 @@
     },
     "rankings": {
         "heading": "Ranking",
-        "description": "Every package and pass (and optionally every exchange offer) ranked by worth relative to price. Worth uses the game's own deal % values, your weekly spend and your item priorities (My Items). \"Buy / week\" shows what to buy: the best combination of whole purchases for your exact weekly spend, within their limits. Ratio = how a pack compares with the last Banknote of that plan: 1.0 or more = a good deal at your spend (\"doesn't fit\" = good, but the plan couldn't fit it into your exact spend; with a little more it would be in), below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Per week\" is how much you could spend on it per week. Packs of events you haven't ticked are hidden; once-only packs are shown as \"once\". Shop bonus tiers and entries containing items of unknown worth are listed below the ranking, unranked.",
+        "description": "Every package and pass (and optionally every exchange offer) ranked by worth relative to price. Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). \"Buy / week\" shows what to buy: the best combination of whole purchases for your exact weekly spend, within their limits. Ratio = how a pack compares with the last Banknote of that plan: 1.0 or more = a good deal at your spend (\"doesn't fit\" = good, but the plan couldn't fit it into your exact spend; with a little more it would be in), below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Per week\" is how much you could spend on it per week. Packs of events you haven't ticked are hidden; once-only packs are shown as \"once\". Shop bonus tiers and entries containing items of unknown worth are listed below the ranking, unranked.",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
         "includeExchangeShops": "Exchange offers & bonus tiers",
@@ -205,7 +205,7 @@
         "substitute": "Use {item} as {target}"
     },
     "items": {
-        "heading": "My Items",
+        "heading": "Item Priorities",
         "description": "How much each item matters to you. \"Don't care\" counts it as worthless, \"Low\" at half, \"High\" at double its usual worth. Only base items are listed: chests, supplies, choice chests and omni shards follow the items they contain (e.g. Antitoxin Level Supplies follow Antitoxin; Brass, Leather, Refined Iron and Tempered Steel follow Cloth). Everything follows automatically, on every page.",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
@@ -213,7 +213,7 @@
         "changedOnly": "Only items I changed",
         "reset": "Reset to defaults",
         "empty": "No items match your search.",
-        "footnote": "Worth = Banknotes per unit at your weekly spend. Uncertain = the game's deal % values barely determine the item (hover for why).",
+        "footnote": "Worth = Banknotes per unit at the weekly spend set on the Ranking page. Uncertain = the game's deal % values barely determine the item (hover the info icon for why).",
         "summary": "{count} items changed.",
         "uncertain": "uncertain",
         "uncertainTitle": "The packs barely determine this value (e.g. it only appears in one pack next to other unknown items).",

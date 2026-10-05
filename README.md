@@ -15,9 +15,9 @@ its contents without a common value scale. The tool uses one:
   Recipes (`crafted_from`, e.g. 800 UR Epigraph Shards → any UR Epigraph IV, 9 Lv.1 → 1 Lv.3 raven gear) cap an
   item at its crafting cost. Moon Coins, Star Moon Sigils and Surprise Emblems are not modelled. Diamonds and event
   coins have no points of their own: they are worth what their shop offers buy (diamonds: the VIP shop).
-- **Your priorities** — on My Items each item is Don't care (0%), Low (50%), Normal (100%) or High (200%) of its
-  worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and Direct Relocate
-  start at Don't care.
+- **Your priorities** — on the Item Priorities page each item is Don't care (0%), Low (50%), Normal (100%) or High
+  (200%) of its worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and
+  Direct Relocate start at Don't care.
 - **Banknote worth** — one weekly optimisation (linear program, [HiGHS](https://highs.dev/) compiled to
   WebAssembly): the best purchases for your weekly Banknote spend within all purchase limits, passes and the events
   you tick. Worth = points ÷ what your last Banknote buys; diamonds and coins at what one more unit could still buy
@@ -28,7 +28,7 @@ its contents without a common value scale. The tool uses one:
 - **Ranking** (`rankings.html`) — every package and pass (optionally exchange offers) ranked by worth ÷ price,
   with how much you can spend on each per week and what to buy ("Buy / week": the best whole purchases for your
   exact weekly spend); shop bonus tiers and entries of unknown worth are listed unranked.
-- **My Items** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
+- **Item Priorities** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
 - **Best Choice Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.
 - **Compare** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get
