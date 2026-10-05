@@ -25,9 +25,9 @@ its contents without a common value scale. The tool uses one:
 
 ## Pages
 
-- **Ranking** (`rankings.html`) — every package and pass (optionally exchange offers) ranked by worth ÷ price,
-  with how much you can spend on each per week and what to buy ("Buy / week": the best whole purchases for your
-  exact weekly spend); shop bonus tiers and entries of unknown worth are listed unranked.
+- **Ranking** (`rankings.html`) — every package, pass and exchange offer (event shops while their event is ticked)
+  ranked by worth ÷ price, with how much you can spend on each per week and what to buy ("Buy / week": the best
+  whole purchases for your exact weekly spend); shop bonus tiers and entries of unknown worth are listed unranked.
 - **Item Priorities** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
 - **Best Choice Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.

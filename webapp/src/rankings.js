@@ -25,7 +25,6 @@ renderNav('rankings');
 applyStaticTranslations();
 
 const searchInput = document.getElementById('search-input');
-const includeExchangeShopsCheckbox = document.getElementById('include-exchange-shops');
 const rankingMeta = document.getElementById('ranking-meta');
 const rankingTable = document.getElementById('ranking-table');
 const rankingEmpty = document.getElementById('ranking-empty');
@@ -106,60 +105,59 @@ function buildEntries() {
         });
     }
 
-    if (includeExchangeShopsCheckbox.checked) {
-        for (const [shopId, shop] of Object.entries(data.exchange_shops || {})) {
-            if (shop.event_id && !activeEventIds.has(shop.event_id)) {
-                continue;
-            }
-            const coinWorth = valuation.worth(shop.currency_item_id);
-            if (!(coinWorth > 0)) {
-                continue; // currency without a worth (or in surplus): nothing to compare against
-            }
-            const coinName = itemDisplayName(data.items, shop.currency_item_id, locale);
-            for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
-                const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
-                const paid = offer.currency_cost * coinWorth;
-                const capacity = offerWeeklyCapacity(offer, shop);
-                result.push({
-                    key: `exchange:${shopId}:${offerKey}`,
-                    section: b.incomplete ? 'unknown' : 'ranked',
-                    type: 'exchange_offer',
-                    category: shop.event_id ? 'event_exchange' : 'exchange',
-                    categoryName: localizedName(shop.name, locale),
-                    name: offerDisplayName(shop, offer, data.items, locale),
-                    priceHtml: `${formatThousands(offer.currency_cost)} ${coinName}`,
-                    perWeekHtml: perWeekHtml(
-                        capacity,
-                        offer.limit_type,
-                        (n) => `${formatThousands(n * offer.currency_cost, 0)} ${coinName}`,
-                    ),
-                    worth: b.worth,
-                    ratio: b.worth / paid,
-                    parts: b.parts,
-                });
-            }
-            let previous = 0;
-            for (const threshold of Object.keys(shop.bonus_tiers || {})
-                .map(Number)
-                .sort((a, b) => a - b)) {
-                const step = threshold - previous;
-                previous = threshold;
-                const b = valuation.bundle({ contains: shop.bonus_tiers[String(threshold)] }, 0);
-                result.push({
-                    key: `bonus:${shopId}:${threshold}`,
-                    section: 'bonus',
-                    type: 'bonus_tier',
-                    category: 'event_exchange',
-                    categoryName: localizedName(shop.name, locale),
-                    name: `${localizedName(shop.name, locale)} - ${t('rankings.bonusTierName', { threshold: formatThousands(threshold) })}`,
-                    priceHtml: `${formatThousands(step)} ${coinName}`,
-                    perWeekHtml: t('common.dash'),
-                    worth: b.worth,
-                    // Bonus on top of what the step's coins already buy.
-                    ratio: b.worth / (step * coinWorth),
-                    parts: b.parts,
-                });
-            }
+    // Exchange offers and shop bonus tiers: the VIP Shop always, event shops while their event is ticked.
+    for (const [shopId, shop] of Object.entries(data.exchange_shops || {})) {
+        if (shop.event_id && !activeEventIds.has(shop.event_id)) {
+            continue;
+        }
+        const coinWorth = valuation.worth(shop.currency_item_id);
+        if (!(coinWorth > 0)) {
+            continue; // currency without a worth (or in surplus): nothing to compare against
+        }
+        const coinName = itemDisplayName(data.items, shop.currency_item_id, locale);
+        for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
+            const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
+            const paid = offer.currency_cost * coinWorth;
+            const capacity = offerWeeklyCapacity(offer, shop);
+            result.push({
+                key: `exchange:${shopId}:${offerKey}`,
+                section: b.incomplete ? 'unknown' : 'ranked',
+                type: 'exchange_offer',
+                category: shop.event_id ? 'event_exchange' : 'exchange',
+                categoryName: localizedName(shop.name, locale),
+                name: offerDisplayName(shop, offer, data.items, locale),
+                priceHtml: `${formatThousands(offer.currency_cost)} ${coinName}`,
+                perWeekHtml: perWeekHtml(
+                    capacity,
+                    offer.limit_type,
+                    (n) => `${formatThousands(n * offer.currency_cost, 0)} ${coinName}`,
+                ),
+                worth: b.worth,
+                ratio: b.worth / paid,
+                parts: b.parts,
+            });
+        }
+        let previous = 0;
+        for (const threshold of Object.keys(shop.bonus_tiers || {})
+            .map(Number)
+            .sort((a, b) => a - b)) {
+            const step = threshold - previous;
+            previous = threshold;
+            const b = valuation.bundle({ contains: shop.bonus_tiers[String(threshold)] }, 0);
+            result.push({
+                key: `bonus:${shopId}:${threshold}`,
+                section: 'bonus',
+                type: 'bonus_tier',
+                category: 'event_exchange',
+                categoryName: localizedName(shop.name, locale),
+                name: `${localizedName(shop.name, locale)} - ${t('rankings.bonusTierName', { threshold: formatThousands(threshold) })}`,
+                priceHtml: `${formatThousands(step)} ${coinName}`,
+                perWeekHtml: t('common.dash'),
+                worth: b.worth,
+                // Bonus on top of what the step's coins already buy.
+                ratio: b.worth / (step * coinWorth),
+                parts: b.parts,
+            });
         }
     }
 
@@ -333,7 +331,6 @@ async function init() {
     });
     settings = panel.getSettings();
     searchInput.addEventListener('input', applyFilters);
-    includeExchangeShopsCheckbox.addEventListener('change', rebuild);
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
         rebuild();

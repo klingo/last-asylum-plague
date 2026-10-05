@@ -112,7 +112,6 @@
         "description": "",
         "searchLabel": "",
         "searchPlaceholder": "",
-        "includeExchangeShops": "",
         "empty": "",
         "meta": "",
         "table": {
@@ -129,7 +128,6 @@
             "perWeek": "",
             "buy": ""
         },
-        "showLabel": "",
         "bonusTierName": "",
         "once": "",
         "section": {
