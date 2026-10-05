@@ -142,7 +142,7 @@ function render() {
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.packsWorth, 0))}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.reached ? gold(formatThousands(tier.reward.worth, 0)) : `<span class="text-dim">${t('spendRewards.notReached')}</span>`}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">
-                        ${ratioBarHtml(tier.ratio, maxRatio)}
+                        ${ratioBarHtml(tier.ratio, maxRatio, { digits: 3 })}
                     </div>
                     <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-tier-key="${key}">${expandedKeys.has(key) ? t('common.hide') : t('common.details')}</button></div>
                 </div>
