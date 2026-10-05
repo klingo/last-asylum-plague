@@ -313,6 +313,21 @@ async function verifyData() {
             }
         }
 
+        // `bundles`: the packages a bundle already includes (Weekly Pass -> single passes) must exist.
+        for (const [pkgId, pkg] of Object.entries(packages)) {
+            for (const includedId of pkg.bundles || []) {
+                if (!packageKeys.has(includedId)) {
+                    reportError(
+                        'Package Reference',
+                        `Package "${pkgId}" bundles unresolvable package: "${includedId}"`,
+                    );
+                }
+                if (includedId === pkgId) {
+                    reportError('Package Loop', `Package "${pkgId}" bundles itself.`);
+                }
+            }
+        }
+
         // Mutually exclusive groups (only one member can be bought): need at least two members that
         // share the same event and limit type, or "one of them" means nothing.
         const groups = new Map();

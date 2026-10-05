@@ -29,6 +29,7 @@ import {
     packageWeeklyCapacity,
     offerWeeklyCapacity,
     isSeasonalOff,
+    bundledPairs,
 } from './catalog.js';
 import { createModel, addTerm, solveModel, varName } from './lp.js';
 import { trackPointsForPrice } from './spend-tracks.js';
@@ -153,6 +154,24 @@ function solveWeeklyPlan(highs, data, options = {}) {
     for (const [groupId, group] of groups) {
         if (Number.isFinite(group.cap)) {
             model.rows.push({ name: varName('grp', groupId), terms: group.terms, op: '<=', rhs: group.cap });
+        }
+    }
+    // A package that bundles others (Weekly Pass = the single weekly passes) excludes them: either it
+    // or the singles, never both.
+    for (const [bundleId, includedId] of bundledPairs(packages)) {
+        const bundle = packageVars.get(bundleId);
+        const included = packageVars.get(includedId);
+        const cap = bundle && included ? Math.max(bundle.capacity, included.capacity) : Infinity;
+        if (Number.isFinite(cap)) {
+            model.rows.push({
+                name: varName('bdl', bundleId, includedId),
+                terms: new Map([
+                    [bundle.name, bundle.scale],
+                    [included.name, included.scale],
+                ]),
+                op: '<=',
+                rhs: cap,
+            });
         }
     }
     for (const [id, { name, pkg }] of packageVars) {

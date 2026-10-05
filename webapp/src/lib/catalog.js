@@ -70,6 +70,25 @@ function isSeasonalOff(id, pkg, seasonalPass) {
     return seasonalPass !== undefined && Boolean(pkg.seasonal) && packageFamilyId(id, pkg) !== seasonalPass;
 }
 
+/**
+ * Pairs of (flattened) package ids that can't be owned together because the first one `bundles`
+ * (already includes) the second, e.g. the Weekly Pass and the single weekly passes.
+ * Returns `[[bundleId, includedId], ...]`.
+ */
+function bundledPairs(packages) {
+    const pairs = [];
+    for (const [id, pkg] of Object.entries(packages)) {
+        for (const included of pkg.bundles || []) {
+            for (const [otherId, other] of Object.entries(packages)) {
+                if (packageFamilyId(otherId, other) === included) {
+                    pairs.push([id, otherId]);
+                }
+            }
+        }
+    }
+    return pairs;
+}
+
 /** Every item used as an exchange-shop currency (diamonds, event coins, ...). */
 function currencyItemIds(exchangeShops) {
     return new Set(Object.values(exchangeShops || {}).map((shop) => shop.currency_item_id));
@@ -199,6 +218,7 @@ export {
     isPass,
     expandPackageFamilies,
     packageFamilyId,
+    bundledPairs,
     isSeasonalOff,
     currencyItemIds,
     packageWeeklyCapacity,

@@ -4009,7 +4009,14 @@
                 "timber_level_supply_ur": 21,
                 "herb_level_supply_ur": 21
             },
-            "delivery_days": 7
+            "delivery_days": 7,
+            "bundles": [
+                "era_of_revival_raven_essence_weekly_pass",
+                "weekly_hero_exp_pass",
+                "weekly_grain_pass",
+                "weekly_herb_pass",
+                "weekly_timber_pass"
+            ]
         },
         "weekly_special": {
             "name": {

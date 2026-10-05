@@ -51,7 +51,9 @@ There is ONE model (`valuation.js`): the weekly-budget MILP/LP (`planner.js`, Hi
 purchase limits at the user's weekly spend; worth = points ÷ the marginal points per Banknote, currencies at their
 shadow value. Spend Rewards re-solves it per tier total. Compare uses `acquire.js` (`solveNeeds`): an exact
 minimum-cost MILP over every conversion (open/pick/substitute/craft/exchange), weekday-aware (weekly limits reset on
-Monday, `delivery_days`), with `exclusive_group`s and random chests counting only what they guarantee.
+Monday, `delivery_days`), with `exclusive_group`s and random chests counting only what they guarantee. A package
+with `bundles` (the Weekly Pass, which includes the single weekly passes) is never bought together with the packages
+it bundles, in both models.
 
 ## Project Structure
 

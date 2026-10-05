@@ -337,6 +337,15 @@
                 "seasonal": {
                     "type": "boolean",
                     "description": "Only on sale some of the time (e.g. a seasonal pass such as the Gear Pass). Users tick whether it is on sale right now; packages without it are always available (within their limits)."
+                },
+                "bundles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/id"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "Packages (ids, or family ids for tier ladders) this package already includes, like the Weekly Pass includes the single weekly passes. It can not be owned together with any of them: the planners buy either this package or (some of) those, never both."
                 }
             }
         },
@@ -410,6 +419,15 @@
                 "seasonal": {
                     "type": "boolean",
                     "description": "Only on sale some of the time (e.g. a seasonal pass such as the Gear Pass). Users tick whether it is on sale right now; packages without it are always available (within their limits)."
+                },
+                "bundles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/id"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "Packages (ids, or family ids for tier ladders) this package already includes, like the Weekly Pass includes the single weekly passes. It can not be owned together with any of them: the planners buy either this package or (some of) those, never both."
                 }
             }
         },

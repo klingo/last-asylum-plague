@@ -20,7 +20,13 @@
  *
  * Pure module: callers pass an initialized HiGHS instance.
  */
-import { expandPackageFamilies, capacityInWindow, packageCapacityForDays, deliveryPeriod } from './catalog.js';
+import {
+    expandPackageFamilies,
+    capacityInWindow,
+    packageCapacityForDays,
+    deliveryPeriod,
+    bundledPairs,
+} from './catalog.js';
 import { createModel, addTerm, solveModel, varName } from './lp.js';
 
 const EPS = 1e-7;
@@ -241,6 +247,30 @@ function solveNeeds(highs, data, needs, options = {}) {
             model.rows.push({
                 name: varName('grp', groupId),
                 terms: new Map(members.map((m) => [m.name, 1])),
+                op: '<=',
+                rhs: cap,
+            });
+        }
+    }
+
+    // A package that bundles others (Weekly Pass = the single weekly passes): either it or them.
+    for (const [bundleId, includedId] of bundledPairs(packages)) {
+        const bundle = packageVars.get(bundleId);
+        const included = packageVars.get(includedId);
+        if (!bundle || !included) {
+            continue;
+        }
+        const cap = Math.max(
+            model.bounds.get(bundle.name)?.upper ?? Infinity,
+            model.bounds.get(included.name)?.upper ?? Infinity,
+        );
+        if (Number.isFinite(cap)) {
+            model.rows.push({
+                name: varName('bdl', bundleId, includedId),
+                terms: new Map([
+                    [bundle.name, 1],
+                    [included.name, 1],
+                ]),
                 op: '<=',
                 rhs: cap,
             });
