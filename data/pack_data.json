@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-04"
+        "last_updated": "2026-10-05"
     },
     "items": {
         "antitoxin": {
@@ -2585,6 +2585,31 @@
                     }
                 }
             }
+        },
+        "falcon_tower_pass": {
+            "name": {
+                "en": "Falcon Tower Pass",
+                "de": ""
+            },
+            "category": "weekly_pass",
+            "limit_type": "weekly",
+            "tiers": {
+                "1": {
+                    "price": 1999,
+                    "deal_percentage": 8159,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "lv4_alliance_chest": 1,
+                        "ur_hero_omni_shard": 55,
+                        "recruit_ticket": 30,
+                        "antitoxin_level_supply_ssr": 15,
+                        "diamonds": 2000,
+                        "skill_badge": 2500,
+                        "resource_supply_general": 105
+                    }
+                }
+            },
+            "seasonal": true
         },
         "gear_pass": {
             "name": {
