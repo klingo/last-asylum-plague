@@ -1237,7 +1237,7 @@
                 "en": "Reversal Power IV - Ranger",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -1247,7 +1247,7 @@
                 "en": "Reversal Power IV - Warlock",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
@@ -1257,7 +1257,7 @@
                 "en": "Reversal Power IV - Warrior",
                 "de": ""
             },
-            "category": "virtual",
+            "category": "epigraph",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             }
