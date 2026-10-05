@@ -247,9 +247,11 @@ button:disabled {
     cursor: pointer;
 }
 
-.checkbox-label input[type='checkbox'] {
+.checkbox-label input[type='checkbox'],
+.checkbox-label input[type='radio'] {
     width: 18px;
     height: 18px;
+    margin: 0;
     padding: 0;
     accent-color: var(--accent);
     cursor: pointer;
