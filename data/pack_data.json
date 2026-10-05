@@ -5103,6 +5103,96 @@
                     "resource_supply_sr": 20
                 }
             }
+        },
+        "artisans_request": {
+            "name": {
+                "en": "Artisan's Request",
+                "de": ""
+            },
+            "conversions": [
+                {
+                    "price": 99,
+                    "points": 100
+                },
+                {
+                    "price": 199,
+                    "points": 200
+                },
+                {
+                    "price": 399,
+                    "points": 400
+                },
+                {
+                    "price": 499,
+                    "points": 500
+                },
+                {
+                    "price": 1999,
+                    "points": 2000
+                },
+                {
+                    "price": 2499,
+                    "points": 2500
+                },
+                {
+                    "price": 4999,
+                    "points": 5000
+                },
+                {
+                    "price": 9999,
+                    "points": 10000
+                }
+            ],
+            "tiers": {
+                "1000": {
+                    "diamonds": 1000,
+                    "gearstone": 1000,
+                    "herb_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "3000": {
+                    "diamonds": 1000,
+                    "gearstone": 1000,
+                    "herb_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "5000": {
+                    "diamonds": 1000,
+                    "gearstone": 1000,
+                    "herb_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "10000": {
+                    "diamonds": 3000,
+                    "gearstone": 3000,
+                    "herb_level_supply_ssr": 15,
+                    "resource_supply_sr": 15
+                },
+                "20000": {
+                    "diamonds": 6000,
+                    "gearstone": 6000,
+                    "herb_level_supply_ssr": 30,
+                    "resource_supply_sr": 30
+                },
+                "30000": {
+                    "diamonds": 8000,
+                    "gearstone": 8000,
+                    "herb_level_supply_ssr": 40,
+                    "resource_supply_sr": 40
+                },
+                "50000": {
+                    "diamonds": 10000,
+                    "gearstone": 10000,
+                    "herb_level_supply_ssr": 50,
+                    "resource_supply_sr": 50
+                },
+                "70000": {
+                    "diamonds": 12000,
+                    "gearstone": 12000,
+                    "herb_level_supply_ssr": 60,
+                    "resource_supply_sr": 60
+                }
+            }
         }
     }
 }
