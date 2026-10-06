@@ -556,20 +556,6 @@ tbody tr:hover {
     color: var(--text-dim);
 }
 
-.pill--exchange,
-.pill--exchange_offer {
-    color: var(--accent);
-    border-color: var(--accent);
-}
-
-.pill--conversion {
-    color: var(--text-dim);
-}
-.pill--bonus_tier {
-    color: var(--warn);
-    border-color: var(--warn);
-}
-
 .text-dim {
     color: var(--text-dim);
 }
@@ -705,10 +691,166 @@ tbody tr:hover {
 .ranking-grid {
     display: grid;
     grid-template-columns:
-        50px minmax(160px, 1.5fr) 110px 190px minmax(70px, 0.6fr) minmax(90px, 0.7fr) 100px minmax(80px, 0.6fr)
-        90px 80px;
+        50px minmax(160px, 1.5fr) 110px 190px minmax(70px, 0.6fr) minmax(110px, 0.8fr) minmax(80px, 0.6fr) 90px
+        80px;
     width: 100%;
     font-size: 0.9rem;
+}
+
+.events-shop-grid {
+    grid-template-columns: minmax(260px, 2.5fr) minmax(90px, 0.7fr) minmax(90px, 0.8fr) 90px 90px;
+}
+
+.events-steps-grid {
+    grid-template-columns: minmax(170px, 1fr) minmax(110px, 0.8fr) minmax(110px, 0.8fr) 90px minmax(220px, 2fr);
+}
+
+/* A row the plan buys (Events page): tinted, with an accent bar on its first cell. */
+.ranking-grid__row--buy > .ranking-grid__cell {
+    background: color-mix(in srgb, var(--good) 9%, transparent);
+}
+
+.ranking-grid__row--buy > .ranking-grid__cell:first-child {
+    box-shadow: inset 3px 0 0 var(--good);
+}
+
+.buy-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--good);
+    color: var(--bg);
+    font-weight: 700;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.cell-list {
+    margin: 0;
+    padding-left: 18px;
+}
+
+/* "Your plan" on the Events page: one tile per step. */
+.plan-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 12px 0 24px;
+}
+
+.plan-tile {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    flex: 1 1 auto;
+}
+
+.plan-tile--wide {
+    flex-basis: 100%;
+}
+
+.plan-tile__label {
+    color: var(--text-dim);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+}
+
+.plan-tile__total {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    text-align: right;
+}
+
+.plan-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.plan-list li {
+    white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 3px 0;
+}
+
+.plan-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+}
+
+/* "Everything you get": one item per line — name, quantity, worth. */
+.item-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 640px;
+}
+
+.item-list li {
+    display: grid;
+    grid-template-columns: 1fr auto 120px;
+    align-items: center;
+    gap: 16px;
+    padding: 3px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.item-list li > :not(:first-child) {
+    text-align: right;
+}
+
+/* The total lines up under the list. */
+.item-list + .plan-tile__total {
+    max-width: 640px;
+}
+
+.item-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip {
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+.chip[data-tooltip] {
+    cursor: help;
+}
+
+.chip--on {
+    border-color: var(--good);
+    color: var(--good);
+}
+
+.text-warn {
+    color: var(--warn);
+}
+
+/* Diamond amounts (gold is reserved for Banknotes). */
+.text-diamond {
+    color: var(--accent);
 }
 
 .spend-reward-grid {

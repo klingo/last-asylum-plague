@@ -63,12 +63,13 @@ function hideTooltip() {
 }
 
 /**
- * Wires hover/focus/dismiss behavior for every `.info-icon[data-tooltip]` under `root`. Safe
+ * Wires hover/focus/dismiss behavior for every `[data-tooltip]` element under `root` (info icons,
+ * pills, ...). Safe
  * to call repeatedly (e.g. after re-rendering a table), since it only ever touches whatever
  * matching elements currently exist in the DOM.
  */
 function enableInfoTooltips(root) {
-    root.querySelectorAll('.info-icon[data-tooltip]').forEach((trigger) => {
+    root.querySelectorAll('[data-tooltip]').forEach((trigger) => {
         trigger.addEventListener('mouseenter', () => showTooltip(trigger));
         trigger.addEventListener('mouseleave', hideTooltip);
         trigger.addEventListener('focus', () => showTooltip(trigger));

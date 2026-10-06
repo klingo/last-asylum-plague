@@ -95,6 +95,7 @@ export {
     packageDisplayName,
     itemDisplayName,
     offerDisplayName,
+    bundleLabel,
     purchaseType,
     todayWeekdayIndex,
     conversionLabel,

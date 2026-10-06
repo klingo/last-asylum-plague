@@ -7,7 +7,7 @@
  *              every package / exchange offer within its weekly limit (catalog.js)
  *              tier N+1 of a package ladder only as often as tier N
  *              coins/diamonds spent <= coins/diamonds received (per currency)
- *              a shop bonus tier only once its spend threshold is reached
+ *              a shop bonus tier / offer unlock only once its progress points are reached
  *
  * Items are worth their points (item-values.js); currencies (diamonds, event coins) have no
  * points of their own — they are only worth what the offers they buy are worth, capped by those
@@ -69,7 +69,9 @@ function currencyFlows(contents, items, values, currencyIds, out = new Map(), fa
  * `includePasses`, `includeExclusives`, `ignored` (Set of item ids forced to 0 points),
  * `weights` (personal item weights), `basePoints` (point-fit.js; fitted here if not given),
  * `activeTrackIds` (Set of spend reward tracks running this week), `seasonalPass` (family id of the
- * seasonal pass on sale; null = none, undefined = all).
+ * seasonal pass on sale; null = none, undefined = all), `eventSpend` (`{ eventId, min, max }`: Banknotes
+ * spent on that event's packages, for the Events page's what-if steps), `exceedEventPackLimits` (Set of event
+ * ids whose packages may be bought without their purchase limit).
  */
 function solveWeeklyPlan(highs, data, options = {}) {
     const {
@@ -82,6 +84,8 @@ function solveWeeklyPlan(highs, data, options = {}) {
         basePoints = fitItemPoints(data).points,
         activeTrackIds = new Set(),
         seasonalPass = undefined,
+        eventSpend = null,
+        exceedEventPackLimits = null,
     } = options;
     const items = data.items || {};
     const packages = expandPackageFamilies(data.packages || {});
@@ -110,9 +114,13 @@ function solveWeeklyPlan(highs, data, options = {}) {
     const packageVars = new Map();
     const offerVars = new Map();
     const tierVars = new Map();
+    const pointPurchaseVars = new Map(); // name -> shopId
 
     for (const [id, pkg] of Object.entries(packages)) {
-        const capacity = packageWeeklyCapacity(pkg, availability);
+        let capacity = packageWeeklyCapacity(pkg, availability);
+        if (capacity > 0 && pkg.event_id && exceedEventPackLimits?.has(pkg.event_id)) {
+            capacity = Infinity;
+        }
         // Plain diamond top-ups are the worst deal in the game (diamonds only feed the VIP shop);
         // left out so leftover budget isn't "filled" with them.
         if (!(capacity > 0) || !(pkg.price > 0) || pkg.category === 'diamond' || isSeasonalOff(id, pkg, seasonalPass)) {
@@ -138,6 +146,20 @@ function solveWeeklyPlan(highs, data, options = {}) {
         }
         model.bounds.set(name, { upper: capacity / scale });
         packageVars.set(id, { name, pkg, points, flows, capacity, scale });
+    }
+    if (eventSpend) {
+        const terms = new Map();
+        for (const { name, pkg, scale } of packageVars.values()) {
+            if (pkg.event_id === eventSpend.eventId) {
+                terms.set(name, pkg.price * scale);
+            }
+        }
+        if (eventSpend.min != null) {
+            model.rows.push({ name: 'event_min', terms, op: '>=', rhs: eventSpend.min });
+        }
+        if (eventSpend.max != null) {
+            model.rows.push({ name: 'event_max', terms: new Map(terms), op: '<=', rhs: eventSpend.max });
+        }
     }
     // Mutually exclusive packages (calendar packs): only one of each group.
     const groups = new Map();
@@ -193,7 +215,10 @@ function solveWeeklyPlan(highs, data, options = {}) {
         if (shop.event_id && !activeEventIds.has(shop.event_id)) {
             continue;
         }
-        const shopSpend = new Map();
+        // Progress points this run (bonus tiers, offer unlocks): `points_per_currency` per coin spent
+        // here, plus any `point_purchase` (Surprise Encounter: 100 diamonds = 10 points).
+        const perCoin = shop.points_per_currency ?? 1;
+        const offerProgress = []; // [name, points earned per purchase, unlock_points]
         for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
             const capacity = offerWeeklyCapacity(offer, shop, availability);
             const unit = values.get(offer.item_id)?.value;
@@ -203,28 +228,67 @@ function solveWeeklyPlan(highs, data, options = {}) {
             const name = varName('o', shopId, offerKey);
             addTerm(model.objective, name, unit * offer.quantity);
             addTerm(balance(shop.currency_item_id), name, offer.currency_cost);
-            addTerm(shopSpend, name, offer.currency_cost);
+            offerProgress.push([name, perCoin * offer.currency_cost, offer.unlock_points || 0]);
             model.bounds.set(name, { upper: capacity });
             offerVars.set(name, { shopId, offerKey, offer, points: unit * offer.quantity });
         }
-        for (const [threshold, reward] of Object.entries(shop.bonus_tiers || {})) {
-            if (shopSpend.size === 0) {
-                break;
+        if (offerProgress.length === 0) {
+            continue;
+        }
+        const extraProgress = new Map();
+        if (shop.point_purchase) {
+            const name = varName('pp', shopId);
+            addTerm(balance(shop.point_purchase.currency_item_id), name, shop.point_purchase.currency_cost);
+            addTerm(extraProgress, name, shop.point_purchase.points);
+            pointPurchaseVars.set(name, shopId);
+        }
+        // Row "threshold · binary <= progress points" for a bonus tier / unlock; `counts` picks the
+        // offers whose spend counts towards it.
+        const progressRow = (rowName, binaryName, threshold, counts) => {
+            const terms = new Map();
+            for (const [name, points, unlockPoints] of offerProgress) {
+                if (counts(unlockPoints)) {
+                    addTerm(terms, name, -points);
+                }
             }
+            for (const [name, points] of extraProgress) {
+                addTerm(terms, name, -points);
+            }
+            terms.set(binaryName, threshold);
+            model.rows.push({ name: rowName, terms, op: '<=', rhs: 0 });
+            model.binaries.add(binaryName);
+        };
+        for (const [threshold, reward] of Object.entries(shop.bonus_tiers || {})) {
             const name = varName('b', shopId, threshold);
             const points = bundleValue({ contains: reward }, values);
             addTerm(model.objective, name, points.value);
             for (const [currencyId, qty] of currencyFlows(reward, items, values, currencyIds)) {
                 addTerm(balance(currencyId), name, -qty);
             }
-            const terms = new Map(shopSpend);
-            for (const key of terms.keys()) {
-                terms.set(key, -terms.get(key));
-            }
-            terms.set(name, Number(threshold));
-            model.rows.push({ name: varName('bt', shopId, threshold), terms, op: '<=', rhs: 0 });
-            model.binaries.add(name);
+            progressRow(varName('bt', shopId, threshold), name, Number(threshold), () => true);
             tierVars.set(name, { shopId, threshold: Number(threshold), reward, points: points.value });
+        }
+        // Offer unlocks: an offer needs `unlock_points` earned on the offers below it (it can't unlock
+        // itself), then it's open up to its limit.
+        for (const threshold of new Set(offerProgress.map(([, , unlockPoints]) => unlockPoints))) {
+            if (!(threshold > 0)) {
+                continue;
+            }
+            const unlock = varName('u', shopId, String(threshold));
+            progressRow(varName('ut', shopId, String(threshold)), unlock, threshold, (points) => points < threshold);
+            for (const [name, , unlockPoints] of offerProgress) {
+                if (unlockPoints === threshold) {
+                    model.rows.push({
+                        name: varName('ul', name),
+                        terms: new Map([
+                            [name, 1],
+                            [unlock, -model.bounds.get(name).upper],
+                        ]),
+                        op: '<=',
+                        rhs: 0,
+                    });
+                }
+            }
         }
     }
 
@@ -258,7 +322,9 @@ function solveWeeklyPlan(highs, data, options = {}) {
     model.rows.push(budgetRow, ...balanceRows.values());
 
     // 1) Integer plan: whole purchases.
-    for (const name of [...packageVars.values()].map((v) => v.name).concat([...offerVars.keys()])) {
+    for (const name of [...packageVars.values()]
+        .map((v) => v.name)
+        .concat([...offerVars.keys()], [...pointPurchaseVars.keys()])) {
         model.integers.add(name);
     }
     const plan = solveModel(highs, model);
@@ -295,6 +361,10 @@ function solveWeeklyPlan(highs, data, options = {}) {
             exchanges.push({ ...v, count, coins: count * v.offer.currency_cost, totalPoints: count * v.points });
         }
     }
+    // Progress points bought outside the shop offers (Surprise Encounters).
+    const pointPurchases = [...pointPurchaseVars]
+        .map(([name, shopId]) => ({ shopId, count: Math.round(plan.values.get(name) || 0) }))
+        .filter((p) => p.count > 0);
     const tiersReached = [...tierVars].filter(([name]) => (plan.values.get(name) || 0) > 0.5).map(([, v]) => v);
     const trackTiersReached = [...trackTierVars]
         .filter(([name]) => (plan.values.get(name) || 0) > 0.5)
@@ -334,6 +404,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         purchases,
         exchanges,
         tiersReached,
+        pointPurchases,
         trackTiersReached,
         currencies,
         /** Banknote worth of one unit (currencies: their marginal value), or null. */

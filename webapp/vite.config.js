@@ -13,6 +13,7 @@ export default defineConfig({
             input: {
                 welcome: resolve(__dirname, 'index.html'),
                 rankings: resolve(__dirname, 'rankings.html'),
+                events: resolve(__dirname, 'events.html'),
                 items: resolve(__dirname, 'items.html'),
                 choices: resolve(__dirname, 'choices.html'),
                 compare: resolve(__dirname, 'compare.html'),

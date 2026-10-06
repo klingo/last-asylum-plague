@@ -43,8 +43,8 @@ best target, `value_equivalent` = sum of the listed items, `reversible` crafting
 ways, `crafted_from` recipes cap an item at its ingredients and weakly tie it to them). `fitSensitivity` (leave one
 pack family out) flags values that hinge on one pack. The user's item priorities (`settings.js`: Don't care / Low /
 Normal / High = 0 / 50 / 100 / 150 %) multiply values after the fit (`weights` in `item-values.js`); VIP points,
-alliance chests, ... start at Don't care — they stay in the fit (the deal % counts them). Moon Coins, Star Moon
-Sigils and Surprise Emblems are deliberately unmodelled (`UNMODELLED_ITEMS`). Currencies (diamonds, event coins)
+alliance chests, ... start at Don't care — they stay in the fit (the deal % counts them). Moon Coins and Star Moon
+Sigils are deliberately unmodelled (`UNMODELLED_ITEMS`). Currencies (diamonds, event coins)
 have no points of their own — they're worth only what their shop offers buy.
 
 There is ONE model (`valuation.js`): the weekly-budget MILP/LP (`planner.js`, HiGHS) maximizing points under
@@ -53,7 +53,10 @@ shadow value. Spend Rewards re-solves it per tier total. Compare uses `acquire.j
 minimum-cost MILP over every conversion (open/pick/substitute/craft/exchange), weekday-aware (weekly limits reset on
 Monday, `delivery_days`), with `exclusive_group`s and random chests counting only what they guarantee. A package
 with `bundles` (the Weekly Pass, which includes the single weekly passes) is never bought together with the packages
-it bundles, in both models.
+it bundles, in both models. Shop progress points (`points_per_currency` per coin spent + `point_purchase`, e.g. the
+Surprise Encounter's Encounter Points) gate `bonus_tiers` and offer `unlock_points` in the weekly plan only (not in
+Compare). The Ranking shows only Banknote purchases; the Events page shows an event's slice of the same plan (packs,
+coins, shop offers) plus what-if steps (`eventSpend` option of the planner).
 
 ## Project Structure
 

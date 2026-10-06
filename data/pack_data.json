@@ -4852,231 +4852,264 @@
                     "currency_cost": 40,
                     "quantity": 1,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 500
                 },
                 "r_raven_essence": {
                     "item_id": "raven_essence",
                     "currency_cost": 40,
                     "quantity": 40,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 500
                 },
                 "r_skill_badge": {
                     "item_id": "skill_badge",
                     "currency_cost": 40,
                     "quantity": 6400,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 500
                 },
                 "r_speedup": {
                     "item_id": "speedup",
                     "currency_cost": 40,
                     "quantity": 1920,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 500
                 },
                 "sr_antitoxin_level_supply_ssr": {
                     "item_id": "antitoxin_level_supply_ssr",
                     "currency_cost": 100,
                     "quantity": 80,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "sr_curio_chest_ur": {
                     "item_id": "curio_chest_ur",
                     "currency_cost": 100,
                     "quantity": 2,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "sr_raven_essence": {
                     "item_id": "raven_essence",
                     "currency_cost": 100,
                     "quantity": 100,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "sr_raven_fruit": {
                     "item_id": "raven_fruit",
                     "currency_cost": 100,
                     "quantity": 640000,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "sr_resource_supply_ur": {
                     "item_id": "resource_supply_ur",
                     "currency_cost": 100,
                     "quantity": 40,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "sr_skill_badge": {
                     "item_id": "skill_badge",
                     "currency_cost": 100,
                     "quantity": 16000,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "sr_speedup": {
                     "item_id": "speedup",
                     "currency_cost": 100,
                     "quantity": 4800,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "sr_study_scroll": {
                     "item_id": "study_scroll",
                     "currency_cost": 100,
                     "quantity": 480,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "sr_ur_hero_omni_shard": {
                     "item_id": "ur_hero_omni_shard",
                     "currency_cost": 100,
                     "quantity": 24,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 1000
                 },
                 "ssr_antitoxin_level_supply_ssr": {
                     "item_id": "antitoxin_level_supply_ssr",
                     "currency_cost": 200,
                     "quantity": 160,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ssr_curio_chest_ur": {
                     "item_id": "curio_chest_ur",
                     "currency_cost": 200,
                     "quantity": 4,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ssr_lv5_raven_gear_choice_chest": {
                     "item_id": "lv5_raven_gear_choice_chest",
                     "currency_cost": 200,
                     "quantity": 2,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 3500
                 },
                 "ssr_raven_essence": {
                     "item_id": "raven_essence",
                     "currency_cost": 200,
                     "quantity": 200,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ssr_raven_fruit": {
                     "item_id": "raven_fruit",
                     "currency_cost": 200,
                     "quantity": 1280000,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ssr_resource_supply_ur": {
                     "item_id": "resource_supply_ur",
                     "currency_cost": 200,
                     "quantity": 80,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ssr_skill_badge": {
                     "item_id": "skill_badge",
                     "currency_cost": 200,
                     "quantity": 32000,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ssr_speedup": {
                     "item_id": "speedup",
                     "currency_cost": 200,
                     "quantity": 9600,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ssr_study_scroll": {
                     "item_id": "study_scroll",
                     "currency_cost": 200,
                     "quantity": 960,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ssr_ur_hero_omni_shard": {
                     "item_id": "ur_hero_omni_shard",
                     "currency_cost": 200,
                     "quantity": 48,
                     "purchase_limit": 1,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 2000
                 },
                 "ur_antitoxin_level_supply_ssr": {
                     "item_id": "antitoxin_level_supply_ssr",
                     "currency_cost": 500,
                     "quantity": 400,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 },
                 "ur_curio_chest_ur": {
                     "item_id": "curio_chest_ur",
                     "currency_cost": 500,
                     "quantity": 10,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 },
                 "ur_lv5_raven_gear_choice_chest": {
                     "item_id": "lv5_raven_gear_choice_chest",
                     "currency_cost": 500,
                     "quantity": 5,
                     "purchase_limit": 2,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 5000
                 },
                 "ur_raven_essence": {
                     "item_id": "raven_essence",
                     "currency_cost": 500,
                     "quantity": 500,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 },
                 "ur_raven_fruit": {
                     "item_id": "raven_fruit",
                     "currency_cost": 500,
                     "quantity": 3200000,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 },
                 "ur_resource_supply_ur": {
                     "item_id": "resource_supply_ur",
                     "currency_cost": 500,
                     "quantity": 200,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 },
                 "ur_skill_badge": {
                     "item_id": "skill_badge",
                     "currency_cost": 500,
                     "quantity": 80000,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 },
                 "ur_speedup": {
                     "item_id": "speedup",
                     "currency_cost": 500,
                     "quantity": 24000,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 },
                 "ur_study_scroll": {
                     "item_id": "study_scroll",
                     "currency_cost": 500,
                     "quantity": 2400,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 },
                 "ur_ur_hero_omni_shard": {
                     "item_id": "ur_hero_omni_shard",
                     "currency_cost": 500,
                     "quantity": 120,
                     "purchase_limit": 3,
-                    "limit_type": "weekly"
+                    "limit_type": "weekly",
+                    "unlock_points": 4000
                 }
             },
             "bonus_tiers": {
@@ -5098,6 +5131,12 @@
                 "10000": {
                     "ur_hero_omni_shard": 20
                 }
+            },
+            "points_per_currency": 5,
+            "point_purchase": {
+                "currency_item_id": "diamonds",
+                "currency_cost": 100,
+                "points": 10
             }
         },
         "vip_shop": {
@@ -5312,7 +5351,8 @@
                 "en": "Surprise Encounter",
                 "de": ""
             },
-            "category": "special_event"
+            "category": "special_event",
+            "exceedable_pack_limits": true
         },
         "weekly_special": {
             "name": {

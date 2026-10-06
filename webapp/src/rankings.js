@@ -4,20 +4,12 @@ import { loadPackData } from './lib/data';
 import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
-import { packageWeeklyCapacity, offerWeeklyCapacity, isSeasonalOff } from './lib/catalog.js';
-import { packageDisplayName, itemDisplayName, offerDisplayName, purchaseType } from './lib/labels';
+import { packageWeeklyCapacity, isSeasonalOff } from './lib/catalog.js';
+import { packageDisplayName, itemDisplayName, purchaseType } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
 import { requiresIconHtml, infoIconHtml } from './lib/requires-tooltip';
-import {
-    t,
-    getLocale,
-    localizedName,
-    categoryLabel,
-    sourceTypeLabel,
-    formatDays,
-    applyStaticTranslations,
-} from './lib/i18n';
+import { t, getLocale, categoryLabel, sourceTypeLabel, formatDays, applyStaticTranslations } from './lib/i18n';
 import { formatThousands, formatSignificant, computeTieFlags } from './lib/format';
 import { ratioBarHtml } from './lib/ratio-bar';
 
@@ -25,7 +17,6 @@ renderNav('rankings');
 applyStaticTranslations();
 
 const searchInput = document.getElementById('search-input');
-const showVipShop = document.getElementById('show-vip-shop');
 const rankingMeta = document.getElementById('ranking-meta');
 const rankingTable = document.getElementById('ranking-table');
 const rankingEmpty = document.getElementById('ranking-empty');
@@ -39,50 +30,41 @@ const expandedKeys = new Set();
 const gold = (text) => `<span class="text-gold">${text}</span> ${banknoteIconHtml()}`;
 
 /**
- * How many of an entry the best plan for your weekly spend buys: "×N", "1 / month" for the monthly
- * pass (the plan counts 7/30 of it per week), "doesn't fit" for a good deal (ratio clearly above 1.0) the
- * plan leaves out because whole purchases don't fit the exact spend, or ''.
+ * "Buy" cell: how many the best plan for your weekly spend buys out of what's on sale this week,
+ * e.g. "3 / 7", "1 / month" (monthly pass), "2 / ∞" (no limit). Lifetime-limited packs aren't part of
+ * the weekly plan: "once" / "3× total". "doesn't fit" marks a good deal (ratio clearly above 1.0) the
+ * plan leaves out because whole purchases don't fit your exact spend.
  */
-function buyHtml(count, entry) {
-    if (!(count > 1e-6)) {
-        return entry.rank && entry.ratio > 1.005 ? `<span class="text-dim">${t('rankings.buyNoFit')}</span>` : '';
-    }
-    const whole = Math.round(count);
-    const text = Math.abs(count - whole) < 1e-6 ? `×${formatThousands(whole)}` : t('rankings.buyMonthly');
-    return `<span class="text-good">${text}</span>`;
-}
-
-/** How much can go into an entry per week: "once", "unlimited" or an amount. */
-function perWeekHtml(capacity, limitType, amountHtml) {
-    if (limitType === 'event' || (limitType === 'lifetime' && capacity === 1)) {
-        return t('rankings.once');
-    }
+function buyHtml(entry) {
+    const { planned, capacity, limitType } = entry;
     if (limitType === 'lifetime') {
-        return t('rankings.lifetimeTotal', { count: formatThousands(capacity) });
+        return capacity === 1 ? t('rankings.once') : t('rankings.lifetimeTotal', { count: formatThousands(capacity) });
     }
-    if (!Number.isFinite(capacity)) {
-        return t('common.unlimited');
+    const count = limitType === 'monthly' ? Math.round(planned / capacity) : Math.round(planned);
+    const countHtml = count > 0 ? `<span class="buy-badge">×${formatThousands(count)}</span>` : '0';
+    let limit = Number.isFinite(capacity) ? formatThousands(capacity) : '∞';
+    if (limitType === 'monthly') {
+        limit = t('rankings.perMonth');
     }
-    return amountHtml(capacity);
+    if (count === 0 && entry.rank && entry.ratio > 1.005) {
+        return `<span class="text-dim">${t('rankings.buyNoFit')}</span>`;
+    }
+    return `${countHtml}&nbsp;<span class="text-dim">/&nbsp;${limit}</span>`;
 }
 
 /**
- * Every rankable purchase: packages, plus exchange offers and shop bonus tiers when enabled.
- * Only complete, purchasable entries get a rank; bonus tiers come free with spending coins and
- * entries containing items of unknown worth can't be compared, so both are listed after them.
+ * Every package and pass on sale this week, ranked by ratio. Entries containing items of unknown
+ * worth can't be compared, so they're listed after the ranking. Exchange-shop offers live on the
+ * Events page.
  */
 function buildEntries() {
     const locale = getLocale();
-    // Everything on sale this week: packages of switched-off events are hidden; once-only packs are
-    // listed (as "once") even though they don't count toward the weekly market.
+    // Everything on sale this week: packages of switched-off events are hidden; lifetime-limited packs
+    // are listed even though they don't count toward the weekly plan.
     const activeEventIds = new Set(settings.activeEvents);
     const capacityRules = { activeEventIds, includePasses: true, includeExclusives: true };
+    const planned = new Map(valuation.plan.purchases.map((p) => [p.id, p.count]));
     const result = [];
-    const planned = new Map(valuation.plan.purchases.map((p) => [`package:${p.id}`, p.count]));
-    for (const e of valuation.plan.exchanges) {
-        planned.set(`exchange:${e.shopId}:${e.offerKey}`, e.count);
-    }
-
     for (const [id, pkg] of Object.entries(data.packages)) {
         if (
             !(pkg.price > 0) ||
@@ -92,7 +74,6 @@ function buildEntries() {
             continue;
         }
         const b = valuation.bundle(pkg, pkg.price);
-        const capacity = packageWeeklyCapacity(pkg, capacityRules);
         result.push({
             key: `package:${id}`,
             section: b.incomplete ? 'unknown' : 'ranked',
@@ -102,88 +83,24 @@ function buildEntries() {
             requires: pkg.requires,
             availableDays: pkg.available_days,
             priceHtml: gold(formatThousands(pkg.price)),
-            perWeekHtml: perWeekHtml(capacity, pkg.limit_type, (n) => gold(formatThousands(n * pkg.price, 0))),
+            planned: planned.get(id) || 0,
+            capacity: packageWeeklyCapacity(pkg, capacityRules),
+            limitType: pkg.limit_type,
             worth: b.worth,
             ratio: b.ratio,
             parts: b.parts,
         });
     }
 
-    // Exchange offers and shop bonus tiers: the VIP Shop always, event shops while their event is ticked.
-    for (const [shopId, shop] of Object.entries(data.exchange_shops || {})) {
-        if (shop.event_id && !activeEventIds.has(shop.event_id)) {
-            continue;
-        }
-        const coinWorth = valuation.worth(shop.currency_item_id);
-        if (!(coinWorth > 0)) {
-            continue; // currency without a worth (or in surplus): nothing to compare against
-        }
-        const coinName = itemDisplayName(data.items, shop.currency_item_id, locale);
-        for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
-            const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
-            const paid = offer.currency_cost * coinWorth;
-            const capacity = offerWeeklyCapacity(offer, shop);
-            result.push({
-                key: `exchange:${shopId}:${offerKey}`,
-                section: b.incomplete ? 'unknown' : 'ranked',
-                type: 'exchange_offer',
-                category: shop.event_id ? 'event_exchange' : 'exchange',
-                vipShop: !shop.event_id,
-                categoryName: localizedName(shop.name, locale),
-                name: offerDisplayName(shop, offer, data.items, locale),
-                priceHtml: `${formatThousands(offer.currency_cost)} ${coinName}`,
-                perWeekHtml: perWeekHtml(
-                    capacity,
-                    offer.limit_type,
-                    (n) => `${formatThousands(n * offer.currency_cost, 0)} ${coinName}`,
-                ),
-                worth: b.worth,
-                ratio: b.worth / paid,
-                parts: b.parts,
-            });
-        }
-        let previous = 0;
-        for (const threshold of Object.keys(shop.bonus_tiers || {})
-            .map(Number)
-            .sort((a, b) => a - b)) {
-            const step = threshold - previous;
-            previous = threshold;
-            const b = valuation.bundle({ contains: shop.bonus_tiers[String(threshold)] }, 0);
-            result.push({
-                key: `bonus:${shopId}:${threshold}`,
-                section: 'bonus',
-                type: 'bonus_tier',
-                category: 'event_exchange',
-                categoryName: localizedName(shop.name, locale),
-                name: `${localizedName(shop.name, locale)} - ${t('rankings.bonusTierName', { threshold: formatThousands(threshold) })}`,
-                priceHtml: `${formatThousands(step)} ${coinName}`,
-                perWeekHtml: t('common.dash'),
-                worth: b.worth,
-                // Bonus on top of what the step's coins already buy.
-                ratio: b.worth / (step * coinWorth),
-                parts: b.parts,
-            });
-        }
-    }
-
     const ranked = result
         .filter((entry) => entry.section === 'ranked' && Number.isFinite(entry.ratio))
         .sort((a, b) => b.ratio - a.ratio)
         .map((entry, index) => ({ rank: index + 1, ...entry }));
-    const others = (section) =>
-        result
-            .filter((entry) => entry.section === section)
-            .sort((a, b) => (b.ratio || 0) - (a.ratio || 0) || a.name.localeCompare(b.name));
-    return [...ranked, ...others('bonus'), ...others('unknown')].map((entry) => ({
-        ...entry,
-        buy: planned.get(entry.key) || 0,
-    }));
+    const unknown = result.filter((entry) => entry.section === 'unknown').sort((a, b) => a.name.localeCompare(b.name));
+    return [...ranked, ...unknown];
 }
 
 function ratioHtml(entry, maxRatio) {
-    if (entry.section === 'bonus') {
-        return `+${formatThousands(entry.ratio * 100, 1)}%`;
-    }
     if (entry.section === 'unknown') {
         return t('common.dash');
     }
@@ -203,7 +120,6 @@ function breakdownRowsHtml(entry) {
                     <div class="ranking-grid__cell"></div>
                     <div class="ranking-grid__cell">${categoryLabel(data.items[part.id]?.category)}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num">${formatSignificant(valuation.points(part.id)) ?? t('common.unknown')}</div>
-                    <div class="ranking-grid__cell"></div>
                     <div class="ranking-grid__cell"></div>
                     <div class="ranking-grid__cell ranking-grid__cell--num">${gold(formatSignificant(part.worth))}</div>
                     <div class="ranking-grid__cell">${valuation.worth(part.id) === null ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''}</div>
@@ -230,14 +146,13 @@ function renderTable(filtered) {
                     : '';
             lastSection = entry.section;
             return `${heading}
-                <div class="ranking-grid__row" role="row">
+                <div class="ranking-grid__row${entry.planned > 1e-6 ? ' ranking-grid__row--buy' : ''}" role="row">
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.rank && !tieFlags[index] ? entry.rank : ''}</div>
                     <div class="ranking-grid__cell" role="cell">${entry.name}${requiresIconHtml(entry.requires, data.packages, data.items, getLocale())}</div>
                     <div class="ranking-grid__cell" role="cell"><span class="pill pill--${entry.type}">${sourceTypeLabel(entry.type)}</span></div>
-                    <div class="ranking-grid__cell" role="cell">${entry.categoryName ?? categoryLabel(entry.category)}${entry.availableDays?.length ? infoIconHtml(formatDays(entry.availableDays)) : ''}</div>
+                    <div class="ranking-grid__cell" role="cell">${categoryLabel(entry.category)}${entry.availableDays?.length ? infoIconHtml(formatDays(entry.availableDays)) : ''}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.priceHtml}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${entry.perWeekHtml}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${buyHtml(entry.buy, entry)}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${buyHtml(entry)}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(entry.worth, 0))}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${ratioHtml(entry, maxRatio)}</div>
                     <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-entry-key="${entry.key}">${expandedKeys.has(entry.key) ? t('common.hide') : t('common.details')}</button></div>
@@ -249,7 +164,6 @@ function renderTable(filtered) {
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header">${t('rankings.table.category')}</div>
                         <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('rankings.table.pointsEach')}</div>
-                        <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
                         <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num">${t('rankings.table.worth')}</div>
                         <div class="ranking-grid__cell ranking-grid__cell--header"></div>
@@ -267,7 +181,6 @@ function renderTable(filtered) {
             <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader">${t('rankings.table.type')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header" role="columnheader">${t('rankings.table.category')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.price')}</div>
-            <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.perWeek')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.buy')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.worth')}</div>
             <div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${t('rankings.table.ratio')}</div>
@@ -299,12 +212,7 @@ function applyFilters() {
     const search = searchInput.value.trim().toLowerCase();
     renderTable(
         entries.filter(
-            (entry) =>
-                (showVipShop.checked || !entry.vipShop) &&
-                (!search ||
-                    `${entry.name} ${entry.categoryName ?? categoryLabel(entry.category)}`
-                        .toLowerCase()
-                        .includes(search)),
+            (entry) => !search || `${entry.name} ${categoryLabel(entry.category)}`.toLowerCase().includes(search),
         ),
     );
 }
@@ -317,7 +225,6 @@ function rebuild() {
         purchases: formatThousands(plan.purchases.length),
         spent: formatThousands(plan.spent, 0),
         budget: formatThousands(plan.budget, 0),
-        exchanges: formatThousands(plan.exchanges.length),
     })} ${t('rankings.meta', { count: rankedCount })} ${modelSummaryText(valuation)}`;
     applyFilters();
 }
@@ -339,7 +246,6 @@ async function init() {
     });
     settings = panel.getSettings();
     searchInput.addEventListener('input', applyFilters);
-    showVipShop.addEventListener('change', applyFilters);
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
         rebuild();

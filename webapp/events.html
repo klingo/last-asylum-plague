@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.events"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="events.heading"></h2>
+                <p class="text-dim" data-i18n="events.description"></p>
+                <div id="valuation-panel"></div>
+                <div class="form-row">
+                    <div class="field field--wide">
+                        <label for="event-select" data-i18n="events.eventLabel"></label>
+                        <select id="event-select"></select>
+                    </div>
+                    <div class="field">
+                        <span class="field-label" data-i18n="events.optionsLabel"></span>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="exceed-limits" />
+                                <span data-i18n="events.exceedLimits"></span>
+                                <span id="exceed-limits-info"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <p class="footnote" data-i18n="events.tickHint"></p>
+            </section>
+
+            <section class="card" id="event-prompt-card">
+                <div class="empty-state" data-i18n="events.selectPrompt"></div>
+            </section>
+
+            <section class="card" id="plan-card" hidden>
+                <h3 data-i18n="events.planHeading"></h3>
+                <p class="text-warn" id="exceed-note" hidden data-i18n="events.exceedNote"></p>
+                <div id="event-summary" class="plan-tiles"></div>
+                <div id="shop-section" hidden>
+                    <h3 id="shop-heading"></h3>
+                    <div class="table-wrap">
+                        <div id="shop-table" class="ranking-grid events-shop-grid" role="table"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" id="steps-card" hidden>
+                <h3 data-i18n="events.stepsHeading"></h3>
+                <div class="table-wrap">
+                    <div id="steps-table" class="ranking-grid events-steps-grid" role="table"></div>
+                </div>
+                <p class="footnote" id="steps-note"></p>
+            </section>
+        </main>
+        <footer class="app-footer" data-i18n="footer.events"></footer>
+        <div id="loading-overlay" class="loading-overlay" hidden aria-hidden="true">
+            <div class="spinner"></div>
+        </div>
+        <script type="module" src="/src/events.js"></script>
+    </body>
+</html>

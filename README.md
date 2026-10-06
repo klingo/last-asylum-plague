@@ -13,7 +13,7 @@ its contents without a common value scale. The tool uses one:
   exchange-shop prices are used as weak extra hints), everything else is derived from what it contains (chests:
   expected contents, choice chests: best option, omni shards: the shard they replace, crafting chains: 4:1).
   Recipes (`crafted_from`, e.g. 800 UR Epigraph Shards → any UR Epigraph IV, 9 Lv.1 → 1 Lv.3 raven gear) cap an
-  item at its crafting cost. Moon Coins, Star Moon Sigils and Surprise Emblems are not modelled. Diamonds and event
+  item at its crafting cost. Moon Coins and Star Moon Sigils are not modelled. Diamonds and event
   coins have no points of their own: they are worth what their shop offers buy (diamonds: the VIP shop).
 - **Your priorities** — on the Item Priorities page each item is Don't care (0%), Low (50%), Normal (100%) or High
   (150%) of its worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and
@@ -25,9 +25,12 @@ its contents without a common value scale. The tool uses one:
 
 ## Pages
 
-- **Ranking** (`rankings.html`) — every package, pass and exchange offer (event shops while their event is ticked)
-  ranked by worth ÷ price, with how much you can spend on each per week and what to buy ("Buy / week": the best
-  whole purchases for your exact weekly spend); shop bonus tiers and entries of unknown worth are listed unranked.
+- **Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
+  ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale); entries of unknown
+  worth are listed unranked.
+- **Events** (`events.html`) — a ticked event's (or the VIP Shop's) part of the same weekly plan: which event packs
+  to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
+  and a step table of how much spending more on the event still pays off.
 - **Item Priorities** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
 - **Best Choice Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.

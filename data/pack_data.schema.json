@@ -470,6 +470,30 @@
                 "currency_item_id": {
                     "$ref": "#/definitions/id"
                 },
+                "points_per_currency": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "Progress points per coin spent in this shop (default 1). `bonus_tiers` thresholds and offer `unlock_points` are in these points, e.g. Encounter Points: 5 per Surprise Emblem spent."
+                },
+                "point_purchase": {
+                    "type": "object",
+                    "required": ["currency_item_id", "currency_cost", "points"],
+                    "additionalProperties": false,
+                    "description": "Another way to earn progress points, bought with a currency (e.g. an Encounter: 100 diamonds = 10 points). Its own rewards are not modelled.",
+                    "properties": {
+                        "currency_item_id": {
+                            "$ref": "#/definitions/id"
+                        },
+                        "currency_cost": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "points": {
+                            "type": "number",
+                            "exclusiveMinimum": 0
+                        }
+                    }
+                },
                 "offers": {
                     "type": "object",
                     "propertyNames": {
@@ -513,6 +537,11 @@
                 },
                 "limit_type": {
                     "$ref": "#/definitions/limitType"
+                },
+                "unlock_points": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Progress points (the shop's `points_per_currency`) needed in the current run before this offer can be bought; omitted = 0."
                 }
             }
         },
@@ -538,6 +567,10 @@
                 },
                 "category": {
                     "$ref": "#/definitions/packageCategory"
+                },
+                "exceedable_pack_limits": {
+                    "type": "boolean",
+                    "description": "The event's packs can be bought beyond their purchase limit (Events page: \"Exceed event pack limits\")."
                 }
             }
         },

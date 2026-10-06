@@ -5,6 +5,7 @@
     "nav": {
         "home": "",
         "rankings": "",
+        "events": "",
         "choices": "",
         "spendRewards": "",
         "language": "",
@@ -55,8 +56,6 @@
         "value_event": "",
         "weekly_rotation": "",
         "unlock_exclusive": "",
-        "event_exchange": "",
-        "exchange": "",
         "other": "",
         "diamond": "",
         "calendar_gift": "",
@@ -67,10 +66,6 @@
     "sourceType": {
         "package": "",
         "pass": "",
-        "exchange": "",
-        "exchange_offer": "",
-        "bonus_tier": "",
-        "conversion": "",
         "top_up": "",
         "event": "",
         "unlock": "",
@@ -80,6 +75,7 @@
     "docTitle": {
         "welcome": "",
         "rankings": "",
+        "events": "",
         "choices": "",
         "spendRewards": "",
         "items": "",
@@ -88,6 +84,7 @@
     "footer": {
         "welcome": "",
         "rankings": "",
+        "events": "",
         "choices": "",
         "spendRewards": "",
         "items": "",
@@ -97,6 +94,7 @@
         "heading": "",
         "intro": "",
         "rankingsDescription": "",
+        "eventsDescription": "",
         "choicesDescription": "",
         "spendRewardsDescription": "",
         "itemsDescription": "",
@@ -114,8 +112,6 @@
         "description": "",
         "searchLabel": "",
         "searchPlaceholder": "",
-        "showLabel": "",
-        "showVipShop": "",
         "empty": "",
         "meta": "",
         "table": {
@@ -129,19 +125,61 @@
             "worth": "",
             "ratio": "",
             "pointsEach": "",
-            "perWeek": "",
             "buy": ""
         },
-        "bonusTierName": "",
         "once": "",
         "section": {
-            "bonus": "",
             "unknown": ""
         },
-        "buyMonthly": "",
         "planSummary": "",
         "buyNoFit": "",
-        "lifetimeTotal": ""
+        "lifetimeTotal": "",
+        "perMonth": ""
+    },
+    "events": {
+        "heading": "",
+        "description": "",
+        "eventLabel": "",
+        "eventPlaceholder": "",
+        "tickHint": "",
+        "selectPrompt": "",
+        "planHeading": "",
+        "summaryNoPacks": "",
+        "bonusSection": "",
+        "bonusTier": "",
+        "reached": "",
+        "stepsHeading": "",
+        "yourPlan": "",
+        "stepsNote": "",
+        "optionsLabel": "",
+        "exceedLimits": "",
+        "exceedLimitsHint": "",
+        "exceedNote": "",
+        "tiles": {
+            "packs": "",
+            "encounters": "",
+            "bonusTiers": "",
+            "everything": ""
+        },
+        "total": "",
+        "totalWorth": "",
+        "received": "",
+        "spentInShop": "",
+        "points": "",
+        "unlockStart": "",
+        "unlockAt": "",
+        "table": {
+            "offer": "",
+            "cost": "",
+            "worth": "",
+            "ratio": "",
+            "buy": "",
+            "eventSpend": "",
+            "stepCost": "",
+            "stepWorth": "",
+            "stepRatio": "",
+            "packs": ""
+        }
     },
     "choices": {
         "heading": "",

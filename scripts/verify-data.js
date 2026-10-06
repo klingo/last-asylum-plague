@@ -389,6 +389,17 @@ async function verifyData() {
                 }
             }
 
+            const pointCurrency = shop.point_purchase?.currency_item_id;
+            if (pointCurrency) {
+                referencedItemKeys.add(pointCurrency);
+                if (!itemKeys.has(pointCurrency)) {
+                    reportError(
+                        'Shop Reference',
+                        `Exchange shop "${shopId}" point_purchase uses unresolvable currency: "${pointCurrency}"`,
+                    );
+                }
+            }
+
             if (shop.bonus_tiers && typeof shop.bonus_tiers === 'object') {
                 for (const [tier, contents] of Object.entries(shop.bonus_tiers)) {
                     if (!contents || typeof contents !== 'object') {

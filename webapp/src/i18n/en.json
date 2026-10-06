@@ -5,6 +5,7 @@
     "nav": {
         "home": "Home",
         "rankings": "Ranking",
+        "events": "Events",
         "choices": "Best Choice Pick",
         "spendRewards": "Spend Rewards",
         "language": "Language",
@@ -55,8 +56,6 @@
         "value_event": "Value Event",
         "weekly_rotation": "Weekday Offers",
         "unlock_exclusive": "-",
-        "event_exchange": "Event Exchange",
-        "exchange": "Exchange",
         "other": "Other",
         "diamond": "Diamond",
         "calendar_gift": "Calendar Gift",
@@ -67,10 +66,6 @@
     "sourceType": {
         "package": "Package",
         "pass": "Pass",
-        "exchange": "Exchange",
-        "exchange_offer": "Exchange",
-        "bonus_tier": "Bonus tier",
-        "conversion": "Conversion",
         "top_up": "Top-up",
         "event": "Event",
         "unlock": "Unlock",
@@ -80,6 +75,7 @@
     "docTitle": {
         "welcome": "Last Asylum Pack Solver",
         "rankings": "Ranking - Last Asylum Pack Solver",
+        "events": "Events - Last Asylum Pack Solver",
         "choices": "Best Choice Pick - Last Asylum Pack Solver",
         "spendRewards": "Spend Rewards - Last Asylum Pack Solver",
         "items": "Item Priorities - Last Asylum Pack Solver",
@@ -88,6 +84,7 @@
     "footer": {
         "welcome": "Last Asylum Pack Solver — computed live from pack_data.json",
         "rankings": "Last Asylum Pack Solver — ranking computed live from pack_data.json",
+        "events": "Last Asylum Pack Solver — event plans computed live from pack_data.json",
         "choices": "Last Asylum Pack Solver — choice options valued live from pack_data.json",
         "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json",
         "items": "Last Asylum Pack Solver — item worth computed live from pack_data.json",
@@ -97,6 +94,7 @@
         "heading": "Welcome",
         "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from manually harvested pack data. Every value is based on the game's own deal percentages, your weekly Banknote spend and how much each item matters to you.",
         "rankingsDescription": "Every package and pass ranked by how much value it brings for its price. A ratio of 1.0 or more = worth buying at your weekly spend.",
+        "eventsDescription": "Pick an event: which of its packs to buy at your weekly spend, what to buy with its coins (in unlock order) and whether spending more on it still pays off.",
         "choicesDescription": "Pick a choice chest, a package with options, or a group you can only buy one of (e.g. calendar packs) and see which is worth the most.",
         "spendRewardsDescription": "Pick a cumulative spend-reward track and see up to which tier spending more still pays off.",
         "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
@@ -111,11 +109,9 @@
     },
     "rankings": {
         "heading": "Ranking",
-        "description": "Every package, pass and exchange offer (event shops while their event is ticked, the VIP Shop when \"VIP Shop offers\" is ticked) ranked by worth relative to price. Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). \"Buy / week\" shows what to buy: the best combination of whole purchases for your exact weekly spend, within their limits. Ratio = how a pack compares with the last Banknote of that plan: 1.0 or more = a good deal at your spend (\"doesn't fit\" = good, but the plan couldn't fit it into your exact spend; with a little more it would be in), below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Per week\" is how much you could spend on it per week. Packs of events you haven't ticked are hidden; once-only packs are shown as \"once\". Shop bonus tiers and entries containing items of unknown worth are listed below the ranking, unranked.",
+        "description": "Every package and pass on sale this week, ranked by worth relative to price. Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). Ratio = how a pack compares with the last Banknote of the best plan for your weekly spend: 1.0 or more = a good deal at your spend, below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Buy / week\" = how many that plan buys out of what's on sale this week (\"doesn't fit\" = good, but whole purchases didn't fit your exact spend; with a little more it would be in). Packs of events you haven't ticked are hidden. What to buy with event coins and diamonds: see Events. Entries containing items of unknown worth are listed below the ranking, unranked.",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
-        "showLabel": "Show",
-        "showVipShop": "VIP Shop offers",
         "empty": "No entries match your filters.",
         "meta": "{count} entries.",
         "table": {
@@ -129,19 +125,61 @@
             "worth": "Worth",
             "ratio": "Ratio",
             "pointsEach": "Points each",
-            "perWeek": "Per week",
             "buy": "Buy / week"
         },
-        "bonusTierName": "bonus at {threshold}",
         "once": "once",
         "section": {
-            "bonus": "Shop bonus tiers: extra rewards on top of what the coins already buy (not ranked)",
             "unknown": "Worth unknown: contains items without a worth, so it can't be compared (not ranked)"
         },
-        "buyMonthly": "1 / month",
-        "planSummary": "Best plan for your weekly spend: {purchases} different packs for {spent} of {budget} Banknotes (\"Buy / week\" column), plus {exchanges} shop purchases with the diamonds and coins they give.",
+        "planSummary": "Best plan for your weekly spend: {purchases} different packs for {spent} of {budget} Banknotes (\"Buy / week\" column). What to buy with the coins and diamonds they give: see Events.",
         "buyNoFit": "doesn't fit",
-        "lifetimeTotal": "{count}× total"
+        "lifetimeTotal": "{count}× total",
+        "perMonth": "month"
+    },
+    "events": {
+        "heading": "Events",
+        "description": "Pick a ticked event (or the VIP Shop) to see its part of the best plan for your weekly spend: the event packs to buy, the coins they give, which shop offers to buy with them (in unlock order) and whether spending more on the event still pays off. It's the same plan as on the Ranking page, so both pages agree.",
+        "eventLabel": "Event or shop",
+        "eventPlaceholder": "Select an event…",
+        "tickHint": "Only events ticked under \"Events this week\" are listed.",
+        "selectPrompt": "Select an event or shop above.",
+        "planHeading": "Your plan",
+        "summaryNoPacks": "Your plan buys none of this event's packs at your weekly spend.",
+        "bonusSection": "Bonus tiers: extra rewards once enough has been spent in the shop",
+        "bonusTier": "Bonus at {threshold}",
+        "reached": "reached",
+        "stepsHeading": "How much to spend on this event",
+        "yourPlan": "(your plan)",
+        "stepsNote": "Each row is the best plan with that much spent on the event's packs, the rest of your weekly spend unchanged. Step ratio 1.0 or more = the step is at least as good as your last Banknote; below 1.0 = better spent elsewhere.",
+        "optionsLabel": "Options",
+        "exceedLimits": "Exceed event pack limits",
+        "exceedLimitsHint": "Lets the plan buy the selected event's packs as often as it likes instead of their daily limit (usually once per day), e.g. to see how far the best currency pack is worth repeating. Only possible for events whose packs can be bought beyond their limit in the game: {events}.",
+        "exceedNote": "Event pack limits exceeded: this plan differs from the Ranking (which keeps the limits).",
+        "tiles": {
+            "packs": "Buy these packs",
+            "encounters": "Encounters",
+            "bonusTiers": "Bonus tiers reached",
+            "everything": "Everything you get"
+        },
+        "total": "Total",
+        "totalWorth": "Total worth",
+        "received": "received",
+        "spentInShop": "spent in the shop",
+        "points": "points",
+        "unlockStart": "Available from the start",
+        "unlockAt": "Unlocks at {points} points",
+        "table": {
+            "offer": "Offer",
+            "cost": "Cost",
+            "worth": "Worth",
+            "ratio": "Ratio",
+            "buy": "Buy / week",
+            "eventSpend": "Event spend",
+            "stepCost": "Extra spend",
+            "stepWorth": "Extra worth",
+            "stepRatio": "Step ratio",
+            "packs": "Event packs bought"
+        }
     },
     "choices": {
         "heading": "Best Choice Pick",

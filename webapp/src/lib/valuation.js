@@ -38,10 +38,11 @@ function planOptions(data, settings, overrides = {}) {
     };
 }
 
-async function buildValuation(data, settings) {
+/** `overrides`: extra planner options for a what-if valuation (e.g. the Events page's exceeded pack limits). */
+async function buildValuation(data, settings, overrides = {}) {
     const fit = pointFit(data);
     const highs = await loadBrowserHighs();
-    const plan = solveWeeklyPlan(highs, data, planOptions(data, settings));
+    const plan = solveWeeklyPlan(highs, data, planOptions(data, settings, overrides));
 
     function points(itemId) {
         if (plan.mu.has(itemId)) {

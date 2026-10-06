@@ -32,9 +32,9 @@
 import { expandPackageFamilies, packageFamilyId, currencyItemIds } from './catalog.js';
 import { lendReversible } from './item-values.js';
 
-// Obtained through event mechanics the data doesn't model (Moon Coin machine, Surprise Emblem
-// draws): left out of the fit, so they stay unknown.
-const UNMODELLED_ITEMS = new Set(['moon_coin', 'star_moon_sigil', 'surprise_emblem']);
+// Obtained through event mechanics the data doesn't model (Moon Coin machine): left out of the
+// fit, so they stay unknown.
+const UNMODELLED_ITEMS = new Set(['moon_coin', 'star_moon_sigil']);
 
 const ANCHOR_ID = 'diamonds';
 const SHOP_WEIGHT = 0.2;
