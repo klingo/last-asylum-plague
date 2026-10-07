@@ -15,7 +15,7 @@
         "antitoxin_level_supply_r": {
             "name": {
                 "en": "Antitoxin Level Supply (R)",
-                "de": ""
+                "de": "Gegengift-Level-Vorrat (R)"
             },
             "category": "hero",
             "contains": {
@@ -25,7 +25,7 @@
         "antitoxin_level_supply_sr": {
             "name": {
                 "en": "Antitoxin Level Supply (SR)",
-                "de": ""
+                "de": "Gegengift-Level-Vorrat (SR)"
             },
             "category": "hero",
             "contains": {
@@ -35,7 +35,7 @@
         "antitoxin_level_supply_ssr": {
             "name": {
                 "en": "Antitoxin Level Supply (SSR)",
-                "de": ""
+                "de": "Gegengift-Level-Vorrat (SSR)"
             },
             "category": "hero",
             "contains": {
@@ -45,7 +45,7 @@
         "antitoxin_level_supply_ur": {
             "name": {
                 "en": "Antitoxin Level Supply (UR)",
-                "de": ""
+                "de": "Gegengift-Level-Vorrat (UR)"
             },
             "category": "hero",
             "contains": {
@@ -121,7 +121,7 @@
         "brass": {
             "name": {
                 "en": "Brass",
-                "de": ""
+                "de": "Messing"
             },
             "category": "gear",
             "contains": {
@@ -132,28 +132,28 @@
         "cloth": {
             "name": {
                 "en": "Cloth",
-                "de": ""
+                "de": "Stoff"
             },
             "category": "gear"
         },
         "construction_speedup": {
             "name": {
                 "en": "Construction Speedup",
-                "de": ""
+                "de": "Bau-Beschleunigung"
             },
             "category": "speedup"
         },
         "copper_coin": {
             "name": {
                 "en": "Copper Coin",
-                "de": ""
+                "de": "Kupfermünze"
             },
             "category": "virtual"
         },
         "curio_chest_ssr": {
             "name": {
                 "en": "Curio Chest (SSR)",
-                "de": ""
+                "de": "Kuriosität Truhe (SSR)"
             },
             "category": "special",
             "contains": {
@@ -163,7 +163,7 @@
         "curio_chest_ur": {
             "name": {
                 "en": "Curio Chest (UR)",
-                "de": ""
+                "de": "Kuriosität Truhe (UR)"
             },
             "category": "special",
             "contains": {
@@ -173,7 +173,7 @@
         "deluxe_choice_chest": {
             "name": {
                 "en": "Deluxe Choice Chest",
-                "de": ""
+                "de": "Deluxe Wahltruhe"
             },
             "category": "special",
             "type": "choice",
@@ -201,7 +201,7 @@
         "diamond_golden_egg": {
             "name": {
                 "en": "Diamond Golden Egg",
-                "de": ""
+                "de": "Diamant-Gold-Ei"
             },
             "category": "special",
             "contains": {
@@ -211,21 +211,21 @@
         "diamonds": {
             "name": {
                 "en": "Diamonds",
-                "de": ""
+                "de": "Diamanten"
             },
             "category": "resource"
         },
         "direct_relocate": {
             "name": {
                 "en": "Direct Relocate",
-                "de": ""
+                "de": "Direkter Umzug"
             },
             "category": "special"
         },
         "dragon_blood": {
             "name": {
                 "en": "Dragon Blood",
-                "de": ""
+                "de": "Drachenblut"
             },
             "category": "curio"
         },
@@ -242,7 +242,7 @@
         "exclusive_weapon_omni_shard": {
             "name": {
                 "en": "Exclusive Weapon Omni Shard",
-                "de": ""
+                "de": "Exklusive Waffe Omni-Splitter"
             },
             "category": "hero",
             "substitutes_for": ["exclusive_weapon_shard"]
@@ -250,7 +250,7 @@
         "exclusive_weapon_shard": {
             "name": {
                 "en": "<Hero> Exclusive Weapon Shard",
-                "de": ""
+                "de": "<Held> Exklusive Waffe Splitter"
             },
             "category": "hero"
         },
@@ -294,28 +294,28 @@
         "gear_blueprint_ur": {
             "name": {
                 "en": "Gear Blueprint (UR)",
-                "de": ""
+                "de": "Ausrüstungs-Plan (UR)"
             },
             "category": "gear"
         },
         "gearstone": {
             "name": {
                 "en": "Gearstone",
-                "de": ""
+                "de": "Ausrüstungsstein"
             },
             "category": "gear"
         },
         "grain": {
             "name": {
                 "en": "Grain",
-                "de": ""
+                "de": "Getreide"
             },
             "category": "resource"
         },
         "grain_level_supply_sr": {
             "name": {
                 "en": "Grain Level Supply (SR)",
-                "de": ""
+                "de": "Getreidevorrat-Level (SR)"
             },
             "category": "resource",
             "contains": {
@@ -325,7 +325,7 @@
         "grain_level_supply_ssr": {
             "name": {
                 "en": "Grain Level Supply (SSR)",
-                "de": ""
+                "de": "Getreidevorrat-Level (SSR)"
             },
             "category": "resource",
             "contains": {
@@ -335,7 +335,7 @@
         "grain_level_supply_ur": {
             "name": {
                 "en": "Grain Level Supply (UR)",
-                "de": ""
+                "de": "Getreidevorrat-Level (UR)"
             },
             "category": "resource",
             "contains": {
@@ -375,14 +375,14 @@
         "healing_speedup": {
             "name": {
                 "en": "Healing Speedup",
-                "de": ""
+                "de": "Heilung-Beschleunigung"
             },
             "category": "speedup"
         },
         "herb_level_supply_sr": {
             "name": {
                 "en": "Herb Level Supply (SR)",
-                "de": ""
+                "de": "Kräutervorrat-Level (SR)"
             },
             "category": "resource",
             "contains": {
@@ -392,7 +392,7 @@
         "herb_level_supply_ssr": {
             "name": {
                 "en": "Herb Level Supply (SSR)",
-                "de": ""
+                "de": "Kräutervorrat-Level (SSR)"
             },
             "category": "resource",
             "contains": {
@@ -402,7 +402,7 @@
         "herb_level_supply_ur": {
             "name": {
                 "en": "Herb Level Supply (UR)",
-                "de": ""
+                "de": "Kräutervorrat-Level (UR)"
             },
             "category": "resource",
             "contains": {
@@ -412,14 +412,14 @@
         "herbs": {
             "name": {
                 "en": "Herbs",
-                "de": ""
+                "de": "Kräuter"
             },
             "category": "resource"
         },
         "hero_awaken_omni_shard": {
             "name": {
                 "en": "Hero Awaken Omni Shard",
-                "de": ""
+                "de": "Held Erwachen Omni-Splitter"
             },
             "category": "hero",
             "substitutes_for": ["hero_awaken_shard"]
@@ -427,7 +427,7 @@
         "hero_awaken_shard": {
             "name": {
                 "en": "<Hero> Awaken Shard",
-                "de": ""
+                "de": "<Held> Erwachen Splitter"
             },
             "category": "hero"
         },
@@ -490,7 +490,7 @@
         "leather": {
             "name": {
                 "en": "Leather",
-                "de": ""
+                "de": "Leder"
             },
             "category": "gear",
             "contains": {
@@ -501,7 +501,7 @@
         "lv1_alliance_chest": {
             "name": {
                 "en": "Lv.1 Alliance Chest",
-                "de": ""
+                "de": "Lv.1 Allianz Truhe"
             },
             "category": "virtual"
         },
@@ -536,7 +536,7 @@
         "lv1_raven_gear_chest": {
             "name": {
                 "en": "Lv.1 Raven Gear Chest",
-                "de": ""
+                "de": "Lv.1 Raben-Ausrüstungs Truhe"
             },
             "category": "special",
             "type": "random",
@@ -596,14 +596,14 @@
         "lv2_alliance_chest": {
             "name": {
                 "en": "Lv.2 Alliance Chest",
-                "de": ""
+                "de": "Lv.2 Allianz Truhe"
             },
             "category": "virtual"
         },
         "lv3_alliance_chest": {
             "name": {
                 "en": "Lv.3 Alliance Chest",
-                "de": ""
+                "de": "Lv.3 Allianz Truhe"
             },
             "category": "virtual"
         },
@@ -650,7 +650,7 @@
         "lv3_raven_gear_chest": {
             "name": {
                 "en": "Lv.3 Raven Gear Chest",
-                "de": ""
+                "de": "Lv.3 Raben-Ausrüstungs Truhe"
             },
             "category": "special",
             "type": "random",
@@ -716,14 +716,14 @@
         "lv4_alliance_chest": {
             "name": {
                 "en": "Lv.4 Alliance Chest",
-                "de": ""
+                "de": "Lv.4 Allianz Truhe"
             },
             "category": "virtual"
         },
         "lv5_alliance_chest": {
             "name": {
                 "en": "Lv.5 Alliance Chest",
-                "de": ""
+                "de": "Lv.5 Allianz Truhe"
             },
             "category": "virtual"
         },
@@ -770,7 +770,7 @@
         "lv5_raven_gear_chest": {
             "name": {
                 "en": "Lv.5 Raven Gear Chest",
-                "de": ""
+                "de": "Lv.5 Raben-Ausrüstungs Truhe"
             },
             "category": "special",
             "type": "random",
@@ -816,7 +816,7 @@
         "lv5_raven_gear_choice_chest": {
             "name": {
                 "en": "LV5 Raven Gear Choice Chest",
-                "de": ""
+                "de": "LV5 Raben-Ausrüstungs Wahltruhe"
             },
             "category": "special",
             "type": "choice",
@@ -867,7 +867,7 @@
         "lv6_alliance_chest": {
             "name": {
                 "en": "Lv.6 Alliance Chest",
-                "de": ""
+                "de": "Lv.6 Allianz Truhe"
             },
             "category": "virtual"
         },
@@ -957,14 +957,14 @@
         "r_epigraph": {
             "name": {
                 "en": "R Epigraph",
-                "de": ""
+                "de": "R Epigraph"
             },
             "category": "special"
         },
         "r_epigraph_chest": {
             "name": {
                 "en": "R Epigraph Chest",
-                "de": ""
+                "de": "R Epigraph Truhe"
             },
             "category": "special",
             "type": "random",
@@ -1002,7 +1002,7 @@
         "random_gear_chest": {
             "name": {
                 "en": "Random Gear Chest",
-                "de": ""
+                "de": "Zufällige Ausrüstungstruhe"
             },
             "category": "special",
             "type": "random",
@@ -1060,7 +1060,7 @@
         "random_gearstone_supply": {
             "name": {
                 "en": "Random Gearstone Supply",
-                "de": ""
+                "de": "Zufällige Ausrüstungssteinvorräte"
             },
             "category": "gear",
             "type": "random",
@@ -1094,7 +1094,7 @@
         "raven_essence": {
             "name": {
                 "en": "Raven Essence",
-                "de": ""
+                "de": "Rabenessenz"
             },
             "category": "gear"
         },
@@ -1108,35 +1108,35 @@
         "raven_fruit": {
             "name": {
                 "en": "Raven Fruit",
-                "de": ""
+                "de": "Rabenfrüchte"
             },
             "category": "gear"
         },
         "recluse_coin": {
             "name": {
                 "en": "Recluse Coin",
-                "de": ""
+                "de": "Einsiedler-Münze"
             },
             "category": "special"
         },
         "recruit_ticket": {
             "name": {
                 "en": "Recruit Ticket",
-                "de": ""
+                "de": "Rekrut.-ticket"
             },
             "category": "hero"
         },
         "red_amber_amulet": {
             "name": {
                 "en": "Red Amber Amulet",
-                "de": ""
+                "de": "Rotbernstein-Amulett"
             },
             "category": "curio"
         },
         "refined_iron": {
             "name": {
                 "en": "Refined Iron",
-                "de": ""
+                "de": "Verfeinertes Eisen"
             },
             "category": "gear",
             "contains": {
@@ -1147,14 +1147,14 @@
         "research_speedup": {
             "name": {
                 "en": "Research Speedup",
-                "de": ""
+                "de": "Forschung-Beschleunigung"
             },
             "category": "speedup"
         },
         "resource_supply_general": {
             "name": {
                 "en": "Resource Supply (General)",
-                "de": ""
+                "de": "Ressourcenvorrat (Allgemein)"
             },
             "category": "resource",
             "type": "choice",
@@ -1176,7 +1176,7 @@
         "resource_supply_sr": {
             "name": {
                 "en": "Resource Supply (SR)",
-                "de": ""
+                "de": "Ressourcenvorrat (SR)"
             },
             "category": "resource",
             "type": "choice",
@@ -1198,7 +1198,7 @@
         "resource_supply_ssr": {
             "name": {
                 "en": "Resource Supply (SSR)",
-                "de": ""
+                "de": "Ressourcenvorrat (SSR)"
             },
             "category": "resource",
             "type": "choice",
@@ -1220,7 +1220,7 @@
         "resource_supply_ur": {
             "name": {
                 "en": "Resource Supply (UR)",
-                "de": ""
+                "de": "Ressourcenvorrat (UR)"
             },
             "category": "resource",
             "type": "choice",
@@ -1300,14 +1300,14 @@
         "skill_badge": {
             "name": {
                 "en": "Skill Badge",
-                "de": ""
+                "de": "Fähigkeitsabzeichen"
             },
             "category": "hero"
         },
         "speedup": {
             "name": {
                 "en": "Speedup",
-                "de": ""
+                "de": "Beschleunigung"
             },
             "category": "speedup",
             "substitutes_for": ["construction_speedup", "research_speedup", "training_speedup", "healing_speedup"]
@@ -1355,14 +1355,14 @@
         "sr_epigraph": {
             "name": {
                 "en": "SR Epigraph",
-                "de": ""
+                "de": "SR Epigraph"
             },
             "category": "special"
         },
         "sr_epigraph_chest": {
             "name": {
                 "en": "SR Epigraph Chest",
-                "de": ""
+                "de": "SR Epigraph Truhe"
             },
             "category": "special",
             "type": "random",
@@ -1393,7 +1393,7 @@
         "sr_hero_omni_shard": {
             "name": {
                 "en": "SR Hero Omni Shard",
-                "de": ""
+                "de": "SR Held-Omni-Splitter"
             },
             "category": "hero",
             "substitutes_for": ["sr_hero_shard"]
@@ -1401,42 +1401,42 @@
         "sr_hero_shard": {
             "name": {
                 "en": "<Hero> Shard (SR)",
-                "de": ""
+                "de": "<Held>-Splitter (SR)"
             },
             "category": "hero"
         },
         "ssr_armor": {
             "name": {
                 "en": "SSR Armor",
-                "de": ""
+                "de": "SSR Rüstung"
             },
             "category": "gear"
         },
         "ssr_boots": {
             "name": {
                 "en": "SSR Boots",
-                "de": ""
+                "de": "SSR Stiefel"
             },
             "category": "gear"
         },
         "ssr_curio": {
             "name": {
                 "en": "SSR Curio",
-                "de": ""
+                "de": "SSR Kuriosität"
             },
             "category": "virtual"
         },
         "ssr_epigraph": {
             "name": {
                 "en": "SSR Epigraph",
-                "de": ""
+                "de": "SSR Epigraph"
             },
             "category": "special"
         },
         "ssr_epigraph_chest": {
             "name": {
                 "en": "SSR Epigraph Chest",
-                "de": ""
+                "de": "SSR Epigraph Truhe"
             },
             "category": "special",
             "type": "random",
@@ -1460,14 +1460,14 @@
         "ssr_gauntlets": {
             "name": {
                 "en": "SSR Gauntlets",
-                "de": ""
+                "de": "SSR Handschuhe"
             },
             "category": "gear"
         },
         "ssr_hero_omni_shard": {
             "name": {
                 "en": "SSR Hero Omni Shard",
-                "de": ""
+                "de": "SSR Held-Omni-Splitter"
             },
             "category": "hero",
             "substitutes_for": ["ssr_hero_shard"]
@@ -1475,14 +1475,14 @@
         "ssr_hero_shard": {
             "name": {
                 "en": "<Hero> Shard (SSR)",
-                "de": ""
+                "de": "<Held>-Splitter (SSR)"
             },
             "category": "hero"
         },
         "ssr_sword": {
             "name": {
                 "en": "SSR Sword",
-                "de": ""
+                "de": "SSR Schwert"
             },
             "category": "gear"
         },
@@ -1496,7 +1496,7 @@
         "stamina": {
             "name": {
                 "en": "Stamina",
-                "de": ""
+                "de": "Ausdauer"
             },
             "category": "resource"
         },
@@ -1517,42 +1517,42 @@
         "strange_coin": {
             "name": {
                 "en": "Strange Coin",
-                "de": ""
+                "de": "Seltsame Münze"
             },
             "category": "special"
         },
         "study_scroll": {
             "name": {
                 "en": "Study Scroll",
-                "de": ""
+                "de": "Studien-Schriftrolle"
             },
             "category": "special"
         },
         "surprise_emblem": {
             "name": {
                 "en": "Surprise Emblem",
-                "de": ""
+                "de": "Überraschungsemblem"
             },
             "category": "special"
         },
         "survivor_recruit_ticket": {
             "name": {
                 "en": "Survivor Recruit Ticket",
-                "de": ""
+                "de": "ÜBL. Rektrut.-ticket"
             },
             "category": "hero"
         },
         "survivor_token": {
             "name": {
                 "en": "Survivor Token",
-                "de": ""
+                "de": "Überlebenden-Token"
             },
             "category": "hero"
         },
         "tempered_steel": {
             "name": {
                 "en": "Tempered Steel",
-                "de": ""
+                "de": "Gehärteter Stahl"
             },
             "category": "gear",
             "contains": {
@@ -1563,14 +1563,14 @@
         "timber": {
             "name": {
                 "en": "Timber",
-                "de": ""
+                "de": "Holz"
             },
             "category": "resource"
         },
         "timber_level_supply_sr": {
             "name": {
                 "en": "Timber Level Supply (SR)",
-                "de": ""
+                "de": "Holzvorrat-Level (SR)"
             },
             "category": "resource",
             "contains": {
@@ -1580,7 +1580,7 @@
         "timber_level_supply_ssr": {
             "name": {
                 "en": "Timber Level Supply (SSR)",
-                "de": ""
+                "de": "Holzvorrat-Level (SSR)"
             },
             "category": "resource",
             "contains": {
@@ -1590,7 +1590,7 @@
         "timber_level_supply_ur": {
             "name": {
                 "en": "Timber Level Supply (UR)",
-                "de": ""
+                "de": "Holzvorrat-Level (UR)"
             },
             "category": "resource",
             "contains": {
@@ -1600,28 +1600,28 @@
         "top_up_exp": {
             "name": {
                 "en": "Top-Up EXP",
-                "de": ""
+                "de": "Aufladung-EP"
             },
             "category": "virtual"
         },
         "training_speedup": {
             "name": {
                 "en": "Training Speedup",
-                "de": ""
+                "de": "Training-Beschleunigung"
             },
             "category": "speedup"
         },
         "twin_dragon_brooch": {
             "name": {
                 "en": "Twin Dragon Brooch",
-                "de": ""
+                "de": "Zwillingsdrachen-Brosche"
             },
             "category": "curio"
         },
         "universal_curio_random_chest": {
             "name": {
                 "en": "Universal Curio Random Chest",
-                "de": ""
+                "de": "Zufällige Universelle Kuriosität Truhe"
             },
             "category": "special",
             "type": "random",
@@ -1655,14 +1655,14 @@
         "universal_curio_shard": {
             "name": {
                 "en": "Universal Curio Shard",
-                "de": ""
+                "de": "Universelle Kuriosität-Splitter"
             },
             "category": "special"
         },
         "ur_adventure_chest": {
             "name": {
                 "en": "UR Adventure Chest",
-                "de": ""
+                "de": "UR Abenteurer Truhe"
             },
             "category": "special",
             "type": "random",
@@ -1714,14 +1714,14 @@
         "ur_armor": {
             "name": {
                 "en": "UR Armor",
-                "de": ""
+                "de": "UR Rüstung"
             },
             "category": "gear"
         },
         "ur_boots": {
             "name": {
                 "en": "UR Boots",
-                "de": ""
+                "de": "UR Stiefel"
             },
             "category": "gear"
         },
@@ -1745,7 +1745,7 @@
         "ur_epigraph_choice_chest": {
             "name": {
                 "en": "UR Epigraph Choice Chest",
-                "de": ""
+                "de": "UR Epigraph Wahltruhe"
             },
             "category": "special",
             "type": "choice",
@@ -1806,7 +1806,7 @@
         "ur_epigraph_random": {
             "name": {
                 "en": "Random UR Epigraph",
-                "de": ""
+                "de": "Zufälliger UR Epigraph"
             },
             "category": "special",
             "type": "random",
@@ -1888,14 +1888,14 @@
         "ur_epigraph_shard": {
             "name": {
                 "en": "UR Epigraph Shard",
-                "de": ""
+                "de": "UR Epigraph-Splitter"
             },
             "category": "special"
         },
         "ur_gauntlets": {
             "name": {
                 "en": "UR Gauntlets",
-                "de": ""
+                "de": "UR Handschuhe"
             },
             "category": "gear"
         },
@@ -1931,7 +1931,7 @@
         "ur_hero_omni_shard": {
             "name": {
                 "en": "UR Hero Omni Shard",
-                "de": ""
+                "de": "UR Held-Omni-Splitter"
             },
             "category": "hero",
             "substitutes_for": ["ur_hero_shard"]
@@ -1939,21 +1939,21 @@
         "ur_hero_shard": {
             "name": {
                 "en": "<Hero> Shard (UR)",
-                "de": ""
+                "de": "<Held> Splitter (UR)"
             },
             "category": "hero"
         },
         "ur_sword": {
             "name": {
                 "en": "UR Sword",
-                "de": ""
+                "de": "UR Schwert"
             },
             "category": "gear"
         },
         "vip_points": {
             "name": {
                 "en": "VIP Points",
-                "de": ""
+                "de": "VIP-Punkte"
             },
             "category": "virtual"
         }
@@ -1962,7 +1962,7 @@
         "awaken_shard": {
             "name": {
                 "en": "Awaken Shard",
-                "de": ""
+                "de": "Erwachen Splitter"
             },
             "category": "daily_offer",
             "limit_type": "daily",
@@ -2160,7 +2160,7 @@
         "calendar_gift_gear_pack": {
             "name": {
                 "en": "Calendar Gift: Gear Pack",
-                "de": ""
+                "de": "Kalender Geschenk: Ausrüstungspaket"
             },
             "category": "calendar_gift",
             "exclusive_group": "calendar_gift",
@@ -2250,7 +2250,7 @@
         "copper_coin_pack_24h": {
             "name": {
                 "en": "24h Copper Coin Pack",
-                "de": ""
+                "de": "24 Std Kupfermünzenpaket"
             },
             "category": "clinic_development_pack",
             "price": 499,
@@ -2267,7 +2267,7 @@
         "copper_coin_pack_6h": {
             "name": {
                 "en": "6h Copper Coin Pack",
-                "de": ""
+                "de": "6 Std Kupfermünzenpaket"
             },
             "category": "clinic_development_pack",
             "price": 199,
@@ -2284,7 +2284,7 @@
         "copper_coin_pack_72h": {
             "name": {
                 "en": "72h Copper Coin Pack",
-                "de": ""
+                "de": "72 Std Kupfermünzenpaket"
             },
             "category": "clinic_development_pack",
             "price": 999,
@@ -2301,7 +2301,7 @@
         "curio_boost": {
             "name": {
                 "en": "Curio Boost",
-                "de": ""
+                "de": "Kuriositäten-Boost"
             },
             "category": "weekly_special",
             "price": 9999,
@@ -2320,7 +2320,7 @@
         "curio_pack": {
             "name": {
                 "en": "Curio Pack",
-                "de": ""
+                "de": "Kuriositätenpaket"
             },
             "category": "daily_must_buy",
             "limit_type": "daily",
@@ -2343,7 +2343,7 @@
         "develop_territory": {
             "name": {
                 "en": "Develop Territory",
-                "de": ""
+                "de": "Gebiet Entwickeln"
             },
             "category": "weekly_special",
             "price": 1999,
@@ -2502,7 +2502,7 @@
         "enhance_might": {
             "name": {
                 "en": "Enhance Might",
-                "de": ""
+                "de": "Macht Verbessern"
             },
             "category": "weekly_special",
             "price": 9999,
@@ -2545,7 +2545,7 @@
         "era_of_revival_raven_essence_weekly_pass": {
             "name": {
                 "en": "Era of Revival - Raven Essence Weekly Pass",
-                "de": ""
+                "de": "Zeitalter der Wiederbelebung - Rabenessenz Wochenpass"
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
@@ -2561,7 +2561,7 @@
         "exclusive_weapon": {
             "name": {
                 "en": "Exclusive Weapon",
-                "de": ""
+                "de": "Exklusive Waffe"
             },
             "category": "weekly_special",
             "price": 9999,
@@ -2645,7 +2645,7 @@
         "falcon_tower_pass": {
             "name": {
                 "en": "Falcon Tower Pass",
-                "de": ""
+                "de": "Falkenturm-Pass"
             },
             "category": "value_event",
             "limit_type": "weekly",
@@ -2707,7 +2707,7 @@
         "hero_awaken": {
             "name": {
                 "en": "Hero Awaken",
-                "de": ""
+                "de": "Held Erwachen"
             },
             "category": "weekly_special",
             "price": 9999,
@@ -2724,7 +2724,7 @@
         "hero_awaken_growth_pack": {
             "name": {
                 "en": "<Hero> Awaken Growth Pack",
-                "de": ""
+                "de": "<Held> Erwachen Wachstumspaket"
             },
             "category": "unlock_exclusive",
             "limit_type": "lifetime",
@@ -2887,7 +2887,7 @@
         "hero_growth_pack": {
             "name": {
                 "en": "Hero Growth Pack",
-                "de": ""
+                "de": "Helden-Wachstumspaket"
             },
             "category": "daily_must_buy",
             "limit_type": "daily",
@@ -2912,7 +2912,7 @@
         "hero_promotion": {
             "name": {
                 "en": "Hero Promotion",
-                "de": ""
+                "de": "Heldenbeförderung"
             },
             "category": "weekly_special",
             "price": 9999,
@@ -2930,7 +2930,7 @@
         "hero_shard": {
             "name": {
                 "en": "Hero Shard",
-                "de": ""
+                "de": "Heldensplitter"
             },
             "category": "daily_offer",
             "limit_type": "daily",
@@ -2977,7 +2977,7 @@
         "login_rewards": {
             "name": {
                 "en": "Login Rewards",
-                "de": ""
+                "de": "Anmelde-Belohnungen"
             },
             "category": "value_event",
             "price": 99,
@@ -3242,7 +3242,7 @@
         "premium_grain_pack": {
             "name": {
                 "en": "Premium Grain Pack",
-                "de": ""
+                "de": "Premium-Getreidepaket"
             },
             "category": "daily_must_buy",
             "limit_type": "daily",
@@ -3265,7 +3265,7 @@
         "premium_herb_pack": {
             "name": {
                 "en": "Premium Herb Pack",
-                "de": ""
+                "de": " Premium-Kräuterpaket"
             },
             "category": "daily_must_buy",
             "limit_type": "daily",
@@ -3288,7 +3288,7 @@
         "premium_monthly_pass": {
             "name": {
                 "en": "Premium Monthly Pass",
-                "de": ""
+                "de": "Premium Monatspass"
             },
             "category": "premium_monthly_pass",
             "price": 2499,
@@ -3309,7 +3309,7 @@
         "premium_timber_pack": {
             "name": {
                 "en": "Premium Timber Pack",
-                "de": ""
+                "de": "Premium-Holzpaket"
             },
             "category": "daily_must_buy",
             "limit_type": "daily",
@@ -3332,7 +3332,7 @@
         "quick_research_pack": {
             "name": {
                 "en": "Quick Research Pack",
-                "de": ""
+                "de": "Schnelles Forschungspaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3367,7 +3367,7 @@
         "raven_epigraph": {
             "name": {
                 "en": "Raven Epigraph",
-                "de": ""
+                "de": "Raben-Epigraph"
             },
             "category": "weekly_special",
             "price": 4999,
@@ -3412,7 +3412,7 @@
         "raven_essence": {
             "name": {
                 "en": "Raven Essence",
-                "de": ""
+                "de": "Rabenessenz"
             },
             "category": "weekly_special",
             "price": 4999,
@@ -3431,7 +3431,7 @@
         "raven_gear": {
             "name": {
                 "en": "Raven Gear",
-                "de": ""
+                "de": "Raben-Ausrüstung"
             },
             "category": "weekly_special",
             "price": 4999,
@@ -3451,7 +3451,7 @@
         "raven_gear_special_pack": {
             "name": {
                 "en": "Raven Gear Special Pack",
-                "de": ""
+                "de": "Rabe Ausrüstung-Spezialpaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3498,7 +3498,7 @@
         "recluse_coin_deluxe_pack": {
             "name": {
                 "en": "Recluse Coin Deluxe Pack",
-                "de": ""
+                "de": "Einsiedler-Münze Deluxe-Paket"
             },
             "category": "special_event",
             "event_id": "recluse_merchant",
@@ -3515,7 +3515,7 @@
         "recluse_coin_majestic_pack": {
             "name": {
                 "en": "Recluse Coin Majestic Pack",
-                "de": ""
+                "de": "Einsiedler-Münze Majestätisches Paket"
             },
             "category": "special_event",
             "event_id": "recluse_merchant",
@@ -3532,7 +3532,7 @@
         "recluse_coin_premium_pack": {
             "name": {
                 "en": "Recluse Coin Premium Pack",
-                "de": ""
+                "de": "Einsiedler-Münze Premium-Paket"
             },
             "category": "special_event",
             "event_id": "recluse_merchant",
@@ -3549,7 +3549,7 @@
         "recluse_coin_rare_pack": {
             "name": {
                 "en": "Recluse Coin Rare Pack",
-                "de": ""
+                "de": "Einsiedler-Münze Seltenes Paket"
             },
             "category": "special_event",
             "event_id": "recluse_merchant",
@@ -3566,7 +3566,7 @@
         "recluse_coin_supreme_pack": {
             "name": {
                 "en": "Recluse Coin Supreme Pack",
-                "de": ""
+                "de": "Einsiedler-Münze Supreme-Paket"
             },
             "category": "special_event",
             "event_id": "recluse_merchant",
@@ -3583,7 +3583,7 @@
         "research_special_pack": {
             "name": {
                 "en": "Research Special Pack",
-                "de": ""
+                "de": "Forschung-Spezialpaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3610,7 +3610,7 @@
         "resource_special_pack": {
             "name": {
                 "en": "Resource Special Pack",
-                "de": ""
+                "de": "Ressourcen-Spezialpaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3688,7 +3688,7 @@
         "stamina_discount_pack": {
             "name": {
                 "en": "Stamina Discount Pack",
-                "de": ""
+                "de": "Ausdauer-Rabatt-Paket"
             },
             "category": "weekly_special",
             "price": 999,
@@ -3743,7 +3743,7 @@
         "study_scroll": {
             "name": {
                 "en": "Study Scroll",
-                "de": ""
+                "de": "Studien-Schriftrolle"
             },
             "category": "weekly_special",
             "price": 9999,
@@ -3764,7 +3764,7 @@
         "surprise_encounter_exquisite_pack": {
             "name": {
                 "en": "Surprise Encounter Exquisite Pack",
-                "de": ""
+                "de": "Überraschende Begegnung Erlesenes Paket"
             },
             "category": "special_event",
             "event_id": "surprise_encounter",
@@ -3782,7 +3782,7 @@
         "surprise_encounter_premium_pack": {
             "name": {
                 "en": "Surprise Encounter Premium Pack",
-                "de": ""
+                "de": "Überraschende Begegnung Premium-Paket"
             },
             "category": "special_event",
             "event_id": "surprise_encounter",
@@ -3800,7 +3800,7 @@
         "surprise_encounter_rare_pack": {
             "name": {
                 "en": "Surprise Encounter Rare Pack",
-                "de": ""
+                "de": "Überraschende Begegnung Seltenes Paket"
             },
             "category": "special_event",
             "event_id": "surprise_encounter",
@@ -3818,7 +3818,7 @@
         "surprise_encounter_select_pack": {
             "name": {
                 "en": "Surprise Encounter Select Pack",
-                "de": ""
+                "de": "Überraschende Begegnung Auswahlpaket"
             },
             "category": "special_event",
             "event_id": "surprise_encounter",
@@ -3836,7 +3836,7 @@
         "surprise_encounter_ultimate_pack": {
             "name": {
                 "en": "Surprise Encounter Ultimate Pack",
-                "de": ""
+                "de": "Überraschende Begegnung Ultimatives Paket"
             },
             "category": "special_event",
             "event_id": "surprise_encounter",
@@ -3854,7 +3854,7 @@
         "survivor_pack": {
             "name": {
                 "en": "Survivor Pack",
-                "de": ""
+                "de": "Überlebenden-Paket"
             },
             "category": "pack_shop",
             "price": 499,
@@ -3871,7 +3871,7 @@
         "tempered_arms": {
             "name": {
                 "en": "Tempered Arms",
-                "de": ""
+                "de": "Gehärtete Waffen"
             },
             "category": "value_event",
             "limit_type": "weekly",
@@ -3997,7 +3997,7 @@
         "ur_gear_crafting": {
             "name": {
                 "en": "UR Gear Crafting",
-                "de": ""
+                "de": "UR-Ausrüstungs Fertigen"
             },
             "category": "weekly_special",
             "price": 4999,
@@ -4017,7 +4017,7 @@
         "value_gear_pack": {
             "name": {
                 "en": "Value Gear Pack",
-                "de": ""
+                "de": "Wertvolles Ausrüstungspaket"
             },
             "category": "daily_must_buy",
             "limit_type": "daily",
@@ -4041,7 +4041,7 @@
         "weekly_grain_pass": {
             "name": {
                 "en": "Weekly Grain Pass",
-                "de": ""
+                "de": "Getreide-Wochenkarte"
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
@@ -4057,7 +4057,7 @@
         "weekly_herb_pass": {
             "name": {
                 "en": "Weekly Herb Pass",
-                "de": ""
+                "de": "Kräuter-Wochenkarte"
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
@@ -4073,7 +4073,7 @@
         "weekly_hero_exp_pass": {
             "name": {
                 "en": "Weekly Hero EXP Pass",
-                "de": ""
+                "de": "Wochenpass für Helden-EP"
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
@@ -4089,7 +4089,7 @@
         "weekly_pass": {
             "name": {
                 "en": "Weekly Pass",
-                "de": ""
+                "de": "Wochenpass"
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
@@ -4116,7 +4116,7 @@
         "weekly_special": {
             "name": {
                 "en": "Jokers Weekly Special",
-                "de": ""
+                "de": "Jokers Wöchentliches Spezial"
             },
             "category": "special_event",
             "limit_type": "event",
@@ -4221,7 +4221,7 @@
         "weekly_timber_pass": {
             "name": {
                 "en": "Weekly Timber Pass",
-                "de": ""
+                "de": "Holz-Wochenkarte"
             },
             "category": "weekly_pass",
             "limit_type": "weekly",
@@ -4239,7 +4239,7 @@
         "recluse_merchant": {
             "name": {
                 "en": "Recluse Merchant",
-                "de": ""
+                "de": "Einsiedler-Händler"
             },
             "event_id": "recluse_merchant",
             "currency_item_id": "recluse_coin",
@@ -4845,7 +4845,7 @@
         "surprise_encounter_shop": {
             "name": {
                 "en": "Surprise Encounter Shop",
-                "de": ""
+                "de": "Überraschende Begegnung Shop"
             },
             "event_id": "surprise_encounter",
             "currency_item_id": "surprise_emblem",
@@ -5166,7 +5166,7 @@
         "vip_shop": {
             "name": {
                 "en": "VIP Shop",
-                "de": ""
+                "de": "VIP Shop"
             },
             "currency_item_id": "diamonds",
             "offers": {
@@ -5359,7 +5359,7 @@
         "recluse_merchant": {
             "name": {
                 "en": "Recluse Merchant",
-                "de": ""
+                "de": "Einsiedler-Händler"
             },
             "category": "special_event"
         },
@@ -5373,7 +5373,7 @@
         "surprise_encounter": {
             "name": {
                 "en": "Surprise Encounter",
-                "de": ""
+                "de": "Überraschende Begegnung"
             },
             "category": "special_event",
             "exceedable_pack_limits": true
@@ -5381,7 +5381,7 @@
         "weekly_special": {
             "name": {
                 "en": "Jokers Weekly Special",
-                "de": ""
+                "de": "Jokers Wöchentliches Spezial"
             },
             "category": "special_event"
         }
@@ -5502,7 +5502,7 @@
         "artisans_request": {
             "name": {
                 "en": "Artisan's Request",
-                "de": ""
+                "de": "Auftrag des Handwerkers"
             },
             "conversions": [
                 {
