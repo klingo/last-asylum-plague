@@ -52,7 +52,7 @@ const gold = (value, digits = 0) =>
 function unavailablePassIds() {
     return new Set(
         Object.entries(data.packages)
-            .filter(([id, pkg]) => isSeasonalOff(id, pkg, settings.seasonalPass))
+            .filter(([id, pkg]) => isSeasonalOff(id, pkg, settings.seasonalPasses))
             .map(([id]) => id),
     );
 }

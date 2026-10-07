@@ -67,12 +67,12 @@ function packageFamilyId(id, pkg) {
 }
 
 /**
- * True for a seasonal package (`seasonal: true`, e.g. the Gear Pass) that isn't the one on sale right
- * now. Only one seasonal pass is on sale at a time: `seasonalPass` is its family id (null = none;
- * undefined = don't filter, e.g. for scripts). Packages without the flag are always available.
+ * True for a seasonal package (`seasonal: true`, e.g. the Gear Pass) that isn't on sale right now.
+ * `seasonalPasses`: family ids of the seasonal passes on sale (several can be at once; undefined =
+ * don't filter, e.g. for scripts). Packages without the flag are always available.
  */
-function isSeasonalOff(id, pkg, seasonalPass) {
-    return seasonalPass !== undefined && Boolean(pkg.seasonal) && packageFamilyId(id, pkg) !== seasonalPass;
+function isSeasonalOff(id, pkg, seasonalPasses) {
+    return seasonalPasses !== undefined && Boolean(pkg.seasonal) && !seasonalPasses.includes(packageFamilyId(id, pkg));
 }
 
 /**

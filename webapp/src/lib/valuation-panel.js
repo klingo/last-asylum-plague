@@ -23,24 +23,6 @@ function passFamilies(packages) {
 
 const ALL_FIELDS = ['budget', 'events', 'passes'];
 
-/** One choice out of `entries` plus "None" (value ''). */
-function radioGroupHtml(name, labelKey, noneKey, entries) {
-    if (entries.length === 0) {
-        return '';
-    }
-    const radios = [['', null], ...entries]
-        .map(
-            ([id, entry]) =>
-                `<label class="checkbox-label"><input type="radio" name="${name}" value="${id}" /><span ${entry ? '' : `data-i18n="${noneKey}"`}>${entry ? localizedName(entry.name) : ''}</span></label>`,
-        )
-        .join('');
-    return `
-        <div class="field">
-            <span class="field-label" data-i18n="${labelKey}"></span>
-            <div class="checkbox-group">${radios}</div>
-        </div>`;
-}
-
 function checkboxGroupHtml(name, labelKey, entries) {
     if (entries.length === 0) {
         return '';
@@ -76,7 +58,7 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
                         : ''
                 }
                 ${show.has('events') ? checkboxGroupHtml('vp-event', 'valuation.eventsLabel', sorted(data.events)) : ''}
-                ${show.has('passes') ? radioGroupHtml('vp-pass', 'valuation.passesLabel', 'valuation.passesNone', sorted(Object.fromEntries(passFamilies(data.packages)))) : ''}
+                ${show.has('passes') ? checkboxGroupHtml('vp-pass', 'valuation.passesLabel', sorted(Object.fromEntries(passFamilies(data.packages)))) : ''}
             </div>`;
         applyStaticTranslations(container);
         const budgetInput = container.querySelector('#vp-budget');
@@ -86,7 +68,10 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
                 update({ budget: Math.max(0, Number(budgetInput.value) || 0) }),
             );
         }
-        for (const [name, key] of [['vp-event', 'activeEvents']]) {
+        for (const [name, key] of [
+            ['vp-event', 'activeEvents'],
+            ['vp-pass', 'seasonalPasses'],
+        ]) {
             const boxes = [...container.querySelectorAll(`input[name="${name}"]`)];
             for (const box of boxes) {
                 box.checked = settings[key].includes(box.value);
@@ -94,11 +79,6 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
                     update({ [key]: boxes.filter((b) => b.checked).map((b) => b.value) }),
                 );
             }
-        }
-        // The one seasonal pass on sale ('' = none).
-        for (const radio of container.querySelectorAll('input[name="vp-pass"]')) {
-            radio.checked = radio.value === (settings.seasonalPass || '');
-            radio.addEventListener('change', () => update({ seasonalPass: radio.value || null }));
         }
     }
 

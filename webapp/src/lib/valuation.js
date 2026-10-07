@@ -29,7 +29,7 @@ function planOptions(data, settings, overrides = {}) {
     return {
         budget: settings.budget,
         activeEventIds: new Set(settings.activeEvents),
-        seasonalPass: settings.seasonalPass,
+        seasonalPasses: settings.seasonalPasses,
         includePasses: true,
         includeExclusives: false,
         weights: priorityWeights(settings),

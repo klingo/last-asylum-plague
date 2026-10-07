@@ -68,8 +68,8 @@ function currencyFlows(contents, items, values, currencyIds, out = new Map(), fa
  * options: `budget` (Banknotes/week), `activeEventIds` (Set; events running this week),
  * `includePasses`, `includeExclusives`, `ignored` (Set of item ids forced to 0 points),
  * `weights` (personal item weights), `basePoints` (point-fit.js; fitted here if not given),
- * `activeTrackIds` (Set of spend reward tracks running this week), `seasonalPass` (family id of the
- * seasonal pass on sale; null = none, undefined = all), `eventSpend` (`{ eventId, min, max }`: Banknotes
+ * `activeTrackIds` (Set of spend reward tracks running this week), `seasonalPasses` (family ids of the
+ * seasonal passes on sale; undefined = all), `eventSpend` (`{ eventId, min, max }`: Banknotes
  * spent on that event's packages, for the Events page's what-if steps), `exceedEventPackLimits` (Set of event
  * ids whose packages may be bought without their purchase limit).
  */
@@ -83,7 +83,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         weights = null,
         basePoints = fitItemPoints(data).points,
         activeTrackIds = new Set(),
-        seasonalPass = undefined,
+        seasonalPasses = undefined,
         eventSpend = null,
         exceedEventPackLimits = null,
     } = options;
@@ -123,7 +123,12 @@ function solveWeeklyPlan(highs, data, options = {}) {
         }
         // Plain diamond top-ups are the worst deal in the game (diamonds only feed the VIP shop);
         // left out so leftover budget isn't "filled" with them.
-        if (!(capacity > 0) || !(pkg.price > 0) || pkg.category === 'diamond' || isSeasonalOff(id, pkg, seasonalPass)) {
+        if (
+            !(capacity > 0) ||
+            !(pkg.price > 0) ||
+            pkg.category === 'diamond' ||
+            isSeasonalOff(id, pkg, seasonalPasses)
+        ) {
             continue;
         }
         if (pkg.requires && !packageVars.has(pkg.requires) && packages[pkg.requires]) {

@@ -69,7 +69,7 @@ function buildEntries() {
         if (
             !(pkg.price > 0) ||
             (pkg.event_id && !activeEventIds.has(pkg.event_id)) ||
-            isSeasonalOff(id, pkg, settings.seasonalPass)
+            isSeasonalOff(id, pkg, settings.seasonalPasses)
         ) {
             continue;
         }
