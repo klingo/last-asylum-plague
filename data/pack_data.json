@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-06"
+        "last_updated": "2026-10-07"
     },
     "items": {
         "antitoxin": {
@@ -3867,6 +3867,30 @@
                 "survivor_token": 5,
                 "vip_points": 500
             }
+        },
+        "tempered_arms": {
+            "name": {
+                "en": "Tempered Arms",
+                "de": ""
+            },
+            "category": "value_event",
+            "limit_type": "weekly",
+            "tiers": {
+                "1": {
+                    "price": 999,
+                    "deal_percentage": 8159,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "lv2_alliance_chest": 1,
+                        "random_gearstone_supply": 6,
+                        "resource_supply_ssr": 28,
+                        "speedup_supply": 410,
+                        "gearstone": 10000
+                    }
+                }
+            },
+            "seasonal": true,
+            "delivery_days": 7
         },
         "twin_dragon_brooch_pack": {
             "name": {
