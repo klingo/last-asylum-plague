@@ -470,6 +470,10 @@
                 "currency_item_id": {
                     "$ref": "#/definitions/id"
                 },
+                "random_offers": {
+                    "type": "boolean",
+                    "description": "Only a random selection of the offers is on sale (e.g. the Recluse Merchant): the Events page says per offer whether it is worth buying when it shows up, instead of how many to buy."
+                },
                 "points_per_currency": {
                     "type": "number",
                     "exclusiveMinimum": 0,

@@ -698,7 +698,7 @@ tbody tr:hover {
 }
 
 .events-shop-grid {
-    grid-template-columns: minmax(260px, 2.5fr) minmax(90px, 0.7fr) minmax(90px, 0.8fr) 90px 90px;
+    grid-template-columns: minmax(260px, 2.5fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) minmax(90px, 0.8fr) 90px 90px;
 }
 
 .events-steps-grid {

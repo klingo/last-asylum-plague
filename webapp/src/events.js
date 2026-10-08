@@ -26,6 +26,7 @@ const exceedNote = document.getElementById('exceed-note');
 const eventSummary = document.getElementById('event-summary');
 const shopSection = document.getElementById('shop-section');
 const shopHeading = document.getElementById('shop-heading');
+const shopNote = document.getElementById('shop-note');
 const shopTable = document.getElementById('shop-table');
 const stepsCard = document.getElementById('steps-card');
 const stepsTable = document.getElementById('steps-table');
@@ -298,6 +299,7 @@ function renderShop({ shopId, shop }) {
     const plan = valuation.plan;
     const coinWorth = valuation.worth(shop.currency_item_id);
     shopHeading.textContent = localizedName(shop.name, locale);
+    shopNote.hidden = !shop.random_offers;
     const bought = new Map(plan.exchanges.filter((e) => e.shopId === shopId).map((e) => [e.offerKey, e.count]));
     const offers = Object.entries(shop.offers || {}).map(([offerKey, offer]) => {
         const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
@@ -313,6 +315,18 @@ function renderShop({ shopId, shop }) {
     const coinIcon = iconHtml(shop.currency_item_id);
     const buyBadge = (text) => `<span class="buy-badge">${text}</span>`;
     const rowClass = (buy) => `ranking-grid__row${buy ? ' ranking-grid__row--buy' : ''}`;
+    // Random offers (Recluse Merchant): no weekly count, just whether an offer is worth its coins when it shows up.
+    const worthBuying = (o) => (shop.random_offers ? o.ratio >= 1 : o.count > 0);
+    const buyCell = (o) => {
+        if (shop.random_offers) {
+            return o.ratio === null
+                ? ''
+                : o.ratio >= 1
+                  ? buyBadge(t('events.buy'))
+                  : `<span class="text-dim">${t('events.skip')}</span>`;
+        }
+        return o.count ? buyBadge(`×${formatThousands(o.count)}`) : '';
+    };
 
     const groups = stages.map((stage) => {
         const heading =
@@ -323,12 +337,13 @@ function renderShop({ shopId, shop }) {
             .filter((o) => (o.offer.unlock_points || 0) === stage)
             .sort((a, b) => (b.ratio ?? 0) - (a.ratio ?? 0))
             .map(
-                ({ offer, count, worth, ratio }) => `<div class="${rowClass(count)}" role="row">
+                ({ offer, count, worth, ratio }) => `<div class="${rowClass(worthBuying({ count, ratio }))}" role="row">
                     ${cell(`${iconHtml(offer.item_id)}${itemDisplayName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}`, 'item-cell')}
                     ${numCell(`${formatThousands(offer.currency_cost)} ${coinIcon}`)}
+                    ${numCell(coinWorth > 0 ? gold(formatThousands(offer.currency_cost * coinWorth, 0)) : t('common.dash'))}
                     ${numCell(gold(formatThousands(worth, 0)))}
                     ${numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 }))}
-                    ${numCell(count ? buyBadge(`×${formatThousands(count)}`) : '')}
+                    ${numCell(buyCell({ count, ratio }))}
                 </div>`,
             );
         return heading + rows.join('');
@@ -345,6 +360,7 @@ function renderShop({ shopId, shop }) {
             return `<div class="${rowClass(reached.has(threshold))}" role="row">
                 ${cell(`${iconHtml(firstItem)}${t('events.bonusTier', { threshold: formatThousands(threshold) })}: ${bundleLabel(reward, data.items, locale)}`, 'item-cell')}
                 ${numCell(t('common.dash'))}
+                ${numCell(t('common.dash'))}
                 ${numCell(gold(formatThousands(b.worth, 0)))}
                 ${numCell('')}
                 ${numCell(reached.has(threshold) ? buyBadge(`✓ ${t('events.reached')}`) : '')}
@@ -353,7 +369,7 @@ function renderShop({ shopId, shop }) {
 
     shopTable.innerHTML = `
         <div class="ranking-grid__row" role="row">
-            ${headerCell('offer')}${headerCell('cost', true)}${headerCell('worth', true)}${headerCell('ratio', true)}${headerCell('buy', true)}
+            ${headerCell('offer')}${headerCell('cost', true)}${headerCell('costBanknotes', true)}${headerCell('worth', true)}${headerCell('ratio', true)}${headerCell(shop.random_offers ? 'buyIfOffered' : 'buy', true)}
         </div>
         ${groups.join('')}
         ${tierRows.length > 0 ? `<div class="ranking-grid__section">${t('events.bonusSection')}</div>${tierRows.join('')}` : ''}`;

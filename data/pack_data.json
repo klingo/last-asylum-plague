@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-07"
+        "last_updated": "2026-10-08"
     },
     "items": {
         "antitoxin": {
@@ -4496,7 +4496,8 @@
                     "purchase_limit": 1,
                     "limit_type": "daily"
                 }
-            }
+            },
+            "random_offers": true
         },
         "starry_bazaar": {
             "name": {

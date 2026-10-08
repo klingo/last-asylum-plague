@@ -170,9 +170,13 @@
         "points": "points",
         "unlockStart": "Available from the start",
         "unlockAt": "Unlocks at {points} points",
+        "buy": "Buy",
+        "skip": "Skip",
+        "randomOffersNote": "This shop only shows a random selection of its offers. Buy an offer when it shows up if it's marked \"Buy\" (ratio 1.0 or more: worth at least what its coins are worth to you); skip the others.",
         "table": {
             "offer": "Offer",
             "cost": "Cost",
+            "costBanknotes": "Cost in Banknotes",
             "worth": "Worth",
             "ratio": "Ratio",
             "buy": "Buy / week",
@@ -180,7 +184,8 @@
             "stepCost": "Extra spend",
             "stepWorth": "Extra worth",
             "stepRatio": "Step ratio",
-            "packs": "Event packs bought"
+            "packs": "Event packs bought",
+            "buyIfOffered": "If offered"
         }
     },
     "choices": {

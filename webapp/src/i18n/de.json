@@ -170,9 +170,13 @@
         "points": "",
         "unlockStart": "",
         "unlockAt": "",
+        "buy": "",
+        "skip": "",
+        "randomOffersNote": "",
         "table": {
             "offer": "",
             "cost": "",
+            "costBanknotes": "",
             "worth": "",
             "ratio": "",
             "buy": "",
@@ -180,7 +184,8 @@
             "stepCost": "",
             "stepWorth": "",
             "stepRatio": "",
-            "packs": ""
+            "packs": "",
+            "buyIfOffered": ""
         }
     },
     "choices": {
