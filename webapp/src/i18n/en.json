@@ -134,7 +134,9 @@
         "planSummary": "Best plan for your weekly spend: {purchases} different packs for {spent} of {budget} Banknotes (\"Buy / week\" column). What to buy with the coins and diamonds they give: see Events.",
         "buyNoFit": "doesn't fit",
         "lifetimeTotal": "{count}× total",
-        "perMonth": "month"
+        "perMonth": "month",
+        "perWeekShare": "{amount} Banknotes / week",
+        "monthlyNote": "Monthly purchases ({names}) count at 7/30 of their price per week."
     },
     "events": {
         "heading": "Events",

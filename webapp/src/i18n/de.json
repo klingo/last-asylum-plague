@@ -134,7 +134,9 @@
         "planSummary": "",
         "buyNoFit": "",
         "lifetimeTotal": "",
-        "perMonth": ""
+        "perMonth": "",
+        "perWeekShare": "",
+        "monthlyNote": ""
     },
     "events": {
         "heading": "",

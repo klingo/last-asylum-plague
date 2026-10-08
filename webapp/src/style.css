@@ -844,6 +844,12 @@ tbody tr:hover {
     color: var(--good);
 }
 
+/* Info icon in front of a price (Ranking: weekly share of monthly packs). */
+.price-info {
+    display: inline-flex;
+    margin-right: 6px;
+}
+
 .text-warn {
     color: var(--warn);
 }

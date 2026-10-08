@@ -5,7 +5,7 @@ import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
 import { packageWeeklyCapacity, isSeasonalOff } from './lib/catalog.js';
-import { packageDisplayName, itemDisplayName, purchaseType } from './lib/labels';
+import { packageDisplayName, packageDisplayText, itemDisplayName, purchaseType } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
 import { requiresIconHtml, infoIconHtml } from './lib/requires-tooltip';
@@ -74,6 +74,12 @@ function buildEntries() {
             continue;
         }
         const b = valuation.bundle(pkg, pkg.price);
+        const capacity = packageWeeklyCapacity(pkg, capacityRules);
+        // Monthly purchases count at their weekly share (7/30 of the price) in the weekly plan.
+        const weeklyShare =
+            pkg.limit_type === 'monthly'
+                ? `<span class="price-info">${infoIconHtml(t('rankings.perWeekShare', { amount: formatThousands(capacity * pkg.price, 0) }))}</span>`
+                : '';
         result.push({
             key: `package:${id}`,
             section: b.incomplete ? 'unknown' : 'ranked',
@@ -82,9 +88,9 @@ function buildEntries() {
             name: packageDisplayName(pkg, locale),
             requires: pkg.requires,
             availableDays: pkg.available_days,
-            priceHtml: gold(formatThousands(pkg.price)),
+            priceHtml: `${weeklyShare}${gold(formatThousands(pkg.price))}`,
             planned: planned.get(id) || 0,
-            capacity: packageWeeklyCapacity(pkg, capacityRules),
+            capacity,
             limitType: pkg.limit_type,
             worth: b.worth,
             ratio: b.ratio,
@@ -221,11 +227,15 @@ function rebuild() {
     entries = buildEntries();
     const rankedCount = entries.filter((entry) => entry.rank).length;
     const plan = valuation.plan;
+    const monthly = plan.purchases
+        .filter((p) => p.pkg.limit_type === 'monthly')
+        .map((p) => packageDisplayText(p.pkg, getLocale()));
+    const monthlyNote = monthly.length > 0 ? ` ${t('rankings.monthlyNote', { names: monthly.join(', ') })}` : '';
     rankingMeta.textContent = `${t('rankings.planSummary', {
         purchases: formatThousands(plan.purchases.length),
         spent: formatThousands(plan.spent, 0),
         budget: formatThousands(plan.budget, 0),
-    })} ${t('rankings.meta', { count: rankedCount })} ${modelSummaryText(valuation)}`;
+    })}${monthlyNote} ${t('rankings.meta', { count: rankedCount })} ${modelSummaryText(valuation)}`;
     applyFilters();
 }
 
