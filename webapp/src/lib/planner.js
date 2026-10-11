@@ -71,7 +71,8 @@ function currencyFlows(contents, items, values, currencyIds, out = new Map(), fa
  * `activeTrackIds` (Set of spend reward tracks running this week), `seasonalPasses` (family ids of the
  * seasonal passes on sale; undefined = all), `eventSpend` (`{ eventId, min, max }`: Banknotes
  * spent on that event's packages, for the Events page's what-if steps), `exceedEventPackLimits` (Set of event
- * ids whose packages may be bought without their purchase limit).
+ * ids whose packages may be bought without their purchase limit), `extraCurrency` (`{ currencyId: qty }`
+ * obtained outside the packs this week, e.g. diamonds for the VIP Shop).
  */
 function solveWeeklyPlan(highs, data, options = {}) {
     const {
@@ -86,6 +87,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         seasonalPasses = undefined,
         eventSpend = null,
         exceedEventPackLimits = null,
+        extraCurrency = null,
     } = options;
     const items = data.items || {};
     const packages = expandPackageFamilies(data.packages || {});
@@ -324,6 +326,13 @@ function solveWeeklyPlan(highs, data, options = {}) {
         }
     }
 
+    // Currency from outside the packs: spent may exceed received by that much.
+    for (const [currencyId, qty] of Object.entries(extraCurrency || {})) {
+        if (qty > 0) {
+            balance(currencyId);
+            balanceRows.get(currencyId).rhs = qty;
+        }
+    }
     model.rows.push(budgetRow, ...balanceRows.values());
 
     // 1) Integer plan: whole purchases.
@@ -386,7 +395,12 @@ function solveWeeklyPlan(highs, data, options = {}) {
                 spentCoins += amount;
             }
         }
-        currencies.set(currencyId, { received, spent: spentCoins, mu: mu.get(currencyId) });
+        currencies.set(currencyId, {
+            received,
+            extra: extraCurrency?.[currencyId] || 0,
+            spent: spentCoins,
+            mu: mu.get(currencyId),
+        });
     }
 
     const budgetBinding = lambda > EPS;

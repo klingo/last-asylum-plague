@@ -38,6 +38,15 @@
 
             <section class="card" id="plan-card" hidden>
                 <h3 data-i18n="events.planHeading"></h3>
+                <!-- VIP Shop only: diamonds from outside the packs (a plain wrapper, so [hidden] isn't overridden by .field). -->
+                <div id="extra-diamonds-field" hidden>
+                    <div class="form-row">
+                        <div class="field field--narrow">
+                            <label for="extra-diamonds" data-i18n="events.extraDiamonds"></label>
+                            <input id="extra-diamonds" type="number" min="0" step="1000" />
+                        </div>
+                    </div>
+                </div>
                 <p class="text-warn" id="exceed-note" hidden data-i18n="events.exceedNote"></p>
                 <div id="event-summary" class="plan-tiles"></div>
                 <div id="shop-section" hidden>

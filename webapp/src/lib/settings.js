@@ -27,6 +27,7 @@ const DEFAULT_NONE_ITEMS = [
 
 const DEFAULT_SETTINGS = {
     budget: 20000, // Banknotes per week
+    extraDiamonds: 0, // diamonds per week from outside the packs, for the VIP Shop (Events page)
     activeEvents: [], // event ids running this week
     seasonalPasses: [], // family ids of the seasonal passes on sale right now; other passes are always on sale
     priorities: Object.fromEntries(DEFAULT_NONE_ITEMS.map((id) => [id, 'none'])), // itemId -> level ('normal' omitted)
@@ -57,6 +58,9 @@ function loadSettings() {
     if (typeof stored.seasonalPass === 'string') {
         // Older settings: a single seasonal pass on sale.
         settings.seasonalPasses = [stored.seasonalPass];
+    }
+    if (Number.isFinite(stored.extraDiamonds) && stored.extraDiamonds >= 0) {
+        settings.extraDiamonds = stored.extraDiamonds;
     }
     for (const key of ['activeEvents', 'seasonalPasses']) {
         if (Array.isArray(stored[key])) {

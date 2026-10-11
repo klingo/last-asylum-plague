@@ -20,6 +20,8 @@ applyStaticTranslations();
 const eventSelect = document.getElementById('event-select');
 const exceedLimits = document.getElementById('exceed-limits');
 const exceedLimitsInfo = document.getElementById('exceed-limits-info');
+const extraDiamondsField = document.getElementById('extra-diamonds-field');
+const extraDiamondsInput = document.getElementById('extra-diamonds');
 const promptCard = document.getElementById('event-prompt-card');
 const planCard = document.getElementById('plan-card');
 const exceedNote = document.getElementById('exceed-note');
@@ -76,9 +78,20 @@ function exceeding() {
     return exceedLimits.checked && isExceedable(selection()?.eventId);
 }
 
-/** Planner options of this page: the selected event's pack limits lifted when exceeding. */
+/** The VIP Shop (a shop without event) is selected: diamonds can also come from outside the packs. */
+const isVipShop = (selected) => Boolean(selected?.shop && !selected.shop.event_id);
+
+/**
+ * Planner options of this page: the selected event's pack limits lifted when exceeding; for the VIP
+ * Shop, the extra diamonds per week on top of what the packs give.
+ */
 function pageOverrides() {
-    return exceeding() ? { exceedEventPackLimits: new Set([selection().eventId]) } : {};
+    const selected = selection();
+    const overrides = exceeding() ? { exceedEventPackLimits: new Set([selected.eventId]) } : {};
+    if (isVipShop(selected) && settings.extraDiamonds > 0) {
+        overrides.extraCurrency = { [selected.shop.currency_item_id]: settings.extraDiamonds };
+    }
+    return overrides;
 }
 
 const eventPurchases = (plan, eventId) => plan.purchases.filter((p) => p.pkg.event_id === eventId);
@@ -191,6 +204,7 @@ function renderSummary({ eventId, shopId, shop }) {
             tileHtml(
                 coinName,
                 `<div class="plan-stat">${iconHtml(shop.currency_item_id)}<strong>${formatThousands(coin?.received ?? 0, 0)}</strong> ${t('events.received')}</div>
+                ${coin?.extra ? `<div class="plan-stat">+ <strong>${formatThousands(coin.extra, 0)}</strong> ${t('events.extra')}</div>` : ''}
                 <div class="plan-stat text-dim">${formatThousands(coin?.spent ?? 0, 0)} ${t('events.spentInShop')}</div>`,
             ),
         );
@@ -311,6 +325,12 @@ function renderShop({ shopId, shop }) {
         };
     });
     const maxRatio = Math.max(1, ...offers.map((o) => o.ratio).filter(Number.isFinite));
+    // Banknote amounts: whole numbers for event shops; the VIP Shop's are small, so 1 decimal (2 below 1).
+    const smallest = Math.min(
+        ...offers.flatMap((o) => [o.worth, o.offer.currency_cost * coinWorth]).filter((x) => x > 0),
+    );
+    const decimals = shop.event_id ? 0 : smallest < 1 ? 2 : 1;
+    const bn = (value) => gold(formatThousands(value, decimals));
     const stages = [...new Set(offers.map((o) => o.offer.unlock_points || 0))].sort((a, b) => a - b);
     const coinIcon = iconHtml(shop.currency_item_id);
     const buyBadge = (text) => `<span class="buy-badge">${text}</span>`;
@@ -340,8 +360,8 @@ function renderShop({ shopId, shop }) {
                 ({ offer, count, worth, ratio }) => `<div class="${rowClass(worthBuying({ count, ratio }))}" role="row">
                     ${cell(`${iconHtml(offer.item_id)}${itemDisplayName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}`, 'item-cell')}
                     ${numCell(`${formatThousands(offer.currency_cost)} ${coinIcon}`)}
-                    ${numCell(coinWorth > 0 ? gold(formatThousands(offer.currency_cost * coinWorth, 0)) : t('common.dash'))}
-                    ${numCell(gold(formatThousands(worth, 0)))}
+                    ${numCell(coinWorth > 0 ? bn(offer.currency_cost * coinWorth) : t('common.dash'))}
+                    ${numCell(bn(worth))}
                     ${numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 }))}
                     ${numCell(buyCell({ count, ratio }))}
                 </div>`,
@@ -361,7 +381,7 @@ function renderShop({ shopId, shop }) {
                 ${cell(`${iconHtml(firstItem)}${t('events.bonusTier', { threshold: formatThousands(threshold) })}: ${bundleLabel(reward, data.items, locale)}`, 'item-cell')}
                 ${numCell(t('common.dash'))}
                 ${numCell(t('common.dash'))}
-                ${numCell(gold(formatThousands(b.worth, 0)))}
+                ${numCell(bn(b.worth))}
                 ${numCell('')}
                 ${numCell(reached.has(threshold) ? buyBadge(`✓ ${t('events.reached')}`) : '')}
             </div>`;
@@ -415,6 +435,7 @@ function render() {
     promptCard.hidden = Boolean(selected);
     planCard.hidden = !selected;
     exceedLimits.disabled = !isExceedable(selected?.eventId);
+    extraDiamondsField.hidden = !isVipShop(selected);
     exceedNote.hidden = !exceeding();
     if (!selected) {
         stepsCard.hidden = true;
@@ -470,8 +491,14 @@ async function init() {
     });
     settings = panel.getSettings();
     renderExceedInfo();
-    // With exceeded limits the plan depends on the selected event; otherwise it's the Ranking's plan.
-    eventSelect.addEventListener('change', () => (exceedLimits.checked ? recompute() : withLoading(render)));
+    extraDiamondsInput.value = String(settings.extraDiamonds || 0);
+    extraDiamondsInput.addEventListener('change', () =>
+        panel.update({ extraDiamonds: Math.max(0, Number(extraDiamondsInput.value) || 0) }),
+    );
+    // With exceeded limits or extra diamonds the plan depends on the selection; otherwise it's the Ranking's plan.
+    eventSelect.addEventListener('change', () =>
+        exceedLimits.checked || settings.extraDiamonds > 0 ? recompute() : withLoading(render),
+    );
     exceedLimits.addEventListener('change', recompute);
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
