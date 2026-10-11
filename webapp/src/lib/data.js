@@ -5,6 +5,7 @@
  */
 import { t } from './i18n';
 import { expandPackageFamilies } from './catalog.js';
+import { setItemImageAliases } from './images';
 
 async function fetchJson(fileName) {
     const url = `${import.meta.env.BASE_URL}data/${fileName}`;
@@ -22,6 +23,7 @@ async function loadPackData() {
     if (data.packages) {
         data.packages = expandPackageFamilies(data.packages);
     }
+    setItemImageAliases(data.items);
     return data;
 }
 

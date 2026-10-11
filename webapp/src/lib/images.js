@@ -8,8 +8,21 @@ import { t } from './i18n';
 const PLACEHOLDER_ICON = `${import.meta.env.BASE_URL}icons/placeholder-item.svg`;
 const BANKNOTE_ICON_URL = `${import.meta.env.BASE_URL}assets/currencies/banknote.png`;
 
+// itemId -> item id whose image it borrows (the data's `image` field), set when the data is loaded.
+const imageAliases = new Map();
+
+/** Registers every item's `image` reference (items without an image of their own). */
+function setItemImageAliases(items) {
+    imageAliases.clear();
+    for (const [id, item] of Object.entries(items || {})) {
+        if (item.image) {
+            imageAliases.set(id, item.image);
+        }
+    }
+}
+
 function getItemImageUrl(itemId) {
-    return `${import.meta.env.BASE_URL}assets/items/${itemId}.png`;
+    return `${import.meta.env.BASE_URL}assets/items/${imageAliases.get(itemId) ?? itemId}.png`;
 }
 
 /**
@@ -38,4 +51,4 @@ function createItemImage(itemId, altText, className = 'item-icon') {
     return img;
 }
 
-export { getItemImageUrl, createItemImage, PLACEHOLDER_ICON, banknoteIconHtml, BANKNOTE_ICON_URL };
+export { getItemImageUrl, setItemImageAliases, createItemImage, PLACEHOLDER_ICON, banknoteIconHtml, BANKNOTE_ICON_URL };

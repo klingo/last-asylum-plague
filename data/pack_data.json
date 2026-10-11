@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-08"
+        "last_updated": "2026-10-11"
     },
     "items": {
         "antitoxin": {
@@ -1424,7 +1424,8 @@
                 "en": "SSR Curio",
                 "de": "SSR Kuriosität"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "image": "curio_chest_ssr"
         },
         "ssr_epigraph": {
             "name": {
@@ -1730,7 +1731,8 @@
                 "en": "UR Curio",
                 "de": ""
             },
-            "category": "virtual"
+            "category": "virtual",
+            "image": "curio_chest_ur"
         },
         "ur_epigraph_chest": {
             "name": {

@@ -122,6 +122,17 @@ async function verifyData() {
                 }
             }
 
+            // Check image (an item whose image this one borrows).
+            if (item.image) {
+                referencedItemKeys.add(item.image);
+                if (!itemKeys.has(item.image)) {
+                    reportError(
+                        'Item Reference',
+                        `Item "${itemId}" image references unresolvable item: "${item.image}"`,
+                    );
+                }
+            }
+
             // Check crafted_from (recipe: the item can be crafted from these ingredients).
             if (item.crafted_from && typeof item.crafted_from === 'object') {
                 for (const subItemId of Object.keys(item.crafted_from)) {

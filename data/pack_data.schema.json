@@ -150,6 +150,10 @@
                 "category": {
                     "$ref": "#/definitions/itemCategory"
                 },
+                "image": {
+                    "$ref": "#/definitions/id",
+                    "description": "Item id whose image to show when this item has no image of its own (e.g. `ur_curio` uses `curio_chest_ur`'s image)."
+                },
                 "contains": {
                     "$ref": "#/definitions/itemQuantities"
                 },
@@ -199,6 +203,10 @@
                 "category": {
                     "$ref": "#/definitions/itemCategory"
                 },
+                "image": {
+                    "$ref": "#/definitions/id",
+                    "description": "Item id whose image to show when this item has no image of its own (e.g. `ur_curio` uses `curio_chest_ur`'s image)."
+                },
                 "type": {
                     "type": "string",
                     "enum": ["choice"]
@@ -239,6 +247,10 @@
                 },
                 "category": {
                     "$ref": "#/definitions/itemCategory"
+                },
+                "image": {
+                    "$ref": "#/definitions/id",
+                    "description": "Item id whose image to show when this item has no image of its own (e.g. `ur_curio` uses `curio_chest_ur`'s image)."
                 },
                 "type": {
                     "type": "string",
