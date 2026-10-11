@@ -1085,6 +1085,10 @@ tbody tr:hover {
     padding-left: 0;
 }
 
+.app-footer__updated::before {
+    content: ' · ';
+}
+
 .app-footer {
     text-align: center;
     color: var(--text-dim);

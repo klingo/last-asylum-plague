@@ -2,6 +2,35 @@ import { t, getLocale, setLocale, SUPPORTED_LOCALES } from './lib/i18n';
 
 const LOCALE_LABELS = { en: 'EN', de: 'DE' };
 
+// Date the pack data was last updated (`metadata.last_updated`), shown in the footer.
+let dataDate = null;
+
+/** Shows when the pack data was last updated in the page footer (re-rendered on "localechange"). */
+function showDataDate(date) {
+    dataDate = date || null;
+    renderDataDate();
+}
+
+function renderDataDate() {
+    const footer = document.querySelector('.app-footer');
+    if (!footer || !dataDate) {
+        return;
+    }
+    let span = footer.querySelector('.app-footer__updated');
+    if (!span) {
+        span = document.createElement('span');
+        span.className = 'app-footer__updated';
+        footer.appendChild(span);
+    }
+    const parsed = new Date(`${dataDate}T00:00:00`);
+    const date = Number.isNaN(parsed.getTime())
+        ? dataDate
+        : parsed.toLocaleDateString(getLocale(), { year: 'numeric', month: 'long', day: 'numeric' });
+    span.textContent = t('footer.lastUpdated', { date });
+}
+
+window.addEventListener('localechange', renderDataDate);
+
 // Remembered across `renderNav()` calls so the "localechange" listener below can re-render
 // with the same active page without having to re-derive it from the (about to be replaced) DOM.
 let currentActivePage = 'welcome';
@@ -49,4 +78,4 @@ window.addEventListener('localechange', () => {
     renderNav(currentActivePage);
 });
 
-export { renderNav };
+export { renderNav, showDataDate };

@@ -88,7 +88,8 @@
         "choices": "Last Asylum Pack Solver — choice options valued live from pack_data.json",
         "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json",
         "items": "Last Asylum Pack Solver — item worth computed live from pack_data.json",
-        "compare": "Last Asylum Pack Solver — comparison computed live from pack_data.json"
+        "compare": "Last Asylum Pack Solver — comparison computed live from pack_data.json",
+        "lastUpdated": "Data last updated: {date}"
     },
     "welcome": {
         "heading": "Welcome",

@@ -6,6 +6,7 @@
 import { t } from './i18n';
 import { expandPackageFamilies } from './catalog.js';
 import { setItemImageAliases } from './images';
+import { showDataDate } from '../nav';
 
 async function fetchJson(fileName) {
     const url = `${import.meta.env.BASE_URL}data/${fileName}`;
@@ -24,6 +25,7 @@ async function loadPackData() {
         data.packages = expandPackageFamilies(data.packages);
     }
     setItemImageAliases(data.items);
+    showDataDate(data.metadata?.last_updated);
     return data;
 }
 
