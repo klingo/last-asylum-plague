@@ -29,8 +29,37 @@ let data = null;
 let panel = null;
 let valuation = null;
 let currencies = new Set();
+// Reversible crafting chains (4 Cloth ⇄ 1 Leather ⇄ ... ⇄ 1 Tempered Steel): base item -> top item.
+let chainTops = new Map();
 // Leave-one-out results of the deal % fit (computed in the background after the first render).
 let sensitivity = null;
+
+/**
+ * Base item -> top item of every reversible crafting chain. The base carries the chain's value (and
+ * a priority on it spreads up the chain), but the page lists the chain under its top item, the one
+ * players think in (Tempered Steel rather than Cloth).
+ */
+function reversibleChainTops(items) {
+    const parentOf = new Map();
+    for (const [id, item] of Object.entries(items)) {
+        const entries = Object.entries(item.contains || {});
+        if (item.reversible && entries.length === 1) {
+            parentOf.set(entries[0][0], id);
+        }
+    }
+    const tops = new Map();
+    for (const childId of parentOf.keys()) {
+        if (items[childId]?.reversible) {
+            continue; // not the base of its chain
+        }
+        let top = childId;
+        while (parentOf.has(top)) {
+            top = parentOf.get(top);
+        }
+        tops.set(childId, top);
+    }
+    return tops;
+}
 
 /**
  * Items made of other items (chests, supplies, choice chests, omni shards, the gear-material chain
@@ -112,7 +141,16 @@ function render() {
     const search = searchInput.value.trim().toLowerCase();
     const rows = Object.entries(data.items)
         .filter(([id, item]) => !currencies.has(id) && (!isDerived(item) || priorityOf(id) !== 'normal'))
-        .map(([id, item]) => ({ id, item, name: itemDisplayName(data.items, id, locale) }))
+        // A chain base (Cloth) is shown as its top item (Tempered Steel); the priority stays on the base.
+        .map(([id, item]) => {
+            const shownId = chainTops.get(id) ?? id;
+            return {
+                id,
+                shownId,
+                item: data.items[shownId] ?? item,
+                name: itemDisplayName(data.items, shownId, locale),
+            };
+        })
         .filter(({ id }) => !changedOnly.checked || priorityOf(id) !== 'normal')
         .filter(
             ({ id, name, item }) =>
@@ -150,11 +188,11 @@ function render() {
                 <tr class="table-group" id="cat-${category}"><th colspan="3">${categoryLabel(category)}</th></tr>
                 ${members
                     .map(
-                        ({ id, name }) => `
+                        ({ id, shownId, name }) => `
                 <tr>
-                    <td><span class="item-cell"><span data-item-id="${id}"></span>${name}${isDerived(data.items[id]) ? ` <span class="text-dim">(${t('items.derivedNote')})</span>` : ''}</span></td>
+                    <td><span class="item-cell"><span data-item-id="${shownId}"></span>${name}${shownId === id && isDerived(data.items[id]) ? ` <span class="text-dim">(${t('items.derivedNote')})</span>` : ''}</span></td>
                     <td>${priorityHtml(id)}</td>
-                    <td class="text-right">${worthHtml(id)}${uncertainHtml(id)}</td>
+                    <td class="text-right">${worthHtml(shownId)}${uncertainHtml(id)}</td>
                 </tr>`,
                     )
                     .join('')}`,
@@ -205,6 +243,7 @@ async function recompute(settings) {
 async function init() {
     data = await loadPackData();
     currencies = currencyItemIds(data.exchange_shops);
+    chainTops = reversibleChainTops(data.items);
     panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
         // No controls here: the worth column uses the weekly spend set on the Ranking page.
         fields: [],
