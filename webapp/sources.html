@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.sources"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="sources.heading"></h2>
+                <p class="text-dim" data-i18n="sources.description"></p>
+                <div id="valuation-panel"></div>
+                <div class="form-row">
+                    <div class="field field--item">
+                        <label for="item-search" data-i18n="sources.itemLabel"></label>
+                        <div class="item-combobox">
+                            <input
+                                type="text"
+                                id="item-search"
+                                class="item-combobox__input"
+                                role="combobox"
+                                aria-expanded="false"
+                                aria-autocomplete="list"
+                                aria-controls="item-listbox"
+                                autocomplete="off"
+                                data-i18n-placeholder="sources.searchPlaceholder"
+                            />
+                            <button
+                                type="button"
+                                id="item-search-clear"
+                                class="item-combobox__clear"
+                                tabindex="-1"
+                                hidden
+                            >
+                                &times;
+                            </button>
+                            <div class="item-combobox__panel" id="item-listbox" role="listbox" hidden></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div id="sources-prompt" class="empty-state" data-i18n="sources.selectPrompt"></div>
+                <div id="sources-empty" class="empty-state" hidden data-i18n="sources.empty"></div>
+                <p class="summary-line" id="sources-meta" hidden></p>
+                <div class="table-wrap">
+                    <div id="sources-table" class="ranking-grid sources-grid" role="table"></div>
+                </div>
+            </section>
+        </main>
+        <footer class="app-footer"><span data-i18n="footer.sources"></span></footer>
+        <div id="loading-overlay" class="loading-overlay" hidden aria-hidden="true">
+            <div class="spinner"></div>
+        </div>
+        <script type="module" src="/src/sources.js"></script>
+    </body>
+</html>

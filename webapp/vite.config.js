@@ -14,6 +14,7 @@ export default defineConfig({
                 welcome: resolve(__dirname, 'index.html'),
                 rankings: resolve(__dirname, 'rankings.html'),
                 events: resolve(__dirname, 'events.html'),
+                sources: resolve(__dirname, 'sources.html'),
                 items: resolve(__dirname, 'items.html'),
                 choices: resolve(__dirname, 'choices.html'),
                 compare: resolve(__dirname, 'compare.html'),

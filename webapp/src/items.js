@@ -6,6 +6,7 @@ import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
 import { fitSensitivity, sensitivityFamilies, isDependent } from './lib/point-fit.js';
 import { currencyItemIds } from './lib/catalog.js';
+import { isContainerItem, reversibleChainTops } from './lib/item-sources.js';
 import { DEFAULT_SETTINGS, PRIORITY_LEVELS } from './lib/settings';
 import { itemDisplayName } from './lib/labels';
 import { infoIconHtml } from './lib/requires-tooltip';
@@ -35,45 +36,12 @@ let chainTops = new Map();
 let sensitivity = null;
 
 /**
- * Base item -> top item of every reversible crafting chain. The base carries the chain's value (and
- * a priority on it spreads up the chain), but the page lists the chain under its top item, the one
- * players think in (Tempered Steel rather than Cloth).
- */
-function reversibleChainTops(items) {
-    const parentOf = new Map();
-    for (const [id, item] of Object.entries(items)) {
-        const entries = Object.entries(item.contains || {});
-        if (item.reversible && entries.length === 1) {
-            parentOf.set(entries[0][0], id);
-        }
-    }
-    const tops = new Map();
-    for (const childId of parentOf.keys()) {
-        if (items[childId]?.reversible) {
-            continue; // not the base of its chain
-        }
-        let top = childId;
-        while (parentOf.has(top)) {
-            top = parentOf.get(top);
-        }
-        tops.set(childId, top);
-    }
-    return tops;
-}
-
-/**
  * Items made of other items (chests, supplies, choice chests, omni shards, the gear-material chain
  * above Cloth): their worth follows the items they contain, so they aren't listed — unless they
  * still have a priority of their own (e.g. from the old ignore list), so it can be seen and reset.
  */
 function isDerived(item) {
-    return Boolean(
-        item.value_equivalent ||
-        (item.type === 'random' && item.drop_table) ||
-        (item.type === 'choice' && item.choice) ||
-        item.contains ||
-        item.substitutes_for,
-    );
+    return isContainerItem(item);
 }
 
 function priorityOf(id) {

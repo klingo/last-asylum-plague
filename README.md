@@ -31,6 +31,9 @@ its contents without a common value scale. The tool uses one:
 - **Events** (`events.html`) — a ticked event's (or the VIP Shop's) part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
   and a step table of how much spending more on the event still pays off.
+- **Item Sources** (`sources.html`) — pick one item: every pack and shop offer on sale this week that gives it,
+  nested at any depth (e.g. SR Resource Supplies → Herbs), ranked by Banknotes per unit, with how much each gives and
+  an item ratio (worth of the item alone ÷ price).
 - **Item Priorities** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
 - **Best Choice Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.

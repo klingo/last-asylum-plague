@@ -68,6 +68,7 @@ webapp/src/lib/item-values.js     # points resolution (base points + structure)
 webapp/src/lib/planner.js         # the worth model (weekly budget LP)
 webapp/src/lib/acquire.js         # cheapest plan for a set of needs (Compare)
 webapp/src/lib/spend-tracks.js    # spend reward tracks (tier costs, track points per purchase)
+webapp/src/lib/item-sources.js    # units of one item a purchase gives, nested (Item Sources page)
 webapp/src/lib/lp.js              # HiGHS wrapper (LP text builder, duals); highs-browser.js locates the .wasm
 webapp/src/lib/valuation.js       # the one worth interface for the pages
 webapp/src/lib/valuation-panel.js # shared controls (weekly spend, events, tracks)
@@ -75,9 +76,9 @@ webapp/src/lib/settings.js        # localStorage settings incl. item priorities 
 webapp/src/i18n/{en,de}.json      # de.json values are intentionally blank placeholders, not missing data
 ```
 
-The pure modules (`catalog`, `point-fit`, `item-values`, `planner`, `acquire`, `lp`, `spend-tracks`) have no
-DOM/i18n dependency and use explicit `.js` import extensions, so Node scripts (`scripts/verify-data.js`) can import
-them. Keep it that way.
+The pure modules (`catalog`, `point-fit`, `item-values`, `planner`, `acquire`, `lp`, `spend-tracks`,
+`item-sources`) have no DOM/i18n dependency and use explicit `.js` import extensions, so Node scripts
+(`scripts/verify-data.js`) can import them. Keep it that way.
 
 ## Conventions
 

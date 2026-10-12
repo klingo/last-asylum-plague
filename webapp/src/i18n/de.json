@@ -6,6 +6,7 @@
         "home": "",
         "rankings": "",
         "events": "",
+        "sources": "",
         "choices": "",
         "spendRewards": "",
         "language": "",
@@ -76,6 +77,7 @@
         "welcome": "",
         "rankings": "",
         "events": "",
+        "sources": "",
         "choices": "",
         "spendRewards": "",
         "items": "",
@@ -85,6 +87,7 @@
         "welcome": "",
         "rankings": "",
         "events": "",
+        "sources": "",
         "choices": "",
         "spendRewards": "",
         "items": "",
@@ -96,6 +99,7 @@
         "intro": "",
         "rankingsDescription": "",
         "eventsDescription": "",
+        "sourcesDescription": "",
         "choicesDescription": "",
         "spendRewardsDescription": "",
         "itemsDescription": "",
@@ -189,6 +193,27 @@
             "stepRatio": "",
             "packs": "",
             "buyIfOffered": ""
+        }
+    },
+    "sources": {
+        "heading": "",
+        "description": "",
+        "itemLabel": "",
+        "searchPlaceholder": "",
+        "selectPrompt": "",
+        "empty": "",
+        "summary": "",
+        "via": "",
+        "table": {
+            "rank": "",
+            "source": "",
+            "gives": "",
+            "price": "",
+            "perUnit": "",
+            "perUnits": "",
+            "share": "",
+            "ratio": "",
+            "itemRatio": ""
         }
     },
     "choices": {

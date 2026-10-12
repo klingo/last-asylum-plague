@@ -58,6 +58,7 @@ function renderNav(activePage) {
             <a href="${base}index.html" class="${activePage === 'welcome' ? 'active' : ''}">${t('nav.home')}</a>
             <a href="${base}rankings.html" class="${activePage === 'rankings' ? 'active' : ''}">${t('nav.rankings')}</a>
             <a href="${base}events.html" class="${activePage === 'events' ? 'active' : ''}">${t('nav.events')}</a>
+            <a href="${base}sources.html" class="${activePage === 'sources' ? 'active' : ''}">${t('nav.sources')}</a>
             <a href="${base}items.html" class="${activePage === 'items' ? 'active' : ''}">${t('nav.items')}</a>
             <a href="${base}choices.html" class="${activePage === 'choices' ? 'active' : ''}">${t('nav.choices')}</a>
             <a href="${base}compare.html" class="${activePage === 'compare' ? 'active' : ''}">${t('nav.compare')}</a>

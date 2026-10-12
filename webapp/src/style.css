@@ -717,6 +717,24 @@ tbody tr:hover {
     font-size: 0.9rem;
 }
 
+/* Item Sources: rank, source (name + small grey "via" line), gives, price, per unit, ratio, item share, item ratio. */
+.sources-grid {
+    grid-template-columns:
+        50px minmax(260px, 2.5fr) minmax(100px, 0.8fr) minmax(90px, 0.7fr) minmax(100px, 0.8fr)
+        100px 90px 100px;
+}
+
+.source-name {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.source-via {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+}
+
 .events-shop-grid {
     grid-template-columns: minmax(260px, 2.5fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) minmax(90px, 0.8fr) 90px 90px;
 }
