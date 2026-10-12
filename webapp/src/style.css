@@ -275,6 +275,22 @@ button:disabled {
     padding-right: 28px;
 }
 
+/* Non-searchable picker (item-picker `searchable: false`): looks and acts like a plain dropdown. */
+.item-combobox--select .item-combobox__input {
+    cursor: pointer;
+    caret-color: transparent;
+}
+
+.item-combobox--select::after {
+    content: '▾';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    pointer-events: none;
+}
+
 .item-combobox__selected-icon {
     position: absolute;
     top: 50%;

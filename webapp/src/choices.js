@@ -17,7 +17,8 @@ applyStaticTranslations();
 const itemPicker = createItemPicker({
     input: document.getElementById('item-search'),
     panel: document.getElementById('item-listbox'),
-    clearButton: document.getElementById('item-search-clear'),
+    // A plain dropdown (like Spend Rewards'), but with item icons in the list.
+    searchable: false,
     onChange: () => {
         render();
         syncUrl();

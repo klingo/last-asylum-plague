@@ -195,7 +195,7 @@
         "heading": "Best Choice Pick",
         "description": "Pick a choice chest, a package with options, or a group of packages you can only buy one of (e.g. calendar packs). Its options are ranked by worth at your weekly spend and item priorities.",
         "itemLabel": "Choice Source",
-        "itemSearchPlaceholder": "Search choice items or packages…",
+        "itemPlaceholder": "Select a choice item or package…",
         "optionsHeading": "Ranked Choice Options",
         "optionsDescription": "Ranked by worth — the top option is the one to pick.",
         "selectCountHintPartial": "You can pick {count} of these {total} options — the top {count} above are the best picks.",

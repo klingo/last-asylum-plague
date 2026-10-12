@@ -13,8 +13,10 @@ import { localizedName, categoryLabel, t } from './i18n';
  *   only while there's something to clear.
  * @param {(itemId: string) => void} [onChange] - called whenever the selected item changes
  *   (including being cleared), after the input's displayed text has been updated.
+ * @param {boolean} [searchable=true] - false = a plain dropdown (no typing, no filtering): click to
+ *   open the full list, icons included.
  */
-function createItemPicker({ input, panel, clearButton, onChange }) {
+function createItemPicker({ input, panel, clearButton, onChange, searchable = true }) {
     let groups = []; // [{ category, items: [{ id, name }] }]
     let selectedId = '';
     let activeIndex = -1; // index into the currently rendered (visible) options
@@ -26,6 +28,10 @@ function createItemPicker({ input, panel, clearButton, onChange }) {
     // The wrapper `.item-combobox` (input + clear button + panel all live inside it) also
     // hosts the selected item's icon, absolutely positioned over the input's left padding.
     const container = input.parentElement;
+    if (!searchable) {
+        input.readOnly = true;
+        container.classList.add('item-combobox--select');
+    }
 
     // Shows the selected item's icon inside the input, to the left of its text — but only once
     // the image actually loads (most items have no real image yet, see lib/images.js), so no
@@ -117,7 +123,7 @@ function createItemPicker({ input, panel, clearButton, onChange }) {
     }
 
     function renderPanel() {
-        const query = input.value.trim().toLowerCase();
+        const query = searchable ? input.value.trim().toLowerCase() : '';
         panel.innerHTML = '';
 
         for (const group of groups) {
@@ -190,7 +196,9 @@ function createItemPicker({ input, panel, clearButton, onChange }) {
     }
 
     input.addEventListener('focus', () => {
-        input.select();
+        if (searchable) {
+            input.select();
+        }
         open();
     });
 
