@@ -122,7 +122,7 @@ function breakdownRowsHtml(entry) {
             (part) => `
                 <div class="ranking-grid__row">
                     <div class="ranking-grid__cell"></div>
-                    <div class="ranking-grid__cell item-cell"><span class="breakdown-icon" data-item-id="${part.id}"></span>${itemDisplayName(data.items, part.id, locale)} &times;${formatSignificant(part.qty)}</div>
+                    <div class="ranking-grid__cell item-cell"><span class="breakdown-icon" data-item-id="${part.id}"></span>${itemDisplayName(data.items, part.id, locale)} &times;${Number.isInteger(part.qty) ? formatThousands(part.qty) : formatSignificant(part.qty)}</div>
                     <div class="ranking-grid__cell"></div>
                     <div class="ranking-grid__cell">${categoryLabel(data.items[part.id]?.category)}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num">${formatSignificant(valuation.points(part.id)) ?? t('common.unknown')}</div>
