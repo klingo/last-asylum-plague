@@ -3,21 +3,25 @@
  * convention (assets/items/<item_id>.png) and a graceful fallback to a placeholder icon,
  * so images can be dropped in later without touching any rendering code.
  */
-import { t } from './i18n';
+import { t, localizedName } from './i18n';
 
 const PLACEHOLDER_ICON = `${import.meta.env.BASE_URL}icons/placeholder-item.svg`;
 const BANKNOTE_ICON_URL = `${import.meta.env.BASE_URL}assets/currencies/banknote.png`;
 
 // itemId -> item id whose image it borrows (the data's `image` field), set when the data is loaded.
 const imageAliases = new Map();
+// itemId -> its localized `name` field, for the images' mouse-over title.
+const itemNames = new Map();
 
-/** Registers every item's `image` reference (items without an image of their own). */
+/** Registers every item's `image` reference (items without an image of their own) and name. */
 function setItemImageAliases(items) {
     imageAliases.clear();
+    itemNames.clear();
     for (const [id, item] of Object.entries(items || {})) {
         if (item.image) {
             imageAliases.set(id, item.image);
         }
+        itemNames.set(id, item.name);
     }
 }
 
@@ -30,17 +34,23 @@ function getItemImageUrl(itemId) {
  * a Banknotes amount instead of (or in addition to) the word "Banknotes".
  */
 function banknoteIconHtml(className = 'currency-icon') {
-    return `<img src="${BANKNOTE_ICON_URL}" alt="${t('currency.banknotes')}" class="${className}" />`;
+    const name = t('currency.banknotes');
+    return `<img src="${BANKNOTE_ICON_URL}" alt="${name}" title="${name}" class="${className}" />`;
 }
 
 /**
  * Creates an <img> element for the given item id, pre-wired to fall back to the
- * placeholder icon if the real image doesn't exist (which is currently always the case).
+ * placeholder icon if the real image doesn't exist. Its mouse-over title is the item's name (e.g. which
+ * currency a coin icon stands for).
  */
 function createItemImage(itemId, altText, className = 'item-icon') {
     const img = document.createElement('img');
     img.src = getItemImageUrl(itemId);
+    const name = itemNames.has(itemId) ? localizedName(itemNames.get(itemId)) : '';
     img.alt = altText || itemId;
+    if (name) {
+        img.title = name;
+    }
     img.className = className;
     img.loading = 'lazy';
     img.onerror = () => {
