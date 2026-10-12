@@ -50,21 +50,29 @@ function breakdownRowsHtml(tier) {
 }
 
 /**
- * What each tier step is worth: the weekly plan at the tier's total spend (with the track running)
- * minus the plan at the previous tier's total, i.e. the best packs the extra Banknotes still buy
- * plus the tier reward, in Banknotes at your weekly spend. Ratio = that ÷ the step's Banknotes:
- * at least 1 = the step is as good as your last Banknote at your weekly spend.
+ * Whether pushing past your weekly spend for the next tiers pays off. Starting point: your weekly
+ * plan with the track running; tiers it already reaches are marked as such (no step). Each further
+ * tier: the weekly plan at the tier's total spend minus the plan of the step before (your weekly
+ * plan for the first one), i.e. the best packs the extra Banknotes still buy plus the tier reward,
+ * in Banknotes at your weekly spend. Ratio = that ÷ the step's Banknotes: at least 1 = the step is
+ * as good as your last Banknote at your weekly spend.
  */
 function stepAnalysis(track, trackId) {
     const activeTrackIds = new Set([trackId]);
     const reachedTier = (plan, tier) =>
         plan.trackTiersReached.some((r) => r.trackId === trackId && r.threshold === tier.threshold);
-    let previousPoints = 0;
-    let previousSpent = 0;
+    const base = solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { activeTrackIds }));
+    let previousPoints = base.totalPoints;
+    let previousSpent = base.spent;
     return trackTiers(track).map((tier) => {
+        const reward = valuation.bundle({ contains: tier.rewards }, 0);
+        if (reachedTier(base, tier)) {
+            return { ...tier, reward, reached: true, atWeeklySpend: true };
+        }
         // Spend about the threshold's worth of Banknotes (track points per Banknote ~1, rounded down
-        // by the pack prices), a little more if the packs on sale can't quite reach it.
-        let budget = Math.max(tier.cumulativeCost, trackPointsBudget(track, tier.threshold));
+        // by the pack prices), never less than your weekly spend, a little more if the packs on sale
+        // can't quite reach it.
+        let budget = Math.max(settings.budget, tier.cumulativeCost, trackPointsBudget(track, tier.threshold));
         let plan = null;
         for (let attempt = 0; attempt < 4; attempt++) {
             plan = solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { budget, activeTrackIds }));
@@ -78,7 +86,6 @@ function stepAnalysis(track, trackId) {
         previousPoints = plan.totalPoints;
         previousSpent = plan.spent;
         const reached = reachedTier(plan, tier);
-        const reward = valuation.bundle({ contains: tier.rewards }, 0);
         return {
             ...tier,
             cumulativeCost: plan.spent,
@@ -120,13 +127,24 @@ function render() {
     tiersWrap.hidden = tiers.length === 0;
     tiersNote.hidden = tiers.length === 0;
     const lastWorthIt = tiers.reduce((last, tier, index) => (tier.ratio >= 1 ? index : last), -1);
-    const verdict =
-        lastWorthIt >= 0
-            ? t('spendRewards.verdict', {
-                  tier: lastWorthIt + 1,
-                  total: formatThousands(tiers[lastWorthIt].cumulativeCost, 0),
-              })
-            : t('spendRewards.verdictNone');
+    const reachedCount = tiers.filter((tier) => tier.atWeeklySpend).length;
+    const reachedText =
+        reachedCount > 0
+            ? `${t('spendRewards.reachedSummary', { budget: formatThousands(settings.budget, 0), tier: reachedCount })} `
+            : '';
+    let verdict;
+    if (reachedCount === tiers.length) {
+        verdict = t('spendRewards.verdictAll');
+    } else if (lastWorthIt >= 0) {
+        verdict =
+            reachedText +
+            t('spendRewards.verdict', {
+                tier: lastWorthIt + 1,
+                total: formatThousands(tiers[lastWorthIt].cumulativeCost, 0),
+            });
+    } else {
+        verdict = reachedText + t('spendRewards.verdictNone');
+    }
     tiersNote.textContent = `${verdict} ${t('spendRewards.note')} ${modelSummaryText(valuation)}`;
 
     const maxRatio = Math.max(1, ...tiers.map((tier) => tier.ratio).filter(Number.isFinite));
@@ -137,12 +155,12 @@ function render() {
             return `
                 <div class="ranking-grid__row" role="row">
                     <div class="ranking-grid__cell" role="cell">${usesPoints ? `${label} (<span class="text-gold">${formatThousands(tier.threshold)}</span>&nbsp;${t('spendRewards.pointsSuffix')})` : label}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.cumulativeCost, 0))}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.stepCost, 0))}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.packsWorth, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.atWeeklySpend ? `<span class="text-dim nowrap">${t('spendRewards.reachedAtSpend')}</span>` : gold(formatThousands(tier.cumulativeCost, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.atWeeklySpend ? t('common.dash') : gold(formatThousands(tier.stepCost, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.atWeeklySpend ? t('common.dash') : gold(formatThousands(tier.packsWorth, 0))}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.reached ? gold(formatThousands(tier.reward.worth, 0)) : `<span class="text-dim">${t('spendRewards.notReached')}</span>`}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">
-                        ${ratioBarHtml(tier.ratio, maxRatio, { digits: 3 })}
+                        ${tier.ratio === null || tier.ratio === undefined ? t('common.dash') : ratioBarHtml(tier.ratio, maxRatio, { digits: 3 })}
                     </div>
                     <div class="ranking-grid__cell" role="cell"><button type="button" class="expand-toggle" data-tier-key="${key}">${expandedKeys.has(key) ? t('common.hide') : t('common.details')}</button></div>
                 </div>

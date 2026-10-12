@@ -219,7 +219,7 @@
     },
     "spendRewards": {
         "heading": "Spend Rewards",
-        "description": "Pick a cumulative spend-reward track. For each tier: the extra Banknotes needed on top of the previous tier, what those Banknotes buy (the best packs still available at that total spend) and the tier's reward. Step ratio 1.0 or more = the step is at least as good as your last Banknote at your weekly spend.",
+        "description": "Pick a cumulative spend-reward track to see whether pushing past your weekly spend for its next tiers pays off. Tiers your weekly spend already reaches are marked. For each further tier: the extra Banknotes on top of your weekly spend (or the previous tier), what those Banknotes buy (the best packs still available) and the tier's reward. Step ratio 1.0 or more = the step is at least as good as your last Banknote at your weekly spend.",
         "trackLabel": "Reward Track",
         "trackPlaceholder": "Select a track…",
         "empty": "No spend reward tracks defined yet.",
@@ -237,8 +237,11 @@
             "packs": "Packs bought"
         },
         "notReached": "not reached",
+        "reachedAtSpend": "reached at your weekly spend",
         "verdict": "Spending more pays off up to tier {tier} ({total} Banknotes in total); beyond it, each step brings less than your last Banknote at your weekly spend.",
-        "verdictNone": "No step beyond your weekly spend brings as much as your last Banknote does."
+        "verdictNone": "No step beyond your weekly spend brings as much as your last Banknote does.",
+        "reachedSummary": "Your weekly spend of {budget} Banknotes already reaches tier {tier}.",
+        "verdictAll": "Your weekly spend already reaches every tier of this track."
     },
     "valuation": {
         "budgetLabel": "Weekly Banknote spend",

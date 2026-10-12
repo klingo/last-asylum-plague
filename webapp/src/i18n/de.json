@@ -237,8 +237,11 @@
             "packs": ""
         },
         "notReached": "",
+        "reachedAtSpend": "",
         "verdict": "",
-        "verdictNone": ""
+        "verdictNone": "",
+        "reachedSummary": "",
+        "verdictAll": ""
     },
     "valuation": {
         "budgetLabel": "",
