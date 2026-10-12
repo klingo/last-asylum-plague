@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-11"
+        "last_updated": "2026-10-12"
     },
     "items": {
         "antitoxin": {
@@ -1151,6 +1151,13 @@
             },
             "category": "speedup"
         },
+        "research_tome": {
+            "name": {
+                "en": "Research Tome",
+                "de": ""
+            },
+            "category": "curio"
+        },
         "resource_supply_general": {
             "name": {
                 "en": "Resource Supply (General)",
@@ -1457,6 +1464,13 @@
                     "probability": 0.85
                 }
             ]
+        },
+        "ssr_epigraph_shard": {
+            "name": {
+                "en": "SSR Epigraph Shard",
+                "de": "SSR Epigraph-Splitter"
+            },
+            "category": "special"
         },
         "ssr_gauntlets": {
             "name": {
@@ -2159,6 +2173,27 @@
                 }
             }
         },
+        "building_upgrade_pack": {
+            "name": {
+                "en": "Building Upgrade Pack",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 499,
+            "deal_percentage": 2900,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "construction_speedup": 300,
+                "timber_level_supply_ur": 2,
+                "grain_level_supply_ur": 2,
+                "herb_level_supply_ur": 2,
+                "resource_supply_general": 4,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
+        },
         "calendar_gift_gear_pack": {
             "name": {
                 "en": "Calendar Gift: Gear Pack",
@@ -2342,6 +2377,24 @@
                 }
             }
         },
+        "curio_pack_pack": {
+            "name": {
+                "en": "Curio Pack",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 9999,
+            "deal_percentage": 2420,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 10000,
+                "universal_curio_shard": 900,
+                "resource_supply_ur": 5,
+                "vip_points": 10000,
+                "lv6_alliance_chest": 1
+            }
+        },
         "develop_territory": {
             "name": {
                 "en": "Develop Territory",
@@ -2398,6 +2451,20 @@
                         "herb_level_supply_ur": 4,
                         "vip_points": 1000,
                         "lv3_alliance_chest": 1
+                    }
+                },
+                "4": {
+                    "price": 4999,
+                    "deal_percentage": 4140,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 5000,
+                        "resource_supply_ur": 50,
+                        "timber_level_supply_ur": 20,
+                        "grain_level_supply_ur": 20,
+                        "herb_level_supply_ur": 20,
+                        "vip_points": 2500,
+                        "lv5_alliance_chest": 1
                     }
                 }
             }
@@ -2501,6 +2568,26 @@
                 }
             }
         },
+        "enhance_heroes": {
+            "name": {
+                "en": "Enhance Heroes",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 499,
+            "deal_percentage": 1990,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "antitoxin_level_supply_sr": 5,
+                "recruit_ticket": 5,
+                "skill_badge": 750,
+                "resource_supply_general": 2,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
+        },
         "enhance_might": {
             "name": {
                 "en": "Enhance Might",
@@ -2543,6 +2630,46 @@
                     }
                 }
             }
+        },
+        "epigraph_pass": {
+            "name": {
+                "en": "Epigraph Pass",
+                "de": ""
+            },
+            "category": "value_event",
+            "limit_type": "weekly",
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 10500,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "lv2_alliance_chest": 1,
+                        "ssr_epigraph_chest": 3,
+                        "ur_epigraph_shard": 300,
+                        "raven_evolve_guide": 13,
+                        "ssr_epigraph_shard": 1000,
+                        "sr_epigraph_chest": 8,
+                        "speedup": 450
+                    }
+                },
+                "2": {
+                    "price": 1999,
+                    "deal_percentage": 8159,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "lv4_alliance_chest": 1,
+                        "ur_epigraph_choice_chest": 1,
+                        "ssr_epigraph_chest": 6,
+                        "ur_epigraph_shard": 800,
+                        "raven_evolve_guide": 20,
+                        "ssr_epigraph_shard": 1500,
+                        "speedup": 700
+                    }
+                }
+            },
+            "seasonal": true,
+            "delivery_days": 7
         },
         "era_of_revival_raven_essence_weekly_pass": {
             "name": {
@@ -2602,7 +2729,7 @@
         },
         "exclusive_weapon_pass": {
             "name": {
-                "en": "Exclusive Weapon Pass",
+                "en": "Exclusive Weapon",
                 "de": ""
             },
             "category": "value_event",
@@ -2669,6 +2796,26 @@
             },
             "seasonal": true,
             "delivery_days": 7
+        },
+        "gear_enhancement": {
+            "name": {
+                "en": "Gear Enhancement",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 499,
+            "deal_percentage": 2000,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "refined_iron": 32,
+                "gearstone": 1000,
+                "herb_level_supply_ssr": 1,
+                "leather": 10,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
         },
         "gear_pass": {
             "name": {
@@ -3430,6 +3577,42 @@
                 "lv5_alliance_chest": 1
             }
         },
+        "raven_essence_pack": {
+            "name": {
+                "en": "Raven Essence",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 499,
+            "deal_percentage": 2320,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "raven_essence": 10,
+                "raven_fruit": 40000,
+                "resource_supply_general": 2,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
+        },
+        "raven_evolve_guide": {
+            "name": {
+                "en": "Raven Evolve Guide",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 499,
+            "deal_percentage": 2620,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "raven_evolve_guide": 42,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
+        },
         "raven_gear": {
             "name": {
                 "en": "Raven Gear",
@@ -3448,6 +3631,25 @@
                 "raven_fruit": 100000,
                 "vip_points": 5000,
                 "lv5_alliance_chest": 1
+            }
+        },
+        "raven_gear_pack": {
+            "name": {
+                "en": "Raven Gear",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 499,
+            "deal_percentage": 2730,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "lv3_raven_gear_chest": 2,
+                "herb_level_supply_ssr": 3,
+                "raven_fruit": 10000,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
             }
         },
         "raven_gear_special_pack": {
@@ -3496,6 +3698,30 @@
                     }
                 }
             }
+        },
+        "ravens_might": {
+            "name": {
+                "en": "Raven's Might",
+                "de": ""
+            },
+            "category": "value_event",
+            "limit_type": "weekly",
+            "tiers": {
+                "1": {
+                    "price": 999,
+                    "deal_percentage": 8159,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "lv2_alliance_chest": 1,
+                        "raven_essence": 47,
+                        "lv3_raven_gear_chest": 15,
+                        "raven_fruit": 140000,
+                        "lv1_raven_gear_chest": 30
+                    }
+                }
+            },
+            "seasonal": true,
+            "delivery_days": 7
         },
         "recluse_coin_deluxe_pack": {
             "name": {
@@ -3582,6 +3808,27 @@
                 "vip_points": 10000
             }
         },
+        "research_pack": {
+            "name": {
+                "en": "Research Pack",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 499,
+            "deal_percentage": 2720,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "research_speedup": 300,
+                "timber_level_supply_sr": 1,
+                "grain_level_supply_sr": 1,
+                "herb_level_supply_sr": 4,
+                "resource_supply_general": 2,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
+        },
         "research_special_pack": {
             "name": {
                 "en": "Research Special Pack",
@@ -3605,6 +3852,65 @@
                         "resource_supply_general": 2,
                         "vip_points": 500,
                         "lv2_alliance_chest": 1
+                    }
+                }
+            }
+        },
+        "research_tome_pack": {
+            "name": {
+                "en": "Research Tome Pack",
+                "de": ""
+            },
+            "category": "weekly_rotation",
+            "limit_type": "daily",
+            "available_days": ["friday"],
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5790,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "research_tome": 1,
+                        "speedup": 500,
+                        "timber_level_supply_ssr": 2,
+                        "grain_level_supply_ssr": 2,
+                        "herb_level_supply_ssr": 2,
+                        "antitoxin_level_supply_sr": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 5730,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "research_tome": 3,
+                        "speedup": 750,
+                        "timber_level_supply_ssr": 3,
+                        "grain_level_supply_ssr": 3,
+                        "herb_level_supply_ssr": 3,
+                        "antitoxin_level_supply_sr": 3,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
+                },
+                "3": {
+                    "price": 1999,
+                    "deal_percentage": 5510,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 2000,
+                        "research_tome": 6,
+                        "speedup": 1000,
+                        "timber_level_supply_ssr": 6,
+                        "grain_level_supply_ssr": 6,
+                        "herb_level_supply_ssr": 6,
+                        "antitoxin_level_supply_sr": 6,
+                        "vip_points": 2000,
+                        "lv4_alliance_chest": 1
                     }
                 }
             }
@@ -3867,7 +4173,8 @@
                 "diamonds": 500,
                 "survivor_recruit_ticket": 12,
                 "survivor_token": 5,
-                "vip_points": 500
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
             }
         },
         "tempered_arms": {
@@ -3893,6 +4200,27 @@
             },
             "seasonal": true,
             "delivery_days": 7
+        },
+        "troop_training_pack": {
+            "name": {
+                "en": "Troop Training Pack",
+                "de": ""
+            },
+            "category": "pack_shop",
+            "price": 499,
+            "deal_percentage": 2600,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "training_speedup": 300,
+                "timber_level_supply_ur": 2,
+                "grain_level_supply_ur": 2,
+                "herb_level_supply_ur": 2,
+                "resource_supply_general": 2,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
         },
         "twin_dragon_brooch_pack": {
             "name": {
