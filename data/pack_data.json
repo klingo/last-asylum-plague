@@ -2471,7 +2471,7 @@
         },
         "diamond_100": {
             "name": {
-                "en": "+100",
+                "en": "+100 Diamonds",
                 "de": ""
             },
             "category": "diamond",
@@ -2483,7 +2483,7 @@
         },
         "diamond_1000": {
             "name": {
-                "en": "+1,000",
+                "en": "+1'000 Diamonds",
                 "de": ""
             },
             "category": "diamond",
@@ -2495,7 +2495,7 @@
         },
         "diamond_10000": {
             "name": {
-                "en": "+10,000",
+                "en": "+10'000 Diamonds",
                 "de": ""
             },
             "category": "diamond",
@@ -2507,7 +2507,7 @@
         },
         "diamond_2000": {
             "name": {
-                "en": "+2,000",
+                "en": "+2'000 Diamonds",
                 "de": ""
             },
             "category": "diamond",
@@ -2519,7 +2519,7 @@
         },
         "diamond_500": {
             "name": {
-                "en": "+500",
+                "en": "+500 Diamonds",
                 "de": ""
             },
             "category": "diamond",
@@ -2531,7 +2531,7 @@
         },
         "diamond_5000": {
             "name": {
-                "en": "+5,000",
+                "en": "+5'000 Diamonds",
                 "de": ""
             },
             "category": "diamond",
