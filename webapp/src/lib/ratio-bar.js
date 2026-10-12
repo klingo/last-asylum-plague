@@ -1,17 +1,45 @@
 /**
- * The coloured ratio with a small bar (Ranking, Spend Rewards): the number is green from 1.0 up
- * (worth it at your weekly spend) and red below; the bar's length and colour (red -> green) show
- * the ratio relative to the best one in the table.
+ * The coloured ratio with a small bar (Ranking, Events, Spend Rewards, Best Choice Pick). Number and
+ * bar share one colour on a fixed scale around 1.0 (the worth-it line at your weekly spend): red at
+ * 0.85 and below, amber at 1.0 (barely worth it: you gain next to nothing), green from 1.15 up,
+ * blended in between. The bar's length shows the ratio relative to the best one in the table.
  */
 import { formatThousands } from './format';
 
-// --bad -> --good (see style.css).
+// --bad, --warn, --good (see style.css).
 const RATIO_BAD_RGB = [242, 104, 92];
+const RATIO_WARN_RGB = [242, 193, 78];
 const RATIO_GOOD_RGB = [99, 214, 138];
+// Ratio -> colour stops: red up to 0.85, amber at 1.0, green from 1.15.
+const RATIO_STOPS = [
+    [0.85, RATIO_BAD_RGB],
+    [1, RATIO_WARN_RGB],
+    [1.15, RATIO_GOOD_RGB],
+];
 
-function ratioBarColor(fraction) {
-    const channel = (i) => Math.round(RATIO_BAD_RGB[i] + (RATIO_GOOD_RGB[i] - RATIO_BAD_RGB[i]) * fraction);
+function mixColor(from, to, fraction) {
+    const channel = (i) => Math.round(from[i] + (to[i] - from[i]) * fraction);
     return `rgb(${channel(0)}, ${channel(1)}, ${channel(2)})`;
+}
+
+/** Colour of a ratio on the fixed scale around 1.0. */
+function ratioColor(ratio) {
+    if (ratio <= RATIO_STOPS[0][0]) {
+        return mixColor(RATIO_BAD_RGB, RATIO_BAD_RGB, 0);
+    }
+    for (let i = 1; i < RATIO_STOPS.length; i++) {
+        const [upper, toRgb] = RATIO_STOPS[i];
+        const [lower, fromRgb] = RATIO_STOPS[i - 1];
+        if (ratio <= upper) {
+            return mixColor(fromRgb, toRgb, (ratio - lower) / (upper - lower));
+        }
+    }
+    return mixColor(RATIO_GOOD_RGB, RATIO_GOOD_RGB, 0);
+}
+
+/** Colour of a share of the best (0..1, "vs. best"), red -> green. */
+function shareColor(fraction) {
+    return mixColor(RATIO_BAD_RGB, RATIO_GOOD_RGB, fraction);
 }
 
 /**
@@ -24,14 +52,12 @@ function ratioBarHtml(ratio, maxRatio, { digits = 2, label = null } = {}) {
         return '';
     }
     const fraction = Math.min(1, Math.max(0, ratio / Math.max(1, maxRatio)));
-    const number =
-        label === null
-            ? `<span class="${ratio >= 1 ? 'text-good' : 'text-bad'}">${formatThousands(ratio, digits)}</span>`
-            : `<span style="color: ${ratioBarColor(fraction)}">${label}</span>`;
+    const color = label === null ? ratioColor(ratio) : shareColor(fraction);
+    const number = `<span style="color: ${color}">${label === null ? formatThousands(ratio, digits) : label}</span>`;
     return `
         <div class="ratio-display">
             ${number}
-            <span class="ratio-bar"><span class="ratio-bar__fill" style="width: ${(fraction * 100).toFixed(1)}%; background: ${ratioBarColor(fraction)}"></span></span>
+            <span class="ratio-bar"><span class="ratio-bar__fill" style="width: ${(fraction * 100).toFixed(1)}%; background: ${color}"></span></span>
         </div>`;
 }
 
