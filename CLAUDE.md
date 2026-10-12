@@ -29,6 +29,7 @@ npm run verify-data                                          # validate data/pac
 npm run lint                                                  # eslint .
 npm run webapp:dev                                             # copy-pack-data + vite dev server
 npm run webapp:build                                           # copy-pack-data + vite build -> webapp/dist
+npm run i18n:missing -- [lang] [--keys-only] [--data-only]     # missing translations (UI texts + data names)
 ```
 
 No test suite exists in this repo.

@@ -7,6 +7,7 @@
     "scripts": {
         "copy-pack-data": "node scripts/copy-pack-data.js",
         "format": "prettier --write \"**/*.{js,jsx,json,css}\"",
+        "i18n:missing": "node scripts/missing-translations.js",
         "lint": "eslint .",
         "prepare": "husky",
         "sort-pack-data": "node scripts/sort-pack-data.js",

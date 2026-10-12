@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-12"
+        "last_updated": "2026-10-13"
     },
     "items": {
         "antitoxin": {
@@ -55,7 +55,7 @@
         "awaken_shard_choice_chest": {
             "name": {
                 "en": "Awaken Shard Choice Chest",
-                "de": ""
+                "de": "Erwachen Splitter Wahltruhe"
             },
             "category": "special",
             "contains": {
@@ -232,7 +232,7 @@
         "excl_weapon_shard_choice_chest": {
             "name": {
                 "en": "Excl Weapon Shard Choice Chest",
-                "de": ""
+                "de": "Exkl. Waffe Splitter Wahltruhe"
             },
             "category": "special",
             "contains": {
@@ -257,7 +257,7 @@
         "frenzied_flock_iv_ranger": {
             "name": {
                 "en": "Frenzied Flock IV - Ranger",
-                "de": ""
+                "de": "Rasende Schar IV - Ranger"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -267,7 +267,7 @@
         "frenzied_flock_iv_warlock": {
             "name": {
                 "en": "Frenzied Flock IV - Warlock",
-                "de": ""
+                "de": "Rasende Schar IV - Hexenmeister"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -277,7 +277,7 @@
         "frenzied_flock_iv_warrior": {
             "name": {
                 "en": "Frenzied Flock IV - Warrior",
-                "de": ""
+                "de": "Rasende Schar IV - Krieger"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -287,14 +287,14 @@
         "gear_blueprint_mr": {
             "name": {
                 "en": "Gear Blueprint (MR)",
-                "de": ""
+                "de": "Ausrüstung-Plan (MR)"
             },
             "category": "gear"
         },
         "gear_blueprint_ur": {
             "name": {
                 "en": "Gear Blueprint (UR)",
-                "de": "Ausrüstungs-Plan (UR)"
+                "de": "Ausrüstung-Plan (UR)"
             },
             "category": "gear"
         },
@@ -345,7 +345,7 @@
         "guard_of_nature_iv_ranger": {
             "name": {
                 "en": "Guard of Nature IV - Ranger",
-                "de": ""
+                "de": "Wächter der Natur IV - Ranger"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -355,7 +355,7 @@
         "guard_of_nature_iv_warlock": {
             "name": {
                 "en": "Guard of Nature IV - Warlock",
-                "de": ""
+                "de": "Wächter der Natur IV - Hexenmeister"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -365,7 +365,7 @@
         "guard_of_nature_iv_warrior": {
             "name": {
                 "en": "Guard of Nature IV - Warrior",
-                "de": ""
+                "de": "Wächter der Natur IV - Krieger"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -508,28 +508,28 @@
         "lv1_attackers_claw": {
             "name": {
                 "en": "Lv.1 Attacker's Claw",
-                "de": ""
+                "de": "Lv.1 Klaue des Angreifers"
             },
             "category": "raven_gear"
         },
         "lv1_eye_of_perception": {
             "name": {
-                "en": "Lv.1 Eye of perception",
-                "de": ""
+                "en": "Lv.1 Eye of Perception",
+                "de": "Lv.1 Auge der Wahrnehmung"
             },
             "category": "raven_gear"
         },
         "lv1_feather_of_the_night": {
             "name": {
                 "en": "Lv.1 Feather of the Night",
-                "de": ""
+                "de": "Lv.1 Feder der Nacht"
             },
             "category": "raven_gear"
         },
         "lv1_heart_of_wisdom": {
             "name": {
                 "en": "Lv.1 Heart of Wisdom",
-                "de": ""
+                "de": "Lv.1 Herz der Weisheit"
             },
             "category": "raven_gear"
         },
@@ -582,14 +582,14 @@
         "lv1_sharp_beak": {
             "name": {
                 "en": "Lv.1 Sharp Beak",
-                "de": ""
+                "de": "Lv.1 Scharfer Schnabel"
             },
             "category": "raven_gear"
         },
         "lv1_tail_of_wind": {
             "name": {
                 "en": "Lv.1 Tail of Wind",
-                "de": ""
+                "de": "Lv.1 Schweif des Windes"
             },
             "category": "raven_gear"
         },
@@ -610,7 +610,7 @@
         "lv3_attackers_claw": {
             "name": {
                 "en": "Lv.3 Attacker's Claw",
-                "de": ""
+                "de": "Lv.3 Klaue des Angreifers"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -619,8 +619,8 @@
         },
         "lv3_eye_of_perception": {
             "name": {
-                "en": "Lv.3 Eye of perception",
-                "de": ""
+                "en": "Lv.3 Eye of Perception",
+                "de": "Lv.3 Auge der Wahrnehmung"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -630,7 +630,7 @@
         "lv3_feather_of_the_night": {
             "name": {
                 "en": "Lv.3 Feather of the Night",
-                "de": ""
+                "de": "Lv.3 Feder der Nacht"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -640,7 +640,7 @@
         "lv3_heart_of_wisdom": {
             "name": {
                 "en": "Lv.3 Heart of Wisdom",
-                "de": ""
+                "de": "Lv.3 Herz der Weisheit"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -696,7 +696,7 @@
         "lv3_sharp_beak": {
             "name": {
                 "en": "Lv.3 Sharp Beak",
-                "de": ""
+                "de": "Lv.3 Scharfer Schnabel"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -706,7 +706,7 @@
         "lv3_tail_of_wind": {
             "name": {
                 "en": "Lv.3 Tail of Wind",
-                "de": ""
+                "de": "Lv.3 Schweif des Windes"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -730,7 +730,7 @@
         "lv5_attackers_claw": {
             "name": {
                 "en": "Lv.5 Attacker's Claw",
-                "de": ""
+                "de": "Lv.5 Klaue des Angreifers"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -739,8 +739,8 @@
         },
         "lv5_eye_of_perception": {
             "name": {
-                "en": "Lv.5 Eye of perception",
-                "de": ""
+                "en": "Lv.5 Eye of Perception",
+                "de": "Lv.5 Auge der Wahrnehmung"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -750,7 +750,7 @@
         "lv5_feather_of_the_night": {
             "name": {
                 "en": "Lv.5 Feather of the Night",
-                "de": ""
+                "de": "Lv.5 Feder der Nacht"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -760,7 +760,7 @@
         "lv5_heart_of_wisdom": {
             "name": {
                 "en": "Lv.5 Heart of Wisdom",
-                "de": ""
+                "de": "Lv.5 Herz der Weisheit"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -847,7 +847,7 @@
         "lv5_sharp_beak": {
             "name": {
                 "en": "Lv.5 Sharp Beak",
-                "de": ""
+                "de": "Lv.5 Scharfer Schnabel"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -857,7 +857,7 @@
         "lv5_tail_of_wind": {
             "name": {
                 "en": "Lv.5 Tail of Wind",
-                "de": ""
+                "de": "Lv.5 Schweif des Windes"
             },
             "category": "raven_gear",
             "crafted_from": {
@@ -927,7 +927,7 @@
         "protective_charm_iv_ranger": {
             "name": {
                 "en": "Protective Charm IV - Ranger",
-                "de": ""
+                "de": "Schutzzauber IV - Ranger"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -937,7 +937,7 @@
         "protective_charm_iv_warlock": {
             "name": {
                 "en": "Protective Charm IV - Warlock",
-                "de": ""
+                "de": "Schutzzauber IV - Hexenmeister"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -947,7 +947,7 @@
         "protective_charm_iv_warrior": {
             "name": {
                 "en": "Protective Charm IV - Warrior",
-                "de": ""
+                "de": "Schutzzauber IV - Krieger"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -1101,7 +1101,7 @@
         "raven_evolve_guide": {
             "name": {
                 "en": "Raven Evolve Guide",
-                "de": ""
+                "de": "Rabe Entwickeln Leitfaden"
             },
             "category": "special"
         },
@@ -1249,7 +1249,7 @@
         "reversal_power_iv_ranger": {
             "name": {
                 "en": "Reversal Power IV - Ranger",
-                "de": ""
+                "de": "Umkehrkraft IV - Ranger"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -1259,7 +1259,7 @@
         "reversal_power_iv_warlock": {
             "name": {
                 "en": "Reversal Power IV - Warlock",
-                "de": ""
+                "de": "Umkehrkraft IV - Hexenmeister"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -1269,7 +1269,7 @@
         "reversal_power_iv_warrior": {
             "name": {
                 "en": "Reversal Power IV - Warrior",
-                "de": ""
+                "de": "Umkehrkraft IV - Krieger"
             },
             "category": "epigraph",
             "crafted_from": {
@@ -1525,7 +1525,7 @@
         "stone_blade": {
             "name": {
                 "en": "Stone Blade",
-                "de": ""
+                "de": "Steinklinge"
             },
             "category": "special"
         },
@@ -1743,7 +1743,7 @@
         "ur_curio": {
             "name": {
                 "en": "UR Curio",
-                "de": ""
+                "de": "UR Kuriosität"
             },
             "category": "virtual",
             "image": "curio_chest_ur"
@@ -1751,7 +1751,7 @@
         "ur_epigraph_chest": {
             "name": {
                 "en": "UR Epigraph Chest",
-                "de": ""
+                "de": "UR Epigraph Truhe"
             },
             "category": "special",
             "contains": {
@@ -2176,7 +2176,7 @@
         "building_upgrade_pack": {
             "name": {
                 "en": "Building Upgrade Pack",
-                "de": ""
+                "de": "Gebäude-Upgrade-Paket"
             },
             "category": "pack_shop",
             "price": 499,
@@ -2380,7 +2380,7 @@
         "curio_pack_pack": {
             "name": {
                 "en": "Curio Pack",
-                "de": ""
+                "de": "Kuriositätenpaket"
             },
             "category": "pack_shop",
             "price": 9999,
@@ -2472,7 +2472,7 @@
         "diamond_100": {
             "name": {
                 "en": "+100 Diamonds",
-                "de": ""
+                "de": "+100 Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -2484,7 +2484,7 @@
         "diamond_1000": {
             "name": {
                 "en": "+1'000 Diamonds",
-                "de": ""
+                "de": "+1'000 Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -2496,7 +2496,7 @@
         "diamond_10000": {
             "name": {
                 "en": "+10'000 Diamonds",
-                "de": ""
+                "de": "+10'000 Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -2508,7 +2508,7 @@
         "diamond_2000": {
             "name": {
                 "en": "+2'000 Diamonds",
-                "de": ""
+                "de": "+2'000 Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -2520,7 +2520,7 @@
         "diamond_500": {
             "name": {
                 "en": "+500 Diamonds",
-                "de": ""
+                "de": "+500 Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -2532,7 +2532,7 @@
         "diamond_5000": {
             "name": {
                 "en": "+5'000 Diamonds",
-                "de": ""
+                "de": "+5'000 Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -2571,7 +2571,7 @@
         "enhance_heroes": {
             "name": {
                 "en": "Enhance Heroes",
-                "de": ""
+                "de": "Heldenverbesserung"
             },
             "category": "pack_shop",
             "price": 499,
@@ -2752,7 +2752,7 @@
         "exp_special_pack": {
             "name": {
                 "en": "EXP Special Pack",
-                "de": ""
+                "de": "EP Spezialpaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -2800,7 +2800,7 @@
         "gear_enhancement": {
             "name": {
                 "en": "Gear Enhancement",
-                "de": ""
+                "de": "Ausrüstungsverbesserung"
             },
             "category": "pack_shop",
             "price": 499,
@@ -3536,7 +3536,7 @@
         "raven_epigraph_offer": {
             "name": {
                 "en": "Raven Epigraph Offer",
-                "de": ""
+                "de": "Raben-Epigraph Angebot"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3580,7 +3580,7 @@
         "raven_essence_pack": {
             "name": {
                 "en": "Raven Essence",
-                "de": ""
+                "de": "Rabenessenz"
             },
             "category": "pack_shop",
             "price": 499,
@@ -3599,7 +3599,7 @@
         "raven_evolve_guide": {
             "name": {
                 "en": "Raven Evolve Guide",
-                "de": ""
+                "de": "Rabe Entwickeln Leitfaden"
             },
             "category": "pack_shop",
             "price": 499,
@@ -3636,7 +3636,7 @@
         "raven_gear_pack": {
             "name": {
                 "en": "Raven Gear",
-                "de": ""
+                "de": "Raben-Ausrüstung"
             },
             "category": "pack_shop",
             "price": 499,
@@ -3678,7 +3678,7 @@
         "raven_growth_pack": {
             "name": {
                 "en": "Raven Growth Pack",
-                "de": ""
+                "de": "Rabe Wachstumspaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3811,7 +3811,7 @@
         "research_pack": {
             "name": {
                 "en": "Research Pack",
-                "de": ""
+                "de": "Forschungspaket"
             },
             "category": "pack_shop",
             "price": 499,
@@ -4204,7 +4204,7 @@
         "troop_training_pack": {
             "name": {
                 "en": "Troop Training Pack",
-                "de": ""
+                "de": "Truppentrainingspaket"
             },
             "category": "pack_shop",
             "price": 499,
@@ -5721,7 +5721,7 @@
         "ancient_recipe_antitoxin": {
             "name": {
                 "en": "Ancient Recipe (Antitoxin)",
-                "de": ""
+                "de": "Uraltes Rezept (Gegengift)"
             },
             "conversions": [
                 {
@@ -5798,8 +5798,8 @@
         },
         "ancient_recipe_gearstone": {
             "name": {
-                "en": "Ancient Recipe (Gearstone)",
-                "de": ""
+                "en": "Ancient Recipe (Gearstones)",
+                "de": "Uraltes Rezept (Ausrüstungssteine)"
             },
             "conversions": [
                 {
