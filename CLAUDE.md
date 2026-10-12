@@ -74,7 +74,7 @@ webapp/src/lib/lp.js              # HiGHS wrapper (LP text builder, duals); high
 webapp/src/lib/valuation.js       # the one worth interface for the pages
 webapp/src/lib/valuation-panel.js # shared controls (weekly spend, events, tracks)
 webapp/src/lib/settings.js        # localStorage settings incl. item priorities (Don't care/Low/Normal/High)
-webapp/src/i18n/{en,de}.json      # de.json values are intentionally blank placeholders, not missing data
+webapp/src/i18n/{en,de}.json      # UI texts; de.json is translated and kept in sync with en.json
 ```
 
 The pure modules (`catalog`, `point-fit`, `item-values`, `planner`, `acquire`, `lp`, `spend-tracks`,
@@ -86,7 +86,10 @@ The pure modules (`catalog`, `point-fit`, `item-values`, `planner`, `acquire`, `
 - `data/pack_data.json` is auto-processed on commit (husky + lint-staged): sort → update-last-updated → prettier.
 - Don't hardcode item points in `pack_data.json`; worth comes from the deal % fit and the user's priorities. Fix a
   bad value with better data (contents, deal %, `crafted_from`, `value_equivalent`, ...).
-- Don't fill in `de.json` blanks unless asked to.
+- Any change, addition or removal in `webapp/src/i18n/en.json` must be mirrored in `de.json` in the same change
+  (translate it yourself; same keys and order, `{placeholders}` unchanged).
+- Never translate `name.de` in `data/pack_data.json` yourself: those are taken manually from the game, not guessed.
+  Leave them blank (`npm run i18n:missing` lists them).
 
 ## Formatting Conventions
 
