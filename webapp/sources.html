@@ -16,29 +16,7 @@
                 <div class="form-row">
                     <div class="field field--item">
                         <label for="item-search" data-i18n="sources.itemLabel"></label>
-                        <div class="item-combobox">
-                            <input
-                                type="text"
-                                id="item-search"
-                                class="item-combobox__input"
-                                role="combobox"
-                                aria-expanded="false"
-                                aria-autocomplete="list"
-                                aria-controls="item-listbox"
-                                autocomplete="off"
-                                data-i18n-placeholder="sources.searchPlaceholder"
-                            />
-                            <button
-                                type="button"
-                                id="item-search-clear"
-                                class="item-combobox__clear"
-                                tabindex="-1"
-                                hidden
-                            >
-                                &times;
-                            </button>
-                            <div class="item-combobox__panel" id="item-listbox" role="listbox" hidden></div>
-                        </div>
+                        <div class="item-picker"><button type="button" id="item-search"></button></div>
                     </div>
                 </div>
             </section>

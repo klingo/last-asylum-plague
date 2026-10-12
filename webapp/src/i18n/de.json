@@ -26,6 +26,13 @@
         "fetchError": "",
         "reset": ""
     },
+    "picker": {
+        "placeholder": "",
+        "search": "",
+        "noResults": "",
+        "clear": "",
+        "close": ""
+    },
     "weekday": {
         "monday": "",
         "tuesday": "",
@@ -107,7 +114,6 @@
     },
     "analyze": {
         "heading": "",
-        "itemSearchClear": "",
         "table": {
             "requiresTooltip": ""
         }
@@ -199,7 +205,6 @@
         "heading": "",
         "description": "",
         "itemLabel": "",
-        "searchPlaceholder": "",
         "selectPrompt": "",
         "empty": "",
         "summary": "",
@@ -317,7 +322,6 @@
         "description": "",
         "sideA": "",
         "sideB": "",
-        "searchPlaceholder": "",
         "amount": "",
         "daysLabel": "",
         "resultHeading": "",

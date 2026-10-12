@@ -266,96 +266,129 @@ button:disabled {
     cursor: not-allowed;
 }
 
-.item-combobox {
+/*
+ * Item picker (lib/item-picker.js): a select-like trigger and a panel with its own search box.
+ * Wide screens: the panel drops down under the trigger. Phones: a full-screen sheet.
+ */
+.item-picker {
     position: relative;
 }
 
-.item-combobox__input {
-    width: 100%;
-    padding-right: 28px;
-}
-
-/* Non-searchable picker (item-picker `searchable: false`): looks and acts like a plain dropdown. */
-.item-combobox--select .item-combobox__input {
-    cursor: pointer;
-    caret-color: transparent;
-}
-
-.item-combobox--select::after {
-    content: '▾';
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    color: var(--text-dim);
-    pointer-events: none;
-}
-
-.item-combobox__selected-icon {
-    position: absolute;
-    top: 50%;
-    left: 6px;
-    transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
-    border-radius: 4px;
-    object-fit: cover;
-    pointer-events: none;
-}
-
-.item-combobox__selected-icon[hidden] {
-    display: none;
-}
-
-.item-combobox--has-icon .item-combobox__input {
-    padding-left: 34px;
-}
-
-.item-combobox__clear {
-    position: absolute;
-    top: 50%;
-    right: 4px;
-    transform: translateY(-50%);
+.item-picker__trigger {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    color: var(--text-dim);
-    font-size: 1.1rem;
-    line-height: 1;
-    cursor: pointer;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 10px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: normal;
+    text-align: left;
 }
 
-.item-combobox__clear[hidden] {
+.item-picker__trigger:hover,
+.item-picker__trigger[aria-expanded='true'] {
+    background: var(--panel-alt);
+    border-color: var(--accent);
+}
+
+.item-picker__trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.item-picker__trigger-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.item-picker__trigger-icon[hidden] {
     display: none;
 }
 
-.item-combobox__clear:hover {
-    background: var(--panel);
-    color: var(--text);
+.item-picker__value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.item-combobox__panel {
+.item-picker__value.is-placeholder {
+    color: var(--text-dim);
+}
+
+.item-picker__chevron {
+    color: var(--text-dim);
+}
+
+.item-picker__panel {
     position: absolute;
-    z-index: 20;
+    z-index: 30;
     top: calc(100% + 4px);
     left: 0;
-    right: 0;
-    max-height: 320px;
-    overflow-y: auto;
+    width: 100%;
+    min-width: 320px;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
     background: var(--panel-alt);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
 }
 
-.item-combobox__group-label {
-    padding: 6px 10px 4px;
+.item-picker__panel[hidden] {
+    display: none;
+}
+
+.item-picker__head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.item-picker__search {
+    flex: 1;
+    min-width: 0;
+    background: var(--panel);
+}
+
+/* Back button: only on the phone sheet. */
+.item-picker__back {
+    display: none;
+    padding: 6px 12px;
+    background: transparent;
+    border-color: transparent;
+    color: var(--text);
+    font-size: 1.2rem;
+}
+
+.item-picker__back:hover {
+    background: var(--panel);
+    border-color: transparent;
+}
+
+.item-picker__list {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.item-picker__group {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 8px 12px 4px;
+    background: var(--panel-alt);
     color: var(--text-dim);
     font-weight: 600;
     text-transform: uppercase;
@@ -363,30 +396,90 @@ button:disabled {
     letter-spacing: 0.03em;
 }
 
-.item-combobox__option {
+.item-picker__option {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
+    gap: 10px;
+    min-height: 40px;
+    padding: 6px 12px;
     cursor: pointer;
 }
 
-.item-combobox__option:hover,
-.item-combobox__option.is-active {
+.item-picker__option.is-active {
     background: var(--panel);
 }
 
-.item-combobox__option.is-selected {
+.item-picker__option.is-selected .item-picker__name {
     color: var(--accent);
 }
 
-.item-combobox__icon {
+.item-picker__icon {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 24px;
     height: 24px;
     flex-shrink: 0;
+}
+
+.item-picker__name {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-picker__name mark {
+    background: transparent;
+    color: inherit;
+    font-weight: 700;
+}
+
+.item-picker__category {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.item-picker__check {
+    width: 16px;
+    color: var(--accent);
+    text-align: center;
+}
+
+.item-picker__clear {
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+}
+
+.item-picker__empty {
+    padding: 16px 12px;
+    color: var(--text-dim);
+}
+
+/* Phones: the panel is a full-screen sheet with a back button and larger rows. */
+@media (max-width: 640px) {
+    .item-picker__panel {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        width: auto;
+        min-width: 0;
+        max-height: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .item-picker__back {
+        display: block;
+    }
+
+    .item-picker__option {
+        min-height: 48px;
+    }
+
+    body.item-picker-open {
+        overflow: hidden;
+    }
 }
 
 .btn-secondary {

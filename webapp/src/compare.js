@@ -24,9 +24,9 @@ applyStaticTranslations();
 const sides = ['a', 'b'].map((key) => ({
     key,
     picker: createItemPicker({
-        input: document.getElementById(`${key}-search`),
-        panel: document.getElementById(`${key}-listbox`),
-        clearButton: document.getElementById(`${key}-search-clear`),
+        trigger: document.getElementById(`${key}-search`),
+        // Either side may be left empty.
+        clearable: true,
         onChange: () => recompute(),
     }),
     amount: document.getElementById(`${key}-amount`),

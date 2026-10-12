@@ -17,9 +17,7 @@ renderNav('sources');
 applyStaticTranslations();
 
 const itemPicker = createItemPicker({
-    input: document.getElementById('item-search'),
-    panel: document.getElementById('item-listbox'),
-    clearButton: document.getElementById('item-search-clear'),
+    trigger: document.getElementById('item-search'),
     onChange: () => {
         render();
         syncUrl();
