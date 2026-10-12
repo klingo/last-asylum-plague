@@ -5718,9 +5718,87 @@
         }
     },
     "spend_reward_tracks": {
-        "ancient_recipe": {
+        "ancient_recipe_antitoxin": {
             "name": {
-                "en": "Ancient Recipe",
+                "en": "Ancient Recipe (Antitoxin)",
+                "de": ""
+            },
+            "conversions": [
+                {
+                    "price": 99,
+                    "points": 100
+                },
+                {
+                    "price": 199,
+                    "points": 200
+                },
+                {
+                    "price": 399,
+                    "points": 400
+                },
+                {
+                    "price": 499,
+                    "points": 500
+                },
+                {
+                    "price": 1999,
+                    "points": 2000
+                },
+                {
+                    "price": 2499,
+                    "points": 2500
+                },
+                {
+                    "price": 4999,
+                    "points": 5000
+                },
+                {
+                    "price": 9999,
+                    "points": 10000
+                }
+            ],
+            "tiers": {
+                "1000": {
+                    "ur_hero_omni_shard": 5,
+                    "skill_badge": 500,
+                    "antitoxin_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "3000": {
+                    "ur_hero_omni_shard": 5,
+                    "skill_badge": 500,
+                    "antitoxin_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "10000": {
+                    "ur_hero_omni_shard": 10,
+                    "skill_badge": 1000,
+                    "antitoxin_level_supply_ssr": 10,
+                    "resource_supply_sr": 10
+                },
+                "20000": {
+                    "ur_hero_omni_shard": 20,
+                    "skill_badge": 2000,
+                    "antitoxin_level_supply_ssr": 20,
+                    "resource_supply_sr": 20
+                },
+                "30000": {
+                    "ur_hero_omni_shard": 20,
+                    "skill_badge": 2000,
+                    "antitoxin_level_supply_ssr": 20,
+                    "resource_supply_sr": 20
+                },
+                "50000": {
+                    "ur_hero_omni_shard": 30,
+                    "skill_badge": 3000,
+                    "antitoxin_level_supply_ssr": 30,
+                    "resource_supply_sr": 30
+                }
+            }
+        },
+        "ancient_recipe_gearstone": {
+            "name": {
+                "en": "Ancient Recipe (Gearstone)",
                 "de": ""
             },
             "conversions": [
