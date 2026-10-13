@@ -32,8 +32,17 @@ function words(text) {
  * @param {(itemId: string) => void} [onChange] - called when the user picks (or clears) an item.
  * @param {string} [placeholderKey] - i18n key of the text shown while nothing is selected.
  * @param {boolean} [clearable=false] - offer a "Clear selection" row (where no item is a valid state).
+ * @param {boolean} [icons=true] - show item images (off for lists that aren't items, e.g. events).
+ * @param {string} [searchPlaceholderKey] - i18n key of the search box's placeholder.
  */
-function createItemPicker({ trigger, onChange, placeholderKey = 'picker.placeholder', clearable = false }) {
+function createItemPicker({
+    trigger,
+    onChange,
+    placeholderKey = 'picker.placeholder',
+    clearable = false,
+    icons = true,
+    searchPlaceholderKey = 'picker.search',
+}) {
     const id = `item-picker-${++pickerCount}`;
     let items = []; // [{ id, name, category, categoryName, key, words }]
     let selectedId = '';
@@ -102,13 +111,13 @@ function createItemPicker({ trigger, onChange, placeholderKey = 'picker.placehol
         triggerText.textContent = item ? item.name : t(placeholderKey);
         triggerText.classList.toggle('is-placeholder', !item);
         triggerIcon.hidden = true;
-        if (item) {
+        if (item && icons) {
             triggerIcon.src = getItemImageUrl(item.id);
         } else {
             triggerIcon.removeAttribute('src');
         }
         back.setAttribute('aria-label', t('picker.close'));
-        search.placeholder = t('picker.search');
+        search.placeholder = t(searchPlaceholderKey);
     }
 
     /** Search: every word of the query must occur in the name or category (any order). */
@@ -169,20 +178,23 @@ function createItemPicker({ trigger, onChange, placeholderKey = 'picker.placehol
         const isSelected = item.id === selectedId;
         option.setAttribute('aria-selected', String(isSelected));
         option.classList.toggle('is-selected', isSelected);
-        const iconSlot = document.createElement('span');
-        iconSlot.className = 'item-picker__icon';
-        const img = document.createElement('img');
-        img.src = getItemImageUrl(item.id);
-        img.alt = '';
-        img.loading = 'lazy';
-        img.className = 'item-icon item-icon--sm';
-        // Missing images stay blank so every name lines up under the icon column.
-        img.onerror = () => img.remove();
-        iconSlot.appendChild(img);
+        if (icons) {
+            const iconSlot = document.createElement('span');
+            iconSlot.className = 'item-picker__icon';
+            const img = document.createElement('img');
+            img.src = getItemImageUrl(item.id);
+            img.alt = '';
+            img.loading = 'lazy';
+            img.className = 'item-icon item-icon--sm';
+            // Missing images stay blank so every name lines up under the icon column.
+            img.onerror = () => img.remove();
+            iconSlot.appendChild(img);
+            option.appendChild(iconSlot);
+        }
         const label = document.createElement('span');
         label.className = 'item-picker__name';
         label.append(query ? nameWithHighlights(item.name, query) : item.name);
-        option.append(iconSlot, label);
+        option.appendChild(label);
         if (showCategory) {
             const category = document.createElement('span');
             category.className = 'item-picker__category';

@@ -30,6 +30,8 @@ function planOptions(data, settings, overrides = {}) {
         budget: settings.budget,
         activeEventIds: new Set(settings.activeEvents),
         seasonalPasses: settings.seasonalPasses,
+        // "Must buy" shop offers shape the one plan on every page.
+        lockedOffers: settings.lockedOffers,
         includePasses: true,
         includeExclusives: false,
         weights: priorityWeights(settings),

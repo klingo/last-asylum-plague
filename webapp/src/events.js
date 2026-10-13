@@ -5,7 +5,9 @@ import { buildValuation, modelSummaryText, planOptions } from './lib/valuation';
 import { solveWeeklyPlan } from './lib/planner.js';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
-import { expandPackageFamilies, packageWeeklyCapacity } from './lib/catalog.js';
+import { expandPackageFamilies, packageWeeklyCapacity, offerWeeklyCapacity } from './lib/catalog.js';
+import { createUnitCounter } from './lib/item-sources.js';
+import { createItemPicker } from './lib/item-picker';
 import { packageDisplayName, itemDisplayName, bundleLabel } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
@@ -17,14 +19,25 @@ import { ratioBarHtml } from './lib/ratio-bar';
 renderNav('events');
 applyStaticTranslations();
 
-const eventSelect = document.getElementById('event-select');
+// The app's own picker (not a native <select>, whose open list the browser draws itself).
+const eventPicker = createItemPicker({
+    trigger: document.getElementById('event-select'),
+    placeholderKey: 'events.eventPlaceholder',
+    searchPlaceholderKey: 'events.eventSearch',
+    icons: false,
+    onChange: () => onEventChange(),
+});
 const exceedLimits = document.getElementById('exceed-limits');
 const exceedLimitsInfo = document.getElementById('exceed-limits-info');
+const exceedField = document.getElementById('exceed-field');
 const extraDiamondsField = document.getElementById('extra-diamonds-field');
 const extraDiamondsInput = document.getElementById('extra-diamonds');
+const extraBanknotesField = document.getElementById('extra-banknotes-field');
+const extraBanknotesInput = document.getElementById('extra-banknotes');
 const promptCard = document.getElementById('event-prompt-card');
 const planCard = document.getElementById('plan-card');
 const exceedNote = document.getElementById('exceed-note');
+const lockNote = document.getElementById('lock-note');
 const eventSummary = document.getElementById('event-summary');
 const shopSection = document.getElementById('shop-section');
 const shopHeading = document.getElementById('shop-heading');
@@ -40,7 +53,11 @@ const STEP_LEVELS = [1000, 2000, 5000, 10000, 20000, 50000];
 let data = null;
 let settings = null;
 let valuation = null;
+let panel = null;
 let stepCache = { key: null, steps: null };
+let lockCostCache = { key: null, cost: null };
+// itemId -> whether any pack or another shop gives it (for the "Only here" badge), per shop.
+const otherSourceCache = new Map();
 
 const gold = (text) => `<span class="text-gold">${text}</span> ${banknoteIconHtml()}`;
 // Item image placeholder, swapped for the real <img> by hydrateIcons() after rendering.
@@ -59,7 +76,7 @@ function hydrateIcons(root) {
 
 /** The selection: an event (`event:<id>`, with its shop if any) or a shop without event (`shop:<id>`). */
 function selection() {
-    const [kind, id] = eventSelect.value.split(':');
+    const [kind, id] = eventPicker.getValue().split(':');
     if (kind === 'event' && data.events?.[id]) {
         const shopEntry = Object.entries(data.exchange_shops || {}).find(([, shop]) => shop.event_id === id);
         return { eventId: id, shopId: shopEntry?.[0] ?? null, shop: shopEntry?.[1] ?? null };
@@ -73,21 +90,32 @@ function selection() {
 /** Whether the event's pack limits can be exceeded in the game (`exceedable_pack_limits` in the data). */
 const isExceedable = (eventId) => Boolean(eventId && data.events?.[eventId]?.exceedable_pack_limits);
 
+/** Whether the box is ticked for this event (remembered per event in the settings). */
+const exceedTicked = (eventId) => Boolean(eventId && settings.exceedEventLimits?.includes(eventId));
+
 /** Whether this page lifts the selected event's pack limits: box ticked and the event allows it. */
 function exceeding() {
-    return exceedLimits.checked && isExceedable(selection()?.eventId);
+    const eventId = selection()?.eventId;
+    return exceedTicked(eventId) && isExceedable(eventId);
 }
 
 /** The VIP Shop (a shop without event) is selected: diamonds can also come from outside the packs. */
 const isVipShop = (selected) => Boolean(selected?.shop && !selected.shop.event_id);
 
+/** Extra Banknotes per week the user puts only into this event's packs (remembered per event). */
+const extraFor = (eventId) => (eventId && settings.extraEventBanknotes?.[eventId]) || 0;
+
 /**
- * Planner options of this page: the selected event's pack limits lifted when exceeding; for the VIP
- * Shop, the extra diamonds per week on top of what the packs give.
+ * Planner options of this page: the selected event's pack limits lifted when exceeding, its extra
+ * Banknotes on top of the weekly spend; for the VIP Shop, the extra diamonds per week on top of what
+ * the packs give.
  */
 function pageOverrides() {
     const selected = selection();
     const overrides = exceeding() ? { exceedEventPackLimits: new Set([selected.eventId]) } : {};
+    if (extraFor(selected?.eventId) > 0) {
+        overrides.eventBudget = { eventId: selected.eventId, extra: extraFor(selected.eventId) };
+    }
     if (isVipShop(selected) && settings.extraDiamonds > 0) {
         overrides.extraCurrency = { [selected.shop.currency_item_id]: settings.extraDiamonds };
     }
@@ -120,7 +148,7 @@ function cheapestEventPack(eventId) {
 /**
  * How much spending on the event is worth it: the weekly plan re-solved with the event's pack spend
  * at 0, at your plan's own spend E₀ and at round levels above it, the rest of your weekly spend
- * unchanged (budget = weekly spend − E₀ + level). Step ratio = the step's extra points (in Banknotes
+ * unchanged (budget = weekly spend + the event's extra Banknotes − E₀ + level). Step ratio = the step's extra points (in Banknotes
  * at your weekly spend) ÷ its extra Banknotes: at least 1 = still as good as your last Banknote.
  * Above E₀ a level only has to be reached within one cheapest pack (whole packs rarely hit it
  * exactly); levels the event can't reach, or that change nothing, are left out.
@@ -143,7 +171,9 @@ function stepAnalysis(eventId) {
                 data,
                 planOptions(data, settings, {
                     ...pageOverrides(),
-                    budget: settings.budget - e0 + level,
+                    // The level pins the event's spend; the extra Banknotes are part of the total here.
+                    eventBudget: null,
+                    budget: settings.budget + extraFor(eventId) - e0 + level,
                     eventSpend: level < e0 ? { eventId, max: level } : { eventId, min: Math.max(e0, level - slack) },
                 }),
             );
@@ -192,6 +222,12 @@ function renderSummary({ eventId, shopId, shop }) {
                       .join('')}</ul>${
                       purchases.length > 1
                           ? `<div class="plan-tile__total">${t('events.total')} ${gold(formatThousands(eventPackSpend(plan, eventId), 0))}</div>`
+                          : ''
+                  }${
+                      extraFor(eventId) > 0
+                          ? `<div class="plan-tile__note text-dim">${t('events.extraBanknotesNote', {
+                                amount: formatThousands(extraFor(eventId), 0),
+                            })}</div>`
                           : ''
                   }`
                 : `<span class="text-dim">${t('events.summaryNoPacks')}</span>`;
@@ -318,6 +354,7 @@ function renderShop({ shopId, shop }) {
     const offers = Object.entries(shop.offers || {}).map(([offerKey, offer]) => {
         const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
         return {
+            offerKey,
             offer,
             count: bought.get(offerKey) || 0,
             worth: b.worth,
@@ -348,6 +385,32 @@ function renderShop({ shopId, shop }) {
         return o.count ? buyBadge(`×${formatThousands(o.count)}`) : '';
     };
 
+    // Most purchases per week (daily limits also shown per day, e.g. "7 (1/day)").
+    const limitHtml = (offer) => {
+        const perWeek = formatThousands(offerWeeklyCapacity(offer, shop));
+        return offer.limit_type === 'daily'
+            ? `${perWeek}&nbsp;<span class="text-dim">(${t('events.perDay', { count: formatThousands(offer.purchase_limit) })})</span>`
+            : perWeek;
+    };
+    // "Must buy" locks (not for random offers, which can't be planned).
+    const lockable = !shop.random_offers;
+    const lockCell = (offerKey, offer) => {
+        const key = `${shopId}:${offerKey}`;
+        const isFixed = key in (settings.lockedOffers || {});
+        const count = isFixed ? settings.lockedOffers[key] : 0;
+        const limit = offerWeeklyCapacity(offer, shop);
+        const toggle = `<button type="button" class="lock-toggle" data-lock="${offerKey}" aria-pressed="${isFixed}" title="${t('events.lock')}" aria-label="${t('events.lock')}">${isFixed ? '🔒' : '🔓'}</button>`;
+        const amount = isFixed
+            ? `<input type="number" class="lock-count" data-lock-count="${offerKey}" min="0" max="${limit}" step="1" value="${Math.min(count, limit)}" title="${t('events.lockCount')}" aria-label="${t('events.lockCount')}" />`
+            : '';
+        // Count first, lock on the right; right-aligned like the other number columns.
+        return numCell(`<span class="lock-cell">${amount}${toggle}</span>`);
+    };
+    const onlyHereBadge = (offer) =>
+        hasOtherSource(shopId, offer.item_id)
+            ? ''
+            : ` <span class="only-here" title="${t('events.onlyHereHint')}">${t('events.onlyHere')}</span>`;
+
     const groups = stages.map((stage) => {
         const heading =
             stages.length > 1
@@ -357,12 +420,20 @@ function renderShop({ shopId, shop }) {
             .filter((o) => (o.offer.unlock_points || 0) === stage)
             .sort((a, b) => (b.ratio ?? 0) - (a.ratio ?? 0))
             .map(
-                ({ offer, count, worth, ratio }) => `<div class="${rowClass(worthBuying({ count, ratio }))}" role="row">
-                    ${cell(`${iconHtml(offer.item_id)}${itemDisplayName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}`, 'item-cell')}
+                ({
+                    offerKey,
+                    offer,
+                    count,
+                    worth,
+                    ratio,
+                }) => `<div class="${rowClass(worthBuying({ count, ratio }))}" role="row">
+                    ${cell(`${iconHtml(offer.item_id)}${itemDisplayName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}${onlyHereBadge(offer)}`, 'item-cell')}
+                    ${numCell(limitHtml(offer))}
                     ${numCell(`${formatThousands(offer.currency_cost)} ${coinIcon}`)}
                     ${numCell(coinWorth > 0 ? bn(offer.currency_cost * coinWorth) : t('common.dash'))}
                     ${numCell(bn(worth))}
                     ${numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 }))}
+                    ${lockable ? lockCell(offerKey, offer) : ''}
                     ${numCell(buyCell({ count, ratio }))}
                 </div>`,
             );
@@ -381,19 +452,117 @@ function renderShop({ shopId, shop }) {
                 ${cell(`${iconHtml(firstItem)}${t('events.bonusTier', { threshold: formatThousands(threshold) })}: ${bundleLabel(reward, data.items, locale)}`, 'item-cell')}
                 ${numCell(t('common.dash'))}
                 ${numCell(t('common.dash'))}
+                ${numCell(t('common.dash'))}
                 ${numCell(bn(b.worth))}
                 ${numCell('')}
+                ${lockable ? numCell('') : ''}
                 ${numCell(reached.has(threshold) ? buyBadge(`✓ ${t('events.reached')}`) : '')}
             </div>`;
         });
 
     shopTable.innerHTML = `
         <div class="ranking-grid__row" role="row">
-            ${headerCell('offer')}${headerCell('cost', true)}${headerCell('costBanknotes', true)}${headerCell('worth', true)}${headerCell('ratio', true)}${headerCell(shop.random_offers ? 'buyIfOffered' : 'buy', true)}
+            ${headerCell('offer')}${headerCell('limit', true)}${headerCell('cost', true)}${headerCell('costBanknotes', true)}${headerCell('worth', true)}${headerCell('ratio', true)}${lockable ? headerCell('mustBuy', true) : ''}${headerCell(shop.random_offers ? 'buyIfOffered' : 'buy', true)}
         </div>
         ${groups.join('')}
         ${tierRows.length > 0 ? `<div class="ranking-grid__section">${t('events.bonusSection')}</div>${tierRows.join('')}` : ''}`;
+    shopTable.classList.toggle('events-shop-grid--locks', lockable);
     hydrateIcons(shopTable);
+    enableInfoTooltips(shopTable);
+    wireLocks(shopId, shop);
+}
+
+/** Saves the "Must buy" locks of the shop table (the whole weekly plan follows them). */
+function wireLocks(shopId, shop) {
+    // `count` null = unlock; 0 = never buy; otherwise exactly that many per week.
+    const save = (offerKey, count) => {
+        const lockedOffers = { ...settings.lockedOffers };
+        if (count === null) {
+            delete lockedOffers[`${shopId}:${offerKey}`];
+        } else {
+            lockedOffers[`${shopId}:${offerKey}`] = count;
+        }
+        panel.update({ lockedOffers });
+    };
+    shopTable.querySelectorAll('[data-lock]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const offerKey = button.dataset.lock;
+            const locked = `${shopId}:${offerKey}` in (settings.lockedOffers || {});
+            // Locking starts at the weekly limit; the count field can lower it, down to 0 (never).
+            save(offerKey, locked ? null : offerWeeklyCapacity(shop.offers[offerKey], shop));
+        });
+    });
+    shopTable.querySelectorAll('[data-lock-count]').forEach((input) => {
+        input.addEventListener('change', () => {
+            const offerKey = input.dataset.lockCount;
+            const limit = offerWeeklyCapacity(shop.offers[offerKey], shop);
+            save(offerKey, Math.min(limit, Math.max(0, Math.round(Number(input.value) || 0))));
+        });
+    });
+}
+
+/** Whether any pack (nested) or another shop's offer gives the item (no "Only here" badge then). */
+function hasOtherSource(shopId, itemId) {
+    const cacheKey = `${shopId}:${itemId}`;
+    if (!otherSourceCache.has(cacheKey)) {
+        const counter = createUnitCounter(data.items, itemId);
+        const fromPacks = Object.values(data.packages).some((pkg) => counter.ofBundle(pkg).units > 0);
+        const fromShops = Object.entries(data.exchange_shops || {}).some(
+            ([otherId, other]) =>
+                otherId !== shopId &&
+                Object.values(other.offers || {}).some((offer) => counter.ofItem(offer.item_id).units > 0),
+        );
+        otherSourceCache.set(cacheKey, fromPacks || fromShops);
+    }
+    return otherSourceCache.get(cacheKey);
+}
+
+/**
+ * "Your N locked offers cost about X Banknotes of worth": the plan without the locks minus the plan
+ * with them (one extra solve, cached per settings); a warning instead if the locks don't fit the spend.
+ */
+function renderLockNote() {
+    const shops = data.exchange_shops || {};
+    const active = Object.keys(settings.lockedOffers || {}).filter((key) => {
+        const shop = shops[key.split(':')[0]];
+        return shop && (!shop.event_id || settings.activeEvents.includes(shop.event_id));
+    });
+    lockNote.hidden = active.length === 0;
+    if (active.length === 0) {
+        return;
+    }
+    const overrides = pageOverrides();
+    const cacheKey = `${JSON.stringify(settings)}|${JSON.stringify(overrides, (k, v) => (v instanceof Set ? [...v] : v))}`;
+    if (lockCostCache.key !== cacheKey) {
+        const unlocked = solveWeeklyPlan(
+            valuation.highs,
+            data,
+            planOptions(data, settings, { ...overrides, lockedOffers: {} }),
+        );
+        lockCostCache = { key: cacheKey, cost: (unlocked.totalPoints - valuation.plan.totalPoints) / valuation.rate };
+    }
+    const parts = [
+        `<span class="text-dim">${t('events.lockCost', {
+            count: formatThousands(active.length),
+            worth: formatThousands(Math.max(0, lockCostCache.cost), 0),
+        })}</span>`,
+    ];
+    // Fixed amounts the spend can't fully cover: the plan bought as many as possible.
+    const shortfalls = valuation.plan.lockShortfalls || [];
+    if (shortfalls.length > 0) {
+        const items = shortfalls.map(({ key, wanted, got }) => {
+            const [shopId, offerKey] = key.split(':');
+            const offer = shops[shopId]?.offers?.[offerKey];
+            return t('events.lockShortfallItem', {
+                item: offer ? itemDisplayName(data.items, offer.item_id, getLocale()) : offerKey,
+                got: formatThousands(got),
+                wanted: formatThousands(wanted),
+            });
+        });
+        parts.push(`<span class="text-warn">${t('events.lockShortfall', { items: items.join(', ') })}</span>`);
+    }
+    lockNote.className = '';
+    lockNote.innerHTML = parts.join(' ');
 }
 
 function renderSteps({ eventId }) {
@@ -435,31 +604,49 @@ function render() {
     promptCard.hidden = Boolean(selected);
     planCard.hidden = !selected;
     exceedLimits.disabled = !isExceedable(selected?.eventId);
+    exceedLimits.checked = exceedTicked(selected?.eventId);
     extraDiamondsField.hidden = !isVipShop(selected);
+    extraBanknotesField.hidden = !(selected?.eventId && eventMaxSpend(selected.eventId) > 0);
+    exceedField.hidden = extraBanknotesField.hidden;
+    extraBanknotesInput.value = String(extraFor(selected?.eventId));
     exceedNote.hidden = !exceeding();
     if (!selected) {
         stepsCard.hidden = true;
         return;
     }
+    renderLockNote();
     renderSummary(selected);
     renderShop(selected);
     renderSteps(selected);
 }
 
+/** The ticked events (grouped by their category) and the shops without event (VIP Shop). */
 function populateSelect() {
-    const previous = eventSelect.value;
-    const options = [
-        ...settings.activeEvents
-            .filter((id) => data.events?.[id])
-            .map((id) => [`event:${id}`, localizedName(data.events[id].name)]),
-        ...Object.entries(data.exchange_shops || {})
-            .filter(([, shop]) => !shop.event_id)
-            .map(([id, shop]) => [`shop:${id}`, localizedName(shop.name)]),
-    ];
-    eventSelect.innerHTML = `<option value="" disabled>${t('events.eventPlaceholder')}</option>${options
-        .map(([value, name]) => `<option value="${value}">${name}</option>`)
-        .join('')}`;
-    eventSelect.value = options.some(([value]) => value === previous) ? previous : '';
+    const entries = {};
+    for (const id of settings.activeEvents.filter((eventId) => data.events?.[eventId])) {
+        entries[`event:${id}`] = { name: data.events[id].name, category: data.events[id].category || 'special_event' };
+    }
+    for (const [id, shop] of Object.entries(data.exchange_shops || {})) {
+        if (!shop.event_id) {
+            entries[`shop:${id}`] = { name: shop.name, category: 'shop' };
+        }
+    }
+    // Keeps the current selection while it's still listed.
+    eventPicker.setItems(entries);
+}
+
+/** With exceeded limits, locks or extra diamonds / Banknotes the plan depends on the selection. */
+function onEventChange() {
+    if (
+        settings.exceedEventLimits?.length > 0 ||
+        Object.keys(settings.lockedOffers || {}).length > 0 ||
+        settings.extraDiamonds > 0 ||
+        Object.keys(settings.extraEventBanknotes || {}).length > 0
+    ) {
+        recompute();
+    } else {
+        withLoading(render);
+    }
 }
 
 function renderExceedInfo() {
@@ -482,7 +669,7 @@ async function recompute() {
 
 async function init() {
     data = await loadPackData();
-    const panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
         fields: ['budget', 'events', 'passes'],
         onChange: (next) => {
             settings = next;
@@ -495,11 +682,26 @@ async function init() {
     extraDiamondsInput.addEventListener('change', () =>
         panel.update({ extraDiamonds: Math.max(0, Number(extraDiamondsInput.value) || 0) }),
     );
-    // With exceeded limits or extra diamonds the plan depends on the selection; otherwise it's the Ranking's plan.
-    eventSelect.addEventListener('change', () =>
-        exceedLimits.checked || settings.extraDiamonds > 0 ? recompute() : withLoading(render),
-    );
-    exceedLimits.addEventListener('change', recompute);
+    extraBanknotesInput.addEventListener('change', () => {
+        const eventId = selection()?.eventId;
+        if (!eventId) {
+            return;
+        }
+        const amount = Math.max(0, Number(extraBanknotesInput.value) || 0);
+        const extraEventBanknotes = { ...settings.extraEventBanknotes, [eventId]: amount };
+        if (amount === 0) {
+            delete extraEventBanknotes[eventId];
+        }
+        panel.update({ extraEventBanknotes });
+    });
+    exceedLimits.addEventListener('change', () => {
+        const eventId = selection()?.eventId;
+        if (!eventId) {
+            return;
+        }
+        const others = (settings.exceedEventLimits || []).filter((id) => id !== eventId);
+        panel.update({ exceedEventLimits: exceedLimits.checked ? [...others, eventId] : others });
+    });
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
         renderExceedInfo();

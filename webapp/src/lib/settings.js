@@ -28,6 +28,9 @@ const DEFAULT_NONE_ITEMS = [
 const DEFAULT_SETTINGS = {
     budget: 20000, // Banknotes per week
     extraDiamonds: 0, // diamonds per week from outside the packs, for the VIP Shop (Events page)
+    extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
+    exceedEventLimits: [], // event ids whose pack limits the Events page lifts ("Exceed event pack limits")
+    lockedOffers: {}, // "<shopId>:<offerKey>" -> exact count the plan buys per week, 0 = never (Events page)
     activeEvents: [], // event ids running this week
     seasonalPasses: [], // family ids of the seasonal passes on sale right now; other passes are always on sale
     priorities: Object.fromEntries(DEFAULT_NONE_ITEMS.map((id) => [id, 'none'])), // itemId -> level ('normal' omitted)
@@ -62,7 +65,17 @@ function loadSettings() {
     if (Number.isFinite(stored.extraDiamonds) && stored.extraDiamonds >= 0) {
         settings.extraDiamonds = stored.extraDiamonds;
     }
-    for (const key of ['activeEvents', 'seasonalPasses']) {
+    if (stored.lockedOffers && typeof stored.lockedOffers === 'object') {
+        settings.lockedOffers = Object.fromEntries(
+            Object.entries(stored.lockedOffers).filter(([, count]) => Number.isFinite(count) && count >= 0),
+        );
+    }
+    if (stored.extraEventBanknotes && typeof stored.extraEventBanknotes === 'object') {
+        settings.extraEventBanknotes = Object.fromEntries(
+            Object.entries(stored.extraEventBanknotes).filter(([, amount]) => Number.isFinite(amount) && amount > 0),
+        );
+    }
+    for (const key of ['activeEvents', 'seasonalPasses', 'exceedEventLimits']) {
         if (Array.isArray(stored[key])) {
             settings[key] = stored[key].filter((id) => typeof id === 'string');
         }

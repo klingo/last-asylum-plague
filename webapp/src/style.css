@@ -1,4 +1,6 @@
 :root {
+    /* Native controls (dropdown popups, scrollbars, number spinners) in the browser's dark style. */
+    color-scheme: dark;
     --bg: #14161b;
     --panel: #1e2129;
     --panel-alt: #262b35;
@@ -158,6 +160,16 @@ main {
     gap: 16px;
     align-items: end;
     margin-bottom: 4px;
+}
+
+/* A row whose fields have different control heights (input vs checkboxes): headers on one line, aligned at the top. */
+.form-row--top {
+    align-items: start;
+}
+
+.form-row--top .field label,
+.form-row--top .field .field-label {
+    white-space: nowrap;
 }
 
 .field {
@@ -829,7 +841,60 @@ tbody tr:hover {
 }
 
 .events-shop-grid {
-    grid-template-columns: minmax(260px, 2.5fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) minmax(90px, 0.8fr) 90px 90px;
+    grid-template-columns:
+        minmax(260px, 2.5fr) minmax(90px, 0.6fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) minmax(90px, 0.8fr) 90px
+        90px;
+}
+
+/* With the "Must buy" column (lock + count) before "Buy / week". */
+.events-shop-grid--locks {
+    grid-template-columns:
+        minmax(260px, 2.5fr) minmax(90px, 0.6fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) minmax(90px, 0.8fr) 90px
+        130px 90px;
+}
+
+.lock-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.lock-toggle {
+    padding: 2px 6px;
+    background: transparent;
+    border-color: var(--border);
+    font-size: 0.95rem;
+    line-height: 1.2;
+    opacity: 0.55;
+}
+
+.lock-toggle:hover {
+    background: var(--panel);
+    border-color: var(--text-dim);
+    opacity: 1;
+}
+
+.lock-toggle[aria-pressed='true'] {
+    border-color: var(--accent);
+    opacity: 1;
+}
+
+.lock-count {
+    width: 64px;
+    padding: 2px 6px;
+}
+
+/* An offer whose item no pack or other shop gives. */
+.only-here {
+    margin-left: 6px;
+    padding: 1px 6px;
+    border: 1px solid var(--warn);
+    border-radius: 999px;
+    color: var(--warn);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    cursor: help;
 }
 
 .events-steps-grid {
@@ -894,6 +959,12 @@ tbody tr:hover {
     margin-top: 8px;
     padding-top: 8px;
     border-top: 1px solid var(--border);
+    text-align: right;
+}
+
+.plan-tile__note {
+    margin-top: 4px;
+    font-size: 0.8rem;
     text-align: right;
 }
 

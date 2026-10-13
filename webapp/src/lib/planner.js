@@ -72,7 +72,10 @@ function currencyFlows(contents, items, values, currencyIds, out = new Map(), fa
  * seasonal passes on sale; undefined = all), `eventSpend` (`{ eventId, min, max }`: Banknotes
  * spent on that event's packages, for the Events page's what-if steps), `exceedEventPackLimits` (Set of event
  * ids whose packages may be bought without their purchase limit), `extraCurrency` (`{ currencyId: qty }`
- * obtained outside the packs this week, e.g. diamonds for the VIP Shop).
+ * obtained outside the packs this week, e.g. diamonds for the VIP Shop), `eventBudget` (`{ eventId, extra }`:
+ * `extra` Banknotes on top of `budget` that only that event's packages may use), `lockedOffers`
+ * (`{ "<shopId>:<offerKey>": count }`: shop offers the user fixed to `count` per week, 0 = never; if the
+ * spend can't afford them all, as many as possible are bought — see `lockShortfalls` in the result).
  */
 function solveWeeklyPlan(highs, data, options = {}) {
     const {
@@ -88,6 +91,8 @@ function solveWeeklyPlan(highs, data, options = {}) {
         eventSpend = null,
         exceedEventPackLimits = null,
         extraCurrency = null,
+        eventBudget = null,
+        lockedOffers = null,
     } = options;
     const items = data.items || {};
     const packages = expandPackageFamilies(data.packages || {});
@@ -105,7 +110,8 @@ function solveWeeklyPlan(highs, data, options = {}) {
     const availability = { activeEventIds, includePasses, includeExclusives };
 
     const model = createModel('max');
-    const budgetRow = { name: 'budget', terms: new Map(), op: '<=', rhs: budget };
+    const extraForEvent = eventBudget?.extra > 0 ? eventBudget.extra : 0;
+    const budgetRow = { name: 'budget', terms: new Map(), op: '<=', rhs: budget + extraForEvent };
     const balanceRows = new Map(); // currency -> row (spent - received <= 0)
     const balance = (currencyId) => {
         if (!balanceRows.has(currencyId)) {
@@ -117,6 +123,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
     const offerVars = new Map();
     const tierVars = new Map();
     const pointPurchaseVars = new Map(); // name -> shopId
+    const fixedVars = new Map(); // offer variable -> { key, wanted } of offers fixed by the user
 
     for (const [id, pkg] of Object.entries(packages)) {
         let capacity = packageWeeklyCapacity(pkg, availability);
@@ -167,6 +174,17 @@ function solveWeeklyPlan(highs, data, options = {}) {
         if (eventSpend.max != null) {
             model.rows.push({ name: 'event_max', terms: new Map(terms), op: '<=', rhs: eventSpend.max });
         }
+    }
+    // Extra Banknotes for one event: the total may go up by `extra`, but everything else still has to
+    // fit the normal budget, so the extra can only be spent on that event's packages.
+    if (extraForEvent > 0) {
+        const terms = new Map();
+        for (const { name, pkg, scale } of packageVars.values()) {
+            if (pkg.event_id !== eventBudget.eventId) {
+                terms.set(name, pkg.price * scale);
+            }
+        }
+        model.rows.push({ name: 'rest_budget', terms, op: '<=', rhs: budget });
     }
     // Mutually exclusive packages (calendar packs): only one of each group.
     const groups = new Map();
@@ -228,15 +246,23 @@ function solveWeeklyPlan(highs, data, options = {}) {
         const offerProgress = []; // [name, points earned per purchase, unlock_points]
         for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
             const capacity = offerWeeklyCapacity(offer, shop, availability);
-            const unit = values.get(offer.item_id)?.value;
-            if (!(capacity > 0) || !(unit > 0)) {
+            const value = values.get(offer.item_id)?.value;
+            const unit = value > 0 ? value : 0;
+            // A fixed offer is bought exactly that often (0 = never), even if its item is worth nothing to
+            // the plan.
+            const lockKey = `${shopId}:${offerKey}`;
+            const fixed = lockedOffers && lockKey in lockedOffers ? Math.min(lockedOffers[lockKey], capacity) : null;
+            if (!(capacity > 0) || fixed === 0 || (!(unit > 0) && fixed === null)) {
                 continue;
             }
             const name = varName('o', shopId, offerKey);
             addTerm(model.objective, name, unit * offer.quantity);
             addTerm(balance(shop.currency_item_id), name, offer.currency_cost);
             offerProgress.push([name, perCoin * offer.currency_cost, offer.unlock_points || 0]);
-            model.bounds.set(name, { upper: capacity });
+            model.bounds.set(name, { upper: fixed !== null ? fixed : capacity });
+            if (fixed > 0) {
+                fixedVars.set(name, { key: lockKey, wanted: fixed });
+            }
             offerVars.set(name, { shopId, offerKey, offer, points: unit * offer.quantity });
         }
         if (offerProgress.length === 0) {
@@ -341,6 +367,22 @@ function solveWeeklyPlan(highs, data, options = {}) {
         .concat([...offerVars.keys()], [...pointPurchaseVars.keys()])) {
         model.integers.add(name);
     }
+    // Offers fixed by the user: first buy as many of them as the spend allows (each counted relative to its
+    // wanted amount, so no single one crowds out the others), then fix those counts and plan the rest.
+    const lockShortfalls = [];
+    if (fixedVars.size > 0) {
+        const reach = solveModel(highs, {
+            ...model,
+            objective: new Map([...fixedVars].map(([name, { wanted }]) => [name, 1 / wanted])),
+        });
+        for (const [name, { key, wanted }] of fixedVars) {
+            const got = reach.status === 'Optimal' ? Math.round(reach.values.get(name) || 0) : 0;
+            model.bounds.set(name, { lower: got, upper: got });
+            if (got < wanted) {
+                lockShortfalls.push({ key, wanted, got });
+            }
+        }
+    }
     const plan = solveModel(highs, model);
     if (plan.status !== 'Optimal') {
         throw new Error(`Weekly plan solve failed: ${plan.status}`);
@@ -353,7 +395,9 @@ function solveWeeklyPlan(highs, data, options = {}) {
         relaxed.bounds.set(name, { lower: reached, upper: reached });
     }
     const rates = solveModel(highs, relaxed);
-    const lambda = Math.abs(rates.duals.get('budget') || 0);
+    // One more general Banknote relaxes the budget row and, with an event's extra Banknotes, the row of
+    // everything else too.
+    const lambda = Math.abs(rates.duals.get('budget') || 0) + Math.abs(rates.duals.get('rest_budget') || 0);
     const mu = new Map();
     for (const [currencyId, row] of balanceRows) {
         mu.set(currencyId, Math.abs(rates.duals.get(row.name) || 0));
@@ -425,6 +469,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         tiersReached,
         pointPurchases,
         trackTiersReached,
+        lockShortfalls,
         currencies,
         /** Banknote worth of one unit (currencies: their marginal value), or null. */
         worth(itemId) {

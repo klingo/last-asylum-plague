@@ -16,17 +16,7 @@
                 <div class="form-row">
                     <div class="field field--wide">
                         <label for="event-select" data-i18n="events.eventLabel"></label>
-                        <select id="event-select"></select>
-                    </div>
-                    <div class="field">
-                        <span class="field-label" data-i18n="events.optionsLabel"></span>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="exceed-limits" />
-                                <span data-i18n="events.exceedLimits"></span>
-                                <span id="exceed-limits-info"></span>
-                            </label>
-                        </div>
+                        <div class="item-picker"><button type="button" id="event-select"></button></div>
                     </div>
                 </div>
                 <p class="footnote" data-i18n="events.tickHint"></p>
@@ -38,16 +28,37 @@
 
             <section class="card" id="plan-card" hidden>
                 <h3 data-i18n="events.planHeading"></h3>
-                <!-- VIP Shop only: diamonds from outside the packs (a plain wrapper, so [hidden] isn't overridden by .field). -->
-                <div id="extra-diamonds-field" hidden>
-                    <div class="form-row">
+                <!-- Options of this plan. Each sits in a plain wrapper, so [hidden] isn't overridden by .field. -->
+                <div class="form-row form-row--top">
+                    <!-- VIP Shop only: diamonds from outside the packs. -->
+                    <div id="extra-diamonds-field" hidden>
                         <div class="field field--narrow">
                             <label for="extra-diamonds" data-i18n="events.extraDiamonds"></label>
                             <input id="extra-diamonds" type="number" min="0" step="1000" />
                         </div>
                     </div>
+                    <!-- Events with packs: extra Banknotes only for this event, and exceeding its pack limits. -->
+                    <div id="extra-banknotes-field" hidden>
+                        <div class="field field--narrow">
+                            <label for="extra-banknotes" data-i18n="events.extraBanknotes"></label>
+                            <input id="extra-banknotes" type="number" min="0" step="1000" />
+                        </div>
+                    </div>
+                    <div id="exceed-field" hidden>
+                        <div class="field">
+                            <span class="field-label" data-i18n="events.optionsLabel"></span>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="exceed-limits" />
+                                    <span data-i18n="events.exceedLimits"></span>
+                                    <span id="exceed-limits-info"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <p class="text-warn" id="exceed-note" hidden data-i18n="events.exceedNote"></p>
+                <p id="lock-note" hidden></p>
                 <div id="event-summary" class="plan-tiles"></div>
                 <div id="shop-section" hidden>
                     <h3 id="shop-heading"></h3>

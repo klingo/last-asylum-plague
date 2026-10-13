@@ -57,7 +57,11 @@ with `bundles` (the Weekly Pass, which includes the single weekly passes) is nev
 it bundles, in both models. Shop progress points (`points_per_currency` per coin spent + `point_purchase`, e.g. the
 Surprise Encounter's Encounter Points) gate `bonus_tiers` and offer `unlock_points` in the weekly plan only (not in
 Compare). The Ranking shows only Banknote purchases; the Events page shows an event's slice of the same plan (packs,
-coins, shop offers) plus what-if steps (`eventSpend` option of the planner).
+coins, shop offers) plus what-if steps (`eventSpend` option of the planner); optional extra Banknotes only for the
+selected event (`eventBudget`) and extra VIP Shop diamonds (`extraCurrency`) change only that page's plan. Locks
+on shop offers (`lockedOffers` in the settings, set on the Events page) fix an exact count per week (0 = never) in
+the ONE plan on every page; if the spend can't cover them, the plan first buys as many as possible (reported in
+`lockShortfalls`) and then plans the rest around them.
 
 ## Project Structure
 
