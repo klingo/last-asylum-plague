@@ -248,12 +248,14 @@
     "sources": {
         "heading": "Item Sources",
         "description": "Pick an item to see every pack and shop offer on sale this week that gives it, including packs where it only comes nested (e.g. SR Resource Supplies → Herbs).",
-        "details": "Pick-one chests count as picking this item, random chests at their expected amount (~), generic items where they can be used. Per unit = Banknotes per unit, shown per 1,000 or 1,000,000 units for bulk items (shop offers at what their coins are worth). Ratio = the whole source's worth ÷ price, as on the Ranking (1.0 or more = a good deal at your weekly spend). Item share = how much of that worth is this item. Item ratio = worth of just this item ÷ price (≈ ratio × item share). Sources are ranked by item ratio, which is the same as cheapest per unit first. Rows highlighted green are in the best plan for your weekly spend.",
+        "details": "Pick-one chests count as picking this item, random chests at their expected amount (~), generic items where they can be used. Per unit = Banknotes per unit, shown per 1,000 or 1,000,000 units for bulk items (shop offers at what their coins cost: bought from the cheapest packs on sale that give them, each as often as it can be bought per week, the whole pack price counted for the coins; coins no pack sells at what they are worth in your plan). Ratio = the whole source's worth ÷ price, as on the Ranking (1.0 or more = a good deal at your weekly spend). Item share = how much of that worth is this item. Item ratio = worth of just this item ÷ price (≈ ratio × item share). Sources are ranked by item ratio, which is the same as cheapest per unit first. Rows highlighted green are in the best plan for your weekly spend.",
         "itemLabel": "Item",
         "selectPrompt": "Select an item above to see where to get it.",
         "empty": "Nothing on sale this week gives this item.",
         "summary": "{count} sources give {item}; one unit is worth {worth} Banknotes at your weekly spend.",
         "via": "via {items}",
+        "coinCost": "≈ {amount} Banknotes for these coins, from: {packs}",
+        "coinWorth": "≈ {amount} Banknotes: no pack on sale gives these coins, so at what they are worth in your plan",
         "table": {
             "rank": "Rank",
             "source": "Source",

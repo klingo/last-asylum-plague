@@ -248,12 +248,14 @@
     "sources": {
         "heading": "Gegenstandsquellen",
         "description": "Wähle einen Gegenstand, um alle diese Woche angebotenen Pakete und Shop-Angebote zu sehen, die ihn geben – auch Pakete, in denen er nur verschachtelt vorkommt (z. B. Ressourcenvorrat (SR) → Kräuter).",
-        "details": "Wahltruhen zählen als Wahl dieses Gegenstands, Zufallstruhen mit ihrer erwarteten Menge (~), generische Gegenstände dort, wo sie verwendbar sind. Pro Einheit = Banknoten pro Einheit, bei Massengütern pro 1.000 oder 1.000.000 Einheiten angegeben (Shop-Angebote mit dem Wert ihrer Münzen). Ratio = Wert der gesamten Quelle ÷ Preis, wie in der Rangliste (1,0 oder mehr = ein gutes Geschäft bei deinen wöchentlichen Ausgaben). Gegenstands-Anteil = wie viel dieses Werts auf diesen Gegenstand entfällt. Gegenstands-Ratio = Wert nur dieses Gegenstands ÷ Preis (≈ Ratio × Gegenstands-Anteil). Die Quellen sind nach Gegenstands-Ratio geordnet, was dasselbe ist wie die günstigste pro Einheit zuerst. Grün hinterlegte Zeilen gehören zum besten Plan für deine wöchentlichen Ausgaben.",
+        "details": "Wahltruhen zählen als Wahl dieses Gegenstands, Zufallstruhen mit ihrer erwarteten Menge (~), generische Gegenstände dort, wo sie verwendbar sind. Pro Einheit = Banknoten pro Einheit, bei Massengütern pro 1.000 oder 1.000.000 Einheiten angegeben (Shop-Angebote mit dem, was ihre Münzen kosten: gekauft aus den günstigsten angebotenen Paketen, die sie geben, jedes so oft, wie es pro Woche kaufbar ist, der ganze Paketpreis für die Münzen gerechnet; Münzen, die kein Paket verkauft, mit ihrem Wert in deinem Plan). Ratio = Wert der gesamten Quelle ÷ Preis, wie in der Rangliste (1,0 oder mehr = ein gutes Geschäft bei deinen wöchentlichen Ausgaben). Gegenstands-Anteil = wie viel dieses Werts auf diesen Gegenstand entfällt. Gegenstands-Ratio = Wert nur dieses Gegenstands ÷ Preis (≈ Ratio × Gegenstands-Anteil). Die Quellen sind nach Gegenstands-Ratio geordnet, was dasselbe ist wie die günstigste pro Einheit zuerst. Grün hinterlegte Zeilen gehören zum besten Plan für deine wöchentlichen Ausgaben.",
         "itemLabel": "Gegenstand",
         "selectPrompt": "Wähle oben einen Gegenstand, um zu sehen, wo du ihn bekommst.",
         "empty": "Nichts im Angebot dieser Woche gibt diesen Gegenstand.",
         "summary": "{count} Quellen geben {item}; eine Einheit ist bei deinen wöchentlichen Ausgaben {worth} Banknoten wert.",
         "via": "über {items}",
+        "coinCost": "≈ {amount} Banknoten für diese Münzen, aus: {packs}",
+        "coinWorth": "≈ {amount} Banknoten: Kein angebotenes Paket gibt diese Münzen, daher mit ihrem Wert in deinem Plan",
         "table": {
             "rank": "Rang",
             "source": "Quelle",

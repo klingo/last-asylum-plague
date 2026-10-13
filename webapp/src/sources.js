@@ -4,13 +4,15 @@ import { loadPackData } from './lib/data';
 import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
-import { isSeasonalOff } from './lib/catalog.js';
+import { isSeasonalOff, packageWeeklyCapacity } from './lib/catalog.js';
 import { createUnitCounter, isContainerItem, reversibleChainTops } from './lib/item-sources.js';
 import { createItemPicker } from './lib/item-picker';
 import { packageDisplayName, itemDisplayName, escapeHtml } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { formatThousands, formatSignificant } from './lib/format';
 import { ratioBarHtml } from './lib/ratio-bar';
+import { infoIconHtml } from './lib/requires-tooltip';
+import { enableInfoTooltips } from './lib/tooltip';
 import { t, getLocale, localizedName, applyStaticTranslations } from './lib/i18n';
 
 renderNav('sources');
@@ -40,9 +42,48 @@ const iconHtml = (itemId) => `<span data-item-id="${itemId}"></span>`;
 const amount = (value) => (Number.isInteger(value) ? formatThousands(value) : formatSignificant(value));
 
 /**
+ * Banknotes that `amount` coins (or diamonds) cost: bought from the packs on sale that give them, the
+ * cheapest per coin first, each only as often as it can be bought per week (its whole price counted for the
+ * coins). { banknotes, packIds } or null if no pack on sale gives them.
+ */
+function coinCost(currencyId, amount, activeEventIds) {
+    const packs = Object.entries(data.packages)
+        .filter(
+            ([id, pkg]) =>
+                pkg.price > 0 && pkg.contains?.[currencyId] > 0 && !isSeasonalOff(id, pkg, settings.seasonalPasses),
+        )
+        .map(([id, pkg]) => ({
+            id,
+            rate: pkg.price / pkg.contains[currencyId],
+            coinsPerWeek: packageWeeklyCapacity(pkg, { activeEventIds }) * pkg.contains[currencyId],
+        }))
+        .filter((pack) => pack.coinsPerWeek > 0)
+        .sort((a, b) => a.rate - b.rate);
+    if (packs.length === 0) {
+        return null;
+    }
+    let banknotes = 0;
+    let remaining = amount;
+    const packIds = [];
+    for (const pack of packs) {
+        const coins = Math.min(remaining, pack.coinsPerWeek);
+        banknotes += coins * pack.rate;
+        remaining -= coins;
+        packIds.push(pack.id);
+        if (remaining <= 0) {
+            break;
+        }
+    }
+    // More than every pack gives per week: the rest at the dearest pack's rate.
+    banknotes += Math.max(0, remaining) * packs[packs.length - 1].rate;
+    return { banknotes, packIds };
+}
+
+/**
  * Every purchase on sale this week that gives the target item, at any depth: packages (packs of
  * ticked events and seasonal passes on sale) and exchange-shop offers (VIP Shop, shops of ticked
- * events). Per source: units per purchase, its price in Banknotes (shop offers at the coin's worth),
+ * events). Per source: units per purchase, its price in Banknotes (shop offers at what their coins cost, see
+ * coinCost; coins no pack sells at their worth in the plan),
  * Banknotes per unit, the item's share of the source's worth and the source's ratio (its whole worth
  * ÷ price, as on the Ranking).
  */
@@ -115,6 +156,22 @@ function buildSources(targetId) {
                 continue;
             }
             const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
+            const cost = coinCost(shop.currency_item_id, offer.currency_cost, activeEventIds);
+            const price = cost ? cost.banknotes : coinWorth > 0 ? offer.currency_cost * coinWorth : 0;
+            // How the Banknote price came about, as an info icon next to the coin price.
+            const priceInfo =
+                price > 0
+                    ? infoIconHtml(
+                          cost
+                              ? t('sources.coinCost', {
+                                    amount: formatThousands(price, 0),
+                                    packs: cost.packIds
+                                        .map((id) => packageDisplayName(data.packages[id], locale))
+                                        .join(', '),
+                                })
+                              : t('sources.coinWorth', { amount: formatThousands(price, 0) }),
+                      )
+                    : '';
             add({
                 worth: b.worth,
                 incomplete: b.incomplete,
@@ -125,8 +182,8 @@ function buildSources(targetId) {
                 via: [], // the offer's name already says which item it is
                 units: per.units * offer.quantity,
                 random: per.random,
-                priceHtml: `${formatThousands(offer.currency_cost)} ${iconHtml(shop.currency_item_id)}`,
-                price: coinWorth > 0 ? offer.currency_cost * coinWorth : 0,
+                priceHtml: `<span class="price-info">${priceInfo}</span>${formatThousands(offer.currency_cost)} ${iconHtml(shop.currency_item_id)}`,
+                price,
                 bought: plannedOffers.has(`${shopId}:${offerKey}`),
             });
         }
@@ -209,6 +266,7 @@ function render() {
         const itemId = placeholder.getAttribute('data-item-id');
         placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
     });
+    enableInfoTooltips(sourcesTable);
 }
 
 function syncUrl() {
