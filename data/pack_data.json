@@ -1322,7 +1322,7 @@
         "speedup_supply": {
             "name": {
                 "en": "Speedup Supply",
-                "de": ""
+                "de": "Beschleunigungsvorrat"
             },
             "category": "virtual",
             "type": "random",
@@ -1500,13 +1500,6 @@
                 "de": "SSR Schwert"
             },
             "category": "gear"
-        },
-        "ssr_sword_epigraph_chest": {
-            "name": {
-                "en": "SSR Sword Epigraph Chest",
-                "de": ""
-            },
-            "category": "special"
         },
         "stamina": {
             "name": {
@@ -1918,7 +1911,7 @@
         "ur_hero_and_awaken_choice_chest": {
             "name": {
                 "en": "UR Hero & Awaken Shard Choice Chest",
-                "de": ""
+                "de": "UR Held & Erwachen Splitter Wahltruhe"
             },
             "category": "special",
             "type": "choice",
@@ -4015,7 +4008,7 @@
         "strange_bazaar_exquisite_pack": {
             "name": {
                 "en": "Strange Bazaar Exquisite Pack",
-                "de": ""
+                "de": "Seltsamer Basar Erlesenes Paket"
             },
             "category": "special_event",
             "event_id": "strange_bazaar",
@@ -4030,10 +4023,46 @@
                 "resource_supply_general": 10
             }
         },
+        "strange_bazaar_premium_pack": {
+            "name": {
+                "en": "Strange Bazaar Premium Pack",
+                "de": "Seltsamer Basar Premium-Paket"
+            },
+            "category": "special_event",
+            "event_id": "strange_bazaar",
+            "price": 4999,
+            "deal_percentage": 3160,
+            "purchase_limit": 10,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 5000,
+                "strange_coin": 500,
+                "vip_points": 5000,
+                "resource_supply_general": 50
+            }
+        },
+        "strange_bazaar_rare_pack": {
+            "name": {
+                "en": "Strange Bazaar Rare Pack",
+                "de": "Seltsamer Basar Seltenes Paket"
+            },
+            "category": "special_event",
+            "event_id": "strange_bazaar",
+            "price": 1999,
+            "deal_percentage": 3160,
+            "purchase_limit": 10,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 2000,
+                "strange_coin": 200,
+                "vip_points": 2000,
+                "resource_supply_general": 20
+            }
+        },
         "strange_bazaar_select_pack": {
             "name": {
                 "en": "Strange Bazaar Select Pack",
-                "de": ""
+                "de": "Seltsamer Basar Auswahlpaket"
             },
             "category": "special_event",
             "event_id": "strange_bazaar",
@@ -4046,6 +4075,24 @@
                 "strange_coin": 80,
                 "vip_points": 500,
                 "resource_supply_general": 5
+            }
+        },
+        "strange_bazaar_ultimate_pack": {
+            "name": {
+                "en": "Strange Bazaar Ultimate Pack",
+                "de": "Seltsamer Basar Ultimatives Paket"
+            },
+            "category": "special_event",
+            "event_id": "strange_bazaar",
+            "price": 9999,
+            "deal_percentage": 3160,
+            "purchase_limit": 50,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 10000,
+                "strange_coin": 1000,
+                "vip_points": 10000,
+                "resource_supply_general": 10
             }
         },
         "study_scroll": {
@@ -5030,7 +5077,7 @@
         "strange_bazaar_shop": {
             "name": {
                 "en": "Strange Bazaar",
-                "de": ""
+                "de": "Seltsamer Basar"
             },
             "event_id": "strange_bazaar",
             "currency_item_id": "strange_coin",
@@ -5697,9 +5744,10 @@
         "strange_bazaar": {
             "name": {
                 "en": "Strange Bazaar",
-                "de": ""
+                "de": "Seltsamer Basar"
             },
-            "category": "special_event"
+            "category": "special_event",
+            "exceedable_pack_limits": true
         },
         "surprise_encounter": {
             "name": {
