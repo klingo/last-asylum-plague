@@ -8,14 +8,25 @@ import { withLoading } from './lib/loading';
 import { trackTiers, trackPointsForPrice } from './lib/spend-tracks.js';
 import { itemDisplayName } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
-import { t, getLocale, localizedName, categoryLabel, applyStaticTranslations } from './lib/i18n';
+import { t, getLocale, categoryLabel, applyStaticTranslations } from './lib/i18n';
 import { formatThousands, formatSignificant } from './lib/format';
 import { ratioBarHtml } from './lib/ratio-bar';
+import { createItemPicker } from './lib/item-picker';
 
 renderNav('spend-rewards');
 applyStaticTranslations();
 
-const trackSelect = document.getElementById('track-select');
+// The app's own picker (as on the other pages), not a native <select>.
+const trackPicker = createItemPicker({
+    trigger: document.getElementById('track-select'),
+    placeholderKey: 'spendRewards.trackPlaceholder',
+    searchPlaceholderKey: 'spendRewards.trackSearch',
+    icons: false,
+    onChange: () => {
+        expandedKeys.clear();
+        withLoading(render);
+    },
+});
 const tiersPrompt = document.getElementById('tiers-prompt');
 const tiersEmpty = document.getElementById('tiers-empty');
 const tiersWrap = document.getElementById('tiers-wrap');
@@ -61,18 +72,10 @@ function stepAnalysis(track, trackId) {
     const activeTrackIds = new Set([trackId]);
     const reachedTier = (plan, tier) =>
         plan.trackTiersReached.some((r) => r.trackId === trackId && r.threshold === tier.threshold);
-    const base = solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { activeTrackIds }));
-    let previousPoints = base.totalPoints;
-    let previousSpent = base.spent;
-    return trackTiers(track).map((tier) => {
-        const reward = valuation.bundle({ contains: tier.rewards }, 0);
-        if (reachedTier(base, tier)) {
-            return { ...tier, reward, reached: true, atWeeklySpend: true };
-        }
-        // Spend about the threshold's worth of Banknotes (track points per Banknote ~1, rounded down
-        // by the pack prices), never less than your weekly spend, a little more if the packs on sale
-        // can't quite reach it.
-        let budget = Math.max(settings.budget, tier.cumulativeCost, trackPointsBudget(track, tier.threshold));
+    // The plan at about the threshold's worth of Banknotes (track points per Banknote ~1, rounded down by
+    // the pack prices), at least `floor`, a little more if the packs on sale can't quite reach it.
+    const solveTier = (tier, floor) => {
+        let budget = Math.max(floor, tier.cumulativeCost, trackPointsBudget(track, tier.threshold));
         let plan = null;
         for (let attempt = 0; attempt < 4; attempt++) {
             plan = solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { budget, activeTrackIds }));
@@ -81,6 +84,36 @@ function stepAnalysis(track, trackId) {
             }
             budget = Math.ceil(budget * 1.02);
         }
+        return plan;
+    };
+    const base = solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { activeTrackIds }));
+    let previousPoints = base.totalPoints;
+    let previousSpent = base.spent;
+    // Tiers your weekly spend already reaches still show what each takes on its own (total spend and step
+    // ratio from the tier before, the first one from 0).
+    let reachedPoints = 0;
+    let reachedSpent = 0;
+    return trackTiers(track).map((tier) => {
+        const reward = valuation.bundle({ contains: tier.rewards }, 0);
+        if (reachedTier(base, tier)) {
+            const plan = solveTier(tier, 0);
+            const stepCost = plan.spent - reachedSpent;
+            const stepWorth = (plan.totalPoints - reachedPoints) / valuation.rate;
+            reachedPoints = plan.totalPoints;
+            reachedSpent = plan.spent;
+            return {
+                ...tier,
+                cumulativeCost: plan.spent,
+                stepCost,
+                reward,
+                reached: true,
+                atWeeklySpend: true,
+                stepWorth,
+                packsWorth: stepWorth - reward.worth,
+                ratio: stepCost > 0 ? stepWorth / stepCost : null,
+            };
+        }
+        const plan = solveTier(tier, settings.budget);
         const stepCost = plan.spent - previousSpent;
         const stepWorth = (plan.totalPoints - previousPoints) / valuation.rate;
         previousPoints = plan.totalPoints;
@@ -108,7 +141,7 @@ function trackPointsBudget(track, points) {
 let stepCache = { key: null, tiers: null };
 
 function render() {
-    const trackId = trackSelect.value;
+    const trackId = trackPicker.getValue();
     const track = data.spend_reward_tracks?.[trackId];
     tiersPrompt.hidden = Boolean(track);
     if (!track) {
@@ -126,7 +159,11 @@ function render() {
     tiersEmpty.hidden = tiers.length > 0;
     tiersWrap.hidden = tiers.length === 0;
     tiersNote.hidden = tiers.length === 0;
-    const lastWorthIt = tiers.reduce((last, tier, index) => (tier.ratio >= 1 ? index : last), -1);
+    // Only tiers beyond your weekly spend count for "spending more pays off up to …".
+    const lastWorthIt = tiers.reduce(
+        (last, tier, index) => (!tier.atWeeklySpend && tier.ratio >= 1 ? index : last),
+        -1,
+    );
     const reachedCount = tiers.filter((tier) => tier.atWeeklySpend).length;
     const reachedText =
         reachedCount > 0
@@ -155,9 +192,9 @@ function render() {
             return `
                 <div class="ranking-grid__row" role="row">
                     <div class="ranking-grid__cell" role="cell">${usesPoints ? `${label} (<span class="text-gold">${formatThousands(tier.threshold)}</span>&nbsp;${t('spendRewards.pointsSuffix')})` : label}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.atWeeklySpend ? `<span class="text-dim nowrap">${t('spendRewards.reachedAtSpend')}</span>` : gold(formatThousands(tier.cumulativeCost, 0))}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.atWeeklySpend ? t('common.dash') : gold(formatThousands(tier.stepCost, 0))}</div>
-                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.atWeeklySpend ? t('common.dash') : gold(formatThousands(tier.packsWorth, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.cumulativeCost, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.atWeeklySpend ? `<span class="text-dim nowrap">${t('spendRewards.reachedAtSpend')}</span>` : gold(formatThousands(tier.stepCost, 0))}</div>
+                    <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${gold(formatThousands(tier.packsWorth, 0))}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">${tier.reached ? gold(formatThousands(tier.reward.worth, 0)) : `<span class="text-dim">${t('spendRewards.notReached')}</span>`}</div>
                     <div class="ranking-grid__cell ranking-grid__cell--num" role="cell">
                         ${tier.ratio === null || tier.ratio === undefined ? t('common.dash') : ratioBarHtml(tier.ratio, maxRatio, { digits: 3 })}
@@ -210,15 +247,16 @@ function render() {
     });
 }
 
+/** The spend reward tracks (one group); keeps the current selection. */
 function populateTrackSelect() {
-    const previous = trackSelect.value;
-    const options = Object.entries(data.spend_reward_tracks || {})
-        .map(([id, track]) => `<option value="${id}">${localizedName(track.name)}</option>`)
-        .join('');
-    trackSelect.innerHTML = `<option value="" disabled ${previous ? '' : 'selected'}>${t('spendRewards.trackPlaceholder')}</option>${options}`;
-    if (previous && data.spend_reward_tracks?.[previous]) {
-        trackSelect.value = previous;
-    }
+    trackPicker.setItems(
+        Object.fromEntries(
+            Object.entries(data.spend_reward_tracks || {}).map(([id, track]) => [
+                id,
+                { name: track.name, category: 'spend_track' },
+            ]),
+        ),
+    );
 }
 
 async function recompute() {
@@ -239,10 +277,6 @@ async function init() {
     });
     settings = panel.getSettings();
     populateTrackSelect();
-    trackSelect.addEventListener('change', () => {
-        expandedKeys.clear();
-        withLoading(render);
-    });
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
         populateTrackSelect();

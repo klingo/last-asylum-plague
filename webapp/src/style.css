@@ -1193,11 +1193,11 @@ tbody tr:hover {
     color: var(--accent);
 }
 
-/* Total spend is wide enough for "reached at your weekly spend" on one line. */
+/* Extra spend is wide enough for "reached at your weekly spend" on one line. */
 .spend-reward-grid {
     display: grid;
     grid-template-columns:
-        minmax(190px, 1.6fr) minmax(210px, 1fr) minmax(120px, 1fr) minmax(110px, 1fr) minmax(90px, 0.8fr)
+        minmax(190px, 1.6fr) minmax(110px, 0.8fr) minmax(210px, 1fr) minmax(110px, 1fr) minmax(90px, 0.8fr)
         90px 80px;
     width: 100%;
     font-size: 0.9rem;

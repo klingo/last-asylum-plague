@@ -72,7 +72,8 @@
         "season_event": "Saison-Event",
         "pack_shop": "Paketshop",
         "clinic_development_pack": "Klinik-Entwicklungspaket",
-        "shop": "Shops"
+        "shop": "Shops",
+        "spend_track": "Belohnungsleisten"
     },
     "sourceType": {
         "package": "Paket",
@@ -273,6 +274,7 @@
         "details": "Stufen, die deine wöchentlichen Ausgaben bereits erreichen, sind markiert. Für jede weitere Stufe: die zusätzlichen Banknoten zu deinen wöchentlichen Ausgaben (oder zur vorherigen Stufe), was diese Banknoten kaufen (die besten noch verfügbaren Pakete) und die Belohnung der Stufe. Stufen-Ratio 1,0 oder mehr = die Stufe ist mindestens so gut wie deine letzte Banknote bei deinen wöchentlichen Ausgaben.",
         "trackLabel": "Belohnungsleiste",
         "trackPlaceholder": "Leiste auswählen…",
+        "trackSearch": "Leisten durchsuchen…",
         "empty": "Noch keine Ausgabenbelohnungs-Leisten definiert.",
         "selectPrompt": "Wähle oben eine Belohnungsleiste, um ihre Stufen zu sehen.",
         "pointsSuffix": "Pkt.",

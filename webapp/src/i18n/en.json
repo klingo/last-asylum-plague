@@ -72,7 +72,8 @@
         "season_event": "Season Event",
         "pack_shop": "Pack Shop",
         "clinic_development_pack": "Clinic Development Pack",
-        "shop": "Shops"
+        "shop": "Shops",
+        "spend_track": "Reward tracks"
     },
     "sourceType": {
         "package": "Package",
@@ -273,6 +274,7 @@
         "details": "Tiers your weekly spend already reaches are marked. For each further tier: the extra Banknotes on top of your weekly spend (or the previous tier), what those Banknotes buy (the best packs still available) and the tier's reward. Step ratio 1.0 or more = the step is at least as good as your last Banknote at your weekly spend.",
         "trackLabel": "Reward Track",
         "trackPlaceholder": "Select a track…",
+        "trackSearch": "Search tracks…",
         "empty": "No spend reward tracks defined yet.",
         "selectPrompt": "Select a reward track above to see its tiers.",
         "pointsSuffix": "pts",
