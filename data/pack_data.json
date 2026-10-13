@@ -118,6 +118,13 @@
                 }
             ]
         },
+        "black_raven_fortress": {
+            "name": {
+                "en": "Black Raven Fortress",
+                "de": "Schwarze Raben-Festung"
+            },
+            "category": "skin"
+        },
         "brass": {
             "name": {
                 "en": "Brass",
@@ -198,6 +205,13 @@
                 ]
             }
         },
+        "demons_eye": {
+            "name": {
+                "en": "Demon's Eye",
+                "de": "Dämonenauge"
+            },
+            "category": "curio"
+        },
         "diamond_golden_egg": {
             "name": {
                 "en": "Diamond Golden Egg",
@@ -253,6 +267,13 @@
                 "de": "<Held> Exklusive Waffe Splitter"
             },
             "category": "hero"
+        },
+        "fantasy_city": {
+            "name": {
+                "en": "Fantasy City",
+                "de": "Fantasiestadt"
+            },
+            "category": "skin"
         },
         "frenzied_flock_iv_ranger": {
             "name": {
@@ -878,6 +899,13 @@
             },
             "category": "special"
         },
+        "mystic_cabinet_permanent": {
+            "name": {
+                "en": "Mystic Cabinet (Permanent)",
+                "de": "Mystische Hütte (Dauerhaft)"
+            },
+            "category": "skin"
+        },
         "mythic_era_reward": {
             "name": {
                 "en": "Mythic Era Reward",
@@ -1130,6 +1158,13 @@
             "name": {
                 "en": "Red Amber Amulet",
                 "de": "Rotbernstein-Amulett"
+            },
+            "category": "curio"
+        },
+        "red_nutcracker": {
+            "name": {
+                "en": "Red Nutcracker",
+                "de": "Roter Nussknacker"
             },
             "category": "curio"
         },
@@ -5082,11 +5117,25 @@
             "event_id": "strange_bazaar",
             "currency_item_id": "strange_coin",
             "offers": {
+                "black_raven_fortress": {
+                    "item_id": "black_raven_fortress",
+                    "currency_cost": 1500,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "lifetime"
+                },
                 "deluxe_choice_chest": {
                     "item_id": "deluxe_choice_chest",
                     "currency_cost": 100,
                     "quantity": 1,
                     "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "demons_eye": {
+                    "item_id": "demons_eye",
+                    "currency_cost": 100,
+                    "quantity": 1,
+                    "purchase_limit": 81,
                     "limit_type": "weekly"
                 },
                 "excl_weapon_shard_choice_chest": {
@@ -5103,6 +5152,13 @@
                     "purchase_limit": 300,
                     "limit_type": "weekly"
                 },
+                "fantasy_city": {
+                    "item_id": "fantasy_city",
+                    "currency_cost": 1500,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "lifetime"
+                },
                 "gear_blueprint_mr": {
                     "item_id": "gear_blueprint_mr",
                     "currency_cost": 300,
@@ -5114,7 +5170,7 @@
                     "item_id": "gear_blueprint_ur",
                     "currency_cost": 60,
                     "quantity": 1,
-                    "purchase_limit": 50,
+                    "purchase_limit": 150,
                     "limit_type": "weekly"
                 },
                 "gearstone": {
@@ -5122,6 +5178,20 @@
                     "currency_cost": 250,
                     "quantity": 10000,
                     "purchase_limit": 100,
+                    "limit_type": "weekly"
+                },
+                "mystic_cabinet_permanent": {
+                    "item_id": "mystic_cabinet_permanent",
+                    "currency_cost": 4000,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "lifetime"
+                },
+                "red_nutcracker": {
+                    "item_id": "red_nutcracker",
+                    "currency_cost": 40,
+                    "quantity": 1,
+                    "purchase_limit": 81,
                     "limit_type": "weekly"
                 },
                 "resource_supply_ssr": {
