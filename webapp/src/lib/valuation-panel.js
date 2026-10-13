@@ -75,6 +75,11 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
     const sorted = (object) =>
         Object.entries(object || {}).sort(([, a], [, b]) => localizedName(a.name).localeCompare(localizedName(b.name)));
     const passes = sorted(Object.fromEntries(passFamilies(data.packages)));
+    // In-game events (category "ingame_event": no packs, no shop) are only tracked in the data's `schedule`,
+    // not offered here.
+    const shoppableEvents = Object.fromEntries(
+        Object.entries(data.events || {}).filter(([, event]) => event.category !== 'ingame_event'),
+    );
 
     /** "🪙 20,000 / week · Events: … · Passes: …" for the page's fields. */
     function renderSummary() {
@@ -136,7 +141,7 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
                         </div>`
                         : ''
                 }
-                ${show.has('events') ? chipGroupHtml('activeEvents', 'valuation.eventsLabel', sorted(data.events)) : ''}
+                ${show.has('events') ? chipGroupHtml('activeEvents', 'valuation.eventsLabel', sorted(shoppableEvents)) : ''}
                 ${show.has('passes') ? chipGroupHtml('seasonalPasses', 'valuation.passesLabel', passes) : ''}
             </div>`;
         applyStaticTranslations(container);

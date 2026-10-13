@@ -70,6 +70,7 @@
         "diamond": "Diamant",
         "calendar_gift": "Kalendergeschenk",
         "season_event": "Saison-Event",
+        "ingame_event": "Ingame-Event",
         "pack_shop": "Paketshop",
         "clinic_development_pack": "Klinik-Entwicklungspaket",
         "shop": "Shops",
@@ -151,8 +152,9 @@
         "buyNoFit": "passt nicht",
         "lifetimeTotal": "{count}× insgesamt",
         "perMonth": "Monat",
+        "perTwoWeeks": "2 Wochen",
         "perWeekShare": "{amount} Banknoten / Woche",
-        "monthlyNote": "Monatskäufe ({names}) zählen mit 7/30 ihres Preises pro Woche."
+        "monthlyNote": "Monats- und Zwei-Wochen-Käufe ({names}) zählen mit ihrem Wochenanteil am Preis (7/30, 7/14)."
     },
     "events": {
         "heading": "Events",

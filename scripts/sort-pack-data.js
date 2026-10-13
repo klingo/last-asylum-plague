@@ -49,5 +49,23 @@ if (fs.existsSync(DATA_PATH)) {
         }
     }
 
+    // Weekly schedule: weeks in order, each list alphabetical.
+    if (isObject(data.schedule)) {
+        data.schedule = sortByKey(data.schedule);
+        for (const entry of Object.values(data.schedule)) {
+            for (const key of ['events', 'seasonal_passes', 'spend_reward_tracks']) {
+                if (Array.isArray(entry[key])) {
+                    entry[key] = [...entry[key]].sort((a, b) => a.localeCompare(b));
+                }
+            }
+            if (isObject(entry.days)) {
+                entry.days = sortByKey(entry.days);
+                for (const [id, dates] of Object.entries(entry.days)) {
+                    entry.days[id] = [...dates].sort();
+                }
+            }
+        }
+    }
+
     fs.writeFileSync(DATA_PATH, `${JSON.stringify(data, null, 4)}\n`, 'utf8');
 }

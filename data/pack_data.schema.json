@@ -55,6 +55,59 @@
             "additionalProperties": {
                 "$ref": "#/definitions/spendRewardTrack"
             }
+        },
+        "schedule": {
+            "type": "object",
+            "description": "Which events, seasonal passes and spend reward tracks ran in which ISO calendar week (the game's week starts on Monday), recorded with `npm run record-week`. Groundwork for a forecast.",
+            "propertyNames": {
+                "pattern": "^\\d{4}-W(0[1-9]|[1-4]\\d|5[0-3])$"
+            },
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "events": {
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                            "$ref": "#/definitions/eventId"
+                        },
+                        "description": "Events running that week."
+                    },
+                    "seasonal_passes": {
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                            "$ref": "#/definitions/id"
+                        },
+                        "description": "Seasonal pass families (`seasonal: true` packages) on sale that week."
+                    },
+                    "spend_reward_tracks": {
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                            "$ref": "#/definitions/id"
+                        },
+                        "description": "Spend reward tracks running that week."
+                    },
+                    "days": {
+                        "type": "object",
+                        "description": "Exact dates of ids in this week that ran less than the whole week (e.g. a 2-day event), recorded with `--days`.",
+                        "propertyNames": {
+                            "$ref": "#/definitions/id"
+                        },
+                        "additionalProperties": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "minItems": 1,
+                            "items": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -473,6 +526,7 @@
                 "pack_shop",
                 "special_event",
                 "season_event",
+                "ingame_event",
                 "calendar_gift",
                 "clinic_development_pack",
                 "unlock_exclusive",
@@ -581,7 +635,8 @@
                 "weekly_special",
                 "mystic_cabinet",
                 "full_moon_night",
-                "recluse_merchant"
+                "recluse_merchant",
+                "claires_inner_demon"
             ]
         },
         "event": {

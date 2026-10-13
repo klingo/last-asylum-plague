@@ -4265,7 +4265,7 @@
                 "de": "Gehärtete Waffen"
             },
             "category": "value_event",
-            "limit_type": "weekly",
+            "limit_type": "biweekly",
             "tiers": {
                 "1": {
                     "price": 999,
@@ -4281,7 +4281,7 @@
                 }
             },
             "seasonal": true,
-            "delivery_days": 7
+            "delivery_days": 14
         },
         "troop_training_pack": {
             "name": {
@@ -5790,6 +5790,13 @@
             },
             "category": "special_event"
         },
+        "claires_inner_demon": {
+            "name": {
+                "en": "Claire's Inner Demon",
+                "de": ""
+            },
+            "category": "ingame_event"
+        },
         "full_moon_night": {
             "name": {
                 "en": "Full Moon Night",
@@ -6114,6 +6121,16 @@
                     "herb_level_supply_ssr": 60,
                     "resource_supply_sr": 60
                 }
+            }
+        }
+    },
+    "schedule": {
+        "2026-W42": {
+            "events": ["claires_inner_demon", "recluse_merchant", "strange_bazaar"],
+            "seasonal_passes": ["exclusive_weapon_pass", "tempered_arms"],
+            "spend_reward_tracks": ["ancient_recipe_antitoxin"],
+            "days": {
+                "claires_inner_demon": ["2026-10-12", "2026-10-13"]
             }
         }
     }

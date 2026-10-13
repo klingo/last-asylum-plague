@@ -453,11 +453,46 @@ async function verifyData() {
     // 7. Events Relational Checks
     checkCategory('Events', ({ reportWarning }) => {
         for (const eventId of eventKeys) {
-            if (!referencedEventKeys.has(eventId)) {
+            // In-game events (category "ingame_event") have no packs or shop on purpose.
+            if (!referencedEventKeys.has(eventId) && events[eventId].category !== 'ingame_event') {
                 reportWarning(
                     'Unreferenced Event',
                     `Event "${eventId}" (${events[eventId].name.en}) is defined but never referenced by any package or exchange shop.`,
                 );
+            }
+        }
+    });
+
+    // 7b. Weekly schedule (which events / seasonal passes / spend tracks ran in which ISO week)
+    checkCategory('Schedule', ({ reportError }) => {
+        for (const [week, entry] of Object.entries(data.schedule || {})) {
+            for (const passId of entry.seasonal_passes || []) {
+                if (!packages[passId]?.seasonal) {
+                    reportError(
+                        'Schedule Reference',
+                        `Week "${week}" lists "${passId}", which is not a seasonal pass.`,
+                    );
+                }
+            }
+            for (const trackId of entry.spend_reward_tracks || []) {
+                if (!spendRewardTracks[trackId]) {
+                    reportError('Schedule Reference', `Week "${week}" lists unknown spend reward track "${trackId}".`);
+                }
+            }
+            const listed = new Set([
+                ...(entry.events || []),
+                ...(entry.seasonal_passes || []),
+                ...(entry.spend_reward_tracks || []),
+            ]);
+            for (const [id, dates] of Object.entries(entry.days || {})) {
+                if (!listed.has(id)) {
+                    reportError('Schedule Days', `Week "${week}" has days for "${id}", which it doesn't list.`);
+                }
+                for (const date of dates) {
+                    if (isoWeekOf(date) !== week) {
+                        reportError('Schedule Days', `Week "${week}": ${date} (${id}) is not in that week.`);
+                    }
+                }
             }
         }
     });
@@ -565,3 +600,13 @@ verifyData().catch((error) => {
     console.error(error);
     process.exit(1);
 });
+
+/** ISO 8601 week ("2026-W42") of a "YYYY-MM-DD" date; weeks start on Monday. */
+function isoWeekOf(text) {
+    const [year, month, date] = text.split('-').map(Number);
+    const day = new Date(Date.UTC(year, month - 1, date));
+    day.setUTCDate(day.getUTCDate() + 4 - (day.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(day.getUTCFullYear(), 0, 1));
+    const week = Math.ceil(((day - yearStart) / 86400000 + 1) / 7);
+    return `${day.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
+}

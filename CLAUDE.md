@@ -30,7 +30,13 @@ npm run lint                                                  # eslint .
 npm run webapp:dev                                             # copy-pack-data + vite dev server
 npm run webapp:build                                           # copy-pack-data + vite build -> webapp/dist
 npm run i18n:missing -- [lang] [--keys-only] [--data-only]     # missing translations (UI texts + data names)
+npm run record-week -- [ids] [--week YYYY-Www] [--days FROM..TO] [--replace] [--show]  # weekly schedule history
 ```
+
+`schedule` in `pack_data.json` records per ISO week (Monday start) which events, seasonal passes and spend
+reward tracks ran, with optional exact `days` for shorter events. Events with `"category": "ingame_event"` have no
+packs or shop and are only tracked there (not offered under "Events this week"). The webapp doesn't use the schedule yet;
+it's the groundwork for a forecast on the Home page.
 
 No test suite exists in this repo.
 

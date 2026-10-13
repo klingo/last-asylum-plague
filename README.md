@@ -52,7 +52,13 @@ drop a `<item_id>.png` into `webapp/public/assets/items/` (placeholder otherwise
 npm run webapp:install         # first time only
 npm run webapp:dev             # copies data/pack_data.json into webapp/public/data, starts the Vite dev server
 npm run verify-data            # validates pack_data.json (schema, references, deal % fit, items without a worth)
+npm run record-week -- <ids>   # records this week's events / seasonal passes / spend tracks (--week, --replace, --show)
 ```
+
+`record-week` fills the `schedule` section of `pack_data.json`: which events, seasonal passes and spend reward
+tracks ran in which ISO calendar week (weeks start on Monday), with optional exact dates (`--days`) for events shorter
+than a week. Events without packs (`"category": "ingame_event"` in `events`) can be tracked this way too. It's the groundwork
+for a forecast of what's coming.
 
 ### Deploying to GitHub Pages
 
