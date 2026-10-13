@@ -36,8 +36,10 @@ npm run record-run -- <ids...> [START] <DAYS> | --show [ids]  # record when even
 `schedule` in `pack_data.json` records per event, seasonal pass family and spend reward track its runs as
 inclusive `{ start, end }` dates (`record-run` computes the end from the start and the number of days). Events with
 `"category": "ingame_event"` have no packs or shop and are only tracked there (not offered under "Events this
-week"). The Home page shows it as a timeline (last week, this week, 4 ahead) with a simple forecast
-(`lib/schedule.js`: ids with at least two runs repeat their median gap between starts and median length).
+week"). The Home page shows it as the "Event Schedule" timeline (last week, this week, 4 ahead) with a simple
+forecast (`lib/schedule.js`: ids with at least two runs repeat their median gap between starts and median length).
+Below it, "Weekday Offers" charts the `weekly_rotation` packs for today and the next 6 days from their
+`available_days` (not recorded, not forecast).
 
 No test suite exists in this repo.
 

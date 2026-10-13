@@ -5,6 +5,7 @@
  */
 
 const DAY_MS = 86400000;
+const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 /** "2026-10-12" -> day number. */
 function dayNumber(text) {
@@ -55,6 +56,23 @@ function scheduleRuns(data) {
     return result;
 }
 
+/** The days in [from, to] on one of the given weekdays ("monday", ...), consecutive days merged into runs. */
+function weekdayRuns(availableDays, from, to) {
+    const wanted = new Set((availableDays || []).map((name) => WEEKDAYS.indexOf(name)));
+    const runs = [];
+    for (let day = from; day <= to; day += 1) {
+        if (wanted.has(weekdayIndex(day))) {
+            const last = runs[runs.length - 1];
+            if (last && last.end === day - 1) {
+                last.end = day;
+            } else {
+                runs.push({ start: day, end: day });
+            }
+        }
+    }
+    return runs;
+}
+
 function median(values) {
     const sorted = [...values].sort((a, b) => a - b);
     const middle = Math.floor(sorted.length / 2);
@@ -83,4 +101,4 @@ function forecastRuns(runs, { from, to, today }) {
     return forecast;
 }
 
-export { dayDate, localDayNumber, weekdayIndex, isoWeekNumber, scheduleRuns, forecastRuns };
+export { dayDate, localDayNumber, weekdayIndex, isoWeekNumber, scheduleRuns, forecastRuns, weekdayRuns };

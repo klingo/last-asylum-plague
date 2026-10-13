@@ -117,7 +117,7 @@
         "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
         "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it.",
         "schedule": {
-            "heading": "Schedule",
+            "heading": "Event Schedule",
             "lead": "What ran last week and this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; hover a bar for its dates.",
             "recorded": "Recorded",
             "forecast": "Forecast",
@@ -131,6 +131,13 @@
             "days": "{count} days",
             "forecastBasis": "Forecast: about every {interval} days, last {last}",
             "empty": "Nothing recorded for these weeks yet."
+        },
+        "rotation": {
+            "heading": "Weekday Offers",
+            "lead": "Packs on sale on fixed weekdays, from today through the next 6 days.",
+            "today": "Today",
+            "tomorrow": "Tomorrow",
+            "every": "every {days}"
         }
     },
     "analyze": {

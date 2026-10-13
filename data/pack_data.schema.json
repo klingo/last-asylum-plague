@@ -346,6 +346,10 @@
                 "name": {
                     "$ref": "#/definitions/localizedString"
                 },
+                "icon": {
+                    "$ref": "#/definitions/id",
+                    "description": "Item whose image stands for this package (e.g. on the Home page's Weekday Offers). Default: its first item other than diamonds and the items that are Don't care by default (VIP points, alliance chests, ...)."
+                },
                 "category": {
                     "$ref": "#/definitions/packageCategory"
                 },
@@ -436,6 +440,10 @@
             "properties": {
                 "name": {
                     "$ref": "#/definitions/localizedString"
+                },
+                "icon": {
+                    "$ref": "#/definitions/id",
+                    "description": "Item whose image stands for this package (e.g. on the Home page's Weekday Offers). Default: its first item other than diamonds and the items that are Don't care by default (VIP points, alliance chests, ...)."
                 },
                 "category": {
                     "$ref": "#/definitions/packageCategory"

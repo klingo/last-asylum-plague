@@ -326,6 +326,9 @@ async function verifyData() {
 
         // `bundles`: the packages a bundle already includes (Weekly Pass -> single passes) must exist.
         for (const [pkgId, pkg] of Object.entries(packages)) {
+            if (pkg.icon && !itemKeys.has(pkg.icon)) {
+                reportError('Package Reference', `Package "${pkgId}" has an unknown icon item: "${pkg.icon}"`);
+            }
             for (const includedId of pkg.bundles || []) {
                 if (!packageKeys.has(includedId)) {
                     reportError(

@@ -579,6 +579,8 @@ tbody tr:hover {
 
 .app-tooltip {
     position: absolute;
+    /* "\n" in a tooltip text starts a new line. */
+    white-space: pre-line;
     z-index: 50;
     max-width: 260px;
     padding: 6px 10px;
@@ -1468,6 +1470,11 @@ tbody tr:hover {
     --bar-color: var(--series-b);
 }
 
+/* Weekday offers: the Ranking's "Package" colour. */
+.schedule__row--rotation {
+    --bar-color: var(--good);
+}
+
 /* The legend explains the style (recorded / forecast), not a kind: neutral. */
 .schedule__legend {
     --bar-color: var(--text-dim);
@@ -1508,6 +1515,34 @@ tbody tr:hover {
     min-width: 760px;
 }
 
+.schedule__chart--days {
+    min-width: 480px;
+}
+
+/* Weekday offers: the package's item icon before its name. */
+.schedule__icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.schedule__icon.item-icon--placeholder {
+    padding: 2px;
+}
+
+/* Weekday offers: half the page on wide screens, full width on smaller ones. */
+.schedule--rotation {
+    max-width: 50%;
+}
+
+@media (max-width: 1100px) {
+    .schedule--rotation {
+        max-width: none;
+    }
+}
+
 .schedule__row {
     display: grid;
     grid-template-columns: var(--label-width) 1fr;
@@ -1530,13 +1565,30 @@ tbody tr:hover {
 .schedule__track {
     position: relative;
     z-index: 1;
-    /* Week lines, faint day lines. */
-    background-image:
-        linear-gradient(to right, var(--border) 1px, transparent 1px),
-        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size:
-        calc(100% / var(--weeks)) 100%,
-        calc(100% / (var(--weeks) * 7)) 100%;
+}
+
+/* Column lines (week / day lines, faint day lines) as 1px elements: a repeating background drops lines when a
+   column is a fractional number of pixels wide. */
+.schedule__grid {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--label-width);
+    right: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.schedule__grid i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.schedule__grid i.schedule__grid-major {
+    background: var(--border);
 }
 
 .schedule__row--axis {
@@ -1546,7 +1598,7 @@ tbody tr:hover {
 
 .schedule__weeks {
     display: grid;
-    grid-template-columns: repeat(var(--weeks), 1fr);
+    grid-template-columns: repeat(var(--columns), 1fr);
 }
 
 .schedule__week {

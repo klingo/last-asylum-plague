@@ -1,11 +1,21 @@
 import './style.css';
 import { renderNav } from './nav';
-import { applyStaticTranslations, getLocale, localizedName, t } from './lib/i18n';
+import { applyStaticTranslations, formatDays, getLocale, localizedName, t } from './lib/i18n';
 import { loadPackData } from './lib/data';
 import { escapeHtml } from './lib/labels';
 import { enableInfoTooltips } from './lib/tooltip';
+import { createItemImage } from './lib/images';
+import { DEFAULT_NONE_ITEMS } from './lib/settings';
 import { packageFamilyId } from './lib/catalog.js';
-import { dayDate, forecastRuns, isoWeekNumber, localDayNumber, scheduleRuns, weekdayIndex } from './lib/schedule.js';
+import {
+    dayDate,
+    forecastRuns,
+    isoWeekNumber,
+    localDayNumber,
+    scheduleRuns,
+    weekdayIndex,
+    weekdayRuns,
+} from './lib/schedule.js';
 
 renderNav('welcome');
 applyStaticTranslations();
@@ -19,6 +29,9 @@ const GROUPS = [
     ['pass', 'welcome.schedule.groupPasses'],
     ['track', 'welcome.schedule.groupTracks'],
 ];
+
+// Weekday offers: today and the next 6 days.
+const ROTATION_DAYS = 7;
 
 let packData = null;
 
@@ -44,16 +57,20 @@ function rangeText(start, end) {
     return `${range} (${days === 1 ? t('welcome.schedule.oneDay') : t('welcome.schedule.days', { count: days })})`;
 }
 
-function barHtml(bar, from, to, name) {
-    const start = Math.max(bar.start, from);
-    const end = Math.min(bar.end, to);
-    const total = to - from + 1;
-    const tooltip = bar.forecast
-        ? `${name} · ${rangeText(bar.start, bar.end)} · ${t('welcome.schedule.forecastBasis', {
+/** "Strange Bazaar · Mon, 12 Oct – Sun, 18 Oct (7 days)", forecasts with their basis. */
+function scheduleTooltip(bar, name) {
+    return bar.forecast
+        ? `${name}\n${rangeText(bar.start, bar.end)} · ${t('welcome.schedule.forecastBasis', {
               interval: bar.intervalDays,
               last: rangeText(bar.last.start, bar.last.end),
           })}`
-        : `${name} · ${rangeText(bar.start, bar.end)}`;
+        : `${name}\n${rangeText(bar.start, bar.end)}`;
+}
+
+function barHtml(bar, from, to, tooltip) {
+    const start = Math.max(bar.start, from);
+    const end = Math.min(bar.end, to);
+    const total = to - from + 1;
     const classes = [
         'schedule__bar',
         bar.forecast ? 'schedule__bar--forecast' : '',
@@ -65,6 +82,16 @@ function barHtml(bar, from, to, name) {
     const insetEnd = bar.end > to ? 0 : 1;
     const style = `left: calc(${((start - from) / total) * 100}% + ${insetStart}px); width: calc(${((end - start + 1) / total) * 100}% - ${insetStart + insetEnd}px)`;
     return `<span class="${classes.join(' ')}" style="${style}" tabindex="0" role="img" aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"></span>`;
+}
+
+/** One line per day (every `perColumn`-th one stronger: the week / day columns of the header). */
+function gridHtml(days, perColumn) {
+    const lines = Array.from(
+        { length: days },
+        (_, day) =>
+            `<i${day % perColumn === 0 ? ' class="schedule__grid-major"' : ''} style="left: ${(day / days) * 100}%"></i>`,
+    );
+    return `<div class="schedule__grid" aria-hidden="true">${lines.join('')}</div>`;
 }
 
 function renderSchedule() {
@@ -116,7 +143,7 @@ function renderSchedule() {
                 (row) => `
                     <div class="schedule__row schedule__row--${kind}">
                         <div class="schedule__label" title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</div>
-                        <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, row.name)).join('')}</div>
+                        <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, scheduleTooltip(bar, row.name))).join('')}</div>
                     </div>`,
             )
             .join('');
@@ -136,12 +163,13 @@ function renderSchedule() {
             <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(t('welcome.schedule.today'))}</span>
         </div>
         <div class="schedule__scroll">
-            <div class="schedule__chart" style="--weeks: ${WEEKS}; --week-start: ${currentWeek}; --week-width: ${7 / total}; --today: ${(today - from + 0.5) / total}">
+            <div class="schedule__chart" style="--columns: ${WEEKS}; --week-start: ${currentWeek}; --week-width: ${7 / total}; --today: ${(today - from + 0.5) / total}">
                 <div class="schedule__row schedule__row--axis">
                     <div class="schedule__label"></div>
                     <div class="schedule__track schedule__weeks">${weeks}</div>
                 </div>
                 ${groups}
+                ${gridHtml(total, 7)}
                 <div class="schedule__current-week" aria-hidden="true"></div>
                 <div class="schedule__today" aria-hidden="true"></div>
             </div>
@@ -149,9 +177,93 @@ function renderSchedule() {
     enableInfoTooltips(body);
 }
 
+// Items every pack gives on the side: never a pack's icon.
+const FILLER_ITEMS = new Set(['diamonds', ...DEFAULT_NONE_ITEMS]);
+
+/** The item whose image stands for a package: its `icon`, else its first item that isn't filler. */
+function packageIcon(pkg) {
+    return pkg.icon || Object.keys(pkg.contains || {}).find((itemId) => !FILLER_ITEMS.has(itemId)) || null;
+}
+
+/** Weekday offers (`weekly_rotation` packs): today and the next 6 days, one row per pack family. */
+function renderRotation() {
+    const section = document.getElementById('rotation');
+    if (!section || !packData) {
+        return;
+    }
+    const from = localDayNumber(new Date());
+    const to = from + ROTATION_DAYS - 1;
+    const families = new Map();
+    for (const [id, pkg] of Object.entries(packData.packages || {})) {
+        const familyId = packageFamilyId(id, pkg);
+        if (pkg.category === 'weekly_rotation' && !families.has(familyId)) {
+            families.set(familyId, pkg);
+        }
+    }
+    const rows = [...families.values()]
+        .map((pkg) => {
+            const name = localizedName(pkg.name);
+            const tooltip = `${name}\n${t('welcome.rotation.every', { days: formatDays(pkg.available_days) })}`;
+            return { name, tooltip, icon: packageIcon(pkg), bars: weekdayRuns(pkg.available_days, from, to) };
+        })
+        .filter((row) => row.bars.length > 0)
+        .sort((a, b) => a.bars[0].start - b.bars[0].start || a.name.localeCompare(b.name));
+    if (rows.length === 0) {
+        section.hidden = true;
+        return;
+    }
+
+    const days = Array.from({ length: ROTATION_DAYS }, (_, index) => from + index)
+        .map((day, index) => {
+            const label =
+                index < 2
+                    ? t(index === 0 ? 'welcome.rotation.today' : 'welcome.rotation.tomorrow')
+                    : formatDay(day, { weekday: 'short' });
+            return `
+                <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
+                    <strong>${escapeHtml(label)}</strong>
+                    <span>${escapeHtml(formatDay(day, { day: 'numeric', month: 'short' }))}</span>
+                </div>`;
+        })
+        .join('');
+    const rowsHtml = rows
+        .map(
+            (row) => `
+                <div class="schedule__row schedule__row--rotation">
+                    <div class="schedule__label" title="${escapeHtml(row.name)}" data-icon="${escapeHtml(row.icon || '')}">${escapeHtml(row.name)}</div>
+                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, row.tooltip)).join('')}</div>
+                </div>`,
+        )
+        .join('');
+    section.hidden = false;
+    section.querySelector('.schedule__body').innerHTML = `
+        <div class="schedule__scroll">
+            <div class="schedule__chart schedule__chart--days" style="--columns: ${ROTATION_DAYS}; --week-start: 0; --week-width: ${1 / ROTATION_DAYS}">
+                <div class="schedule__row schedule__row--axis">
+                    <div class="schedule__label"></div>
+                    <div class="schedule__track schedule__weeks">${days}</div>
+                </div>
+                ${rowsHtml}
+                ${gridHtml(ROTATION_DAYS, 1)}
+                <div class="schedule__current-week" aria-hidden="true"></div>
+            </div>
+        </div>`;
+    // Icons via createItemImage (placeholder if the image is missing, item name as mouse-over).
+    for (const label of section.querySelectorAll('.schedule__label[data-icon]')) {
+        const itemId = label.dataset.icon;
+        if (itemId) {
+            label.prepend(
+                createItemImage(itemId, localizedName(packData.items?.[itemId]?.name), 'item-icon schedule__icon'),
+            );
+        }
+    }
+    enableInfoTooltips(section);
+}
+
 window.addEventListener('localechange', () => {
     applyStaticTranslations();
     renderSchedule();
+    renderRotation();
 });
 
 // The schedule needs the data; the rest of the page works without it.
@@ -159,5 +271,6 @@ loadPackData()
     .then((data) => {
         packData = data;
         renderSchedule();
+        renderRotation();
     })
     .catch(() => {});

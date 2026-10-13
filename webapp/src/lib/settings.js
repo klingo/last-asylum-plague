@@ -121,4 +121,12 @@ function priorityWeights(settings) {
     );
 }
 
-export { loadSettings, saveSettings, priorityWeights, DEFAULT_SETTINGS, PRIORITY_LEVELS, PRIORITY_WEIGHTS };
+export {
+    loadSettings,
+    saveSettings,
+    priorityWeights,
+    DEFAULT_SETTINGS,
+    DEFAULT_NONE_ITEMS,
+    PRIORITY_LEVELS,
+    PRIORITY_WEIGHTS,
+};
