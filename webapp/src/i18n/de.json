@@ -24,7 +24,8 @@
         "tierSuffix": "(Stufe {tier})",
         "loadError": "Daten konnten nicht geladen werden: {message}",
         "fetchError": "{file} konnte nicht geladen werden: {status} {statusText}",
-        "reset": "Zurücksetzen"
+        "reset": "Zurücksetzen",
+        "howItWorks": "So funktioniert's"
     },
     "picker": {
         "placeholder": "Gegenstand auswählen…",
@@ -122,7 +123,8 @@
     },
     "rankings": {
         "heading": "Rangliste",
-        "description": "Alle diese Woche angebotenen Pakete und Pässe, nach Wert im Verhältnis zum Preis geordnet. Der Wert basiert auf den Deal-%-Werten des Spiels, deinen wöchentlichen Ausgaben und deinen Gegenstandsprioritäten (Seite Gegenstandsprioritäten). Ratio = wie ein Paket im Vergleich zur letzten Banknote des besten Plans für deine wöchentlichen Ausgaben abschneidet: 1,0 oder mehr = ein gutes Geschäft bei deinen Ausgaben, unter 1,0 = deine Ausgaben haben bessere Verwendungen (nicht wertlos, aber nicht unter deinen besten Käufen; mehr auszugeben senkt diese Messlatte). „Kauf / Woche“ = wie viele davon dieser Plan aus dem diese Woche Angebotenen kauft („passt nicht“ = gut, aber ganze Käufe passten nicht in deine genauen Ausgaben; mit etwas mehr wäre es dabei). Pakete nicht angehakter Events sind ausgeblendet. Was du mit Event-Münzen und Diamanten kaufen solltest: siehe Events. Einträge mit Gegenständen unbekannten Werts stehen unter der Rangliste, ohne Rang.",
+        "description": "Alle diese Woche angebotenen Pakete und Pässe, nach Wert im Verhältnis zum Preis geordnet.",
+        "details": "Der Wert basiert auf den Deal-%-Werten des Spiels, deinen wöchentlichen Ausgaben und deinen Gegenstandsprioritäten (Seite Gegenstandsprioritäten). Ratio = wie ein Paket im Vergleich zur letzten Banknote des besten Plans für deine wöchentlichen Ausgaben abschneidet: 1,0 oder mehr = ein gutes Geschäft bei deinen Ausgaben, unter 1,0 = deine Ausgaben haben bessere Verwendungen (nicht wertlos, aber nicht unter deinen besten Käufen; mehr auszugeben senkt diese Messlatte). „Kauf / Woche“ = wie viele davon dieser Plan aus dem diese Woche Angebotenen kauft („passt nicht“ = gut, aber ganze Käufe passten nicht in deine genauen Ausgaben; mit etwas mehr wäre es dabei). Pakete nicht ausgewählter Events sind ausgeblendet. Was du mit Event-Münzen und Diamanten kaufen solltest: siehe Events. Einträge mit Gegenständen unbekannten Werts stehen unter der Rangliste, ohne Rang.",
         "searchLabel": "Suche",
         "searchPlaceholder": "Nach Name oder Kategorie filtern",
         "empty": "Keine Einträge entsprechen deinen Filtern.",
@@ -153,11 +155,12 @@
     },
     "events": {
         "heading": "Events",
-        "description": "Wähle ein angehaktes Event (oder den VIP-Shop), um seinen Anteil am besten Plan für deine wöchentlichen Ausgaben zu sehen: die zu kaufenden Event-Pakete, die Münzen, die sie geben, welche Shop-Angebote du damit kaufen solltest (in Freischaltreihenfolge) und ob sich mehr Ausgaben für das Event noch lohnen. Es ist derselbe Plan wie auf der Seite Rangliste, beide Seiten stimmen also überein.",
+        "description": "Wähle ein ausgewähltes Event (oder den VIP-Shop), um seinen Anteil am besten Plan für deine wöchentlichen Ausgaben zu sehen: die zu kaufenden Event-Pakete, die Münzen, die sie geben, welche Shop-Angebote du damit kaufen solltest (in Freischaltreihenfolge) und ob sich mehr Ausgaben für das Event noch lohnen.",
+        "details": "Es ist derselbe Plan wie auf der Seite Rangliste, beide Seiten stimmen also überein.",
         "eventLabel": "Event oder Shop",
         "eventPlaceholder": "Event auswählen…",
         "eventSearch": "Events und Shops durchsuchen…",
-        "tickHint": "Nur Events, die unter „Events diese Woche“ angehakt sind, werden aufgelistet.",
+        "tickHint": "Nur Events, die unter „Events diese Woche“ ausgewählt sind, werden aufgelistet.",
         "selectPrompt": "Wähle oben ein Event oder einen Shop.",
         "planHeading": "Dein Plan",
         "summaryNoPacks": "Dein Plan kauft bei deinen wöchentlichen Ausgaben keines der Pakete dieses Events.",
@@ -218,7 +221,8 @@
     },
     "sources": {
         "heading": "Gegenstandsquellen",
-        "description": "Wähle einen Gegenstand, um alle diese Woche angebotenen Pakete und Shop-Angebote zu sehen, die ihn geben – auch Pakete, in denen er nur verschachtelt vorkommt (z. B. Ressourcenvorrat (SR) → Kräuter). Wahltruhen zählen als Wahl dieses Gegenstands, Zufallstruhen mit ihrer erwarteten Menge (~), generische Gegenstände dort, wo sie verwendbar sind. Pro Einheit = Banknoten pro Einheit, bei Massengütern pro 1.000 oder 1.000.000 Einheiten angegeben (Shop-Angebote mit dem Wert ihrer Münzen). Ratio = Wert der gesamten Quelle ÷ Preis, wie in der Rangliste (1,0 oder mehr = ein gutes Geschäft bei deinen wöchentlichen Ausgaben). Gegenstands-Anteil = wie viel dieses Werts auf diesen Gegenstand entfällt. Gegenstands-Ratio = Wert nur dieses Gegenstands ÷ Preis (≈ Ratio × Gegenstands-Anteil). Die Quellen sind nach Gegenstands-Ratio geordnet, was dasselbe ist wie die günstigste pro Einheit zuerst. Grün hinterlegte Zeilen gehören zum besten Plan für deine wöchentlichen Ausgaben.",
+        "description": "Wähle einen Gegenstand, um alle diese Woche angebotenen Pakete und Shop-Angebote zu sehen, die ihn geben – auch Pakete, in denen er nur verschachtelt vorkommt (z. B. Ressourcenvorrat (SR) → Kräuter).",
+        "details": "Wahltruhen zählen als Wahl dieses Gegenstands, Zufallstruhen mit ihrer erwarteten Menge (~), generische Gegenstände dort, wo sie verwendbar sind. Pro Einheit = Banknoten pro Einheit, bei Massengütern pro 1.000 oder 1.000.000 Einheiten angegeben (Shop-Angebote mit dem Wert ihrer Münzen). Ratio = Wert der gesamten Quelle ÷ Preis, wie in der Rangliste (1,0 oder mehr = ein gutes Geschäft bei deinen wöchentlichen Ausgaben). Gegenstands-Anteil = wie viel dieses Werts auf diesen Gegenstand entfällt. Gegenstands-Ratio = Wert nur dieses Gegenstands ÷ Preis (≈ Ratio × Gegenstands-Anteil). Die Quellen sind nach Gegenstands-Ratio geordnet, was dasselbe ist wie die günstigste pro Einheit zuerst. Grün hinterlegte Zeilen gehören zum besten Plan für deine wöchentlichen Ausgaben.",
         "itemLabel": "Gegenstand",
         "selectPrompt": "Wähle oben einen Gegenstand, um zu sehen, wo du ihn bekommst.",
         "empty": "Nichts im Angebot dieser Woche gibt diesen Gegenstand.",
@@ -238,7 +242,8 @@
     },
     "choices": {
         "heading": "Beste Wahl",
-        "description": "Wähle eine Wahltruhe, ein Paket mit Optionen oder eine Gruppe von Paketen, von der du nur eines kaufen kannst (z. B. Kalenderpakete). Ihre Optionen sind nach Wert bei deinen wöchentlichen Ausgaben und Gegenstandsprioritäten geordnet.",
+        "description": "Wähle eine Wahltruhe, ein Paket mit Optionen oder eine Gruppe von Paketen, von der du nur eines kaufen kannst (z. B. Kalenderpakete).",
+        "details": "Ihre Optionen sind nach Wert bei deinen wöchentlichen Ausgaben und Gegenstandsprioritäten geordnet.",
         "itemLabel": "Wahlquelle",
         "itemPlaceholder": "Wahlgegenstand oder Paket auswählen…",
         "optionsHeading": "Geordnete Wahloptionen",
@@ -264,7 +269,8 @@
     },
     "spendRewards": {
         "heading": "Ausgabenbelohnungen",
-        "description": "Wähle eine kumulative Ausgabenbelohnungs-Leiste, um zu sehen, ob es sich lohnt, für ihre nächsten Stufen über deine wöchentlichen Ausgaben hinauszugehen. Stufen, die deine wöchentlichen Ausgaben bereits erreichen, sind markiert. Für jede weitere Stufe: die zusätzlichen Banknoten zu deinen wöchentlichen Ausgaben (oder zur vorherigen Stufe), was diese Banknoten kaufen (die besten noch verfügbaren Pakete) und die Belohnung der Stufe. Stufen-Ratio 1,0 oder mehr = die Stufe ist mindestens so gut wie deine letzte Banknote bei deinen wöchentlichen Ausgaben.",
+        "description": "Wähle eine kumulative Ausgabenbelohnungs-Leiste, um zu sehen, ob es sich lohnt, für ihre nächsten Stufen über deine wöchentlichen Ausgaben hinauszugehen.",
+        "details": "Stufen, die deine wöchentlichen Ausgaben bereits erreichen, sind markiert. Für jede weitere Stufe: die zusätzlichen Banknoten zu deinen wöchentlichen Ausgaben (oder zur vorherigen Stufe), was diese Banknoten kaufen (die besten noch verfügbaren Pakete) und die Belohnung der Stufe. Stufen-Ratio 1,0 oder mehr = die Stufe ist mindestens so gut wie deine letzte Banknote bei deinen wöchentlichen Ausgaben.",
         "trackLabel": "Belohnungsleiste",
         "trackPlaceholder": "Leiste auswählen…",
         "empty": "Noch keine Ausgabenbelohnungs-Leisten definiert.",
@@ -293,7 +299,13 @@
         "eventsLabel": "Events diese Woche",
         "summary": "Bei wöchentlichen Ausgaben von {budget} Banknoten bringt deine letzte Banknote {rate} Punkte, also gilt: Wert = Punkte ÷ {rate}.",
         "summaryUnbound": "Alles, was sich diese Woche zu kaufen lohnt, kostet nur {spent} deiner {budget} Banknoten; das schwächste gekaufte Paket bringt {rate} Punkte pro Banknote, also gilt: Wert = Punkte ÷ {rate}.",
-        "passesLabel": "Saisonpässe im Angebot"
+        "passesLabel": "Saisonpässe im Angebot",
+        "edit": "Bearbeiten",
+        "done": "Fertig",
+        "summaryBudget": "{amount} / Woche",
+        "summaryEvents": "Events: {list}",
+        "summaryPasses": "Pässe: {list}",
+        "none": "keine"
     },
     "conversion": {
         "open": "{item} öffnen",
@@ -304,7 +316,8 @@
     },
     "items": {
         "heading": "Gegenstandsprioritäten",
-        "description": "Wie wichtig dir jeder Gegenstand ist. „Egal“ zählt ihn als wertlos, „Niedrig“ zur Hälfte, „Hoch“ mit dem 1,5-Fachen seines üblichen Werts. Aufgelistet sind nur Basisgegenstände: Truhen, Vorräte, Wahltruhen und Omni-Splitter folgen den Gegenständen, die sie enthalten (z. B. folgen Gegengift-Level-Vorräte dem Gegengift). Eine Herstellungskette wird einmal unter ihrem obersten Gegenstand aufgelistet: Gehärteter Stahl legt auch Verfeinertes Eisen, Messing, Leder und Stoff fest. Alles folgt automatisch, auf jeder Seite.",
+        "description": "Wie wichtig dir jeder Gegenstand ist.",
+        "details": "„Egal“ zählt ihn als wertlos, „Niedrig“ zur Hälfte, „Hoch“ mit dem 1,5-Fachen seines üblichen Werts. Aufgelistet sind nur Basisgegenstände: Truhen, Vorräte, Wahltruhen und Omni-Splitter folgen den Gegenständen, die sie enthalten (z. B. folgen Gegengift-Level-Vorräte dem Gegengift). Eine Herstellungskette wird einmal unter ihrem obersten Gegenstand aufgelistet: Gehärteter Stahl legt auch Verfeinertes Eisen, Messing, Leder und Stoff fest. Alles folgt automatisch, auf jeder Seite.",
         "searchLabel": "Suche",
         "searchPlaceholder": "Nach Name oder Kategorie filtern",
         "showLabel": "Anzeigen",
@@ -334,7 +347,8 @@
     },
     "compare": {
         "heading": "Vergleich",
-        "description": "Wähle zwei Gegenstände und Mengen. Du siehst, was jeder bei deinen wöchentlichen Ausgaben wert ist, und den günstigsten garantierten Weg, ihn innerhalb der gewählten Tage zu bekommen (ab heute; Wochenlimits werden am Montag zurückgesetzt), einschließlich dessen, was du unterwegs noch bekommst.",
+        "description": "Wähle zwei Gegenstände und Mengen.",
+        "details": "Du siehst, was jeder bei deinen wöchentlichen Ausgaben wert ist, und den günstigsten garantierten Weg, ihn innerhalb der gewählten Tage zu bekommen (ab heute; Wochenlimits werden am Montag zurückgesetzt), einschließlich dessen, was du unterwegs noch bekommst.",
         "sideA": "Erster Gegenstand",
         "sideB": "Zweiter Gegenstand",
         "amount": "Menge",

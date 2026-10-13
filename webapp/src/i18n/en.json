@@ -24,7 +24,8 @@
         "tierSuffix": "(Tier {tier})",
         "loadError": "Failed to load data: {message}",
         "fetchError": "Failed to load {file}: {status} {statusText}",
-        "reset": "Reset"
+        "reset": "Reset",
+        "howItWorks": "How it works"
     },
     "picker": {
         "placeholder": "Select an item…",
@@ -122,7 +123,8 @@
     },
     "rankings": {
         "heading": "Ranking",
-        "description": "Every package and pass on sale this week, ranked by worth relative to price. Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). Ratio = how a pack compares with the last Banknote of the best plan for your weekly spend: 1.0 or more = a good deal at your spend, below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Buy / week\" = how many that plan buys out of what's on sale this week (\"doesn't fit\" = good, but whole purchases didn't fit your exact spend; with a little more it would be in). Packs of events you haven't ticked are hidden. What to buy with event coins and diamonds: see Events. Entries containing items of unknown worth are listed below the ranking, unranked.",
+        "description": "Every package and pass on sale this week, ranked by worth relative to price.",
+        "details": "Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). Ratio = how a pack compares with the last Banknote of the best plan for your weekly spend: 1.0 or more = a good deal at your spend, below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Buy / week\" = how many that plan buys out of what's on sale this week (\"doesn't fit\" = good, but whole purchases didn't fit your exact spend; with a little more it would be in). Packs of events you haven't selected are hidden. What to buy with event coins and diamonds: see Events. Entries containing items of unknown worth are listed below the ranking, unranked.",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
         "empty": "No entries match your filters.",
@@ -153,11 +155,12 @@
     },
     "events": {
         "heading": "Events",
-        "description": "Pick a ticked event (or the VIP Shop) to see its part of the best plan for your weekly spend: the event packs to buy, the coins they give, which shop offers to buy with them (in unlock order) and whether spending more on the event still pays off. It's the same plan as on the Ranking page, so both pages agree.",
+        "description": "Pick a selected event (or the VIP Shop) to see its part of the best plan for your weekly spend: the event packs to buy, the coins they give, which shop offers to buy with them (in unlock order) and whether spending more on the event still pays off.",
+        "details": "It's the same plan as on the Ranking page, so both pages agree.",
         "eventLabel": "Event or shop",
         "eventPlaceholder": "Select an event…",
         "eventSearch": "Search events and shops…",
-        "tickHint": "Only events ticked under \"Events this week\" are listed.",
+        "tickHint": "Only events selected under \"Events this week\" are listed.",
         "selectPrompt": "Select an event or shop above.",
         "planHeading": "Your plan",
         "summaryNoPacks": "Your plan buys none of this event's packs at your weekly spend.",
@@ -218,7 +221,8 @@
     },
     "sources": {
         "heading": "Item Sources",
-        "description": "Pick an item to see every pack and shop offer on sale this week that gives it, including packs where it only comes nested (e.g. SR Resource Supplies → Herbs). Pick-one chests count as picking this item, random chests at their expected amount (~), generic items where they can be used. Per unit = Banknotes per unit, shown per 1,000 or 1,000,000 units for bulk items (shop offers at what their coins are worth). Ratio = the whole source's worth ÷ price, as on the Ranking (1.0 or more = a good deal at your weekly spend). Item share = how much of that worth is this item. Item ratio = worth of just this item ÷ price (≈ ratio × item share). Sources are ranked by item ratio, which is the same as cheapest per unit first. Rows highlighted green are in the best plan for your weekly spend.",
+        "description": "Pick an item to see every pack and shop offer on sale this week that gives it, including packs where it only comes nested (e.g. SR Resource Supplies → Herbs).",
+        "details": "Pick-one chests count as picking this item, random chests at their expected amount (~), generic items where they can be used. Per unit = Banknotes per unit, shown per 1,000 or 1,000,000 units for bulk items (shop offers at what their coins are worth). Ratio = the whole source's worth ÷ price, as on the Ranking (1.0 or more = a good deal at your weekly spend). Item share = how much of that worth is this item. Item ratio = worth of just this item ÷ price (≈ ratio × item share). Sources are ranked by item ratio, which is the same as cheapest per unit first. Rows highlighted green are in the best plan for your weekly spend.",
         "itemLabel": "Item",
         "selectPrompt": "Select an item above to see where to get it.",
         "empty": "Nothing on sale this week gives this item.",
@@ -238,7 +242,8 @@
     },
     "choices": {
         "heading": "Best Choice Pick",
-        "description": "Pick a choice chest, a package with options, or a group of packages you can only buy one of (e.g. calendar packs). Its options are ranked by worth at your weekly spend and item priorities.",
+        "description": "Pick a choice chest, a package with options, or a group of packages you can only buy one of (e.g. calendar packs).",
+        "details": "Its options are ranked by worth at your weekly spend and item priorities.",
         "itemLabel": "Choice Source",
         "itemPlaceholder": "Select a choice item or package…",
         "optionsHeading": "Ranked Choice Options",
@@ -264,7 +269,8 @@
     },
     "spendRewards": {
         "heading": "Spend Rewards",
-        "description": "Pick a cumulative spend-reward track to see whether pushing past your weekly spend for its next tiers pays off. Tiers your weekly spend already reaches are marked. For each further tier: the extra Banknotes on top of your weekly spend (or the previous tier), what those Banknotes buy (the best packs still available) and the tier's reward. Step ratio 1.0 or more = the step is at least as good as your last Banknote at your weekly spend.",
+        "description": "Pick a cumulative spend-reward track to see whether pushing past your weekly spend for its next tiers pays off.",
+        "details": "Tiers your weekly spend already reaches are marked. For each further tier: the extra Banknotes on top of your weekly spend (or the previous tier), what those Banknotes buy (the best packs still available) and the tier's reward. Step ratio 1.0 or more = the step is at least as good as your last Banknote at your weekly spend.",
         "trackLabel": "Reward Track",
         "trackPlaceholder": "Select a track…",
         "empty": "No spend reward tracks defined yet.",
@@ -293,7 +299,13 @@
         "eventsLabel": "Events this week",
         "summary": "At a weekly spend of {budget} Banknotes, your last Banknote buys {rate} points, so worth = points ÷ {rate}.",
         "summaryUnbound": "Everything worth buying this week costs only {spent} of your {budget} Banknotes; the weakest pack bought returns {rate} points per Banknote, so worth = points ÷ {rate}.",
-        "passesLabel": "Seasonal passes on sale"
+        "passesLabel": "Seasonal passes on sale",
+        "edit": "Edit",
+        "done": "Done",
+        "summaryBudget": "{amount} / week",
+        "summaryEvents": "Events: {list}",
+        "summaryPasses": "Passes: {list}",
+        "none": "none"
     },
     "conversion": {
         "open": "Open {item}",
@@ -304,7 +316,8 @@
     },
     "items": {
         "heading": "Item Priorities",
-        "description": "How much each item matters to you. \"Don't care\" counts it as worthless, \"Low\" at half, \"High\" at 1.5 times its usual worth. Only base items are listed: chests, supplies, choice chests and omni shards follow the items they contain (e.g. Antitoxin Level Supplies follow Antitoxin). A crafting chain is listed once, under its top item: Tempered Steel also sets Refined Iron, Brass, Leather and Cloth. Everything follows automatically, on every page.",
+        "description": "How much each item matters to you.",
+        "details": "\"Don't care\" counts it as worthless, \"Low\" at half, \"High\" at 1.5 times its usual worth. Only base items are listed: chests, supplies, choice chests and omni shards follow the items they contain (e.g. Antitoxin Level Supplies follow Antitoxin). A crafting chain is listed once, under its top item: Tempered Steel also sets Refined Iron, Brass, Leather and Cloth. Everything follows automatically, on every page.",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
         "showLabel": "Show",
@@ -334,7 +347,8 @@
     },
     "compare": {
         "heading": "Compare",
-        "description": "Pick two items and amounts. You see what each is worth at your weekly spend, and the cheapest guaranteed way to get it within the chosen days (from today; weekly limits reset on Monday), including what else you get along the way.",
+        "description": "Pick two items and amounts.",
+        "details": "You see what each is worth at your weekly spend, and the cheapest guaranteed way to get it within the chosen days (from today; weekly limits reset on Monday), including what else you get along the way.",
         "sideA": "First item",
         "sideB": "Second item",
         "amount": "Amount",

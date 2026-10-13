@@ -681,6 +681,138 @@ tbody tr:hover {
     white-space: nowrap;
 }
 
+/* Page intro: a lead sentence, the rest behind "How it works". */
+.page-lead {
+    margin: 4px 0 6px;
+    color: var(--text-dim);
+}
+
+.page-details {
+    margin-bottom: 14px;
+    color: var(--text-dim);
+}
+
+.page-details summary {
+    width: fit-content;
+    color: var(--accent);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.page-details p {
+    margin: 6px 0 0;
+    max-width: 900px;
+    line-height: 1.5;
+}
+
+/* Setup bar (lib/valuation-panel.js): summary of the shared settings + "Edit" opening the controls. */
+#valuation-panel:not(:empty) {
+    margin-bottom: 16px;
+}
+
+.setup-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 8px 12px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.setup-bar__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 18px;
+}
+
+.setup-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.setup-bar__toggle {
+    padding: 4px 12px;
+    background: transparent;
+    border-color: var(--border);
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.setup-bar__toggle:hover {
+    background: var(--panel);
+    border-color: var(--accent);
+}
+
+.setup-panel {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 16px 28px;
+    margin-top: 8px;
+    padding: 14px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.setup-panel[hidden] {
+    display: none;
+}
+
+.setup-panel__group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.setup-panel__group input {
+    width: 160px;
+}
+
+@media (max-width: 700px) {
+    .setup-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* On/off pill (events, passes): bigger tap target than a checkbox, clear state. */
+.toggle-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.toggle-chip {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-dim);
+    font-weight: normal;
+}
+
+.toggle-chip:hover {
+    background: var(--panel-alt);
+    border-color: var(--text-dim);
+    color: var(--text);
+}
+
+.toggle-chip[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+.toggle-chip[aria-pressed='true']::before {
+    content: '✓ ';
+    color: var(--accent);
+}
+
 .text-dim {
     color: var(--text-dim);
 }
