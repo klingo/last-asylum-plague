@@ -151,8 +151,9 @@
         "buyNoFit": "doesn't fit",
         "lifetimeTotal": "{count}× total",
         "perMonth": "month",
+        "perTwoWeeks": "2 weeks",
         "perWeekShare": "{amount} Banknotes / week",
-        "monthlyNote": "Monthly purchases ({names}) count at 7/30 of their price per week."
+        "monthlyNote": "Monthly and two-week purchases ({names}) count at their weekly share of the price (7/30, 7/14)."
     },
     "events": {
         "heading": "Events",

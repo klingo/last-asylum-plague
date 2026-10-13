@@ -5,8 +5,8 @@
  * All capacities are "purchases per week", the unit both the simple and the accurate model
  * work in:
  * - daily limits count once per available day (7, or the number of `available_days`);
- * - weekly limits count once; monthly limits count 7/30 (the pass delivers its contents over
- *   30 days, so a week gets 7/30 of it for 7/30 of the price);
+ * - weekly limits count once; biweekly limits 7/14 and monthly limits 7/30 (the pass delivers its
+ *   contents over 14 / 30 days, so a week gets that share of it for that share of the price);
  * - `lifetime` limits are the total ever, `event` limits the total per event run (when included);
  * - `purchase_limit: null` (plain diamond top-ups) is unlimited.
  *
@@ -17,6 +17,7 @@
 
 const DAYS_PER_WEEK = 7;
 const DAYS_PER_MONTH = 30;
+const DAYS_PER_TWO_WEEKS = 14;
 // Monday first: weekly limits reset on Monday, so a weekday's index is its offset into the week.
 const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -107,6 +108,8 @@ function perWeek(purchaseLimit, limitType, availableDays) {
     switch (limitType) {
         case 'daily':
             return purchaseLimit * (availableDays?.length || DAYS_PER_WEEK);
+        case 'biweekly':
+            return (purchaseLimit * DAYS_PER_WEEK) / DAYS_PER_TWO_WEEKS;
         case 'monthly':
             return (purchaseLimit * DAYS_PER_WEEK) / DAYS_PER_MONTH;
         default:
@@ -145,8 +148,8 @@ function offerWeeklyCapacity(offer, shop, { activeEventIds = null } = {}) {
 
 /**
  * Purchases a limit allows within a window of `days` days (planners). Event-tied limits never
- * scale past one event run (7 days); lifetime/event limits never scale; monthly limits count per
- * started 30 days.
+ * scale past one event run (7 days); lifetime/event limits never scale; biweekly / monthly limits count
+ * per started 14 / 30 days.
  * - `startDay`: weekday index of the window's first day (0 = Monday). Then daily limits count the
  *   window's available days and weekly limits the Monday-based weeks with an available day.
  *   Without it, daily limits count available days proportionally (rounded up) and weekly limits
@@ -161,6 +164,9 @@ function capacityInWindow(
         return Infinity;
     }
     const horizon = eventTied ? Math.min(days, DAYS_PER_WEEK) : days;
+    if (limitType === 'biweekly') {
+        return purchaseLimit * Math.ceil(horizon / DAYS_PER_TWO_WEEKS);
+    }
     if (limitType === 'monthly') {
         return purchaseLimit * Math.ceil(horizon / DAYS_PER_MONTH);
     }

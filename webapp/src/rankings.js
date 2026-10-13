@@ -31,7 +31,7 @@ const gold = (text) => `<span class="text-gold">${text}</span> ${banknoteIconHtm
 
 /**
  * "Buy" cell: how many the best plan for your weekly spend buys out of what's on sale this week,
- * e.g. "3 / 7", "1 / month" (monthly pass), "2 / ∞" (no limit). Lifetime-limited packs aren't part of
+ * e.g. "3 / 7", "1 / month" (monthly pass), "1 / 2 weeks" (biweekly pass), "2 / ∞" (no limit). Lifetime-limited packs aren't part of
  * the weekly plan: "once" / "3× total". "doesn't fit" marks a good deal (ratio clearly above 1.0) the
  * plan leaves out because whole purchases don't fit your exact spend.
  */
@@ -40,11 +40,15 @@ function buyHtml(entry) {
     if (limitType === 'lifetime') {
         return capacity === 1 ? t('rankings.once') : t('rankings.lifetimeTotal', { count: formatThousands(capacity) });
     }
-    const count = limitType === 'monthly' ? Math.round(planned / capacity) : Math.round(planned);
+    // Monthly / biweekly passes: the plan counts a weekly share; show whole purchases per period.
+    const periodic = limitType === 'monthly' || limitType === 'biweekly';
+    const count = periodic ? Math.round(planned / capacity) : Math.round(planned);
     const countHtml = count > 0 ? `<span class="buy-badge">×${formatThousands(count)}</span>` : '0';
     let limit = Number.isFinite(capacity) ? formatThousands(capacity) : '∞';
     if (limitType === 'monthly') {
         limit = t('rankings.perMonth');
+    } else if (limitType === 'biweekly') {
+        limit = t('rankings.perTwoWeeks');
     }
     if (count === 0 && entry.rank && entry.ratio > 1.005) {
         return `<span class="text-dim">${t('rankings.buyNoFit')}</span>`;
@@ -75,9 +79,9 @@ function buildEntries() {
         }
         const b = valuation.bundle(pkg, pkg.price);
         const capacity = packageWeeklyCapacity(pkg, capacityRules);
-        // Monthly purchases count at their weekly share (7/30 of the price) in the weekly plan.
+        // Monthly / biweekly purchases count at their weekly share (7/30, 7/14 of the price) in the weekly plan.
         const weeklyShare =
-            pkg.limit_type === 'monthly'
+            pkg.limit_type === 'monthly' || pkg.limit_type === 'biweekly'
                 ? `<span class="price-info">${infoIconHtml(t('rankings.perWeekShare', { amount: formatThousands(capacity * pkg.price, 0) }))}</span>`
                 : '';
         result.push({
@@ -228,7 +232,7 @@ function rebuild() {
     const rankedCount = entries.filter((entry) => entry.rank).length;
     const plan = valuation.plan;
     const monthly = plan.purchases
-        .filter((p) => p.pkg.limit_type === 'monthly')
+        .filter((p) => p.pkg.limit_type === 'monthly' || p.pkg.limit_type === 'biweekly')
         .map((p) => packageDisplayText(p.pkg, getLocale()));
     const monthlyNote = monthly.length > 0 ? ` ${t('rankings.monthlyNote', { names: monthly.join(', ') })}` : '';
     rankingMeta.textContent = `${t('rankings.planSummary', {

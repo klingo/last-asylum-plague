@@ -109,8 +109,8 @@
         },
         "limitType": {
             "type": "string",
-            "enum": ["daily", "weekly", "monthly", "lifetime", "event"],
-            "description": "`lifetime` = `purchase_limit` purchases ever, never resets (hero unlocks, 3 Copper Coin packs); `event` = `purchase_limit` purchases per run of the package's event."
+            "enum": ["daily", "weekly", "biweekly", "monthly", "lifetime", "event"],
+            "description": "`biweekly` = `purchase_limit` purchases per 14 days (e.g. a 2-week pass); `lifetime` = `purchase_limit` purchases ever, never resets (hero unlocks, 3 Copper Coin packs); `event` = `purchase_limit` purchases per run of the package's event."
         },
         "weekday": {
             "type": "string",

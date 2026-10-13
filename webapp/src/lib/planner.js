@@ -150,7 +150,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         const name = varName('p', id);
         const points = bundleValue(pkg, values);
         const flows = currencyFlows(pkg.contains, items, values, currencyIds);
-        // A fractional weekly share (monthly pass: 7/30) is still an all-or-nothing decision: the
+        // A fractional weekly share (monthly pass: 7/30, biweekly pass: 7/14) is still an all-or-nothing decision: the
         // variable is 0/1 and stands for `scale` purchases.
         const scale = Number.isFinite(capacity) && !Number.isInteger(capacity) ? capacity : 1;
         addTerm(model.objective, name, points.value * scale);
