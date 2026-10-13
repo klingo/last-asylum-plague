@@ -52,13 +52,15 @@ drop a `<item_id>.png` into `webapp/public/assets/items/` (placeholder otherwise
 npm run webapp:install         # first time only
 npm run webapp:dev             # copies data/pack_data.json into webapp/public/data, starts the Vite dev server
 npm run verify-data            # validates pack_data.json (schema, references, deal % fit, items without a worth)
-npm run record-week -- <ids>   # records this week's events / seasonal passes / spend tracks (--week, --replace, --show)
+npm run record-run -- <ids...> [START] <DAYS>   # records when events / seasonal passes / spend tracks run (--show)
 ```
 
-`record-week` fills the `schedule` section of `pack_data.json`: which events, seasonal passes and spend reward
-tracks ran in which ISO calendar week (weeks start on Monday), with optional exact dates (`--days`) for events shorter
-than a week. Events without packs (`"category": "ingame_event"` in `events`) can be tracked this way too. It's the groundwork
-for a forecast of what's coming.
+`record-run` fills the `schedule` section of `pack_data.json`: per event, seasonal pass and spend reward track the
+start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;
+the end is computed from the number of days). Recording the same start again corrects the length. Events without
+packs (`"category": "ingame_event"` in `events`) can be tracked this way too. The Home page shows it as a timeline
+(last week, this week, 4 weeks ahead) with a simple forecast: an entry recorded at least twice repeats its usual
+rhythm (median days between starts, median length).
 
 ### Deploying to GitHub Pages
 

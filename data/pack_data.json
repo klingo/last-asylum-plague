@@ -6139,13 +6139,35 @@
         }
     },
     "schedule": {
-        "2026-W42": {
-            "events": ["claires_inner_demon", "recluse_merchant", "strange_bazaar"],
-            "seasonal_passes": ["exclusive_weapon_pass", "tempered_arms"],
-            "spend_reward_tracks": ["ancient_recipe_antitoxin"],
-            "days": {
-                "claires_inner_demon": ["2026-10-12", "2026-10-13"]
+        "ancient_recipe_antitoxin": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-18"
             }
-        }
+        ],
+        "claires_inner_demon": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-13"
+            }
+        ],
+        "exclusive_weapon_pass": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-18"
+            }
+        ],
+        "strange_bazaar": [
+            {
+                "start": "2026-10-13",
+                "end": "2026-10-18"
+            }
+        ],
+        "tempered_arms": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-20"
+            }
+        ]
     }
 }

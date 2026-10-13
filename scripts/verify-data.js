@@ -463,36 +463,32 @@ async function verifyData() {
         }
     });
 
-    // 7b. Weekly schedule (which events / seasonal passes / spend tracks ran in which ISO week)
+    // 7b. Schedule (runs of events / seasonal passes / spend tracks, inclusive start/end dates)
     checkCategory('Schedule', ({ reportError }) => {
-        for (const [week, entry] of Object.entries(data.schedule || {})) {
-            for (const passId of entry.seasonal_passes || []) {
-                if (!packages[passId]?.seasonal) {
-                    reportError(
-                        'Schedule Reference',
-                        `Week "${week}" lists "${passId}", which is not a seasonal pass.`,
-                    );
-                }
+        for (const [id, runs] of Object.entries(data.schedule || {})) {
+            if (!events[id] && !packages[id]?.seasonal && !spendRewardTracks[id]) {
+                reportError(
+                    'Schedule Reference',
+                    `Schedule lists "${id}", which is no event, seasonal pass or spend reward track.`,
+                );
             }
-            for (const trackId of entry.spend_reward_tracks || []) {
-                if (!spendRewardTracks[trackId]) {
-                    reportError('Schedule Reference', `Week "${week}" lists unknown spend reward track "${trackId}".`);
-                }
-            }
-            const listed = new Set([
-                ...(entry.events || []),
-                ...(entry.seasonal_passes || []),
-                ...(entry.spend_reward_tracks || []),
-            ]);
-            for (const [id, dates] of Object.entries(entry.days || {})) {
-                if (!listed.has(id)) {
-                    reportError('Schedule Days', `Week "${week}" has days for "${id}", which it doesn't list.`);
-                }
-                for (const date of dates) {
-                    if (isoWeekOf(date) !== week) {
-                        reportError('Schedule Days', `Week "${week}": ${date} (${id}) is not in that week.`);
+            let previous = null;
+            for (const run of [...runs].sort((a, b) => a.start.localeCompare(b.start))) {
+                for (const date of [run.start, run.end]) {
+                    if (!isRealDate(date)) {
+                        reportError('Schedule Dates', `"${id}": ${date} is not a valid date.`);
                     }
                 }
+                if (run.end < run.start) {
+                    reportError('Schedule Dates', `"${id}": run ${run.start}..${run.end} ends before it starts.`);
+                }
+                if (previous && run.start <= previous.end) {
+                    reportError(
+                        'Schedule Dates',
+                        `"${id}": runs ${previous.start}..${previous.end} and ${run.start}..${run.end} overlap.`,
+                    );
+                }
+                previous = run;
             }
         }
     });
@@ -601,12 +597,9 @@ verifyData().catch((error) => {
     process.exit(1);
 });
 
-/** ISO 8601 week ("2026-W42") of a "YYYY-MM-DD" date; weeks start on Monday. */
-function isoWeekOf(text) {
-    const [year, month, date] = text.split('-').map(Number);
+/** True for an existing "YYYY-MM-DD" date (not e.g. 2026-02-30). */
+function isRealDate(text) {
+    const [year, month, date] = String(text).split('-').map(Number);
     const day = new Date(Date.UTC(year, month - 1, date));
-    day.setUTCDate(day.getUTCDate() + 4 - (day.getUTCDay() || 7));
-    const yearStart = new Date(Date.UTC(day.getUTCFullYear(), 0, 1));
-    const week = Math.ceil(((day - yearStart) / 86400000 + 1) / 7);
-    return `${day.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
+    return !Number.isNaN(day.getTime()) && day.toISOString().slice(0, 10) === text;
 }

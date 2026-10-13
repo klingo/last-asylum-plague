@@ -10,7 +10,7 @@
         "i18n:missing": "node scripts/missing-translations.js",
         "lint": "eslint .",
         "prepare": "husky",
-        "record-week": "node scripts/record-week.js",
+        "record-run": "node scripts/record-run.js",
         "sort-pack-data": "node scripts/sort-pack-data.js",
         "update-last-updated": "node scripts/update-last-updated.js",
         "verify-data": "node scripts/verify-data.js",

@@ -115,7 +115,23 @@
         "choicesDescription": "Pick a choice chest, a package with options, or a group you can only buy one of (e.g. calendar packs) and see which is worth the most.",
         "spendRewardsDescription": "Pick a cumulative spend-reward track and see up to which tier spending more still pays off.",
         "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
-        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it."
+        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it.",
+        "schedule": {
+            "heading": "Schedule",
+            "lead": "What ran last week and this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; hover a bar for its dates.",
+            "recorded": "Recorded",
+            "forecast": "Forecast",
+            "today": "Today",
+            "week": "W{week}",
+            "groupEvents": "Events",
+            "groupIngame": "In-game events",
+            "groupPasses": "Seasonal passes",
+            "groupTracks": "Spend reward tracks",
+            "oneDay": "1 day",
+            "days": "{count} days",
+            "forecastBasis": "Forecast: about every {interval} days, last {last}",
+            "empty": "Nothing recorded for these weeks yet."
+        }
     },
     "analyze": {
         "heading": "Analyze Item Value",

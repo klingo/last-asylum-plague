@@ -30,13 +30,14 @@ npm run lint                                                  # eslint .
 npm run webapp:dev                                             # copy-pack-data + vite dev server
 npm run webapp:build                                           # copy-pack-data + vite build -> webapp/dist
 npm run i18n:missing -- [lang] [--keys-only] [--data-only]     # missing translations (UI texts + data names)
-npm run record-week -- [ids] [--week YYYY-Www] [--days FROM..TO] [--replace] [--show]  # weekly schedule history
+npm run record-run -- <ids...> [START] <DAYS> | --show [ids]  # record when events / passes / tracks run
 ```
 
-`schedule` in `pack_data.json` records per ISO week (Monday start) which events, seasonal passes and spend
-reward tracks ran, with optional exact `days` for shorter events. Events with `"category": "ingame_event"` have no
-packs or shop and are only tracked there (not offered under "Events this week"). The webapp doesn't use the schedule yet;
-it's the groundwork for a forecast on the Home page.
+`schedule` in `pack_data.json` records per event, seasonal pass family and spend reward track its runs as
+inclusive `{ start, end }` dates (`record-run` computes the end from the start and the number of days). Events with
+`"category": "ingame_event"` have no packs or shop and are only tracked there (not offered under "Events this
+week"). The Home page shows it as a timeline (last week, this week, 4 ahead) with a simple forecast
+(`lib/schedule.js`: ids with at least two runs repeat their median gap between starts and median length).
 
 No test suite exists in this repo.
 
@@ -80,6 +81,7 @@ webapp/src/lib/planner.js         # the worth model (weekly budget LP)
 webapp/src/lib/acquire.js         # cheapest plan for a set of needs (Compare)
 webapp/src/lib/spend-tracks.js    # spend reward tracks (tier costs, track points per purchase)
 webapp/src/lib/item-sources.js    # units of one item a purchase gives, nested (Item Sources page)
+webapp/src/lib/schedule.js        # recorded schedule as runs per id + simple forecast (Home timeline)
 webapp/src/lib/lp.js              # HiGHS wrapper (LP text builder, duals); highs-browser.js locates the .wasm
 webapp/src/lib/valuation.js       # the one worth interface for the pages
 webapp/src/lib/valuation-panel.js # shared controls (weekly spend, events, tracks)
@@ -88,7 +90,7 @@ webapp/src/i18n/{en,de}.json      # UI texts; de.json is translated and kept in 
 ```
 
 The pure modules (`catalog`, `point-fit`, `item-values`, `planner`, `acquire`, `lp`, `spend-tracks`,
-`item-sources`) have no DOM/i18n dependency and use explicit `.js` import extensions, so Node scripts
+`item-sources`, `schedule`) have no DOM/i18n dependency and use explicit `.js` import extensions, so Node scripts
 (`scripts/verify-data.js`) can import them. Keep it that way.
 
 ## Conventions
