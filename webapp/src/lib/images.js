@@ -12,17 +12,28 @@ const BANKNOTE_ICON_URL = `${import.meta.env.BASE_URL}assets/currencies/banknote
 const imageAliases = new Map();
 // itemId -> its localized `name` field, for the images' mouse-over title.
 const itemNames = new Map();
+// itemId -> its `rarity` ("mr", "ur", "ssr", "sr", "r"), which colours the image's border.
+const itemRarities = new Map();
 
-/** Registers every item's `image` reference (items without an image of their own) and name. */
+/** Registers every item's `image` reference (items without an image of their own), name and rarity. */
 function setItemImageAliases(items) {
     imageAliases.clear();
     itemNames.clear();
+    itemRarities.clear();
     for (const [id, item] of Object.entries(items || {})) {
         if (item.image) {
             imageAliases.set(id, item.image);
         }
+        if (item.rarity) {
+            itemRarities.set(id, item.rarity);
+        }
         itemNames.set(id, item.name);
     }
+}
+
+/** The class that colours an item image's border by the item's rarity ('' = the neutral border). */
+function rarityClass(itemId) {
+    return itemRarities.has(itemId) ? `item-icon--${itemRarities.get(itemId)}` : '';
 }
 
 function getItemImageUrl(itemId) {
@@ -52,6 +63,9 @@ function createItemImage(itemId, altText, className = 'item-icon') {
         img.title = name;
     }
     img.className = className;
+    if (rarityClass(itemId)) {
+        img.classList.add(rarityClass(itemId));
+    }
     img.loading = 'lazy';
     img.onerror = () => {
         img.onerror = null;
@@ -61,4 +75,12 @@ function createItemImage(itemId, altText, className = 'item-icon') {
     return img;
 }
 
-export { getItemImageUrl, setItemImageAliases, createItemImage, PLACEHOLDER_ICON, banknoteIconHtml, BANKNOTE_ICON_URL };
+export {
+    getItemImageUrl,
+    setItemImageAliases,
+    rarityClass,
+    createItemImage,
+    PLACEHOLDER_ICON,
+    banknoteIconHtml,
+    BANKNOTE_ICON_URL,
+};

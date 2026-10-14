@@ -7,7 +7,7 @@
  * picking closes the panel, Esc / clicking outside closes it without changing anything. On phones
  * (narrow screens) the panel is a full-screen sheet with a back button and large rows.
  */
-import { getItemImageUrl } from './images';
+import { getItemImageUrl, rarityClass } from './images';
 import { localizedName, categoryLabel, t } from './i18n';
 
 let pickerCount = 0;
@@ -185,7 +185,7 @@ function createItemPicker({
             img.src = getItemImageUrl(item.id);
             img.alt = '';
             img.loading = 'lazy';
-            img.className = 'item-icon item-icon--sm';
+            img.className = `item-icon item-icon--sm ${rarityClass(item.id)}`.trim();
             // Missing images stay blank so every name lines up under the icon column.
             img.onerror = () => img.remove();
             iconSlot.appendChild(img);

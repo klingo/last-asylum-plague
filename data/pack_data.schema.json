@@ -178,9 +178,12 @@
                 "category": {
                     "$ref": "#/definitions/itemCategory"
                 },
+                "rarity": {
+                    "$ref": "#/definitions/rarity"
+                },
                 "image": {
                     "$ref": "#/definitions/id",
-                    "description": "Item id whose image to show when this item has no image of its own (e.g. `ur_curio` uses `curio_chest_ur`'s image)."
+                    "description": "Image to show instead of the item id's own: another item's id (e.g. `ur_curio` uses `curio_chest_ur`'s image) or the name of an image in webapp/public/assets/items shared by several items (e.g. every rarity of `herb_level_supply`)."
                 },
                 "contains": {
                     "$ref": "#/definitions/itemQuantities"
@@ -231,9 +234,12 @@
                 "category": {
                     "$ref": "#/definitions/itemCategory"
                 },
+                "rarity": {
+                    "$ref": "#/definitions/rarity"
+                },
                 "image": {
                     "$ref": "#/definitions/id",
-                    "description": "Item id whose image to show when this item has no image of its own (e.g. `ur_curio` uses `curio_chest_ur`'s image)."
+                    "description": "Image to show instead of the item id's own: another item's id (e.g. `ur_curio` uses `curio_chest_ur`'s image) or the name of an image in webapp/public/assets/items shared by several items (e.g. every rarity of `herb_level_supply`)."
                 },
                 "type": {
                     "type": "string",
@@ -276,9 +282,12 @@
                 "category": {
                     "$ref": "#/definitions/itemCategory"
                 },
+                "rarity": {
+                    "$ref": "#/definitions/rarity"
+                },
                 "image": {
                     "$ref": "#/definitions/id",
-                    "description": "Item id whose image to show when this item has no image of its own (e.g. `ur_curio` uses `curio_chest_ur`'s image)."
+                    "description": "Image to show instead of the item id's own: another item's id (e.g. `ur_curio` uses `curio_chest_ur`'s image) or the name of an image in webapp/public/assets/items shared by several items (e.g. every rarity of `herb_level_supply`)."
                 },
                 "type": {
                     "type": "string",
@@ -300,6 +309,7 @@
             }
         },
         "item": {
+            "required": ["rarity"],
             "oneOf": [
                 {
                     "$ref": "#/definitions/standardItem"
@@ -311,6 +321,11 @@
                     "$ref": "#/definitions/randomItem"
                 }
             ]
+        },
+        "rarity": {
+            "type": ["string", "null"],
+            "enum": ["mr", "ur", "ssr", "sr", "r", null],
+            "description": "The item's rarity: colours the border of its image. Required; null = the neutral border (items without a rarity)."
         },
         "itemCategory": {
             "type": "string",

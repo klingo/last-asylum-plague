@@ -10,7 +10,8 @@
                 "en": "Antitoxin",
                 "de": "Gegengift"
             },
-            "category": "resource"
+            "category": "resource",
+            "rarity": null
         },
         "antitoxin_level_supply_r": {
             "name": {
@@ -18,6 +19,7 @@
                 "de": "Gegengift-Level-Vorrat (R)"
             },
             "category": "hero",
+            "rarity": "r",
             "image": "antitoxin_level_supply",
             "contains": {
                 "antitoxin": 108210
@@ -29,6 +31,7 @@
                 "de": "Gegengift-Level-Vorrat (SR)"
             },
             "category": "hero",
+            "rarity": "sr",
             "image": "antitoxin_level_supply",
             "contains": {
                 "antitoxin": 1082100
@@ -40,6 +43,7 @@
                 "de": "Gegengift-Level-Vorrat (SSR)"
             },
             "category": "hero",
+            "rarity": "ssr",
             "image": "antitoxin_level_supply",
             "contains": {
                 "antitoxin": 8656800
@@ -51,6 +55,7 @@
                 "de": "Gegengift-Level-Vorrat (UR)"
             },
             "category": "hero",
+            "rarity": "ur",
             "image": "antitoxin_level_supply",
             "contains": {
                 "antitoxin": 25970400
@@ -62,6 +67,7 @@
                 "de": "Erwachen Splitter Wahltruhe"
             },
             "category": "special",
+            "rarity": "ur",
             "contains": {
                 "hero_awaken_shard": 1
             }
@@ -72,6 +78,7 @@
                 "de": ""
             },
             "category": "special",
+            "rarity": "mr",
             "type": "random",
             "drop_table": [
                 {
@@ -100,6 +107,7 @@
                 "de": ""
             },
             "category": "special",
+            "rarity": "mr",
             "type": "random",
             "drop_table": [
                 {
@@ -127,7 +135,8 @@
                 "en": "Black Raven Fortress",
                 "de": "Schwarze Raben-Festung"
             },
-            "category": "skin"
+            "category": "skin",
+            "rarity": "ur"
         },
         "brass": {
             "name": {
@@ -135,6 +144,7 @@
                 "de": "Messing"
             },
             "category": "gear",
+            "rarity": "sr",
             "contains": {
                 "leather": 4
             },
@@ -145,21 +155,24 @@
                 "en": "Cloth",
                 "de": "Stoff"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": null
         },
         "construction_speedup": {
             "name": {
                 "en": "Construction Speedup",
                 "de": "Bau-Beschleunigung"
             },
-            "category": "speedup"
+            "category": "speedup",
+            "rarity": null
         },
         "copper_coin": {
             "name": {
                 "en": "Copper Coin",
                 "de": "Kupfermünze"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": null
         },
         "curio_chest_ssr": {
             "name": {
@@ -167,6 +180,7 @@
                 "de": "Kuriosität Truhe (SSR)"
             },
             "category": "special",
+            "rarity": "ssr",
             "contains": {
                 "ssr_curio": 1
             }
@@ -177,6 +191,7 @@
                 "de": "Kuriosität Truhe (UR)"
             },
             "category": "special",
+            "rarity": "ur",
             "contains": {
                 "ur_curio": 1
             }
@@ -187,6 +202,7 @@
                 "de": "Deluxe Wahltruhe"
             },
             "category": "special",
+            "rarity": "ur",
             "type": "choice",
             "choice": {
                 "select_count": 1,
@@ -214,7 +230,8 @@
                 "en": "Demon's Eye",
                 "de": "Dämonenauge"
             },
-            "category": "curio"
+            "category": "curio",
+            "rarity": "ur"
         },
         "diamond_golden_egg": {
             "name": {
@@ -222,6 +239,7 @@
                 "de": "Diamant-Gold-Ei"
             },
             "category": "special",
+            "rarity": "ur",
             "contains": {
                 "diamonds": 400
             }
@@ -231,21 +249,24 @@
                 "en": "Diamonds",
                 "de": "Diamanten"
             },
-            "category": "resource"
+            "category": "resource",
+            "rarity": "ssr"
         },
         "direct_relocate": {
             "name": {
                 "en": "Direct Relocate",
                 "de": "Direkter Umzug"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ssr"
         },
         "dragon_blood": {
             "name": {
                 "en": "Dragon Blood",
                 "de": "Drachenblut"
             },
-            "category": "curio"
+            "category": "curio",
+            "rarity": "ur"
         },
         "excl_weapon_shard_choice_chest": {
             "name": {
@@ -253,6 +274,7 @@
                 "de": "Exkl. Waffe Splitter Wahltruhe"
             },
             "category": "special",
+            "rarity": "ur",
             "contains": {
                 "exclusive_weapon_shard": 1
             }
@@ -263,6 +285,7 @@
                 "de": "Exklusive Waffe Omni-Splitter"
             },
             "category": "hero",
+            "rarity": "ur",
             "substitutes_for": ["exclusive_weapon_shard"]
         },
         "exclusive_weapon_shard": {
@@ -270,14 +293,16 @@
                 "en": "<Hero> Exclusive Weapon Shard",
                 "de": "<Held> Exklusive Waffe Splitter"
             },
-            "category": "hero"
+            "category": "hero",
+            "rarity": "ur"
         },
         "fantasy_city": {
             "name": {
                 "en": "Fantasy City",
                 "de": "Fantasiestadt"
             },
-            "category": "skin"
+            "category": "skin",
+            "rarity": "ur"
         },
         "frenzied_flock_iv_ranger": {
             "name": {
@@ -285,6 +310,7 @@
                 "de": "Rasende Schar IV - Ranger"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -296,6 +322,7 @@
                 "de": "Rasende Schar IV - Hexenmeister"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -307,6 +334,7 @@
                 "de": "Rasende Schar IV - Krieger"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -317,28 +345,32 @@
                 "en": "Gear Blueprint (MR)",
                 "de": "Ausrüstung-Plan (MR)"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "mr"
         },
         "gear_blueprint_ur": {
             "name": {
                 "en": "Gear Blueprint (UR)",
                 "de": "Ausrüstung-Plan (UR)"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ur"
         },
         "gearstone": {
             "name": {
                 "en": "Gearstone",
                 "de": "Ausrüstungsstein"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "r"
         },
         "grain": {
             "name": {
                 "en": "Grain",
                 "de": "Getreide"
             },
-            "category": "resource"
+            "category": "resource",
+            "rarity": null
         },
         "grain_level_supply_sr": {
             "name": {
@@ -347,6 +379,7 @@
             },
             "category": "resource",
             "image": "grain_level_supply",
+            "rarity": "sr",
             "contains": {
                 "grain": 169090
             }
@@ -358,6 +391,7 @@
             },
             "category": "resource",
             "image": "grain_level_supply",
+            "rarity": "ssr",
             "contains": {
                 "grain": 1352660
             }
@@ -369,6 +403,7 @@
             },
             "category": "resource",
             "image": "grain_level_supply",
+            "rarity": "ur",
             "contains": {
                 "grain": 4057980
             }
@@ -379,6 +414,7 @@
                 "de": "Wächter der Natur IV - Ranger"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -390,6 +426,7 @@
                 "de": "Wächter der Natur IV - Hexenmeister"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -401,6 +438,7 @@
                 "de": "Wächter der Natur IV - Krieger"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -411,7 +449,8 @@
                 "en": "Healing Speedup",
                 "de": "Heilung-Beschleunigung"
             },
-            "category": "speedup"
+            "category": "speedup",
+            "rarity": null
         },
         "herb_level_supply_sr": {
             "name": {
@@ -419,6 +458,7 @@
                 "de": "Kräutervorrat-Level (SR)"
             },
             "category": "resource",
+            "rarity": "sr",
             "image": "herb_level_supply",
             "contains": {
                 "herbs": 108470
@@ -430,6 +470,7 @@
                 "de": "Kräutervorrat-Level (SSR)"
             },
             "category": "resource",
+            "rarity": "ssr",
             "image": "herb_level_supply",
             "contains": {
                 "herbs": 867720
@@ -441,6 +482,7 @@
                 "de": "Kräutervorrat-Level (UR)"
             },
             "category": "resource",
+            "rarity": "ur",
             "image": "herb_level_supply",
             "contains": {
                 "herbs": 2603150
@@ -451,7 +493,8 @@
                 "en": "Herbs",
                 "de": "Kräuter"
             },
-            "category": "resource"
+            "category": "resource",
+            "rarity": null
         },
         "hero_awaken_omni_shard": {
             "name": {
@@ -459,6 +502,7 @@
                 "de": "Held Erwachen Omni-Splitter"
             },
             "category": "hero",
+            "rarity": "ur",
             "substitutes_for": ["hero_awaken_shard"]
         },
         "hero_awaken_shard": {
@@ -466,7 +510,8 @@
                 "en": "<Hero> Awaken Shard",
                 "de": "<Held> Erwachen Splitter"
             },
-            "category": "hero"
+            "category": "hero",
+            "rarity": "ur"
         },
         "holy_sword_loot": {
             "name": {
@@ -474,6 +519,7 @@
                 "de": ""
             },
             "category": "special",
+            "rarity": "mr",
             "type": "random",
             "drop_table": [
                 {
@@ -502,6 +548,7 @@
                 "de": ""
             },
             "category": "special",
+            "rarity": "mr",
             "type": "random",
             "drop_table": [
                 {
@@ -530,6 +577,7 @@
                 "de": "Leder"
             },
             "category": "gear",
+            "rarity": "r",
             "contains": {
                 "cloth": 4
             },
@@ -540,7 +588,8 @@
                 "en": "Lv.1 Alliance Chest",
                 "de": "Lv.1 Allianz Truhe"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": "r"
         },
         "lv1_attackers_claw": {
             "name": {
@@ -548,6 +597,7 @@
                 "de": "Lv.1 Klaue des Angreifers"
             },
             "category": "raven_gear",
+            "rarity": null,
             "image": "attackers_claw"
         },
         "lv1_eye_of_perception": {
@@ -556,6 +606,7 @@
                 "de": "Lv.1 Auge der Wahrnehmung"
             },
             "category": "raven_gear",
+            "rarity": null,
             "image": "eye_of_perception"
         },
         "lv1_feather_of_the_night": {
@@ -564,6 +615,7 @@
                 "de": "Lv.1 Feder der Nacht"
             },
             "category": "raven_gear",
+            "rarity": null,
             "image": "feather_of_the_night"
         },
         "lv1_heart_of_wisdom": {
@@ -572,6 +624,7 @@
                 "de": "Lv.1 Herz der Weisheit"
             },
             "category": "raven_gear",
+            "rarity": null,
             "image": "heart_of_wisdom"
         },
         "lv1_raven_gear_chest": {
@@ -580,6 +633,7 @@
                 "de": "Lv.1 Raben-Ausrüstungs Truhe"
             },
             "category": "special",
+            "rarity": null,
             "type": "random",
             "drop_table": [
                 {
@@ -626,6 +680,7 @@
                 "de": "Lv.1 Scharfer Schnabel"
             },
             "category": "raven_gear",
+            "rarity": null,
             "image": "sharp_beak"
         },
         "lv1_tail_of_wind": {
@@ -634,6 +689,7 @@
                 "de": "Lv.1 Schweif des Windes"
             },
             "category": "raven_gear",
+            "rarity": null,
             "image": "tail_of_wind"
         },
         "lv2_alliance_chest": {
@@ -641,14 +697,16 @@
                 "en": "Lv.2 Alliance Chest",
                 "de": "Lv.2 Allianz Truhe"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": "r"
         },
         "lv3_alliance_chest": {
             "name": {
                 "en": "Lv.3 Alliance Chest",
                 "de": "Lv.3 Allianz Truhe"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": "sr"
         },
         "lv3_attackers_claw": {
             "name": {
@@ -656,6 +714,7 @@
                 "de": "Lv.3 Klaue des Angreifers"
             },
             "category": "raven_gear",
+            "rarity": "sr",
             "image": "attackers_claw",
             "crafted_from": {
                 "lv1_attackers_claw": 9
@@ -667,6 +726,7 @@
                 "de": "Lv.3 Auge der Wahrnehmung"
             },
             "category": "raven_gear",
+            "rarity": "sr",
             "image": "eye_of_perception",
             "crafted_from": {
                 "lv1_eye_of_perception": 9
@@ -678,6 +738,7 @@
                 "de": "Lv.3 Feder der Nacht"
             },
             "category": "raven_gear",
+            "rarity": "sr",
             "image": "feather_of_the_night",
             "crafted_from": {
                 "lv1_feather_of_the_night": 9
@@ -689,6 +750,7 @@
                 "de": "Lv.3 Herz der Weisheit"
             },
             "category": "raven_gear",
+            "rarity": "sr",
             "image": "heart_of_wisdom",
             "crafted_from": {
                 "lv1_heart_of_wisdom": 9
@@ -700,6 +762,7 @@
                 "de": "Lv.3 Raben-Ausrüstungs Truhe"
             },
             "category": "special",
+            "rarity": "sr",
             "type": "random",
             "drop_table": [
                 {
@@ -746,6 +809,7 @@
                 "de": "Lv.3 Scharfer Schnabel"
             },
             "category": "raven_gear",
+            "rarity": "sr",
             "image": "sharp_beak",
             "crafted_from": {
                 "lv1_sharp_beak": 9
@@ -757,6 +821,7 @@
                 "de": "Lv.3 Schweif des Windes"
             },
             "category": "raven_gear",
+            "rarity": "sr",
             "image": "tail_of_wind",
             "crafted_from": {
                 "lv1_tail_of_wind": 9
@@ -767,14 +832,18 @@
                 "en": "Lv.4 Alliance Chest",
                 "de": "Lv.4 Allianz Truhe"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": "ssr",
+            "image": "city_seizure_chest"
         },
         "lv5_alliance_chest": {
             "name": {
                 "en": "Lv.5 Alliance Chest",
                 "de": "Lv.5 Allianz Truhe"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": "ur",
+            "image": "ssr_explorer_chest"
         },
         "lv5_attackers_claw": {
             "name": {
@@ -782,6 +851,7 @@
                 "de": "Lv.5 Klaue des Angreifers"
             },
             "category": "raven_gear",
+            "rarity": "ur",
             "image": "attackers_claw",
             "crafted_from": {
                 "lv3_attackers_claw": 9
@@ -793,6 +863,7 @@
                 "de": "Lv.5 Auge der Wahrnehmung"
             },
             "category": "raven_gear",
+            "rarity": "ur",
             "image": "eye_of_perception",
             "crafted_from": {
                 "lv3_eye_of_perception": 9
@@ -804,6 +875,7 @@
                 "de": "Lv.5 Feder der Nacht"
             },
             "category": "raven_gear",
+            "rarity": "ur",
             "image": "feather_of_the_night",
             "crafted_from": {
                 "lv3_feather_of_the_night": 9
@@ -815,6 +887,7 @@
                 "de": "Lv.5 Herz der Weisheit"
             },
             "category": "raven_gear",
+            "rarity": "ur",
             "image": "heart_of_wisdom",
             "crafted_from": {
                 "lv3_heart_of_wisdom": 9
@@ -826,6 +899,7 @@
                 "de": "Lv.5 Raben-Ausrüstungs Truhe"
             },
             "category": "special",
+            "rarity": "ur",
             "type": "random",
             "drop_table": [
                 {
@@ -872,6 +946,7 @@
                 "de": "LV5 Raben-Ausrüstungs Wahltruhe"
             },
             "category": "special",
+            "rarity": "ur",
             "type": "choice",
             "choice": {
                 "select_count": 1,
@@ -903,6 +978,7 @@
                 "de": "Lv.5 Scharfer Schnabel"
             },
             "category": "raven_gear",
+            "rarity": "ur",
             "image": "sharp_beak",
             "crafted_from": {
                 "lv3_sharp_beak": 9
@@ -914,6 +990,7 @@
                 "de": "Lv.5 Schweif des Windes"
             },
             "category": "raven_gear",
+            "rarity": "ur",
             "image": "tail_of_wind",
             "crafted_from": {
                 "lv3_tail_of_wind": 9
@@ -924,14 +1001,17 @@
                 "en": "Lv.6 Alliance Chest",
                 "de": "Lv.6 Allianz Truhe"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": "mr",
+            "image": "ur_adventure_chest"
         },
         "moon_coin": {
             "name": {
                 "en": "Moon Coin",
                 "de": ""
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ur"
         },
         "mystic_cabin_permanent": {
             "name": {
@@ -939,6 +1019,7 @@
                 "de": "Mystische Hütte (Dauerhaft)"
             },
             "category": "skin",
+            "rarity": "ur",
             "image": "mystic_cabin"
         },
         "mythic_era_reward": {
@@ -947,6 +1028,7 @@
                 "de": ""
             },
             "category": "special",
+            "rarity": "ur",
             "type": "random",
             "drop_table": [
                 {
@@ -993,6 +1075,7 @@
                 "de": "Schutzzauber IV - Ranger"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -1004,6 +1087,7 @@
                 "de": "Schutzzauber IV - Hexenmeister"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -1015,6 +1099,7 @@
                 "de": "Schutzzauber IV - Krieger"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -1026,6 +1111,7 @@
                 "de": "R Epigraph (beliebig)"
             },
             "category": "epigraph",
+            "rarity": "r",
             "image": "r_epigraph_chest"
         },
         "r_epigraph_chest": {
@@ -1034,6 +1120,7 @@
                 "de": "R Epigraph Truhe"
             },
             "category": "special",
+            "rarity": "r",
             "type": "random",
             "drop_table": [
                 {
@@ -1072,6 +1159,7 @@
                 "de": "Zufällige Ausrüstungstruhe"
             },
             "category": "special",
+            "rarity": "ur",
             "type": "random",
             "drop_table": [
                 {
@@ -1130,6 +1218,7 @@
                 "de": "Zufällige Ausrüstungssteinvorräte"
             },
             "category": "gear",
+            "rarity": "ur",
             "type": "random",
             "drop_table": [
                 {
@@ -1163,49 +1252,56 @@
                 "en": "Raven Essence",
                 "de": "Rabenessenz"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ur"
         },
         "raven_evolve_guide": {
             "name": {
                 "en": "Raven Evolve Guide",
                 "de": "Rabe Entwickeln Leitfaden"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ssr"
         },
         "raven_fruit": {
             "name": {
                 "en": "Raven Fruit",
                 "de": "Rabenfrüchte"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "sr"
         },
         "recluse_coin": {
             "name": {
                 "en": "Recluse Coin",
                 "de": "Einsiedler-Münze"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ur"
         },
         "recruit_ticket": {
             "name": {
                 "en": "Recruit Ticket",
                 "de": "Rekrut.-ticket"
             },
-            "category": "hero"
+            "category": "hero",
+            "rarity": "ur"
         },
         "red_amber_amulet": {
             "name": {
                 "en": "Red Amber Amulet",
                 "de": "Rotbernstein-Amulett"
             },
-            "category": "curio"
+            "category": "curio",
+            "rarity": "ur"
         },
         "red_nutcracker": {
             "name": {
                 "en": "Red Nutcracker",
                 "de": "Roter Nussknacker"
             },
-            "category": "curio"
+            "category": "curio",
+            "rarity": "ssr"
         },
         "refined_iron": {
             "name": {
@@ -1213,6 +1309,7 @@
                 "de": "Verfeinertes Eisen"
             },
             "category": "gear",
+            "rarity": "ssr",
             "contains": {
                 "brass": 4
             },
@@ -1223,14 +1320,16 @@
                 "en": "Research Speedup",
                 "de": "Forschung-Beschleunigung"
             },
-            "category": "speedup"
+            "category": "speedup",
+            "rarity": null
         },
         "research_tome": {
             "name": {
                 "en": "Research Tome",
                 "de": ""
             },
-            "category": "curio"
+            "category": "curio",
+            "rarity": "ur"
         },
         "resource_supply_general": {
             "name": {
@@ -1238,6 +1337,7 @@
                 "de": "Ressourcenvorrat (Allgemein)"
             },
             "category": "resource",
+            "rarity": "sr",
             "image": "resource_supply",
             "type": "choice",
             "choice": {
@@ -1261,6 +1361,7 @@
                 "de": "Ressourcenvorrat (SR)"
             },
             "category": "resource",
+            "rarity": "sr",
             "image": "resource_supply",
             "type": "choice",
             "choice": {
@@ -1284,6 +1385,7 @@
                 "de": "Ressourcenvorrat (SSR)"
             },
             "category": "resource",
+            "rarity": "ssr",
             "image": "resource_supply",
             "type": "choice",
             "choice": {
@@ -1307,6 +1409,7 @@
                 "de": "Ressourcenvorrat (UR)"
             },
             "category": "resource",
+            "rarity": "ur",
             "image": "resource_supply",
             "type": "choice",
             "choice": {
@@ -1330,6 +1433,7 @@
                 "de": "Umkehrkraft IV - Ranger"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -1341,6 +1445,7 @@
                 "de": "Umkehrkraft IV - Hexenmeister"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -1352,6 +1457,7 @@
                 "de": "Umkehrkraft IV - Krieger"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "crafted_from": {
                 "ur_epigraph_shard": 800
             },
@@ -1363,6 +1469,7 @@
                 "de": ""
             },
             "category": "special",
+            "rarity": "mr",
             "type": "random",
             "drop_table": [
                 {
@@ -1390,7 +1497,8 @@
                 "en": "Skill Badge",
                 "de": "Fähigkeitsabzeichen"
             },
-            "category": "hero"
+            "category": "hero",
+            "rarity": "sr"
         },
         "speedup": {
             "name": {
@@ -1398,6 +1506,7 @@
                 "de": "Beschleunigung"
             },
             "category": "speedup",
+            "rarity": null,
             "substitutes_for": ["construction_speedup", "research_speedup", "training_speedup", "healing_speedup"]
         },
         "speedup_supply": {
@@ -1406,6 +1515,7 @@
                 "de": "Beschleunigungsvorrat"
             },
             "category": "virtual",
+            "rarity": "r",
             "type": "random",
             "drop_table": [
                 {
@@ -1446,6 +1556,7 @@
                 "de": "SR Epigraph (beliebig)"
             },
             "category": "epigraph",
+            "rarity": "sr",
             "image": "sr_epigraph_chest"
         },
         "sr_epigraph_chest": {
@@ -1454,6 +1565,7 @@
                 "de": "SR Epigraph Truhe"
             },
             "category": "special",
+            "rarity": "sr",
             "type": "random",
             "drop_table": [
                 {
@@ -1485,6 +1597,7 @@
                 "de": "SR Held-Omni-Splitter"
             },
             "category": "hero",
+            "rarity": "sr",
             "substitutes_for": ["sr_hero_shard"]
         },
         "sr_hero_shard": {
@@ -1493,6 +1606,7 @@
                 "de": "<Held>-Splitter (SR)"
             },
             "category": "hero",
+            "rarity": "sr",
             "image": "sr_hero_omni_shard"
         },
         "ssr_armor": {
@@ -1500,14 +1614,16 @@
                 "en": "SSR Armor",
                 "de": "SSR Rüstung"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ssr"
         },
         "ssr_boots": {
             "name": {
                 "en": "SSR Boots",
                 "de": "SSR Stiefel"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ssr"
         },
         "ssr_curio": {
             "name": {
@@ -1515,6 +1631,7 @@
                 "de": "SSR Kuriosität"
             },
             "category": "virtual",
+            "rarity": "ssr",
             "image": "curio_chest_ssr"
         },
         "ssr_epigraph": {
@@ -1523,6 +1640,7 @@
                 "de": "SSR Epigraph (beliebig)"
             },
             "category": "epigraph",
+            "rarity": "ssr",
             "image": "ssr_epigraph_chest"
         },
         "ssr_epigraph_chest": {
@@ -1531,6 +1649,7 @@
                 "de": "SSR Epigraph Truhe"
             },
             "category": "special",
+            "rarity": "ssr",
             "type": "random",
             "drop_table": [
                 {
@@ -1554,14 +1673,16 @@
                 "en": "SSR Epigraph Shard",
                 "de": "SSR Epigraph-Splitter"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ssr"
         },
         "ssr_gauntlets": {
             "name": {
                 "en": "SSR Gauntlets",
                 "de": "SSR Handschuhe"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ssr"
         },
         "ssr_hero_omni_shard": {
             "name": {
@@ -1569,6 +1690,7 @@
                 "de": "SSR Held-Omni-Splitter"
             },
             "category": "hero",
+            "rarity": "ssr",
             "substitutes_for": ["ssr_hero_shard"]
         },
         "ssr_hero_shard": {
@@ -1577,6 +1699,7 @@
                 "de": "<Held>-Splitter (SSR)"
             },
             "category": "hero",
+            "rarity": "ssr",
             "image": "ssr_hero_omni_shard"
         },
         "ssr_sword": {
@@ -1584,63 +1707,72 @@
                 "en": "SSR Sword",
                 "de": "SSR Schwert"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ssr"
         },
         "stamina": {
             "name": {
                 "en": "Stamina",
                 "de": "Ausdauer"
             },
-            "category": "resource"
+            "category": "resource",
+            "rarity": null
         },
         "star_moon_sigil": {
             "name": {
                 "en": "Star Moon Sigil",
                 "de": ""
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ur"
         },
         "stone_blade": {
             "name": {
                 "en": "Stone Blade",
                 "de": "Steinklinge"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ur"
         },
         "strange_coin": {
             "name": {
                 "en": "Strange Coin",
                 "de": "Seltsame Münze"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ur"
         },
         "study_scroll": {
             "name": {
                 "en": "Study Scroll",
                 "de": "Studien-Schriftrolle"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ssr"
         },
         "surprise_emblem": {
             "name": {
                 "en": "Surprise Emblem",
                 "de": "Überraschungsemblem"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ur"
         },
         "survivor_recruit_ticket": {
             "name": {
                 "en": "Survivor Recruit Ticket",
                 "de": "ÜBL. Rektrut.-ticket"
             },
-            "category": "hero"
+            "category": "hero",
+            "rarity": "ur"
         },
         "survivor_token": {
             "name": {
                 "en": "Survivor Token",
                 "de": "Überlebenden-Token"
             },
-            "category": "hero"
+            "category": "hero",
+            "rarity": "r"
         },
         "tempered_steel": {
             "name": {
@@ -1648,6 +1780,7 @@
                 "de": "Gehärteter Stahl"
             },
             "category": "gear",
+            "rarity": "ur",
             "contains": {
                 "refined_iron": 4
             },
@@ -1658,7 +1791,8 @@
                 "en": "Timber",
                 "de": "Holz"
             },
-            "category": "resource"
+            "category": "resource",
+            "rarity": null
         },
         "timber_level_supply_sr": {
             "name": {
@@ -1666,6 +1800,7 @@
                 "de": "Holzvorrat-Level (SR)"
             },
             "category": "resource",
+            "rarity": "sr",
             "image": "timber_level_supply",
             "contains": {
                 "timber": 169090
@@ -1677,6 +1812,7 @@
                 "de": "Holzvorrat-Level (SSR)"
             },
             "category": "resource",
+            "rarity": "ssr",
             "image": "timber_level_supply",
             "contains": {
                 "timber": 1352660
@@ -1688,6 +1824,7 @@
                 "de": "Holzvorrat-Level (UR)"
             },
             "category": "resource",
+            "rarity": "ur",
             "image": "timber_level_supply",
             "contains": {
                 "timber": 4057980
@@ -1698,21 +1835,24 @@
                 "en": "Top-Up EXP",
                 "de": "Aufladung-EP"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": "ur"
         },
         "training_speedup": {
             "name": {
                 "en": "Training Speedup",
                 "de": "Training-Beschleunigung"
             },
-            "category": "speedup"
+            "category": "speedup",
+            "rarity": null
         },
         "twin_dragon_brooch": {
             "name": {
                 "en": "Twin Dragon Brooch",
                 "de": "Zwillingsdrachen-Brosche"
             },
-            "category": "curio"
+            "category": "curio",
+            "rarity": "ur"
         },
         "universal_curio_random_chest": {
             "name": {
@@ -1720,6 +1860,7 @@
                 "de": "Zufällige Universelle Kuriosität Truhe"
             },
             "category": "special",
+            "rarity": "ur",
             "type": "random",
             "drop_table": [
                 {
@@ -1753,7 +1894,8 @@
                 "en": "Universal Curio Shard",
                 "de": "Universelle Kuriosität-Splitter"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ur"
         },
         "ur_adventure_chest": {
             "name": {
@@ -1761,6 +1903,7 @@
                 "de": "UR Abenteurer Truhe"
             },
             "category": "special",
+            "rarity": "ur",
             "type": "random",
             "drop_table": [
                 {
@@ -1812,14 +1955,16 @@
                 "en": "UR Armor",
                 "de": "UR Rüstung"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ur"
         },
         "ur_boots": {
             "name": {
                 "en": "UR Boots",
                 "de": "UR Stiefel"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ur"
         },
         "ur_curio": {
             "name": {
@@ -1827,6 +1972,7 @@
                 "de": "UR Kuriosität"
             },
             "category": "virtual",
+            "rarity": "ur",
             "image": "curio_chest_ur"
         },
         "ur_epigraph": {
@@ -1835,6 +1981,7 @@
                 "de": "UR Epigraph (beliebig)"
             },
             "category": "epigraph",
+            "rarity": "ur",
             "image": "ur_epigraph_chest"
         },
         "ur_epigraph_chest": {
@@ -1843,6 +1990,7 @@
                 "de": "UR Epigraph Truhe"
             },
             "category": "special",
+            "rarity": "ur",
             "contains": {
                 "ur_epigraph": 1
             }
@@ -1853,6 +2001,7 @@
                 "de": "UR Epigraph Wahltruhe"
             },
             "category": "special",
+            "rarity": "ur",
             "type": "choice",
             "choice": {
                 "select_count": 1,
@@ -1913,14 +2062,16 @@
                 "en": "UR Epigraph Shard",
                 "de": "UR Epigraph-Splitter"
             },
-            "category": "special"
+            "category": "special",
+            "rarity": "ur"
         },
         "ur_gauntlets": {
             "name": {
                 "en": "UR Gauntlets",
                 "de": "UR Handschuhe"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ur"
         },
         "ur_hero_and_awaken_choice_chest": {
             "name": {
@@ -1928,6 +2079,7 @@
                 "de": "UR Held & Erwachen Splitter Wahltruhe"
             },
             "category": "special",
+            "rarity": "ur",
             "type": "choice",
             "choice": {
                 "select_count": 1,
@@ -1947,6 +2099,7 @@
                 "de": ""
             },
             "category": "special",
+            "rarity": "ur",
             "contains": {
                 "ur_hero_shard": 1
             }
@@ -1957,6 +2110,7 @@
                 "de": "UR Held-Omni-Splitter"
             },
             "category": "hero",
+            "rarity": "ur",
             "substitutes_for": ["ur_hero_shard"]
         },
         "ur_hero_shard": {
@@ -1965,6 +2119,7 @@
                 "de": "<Held> Splitter (UR)"
             },
             "category": "hero",
+            "rarity": "ur",
             "image": "ur_hero_omni_shard"
         },
         "ur_sword": {
@@ -1972,14 +2127,16 @@
                 "en": "UR Sword",
                 "de": "UR Schwert"
             },
-            "category": "gear"
+            "category": "gear",
+            "rarity": "ur"
         },
         "vip_points": {
             "name": {
                 "en": "VIP Points",
                 "de": "VIP-Punkte"
             },
-            "category": "virtual"
+            "category": "virtual",
+            "rarity": "ssr"
         }
     },
     "packages": {

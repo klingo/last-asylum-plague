@@ -618,6 +618,27 @@ tbody tr:hover {
     opacity: 0.7;
 }
 
+/* Border by the item's rarity (`rarity` in pack_data.json); without one, the neutral border above. */
+.item-icon--mr {
+    border-color: #ff5a4f;
+}
+
+.item-icon--ur {
+    border-color: #f5a524;
+}
+
+.item-icon--ssr {
+    border-color: #b072ff;
+}
+
+.item-icon--sr {
+    border-color: #4da3ff;
+}
+
+.item-icon--r {
+    border-color: #6cc04a;
+}
+
 .item-icon--sm {
     width: 24px;
     height: 24px;

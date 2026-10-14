@@ -5,6 +5,7 @@ const Ajv = require('ajv');
 
 const DATA_PATH = path.join(__dirname, '..', 'data', 'pack_data.json');
 const SCHEMA_PATH = path.join(__dirname, '..', 'data', 'pack_data.schema.json');
+const ITEM_IMAGES_DIR = path.join(__dirname, '..', 'webapp', 'public', 'assets', 'items');
 
 /**
  * Validates data integrity of pack_data.json
@@ -122,13 +123,14 @@ async function verifyData() {
                 }
             }
 
-            // Check image (an item whose image this one borrows).
+            // Check image: an item whose image this one borrows, or an image of its own name in
+            // webapp/public/assets/items (shared by several items, e.g. every rarity of a supply).
             if (item.image) {
                 referencedItemKeys.add(item.image);
-                if (!itemKeys.has(item.image)) {
+                if (!itemKeys.has(item.image) && !fs.existsSync(path.join(ITEM_IMAGES_DIR, `${item.image}.png`))) {
                     reportError(
                         'Item Reference',
-                        `Item "${itemId}" image references unresolvable item: "${item.image}"`,
+                        `Item "${itemId}" image references neither an item nor an image: "${item.image}"`,
                     );
                 }
             }
