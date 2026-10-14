@@ -1673,7 +1673,7 @@
                 "en": "SSR Epigraph Shard",
                 "de": "SSR Epigraph-Splitter"
             },
-            "category": "special",
+            "category": "epigraph",
             "rarity": "ssr"
         },
         "ssr_gauntlets": {
@@ -2062,7 +2062,7 @@
                 "en": "UR Epigraph Shard",
                 "de": "UR Epigraph-Splitter"
             },
-            "category": "special",
+            "category": "epigraph",
             "rarity": "ur"
         },
         "ur_gauntlets": {
