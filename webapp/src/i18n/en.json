@@ -121,6 +121,7 @@
             "lead": "What ran last week and this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; hover a bar for its dates.",
             "recorded": "Recorded",
             "forecast": "Forecast",
+            "past": "Ended",
             "today": "Today",
             "week": "W{week}",
             "groupEvents": "Events",

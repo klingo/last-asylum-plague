@@ -74,6 +74,7 @@ function barHtml(bar, from, to, tooltip) {
     const classes = [
         'schedule__bar',
         bar.forecast ? 'schedule__bar--forecast' : '',
+        bar.past ? 'schedule__bar--past' : '',
         bar.start < from ? 'schedule__bar--cut-start' : '',
         bar.end > to ? 'schedule__bar--cut-end' : '',
     ].filter(Boolean);
@@ -107,7 +108,8 @@ function renderSchedule() {
     const rows = [];
     for (const [id, { kind, runs }] of scheduleRuns(packData)) {
         const bars = [
-            ...runs,
+            // Runs that ended before today are greyed out.
+            ...runs.map((run) => ({ ...run, past: run.end < today })),
             ...forecastRuns(runs, { from, to, today }).map((run) => ({ ...run, forecast: true })),
         ].filter((bar) => bar.end >= from && bar.start <= to);
         if (bars.length > 0) {
@@ -160,6 +162,7 @@ function renderSchedule() {
         <div class="schedule__legend">
             <span><i class="schedule__swatch"></i>${escapeHtml(t('welcome.schedule.recorded'))}</span>
             <span><i class="schedule__swatch schedule__swatch--forecast"></i>${escapeHtml(t('welcome.schedule.forecast'))}</span>
+            <span><i class="schedule__swatch schedule__swatch--past"></i>${escapeHtml(t('welcome.schedule.past'))}</span>
             <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(t('welcome.schedule.today'))}</span>
         </div>
         <div class="schedule__scroll">

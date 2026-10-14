@@ -1519,6 +1519,12 @@ tbody tr:hover {
     border: 1px dashed var(--bar-color);
 }
 
+/* A run that ended before today: grey, whatever its kind. */
+.schedule__swatch--past,
+.schedule__bar.schedule__bar--past {
+    background: #4b5263;
+}
+
 .schedule__swatch--today {
     width: 2px;
     height: 14px;
