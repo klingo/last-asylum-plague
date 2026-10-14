@@ -542,6 +542,32 @@ tbody tr:hover {
     overflow-x: auto;
 }
 
+/* Number and button cells on one line (a price and its icon never wrap apart). */
+.table-col-fit {
+    white-space: nowrap;
+}
+
+/* Number columns: an even share of a full-width table, like the Ranking's grid; the name column gets the rest. */
+.table-col-num {
+    width: 11%;
+}
+
+/* A trailing "Details" button column: only as wide as the button. */
+.table-col-button {
+    width: 1%;
+}
+
+/* Keeps a ratio bar at its full length in such a column. */
+.table-col-fit .ratio-display {
+    min-width: 70px;
+}
+
+/* Best Choice Pick: a package's opened "Details" (its contents and their worth). */
+tr.choice-details,
+tbody tr.choice-details:hover {
+    background: var(--panel-alt);
+}
+
 .info-icon {
     display: inline-flex;
     align-items: center;

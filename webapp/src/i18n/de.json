@@ -290,7 +290,9 @@
             "package": "Paket",
             "price": "Preis",
             "ratio": "Ratio",
-            "gain": "Nettogewinn"
+            "gain": "Nettogewinn",
+            "item": "Gegenstand",
+            "pointsEach": "Punkte je Stück"
         },
         "groupName": "Nur eines von: {packages}",
         "groupHint": "Du kannst nur eines davon kaufen. Geordnet nach Nettogewinn = Wert − Preis; Ratio 1,0 oder mehr = lohnt sich bei deinen wöchentlichen Ausgaben.",

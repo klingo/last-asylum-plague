@@ -290,7 +290,9 @@
             "package": "Package",
             "price": "Price",
             "ratio": "Ratio",
-            "gain": "Net gain"
+            "gain": "Net gain",
+            "item": "Item",
+            "pointsEach": "Points each"
         },
         "groupName": "Only one of: {packages}",
         "groupHint": "You can buy only one of these. Ranked by net gain = worth − price; ratio 1.0 or more = worth buying at your weekly spend.",

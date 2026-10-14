@@ -34,6 +34,8 @@ let data = null;
 let settings = null;
 let valuation = null;
 let choiceSources = {};
+// Packages whose "Details" are open (kept across re-renders, e.g. a changed weekly spend).
+const expandedKeys = new Set();
 
 // Every selectable choice pool: choice items (chests), packages with their own `choice` block
 // (e.g. Jokers Weekly Special) and groups of packages you can only buy one of (`exclusive_group`,
@@ -125,7 +127,7 @@ function render() {
                 <th>${t('choices.table.option')}</th>
                 <th>${t('choices.table.category')}</th>
                 <th class="text-right">${t('choices.table.points')}</th>
-                <th class="text-right">${t('choices.table.worth')}</th>
+                <th class="text-right table-col-fit">${t('choices.table.worth')}</th>
                 <th class="text-right">${t('choices.table.vsBest')}</th>
             </tr>
         </thead>
@@ -148,12 +150,51 @@ function render() {
     });
 }
 
+/** A package's contents for its "Details": item × amount, points each and worth, most valuable first. */
+function detailRowsHtml(row, locale, gold) {
+    const parts = row.parts
+        .map((part) => ({ ...part, worth: part.qty * (valuation.worth(part.id) ?? 0) }))
+        .sort((a, b) => b.worth - a.worth)
+        .map(
+            (part) => `
+                <tr class="choice-details" data-details-key="${row.key}" ${expandedKeys.has(row.key) ? '' : 'hidden'}>
+                    <td></td>
+                    <td><span class="item-cell"><span data-item-id="${part.id}"></span>${itemDisplayName(data.items, part.id, locale)} &times;${Number.isInteger(part.qty) ? formatThousands(part.qty) : formatSignificant(part.qty)}</span></td>
+                    <td class="text-right table-col-fit">${formatSignificant(valuation.points(part.id)) ?? t('common.unknown')}</td>
+                    <td class="text-right table-col-fit">${valuation.worth(part.id) === null ? `<span class="text-bad">${t('choices.incomplete')}</span>` : gold(part.worth)}</td>
+                    <td></td>
+                    <td></td>
+                    <td class="table-col-fit"></td>
+                </tr>`,
+        )
+        .join('');
+    return `
+        <tr class="choice-details choice-details--header" data-details-key="${row.key}" ${expandedKeys.has(row.key) ? '' : 'hidden'}>
+            <th></th>
+            <th>${t('choices.table.item')}</th>
+            <th class="text-right table-col-fit">${t('choices.table.pointsEach')}</th>
+            <th class="text-right table-col-fit">${t('choices.table.worth')}</th>
+            <th></th>
+            <th></th>
+            <th class="table-col-fit"></th>
+        </tr>
+        ${parts}`;
+}
+
 /** "Buy only one of these packages": ranked by what each is worth beyond its price. */
 function renderGroup(packages, locale) {
     const rows = packages
-        .map((pkg) => {
+        .map((pkg, index) => {
             const b = valuation.bundle(pkg, pkg.price);
-            return { pkg, worth: b.worth, ratio: b.ratio, gain: b.worth - pkg.price, incomplete: b.incomplete };
+            return {
+                pkg,
+                key: `${itemPicker.getValue()}#${index}`,
+                parts: b.parts || [],
+                worth: b.worth,
+                ratio: b.ratio,
+                gain: b.worth - pkg.price,
+                incomplete: b.incomplete,
+            };
         })
         .sort((a, b) => b.gain - a.gain);
     optionsEmpty.hidden = rows.length > 0;
@@ -167,10 +208,11 @@ function renderGroup(packages, locale) {
             <tr>
                 <th class="text-right table-col-rank">${t('choices.table.rank')}</th>
                 <th>${t('choices.table.package')}</th>
-                <th class="text-right">${t('choices.table.price')}</th>
-                <th class="text-right">${t('choices.table.worth')}</th>
-                <th class="text-right">${t('choices.table.ratio')}</th>
-                <th class="text-right">${t('choices.table.gain')}</th>
+                <th class="text-right table-col-fit table-col-num">${t('choices.table.price')}</th>
+                <th class="text-right table-col-fit table-col-num">${t('choices.table.worth')}</th>
+                <th class="text-right table-col-fit table-col-num">${t('choices.table.ratio')}</th>
+                <th class="text-right table-col-fit table-col-num">${t('choices.table.gain')}</th>
+                <th class="table-col-fit table-col-button"></th>
             </tr>
         </thead>
         <tbody>${rows
@@ -179,13 +221,34 @@ function renderGroup(packages, locale) {
                 <tr>
                     <td class="text-right table-col-rank">${tieFlags[index] ? '' : index + 1}</td>
                     <td>${packageDisplayName(row.pkg, locale)}${row.incomplete ? ` <span class="text-bad">${t('choices.incomplete')}</span>` : ''}</td>
-                    <td class="text-right">${gold(row.pkg.price)}</td>
-                    <td class="text-right">${gold(row.worth)}</td>
-                    <td class="text-right">${ratioBarHtml(row.ratio, maxRatio)}</td>
-                    <td class="text-right ${row.gain >= 0 ? 'text-good' : 'text-bad'}">${gold(row.gain)}</td>
-                </tr>`,
+                    <td class="text-right table-col-fit">${gold(row.pkg.price)}</td>
+                    <td class="text-right table-col-fit">${gold(row.worth)}</td>
+                    <td class="text-right table-col-fit">${ratioBarHtml(row.ratio, maxRatio)}</td>
+                    <td class="text-right table-col-fit ${row.gain >= 0 ? 'text-good' : 'text-bad'}">${gold(row.gain)}</td>
+                    <td class="text-right table-col-fit"><button type="button" class="expand-toggle" data-key="${row.key}">${expandedKeys.has(row.key) ? t('common.hide') : t('common.details')}</button></td>
+                </tr>
+                ${detailRowsHtml(row, locale, gold)}`,
             )
             .join('')}</tbody>`;
+    optionsTable.querySelectorAll('[data-item-id]').forEach((placeholder) => {
+        const itemId = placeholder.getAttribute('data-item-id');
+        placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
+    });
+    optionsTable.querySelectorAll('.expand-toggle').forEach((button) => {
+        button.addEventListener('click', () => {
+            const key = button.dataset.key;
+            const open = !expandedKeys.has(key);
+            if (open) {
+                expandedKeys.add(key);
+            } else {
+                expandedKeys.delete(key);
+            }
+            optionsTable
+                .querySelectorAll(`[data-details-key="${CSS.escape(key)}"]`)
+                .forEach((detail) => (detail.hidden = !open));
+            button.textContent = open ? t('common.hide') : t('common.details');
+        });
+    });
 }
 
 function syncUrl() {
