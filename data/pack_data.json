@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-13"
+        "last_updated": "2026-10-14"
     },
     "items": {
         "antitoxin": {
@@ -5762,6 +5762,13 @@
             },
             "category": "season_event"
         },
+        "pandemic_experience": {
+            "name": {
+                "en": "Pandemic Experience",
+                "de": "Pandemieerfahrung"
+            },
+            "category": "ingame_event"
+        },
         "recluse_merchant": {
             "name": {
                 "en": "Recluse Merchant",
@@ -6092,6 +6099,12 @@
             {
                 "start": "2026-10-12",
                 "end": "2026-10-18"
+            }
+        ],
+        "pandemic_experience": [
+            {
+                "start": "2026-10-14",
+                "end": "2026-10-16"
             }
         ],
         "strange_bazaar": [
