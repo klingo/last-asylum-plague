@@ -18,6 +18,7 @@
                 "de": "Gegengift-Level-Vorrat (R)"
             },
             "category": "hero",
+            "image": "antitoxin_level_supply",
             "contains": {
                 "antitoxin": 108210
             }
@@ -28,6 +29,7 @@
                 "de": "Gegengift-Level-Vorrat (SR)"
             },
             "category": "hero",
+            "image": "antitoxin_level_supply",
             "contains": {
                 "antitoxin": 1082100
             }
@@ -38,6 +40,7 @@
                 "de": "Gegengift-Level-Vorrat (SSR)"
             },
             "category": "hero",
+            "image": "antitoxin_level_supply",
             "contains": {
                 "antitoxin": 8656800
             }
@@ -48,6 +51,7 @@
                 "de": "Gegengift-Level-Vorrat (UR)"
             },
             "category": "hero",
+            "image": "antitoxin_level_supply",
             "contains": {
                 "antitoxin": 25970400
             }
@@ -342,6 +346,7 @@
                 "de": "Getreidevorrat-Level (SR)"
             },
             "category": "resource",
+            "image": "grain_level_supply",
             "contains": {
                 "grain": 169090
             }
@@ -352,6 +357,7 @@
                 "de": "Getreidevorrat-Level (SSR)"
             },
             "category": "resource",
+            "image": "grain_level_supply",
             "contains": {
                 "grain": 1352660
             }
@@ -362,6 +368,7 @@
                 "de": "Getreidevorrat-Level (UR)"
             },
             "category": "resource",
+            "image": "grain_level_supply",
             "contains": {
                 "grain": 4057980
             }
@@ -412,6 +419,7 @@
                 "de": "Kräutervorrat-Level (SR)"
             },
             "category": "resource",
+            "image": "herb_level_supply",
             "contains": {
                 "herbs": 108470
             }
@@ -422,6 +430,7 @@
                 "de": "Kräutervorrat-Level (SSR)"
             },
             "category": "resource",
+            "image": "herb_level_supply",
             "contains": {
                 "herbs": 867720
             }
@@ -432,6 +441,7 @@
                 "de": "Kräutervorrat-Level (UR)"
             },
             "category": "resource",
+            "image": "herb_level_supply",
             "contains": {
                 "herbs": 2603150
             }
@@ -537,28 +547,32 @@
                 "en": "Lv.1 Attacker's Claw",
                 "de": "Lv.1 Klaue des Angreifers"
             },
-            "category": "raven_gear"
+            "category": "raven_gear",
+            "image": "attackers_claw"
         },
         "lv1_eye_of_perception": {
             "name": {
                 "en": "Lv.1 Eye of Perception",
                 "de": "Lv.1 Auge der Wahrnehmung"
             },
-            "category": "raven_gear"
+            "category": "raven_gear",
+            "image": "eye_of_perception"
         },
         "lv1_feather_of_the_night": {
             "name": {
                 "en": "Lv.1 Feather of the Night",
                 "de": "Lv.1 Feder der Nacht"
             },
-            "category": "raven_gear"
+            "category": "raven_gear",
+            "image": "feather_of_the_night"
         },
         "lv1_heart_of_wisdom": {
             "name": {
                 "en": "Lv.1 Heart of Wisdom",
                 "de": "Lv.1 Herz der Weisheit"
             },
-            "category": "raven_gear"
+            "category": "raven_gear",
+            "image": "heart_of_wisdom"
         },
         "lv1_raven_gear_chest": {
             "name": {
@@ -611,14 +625,16 @@
                 "en": "Lv.1 Sharp Beak",
                 "de": "Lv.1 Scharfer Schnabel"
             },
-            "category": "raven_gear"
+            "category": "raven_gear",
+            "image": "sharp_beak"
         },
         "lv1_tail_of_wind": {
             "name": {
                 "en": "Lv.1 Tail of Wind",
                 "de": "Lv.1 Schweif des Windes"
             },
-            "category": "raven_gear"
+            "category": "raven_gear",
+            "image": "tail_of_wind"
         },
         "lv2_alliance_chest": {
             "name": {
@@ -640,6 +656,7 @@
                 "de": "Lv.3 Klaue des Angreifers"
             },
             "category": "raven_gear",
+            "image": "attackers_claw",
             "crafted_from": {
                 "lv1_attackers_claw": 9
             }
@@ -650,6 +667,7 @@
                 "de": "Lv.3 Auge der Wahrnehmung"
             },
             "category": "raven_gear",
+            "image": "eye_of_perception",
             "crafted_from": {
                 "lv1_eye_of_perception": 9
             }
@@ -660,6 +678,7 @@
                 "de": "Lv.3 Feder der Nacht"
             },
             "category": "raven_gear",
+            "image": "feather_of_the_night",
             "crafted_from": {
                 "lv1_feather_of_the_night": 9
             }
@@ -670,6 +689,7 @@
                 "de": "Lv.3 Herz der Weisheit"
             },
             "category": "raven_gear",
+            "image": "heart_of_wisdom",
             "crafted_from": {
                 "lv1_heart_of_wisdom": 9
             }
@@ -726,6 +746,7 @@
                 "de": "Lv.3 Scharfer Schnabel"
             },
             "category": "raven_gear",
+            "image": "sharp_beak",
             "crafted_from": {
                 "lv1_sharp_beak": 9
             }
@@ -736,6 +757,7 @@
                 "de": "Lv.3 Schweif des Windes"
             },
             "category": "raven_gear",
+            "image": "tail_of_wind",
             "crafted_from": {
                 "lv1_tail_of_wind": 9
             }
@@ -760,6 +782,7 @@
                 "de": "Lv.5 Klaue des Angreifers"
             },
             "category": "raven_gear",
+            "image": "attackers_claw",
             "crafted_from": {
                 "lv3_attackers_claw": 9
             }
@@ -770,6 +793,7 @@
                 "de": "Lv.5 Auge der Wahrnehmung"
             },
             "category": "raven_gear",
+            "image": "eye_of_perception",
             "crafted_from": {
                 "lv3_eye_of_perception": 9
             }
@@ -780,6 +804,7 @@
                 "de": "Lv.5 Feder der Nacht"
             },
             "category": "raven_gear",
+            "image": "feather_of_the_night",
             "crafted_from": {
                 "lv3_feather_of_the_night": 9
             }
@@ -790,6 +815,7 @@
                 "de": "Lv.5 Herz der Weisheit"
             },
             "category": "raven_gear",
+            "image": "heart_of_wisdom",
             "crafted_from": {
                 "lv3_heart_of_wisdom": 9
             }
@@ -877,6 +903,7 @@
                 "de": "Lv.5 Scharfer Schnabel"
             },
             "category": "raven_gear",
+            "image": "sharp_beak",
             "crafted_from": {
                 "lv3_sharp_beak": 9
             }
@@ -887,6 +914,7 @@
                 "de": "Lv.5 Schweif des Windes"
             },
             "category": "raven_gear",
+            "image": "tail_of_wind",
             "crafted_from": {
                 "lv3_tail_of_wind": 9
             }
@@ -905,12 +933,13 @@
             },
             "category": "special"
         },
-        "mystic_cabinet_permanent": {
+        "mystic_cabin_permanent": {
             "name": {
-                "en": "Mystic Cabinet (Permanent)",
+                "en": "Mystic Cabin (Permanent)",
                 "de": "Mystische Hütte (Dauerhaft)"
             },
-            "category": "skin"
+            "category": "skin",
+            "image": "mystic_cabin"
         },
         "mythic_era_reward": {
             "name": {
@@ -996,7 +1025,8 @@
                 "en": "R Epigraph (any)",
                 "de": "R Epigraph (beliebig)"
             },
-            "category": "epigraph"
+            "category": "epigraph",
+            "image": "r_epigraph_chest"
         },
         "r_epigraph_chest": {
             "name": {
@@ -1208,6 +1238,7 @@
                 "de": "Ressourcenvorrat (Allgemein)"
             },
             "category": "resource",
+            "image": "resource_supply",
             "type": "choice",
             "choice": {
                 "select_count": 1,
@@ -1230,6 +1261,7 @@
                 "de": "Ressourcenvorrat (SR)"
             },
             "category": "resource",
+            "image": "resource_supply",
             "type": "choice",
             "choice": {
                 "select_count": 1,
@@ -1252,6 +1284,7 @@
                 "de": "Ressourcenvorrat (SSR)"
             },
             "category": "resource",
+            "image": "resource_supply",
             "type": "choice",
             "choice": {
                 "select_count": 1,
@@ -1274,6 +1307,7 @@
                 "de": "Ressourcenvorrat (UR)"
             },
             "category": "resource",
+            "image": "resource_supply",
             "type": "choice",
             "choice": {
                 "select_count": 1,
@@ -1411,7 +1445,8 @@
                 "en": "SR Epigraph (any)",
                 "de": "SR Epigraph (beliebig)"
             },
-            "category": "epigraph"
+            "category": "epigraph",
+            "image": "sr_epigraph_chest"
         },
         "sr_epigraph_chest": {
             "name": {
@@ -1457,7 +1492,8 @@
                 "en": "<Hero> Shard (SR)",
                 "de": "<Held>-Splitter (SR)"
             },
-            "category": "hero"
+            "category": "hero",
+            "image": "sr_hero_omni_shard"
         },
         "ssr_armor": {
             "name": {
@@ -1486,7 +1522,8 @@
                 "en": "SSR Epigraph (any)",
                 "de": "SSR Epigraph (beliebig)"
             },
-            "category": "epigraph"
+            "category": "epigraph",
+            "image": "ssr_epigraph_chest"
         },
         "ssr_epigraph_chest": {
             "name": {
@@ -1539,7 +1576,8 @@
                 "en": "<Hero> Shard (SSR)",
                 "de": "<Held>-Splitter (SSR)"
             },
-            "category": "hero"
+            "category": "hero",
+            "image": "ssr_hero_omni_shard"
         },
         "ssr_sword": {
             "name": {
@@ -1628,6 +1666,7 @@
                 "de": "Holzvorrat-Level (SR)"
             },
             "category": "resource",
+            "image": "timber_level_supply",
             "contains": {
                 "timber": 169090
             }
@@ -1638,6 +1677,7 @@
                 "de": "Holzvorrat-Level (SSR)"
             },
             "category": "resource",
+            "image": "timber_level_supply",
             "contains": {
                 "timber": 1352660
             }
@@ -1648,6 +1688,7 @@
                 "de": "Holzvorrat-Level (UR)"
             },
             "category": "resource",
+            "image": "timber_level_supply",
             "contains": {
                 "timber": 4057980
             }
@@ -1793,7 +1834,8 @@
                 "en": "UR Epigraph (any)",
                 "de": "UR Epigraph (beliebig)"
             },
-            "category": "epigraph"
+            "category": "epigraph",
+            "image": "ur_epigraph_chest"
         },
         "ur_epigraph_chest": {
             "name": {
@@ -1922,7 +1964,8 @@
                 "en": "<Hero> Shard (UR)",
                 "de": "<Held> Splitter (UR)"
             },
-            "category": "hero"
+            "category": "hero",
+            "image": "ur_hero_omni_shard"
         },
         "ur_sword": {
             "name": {
@@ -5131,8 +5174,8 @@
                     "purchase_limit": 100,
                     "limit_type": "weekly"
                 },
-                "mystic_cabinet_permanent": {
-                    "item_id": "mystic_cabinet_permanent",
+                "mystic_cabin_permanent": {
+                    "item_id": "mystic_cabin_permanent",
                     "currency_cost": 4000,
                     "quantity": 1,
                     "purchase_limit": 1,
