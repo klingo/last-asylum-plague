@@ -250,7 +250,7 @@
                 "de": "Diamanten"
             },
             "category": "resource",
-            "rarity": "ssr"
+            "rarity": null
         },
         "direct_relocate": {
             "name": {
