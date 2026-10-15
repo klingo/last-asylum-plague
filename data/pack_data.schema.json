@@ -330,16 +330,15 @@
         "itemCategory": {
             "type": "string",
             "enum": [
-                "resource",
-                "hero",
-                "gear",
-                "raven_gear",
-                "special",
                 "speedup",
-                "virtual",
-                "curio",
-                "epigraph",
-                "skin"
+                "resource",
+                "chest",
+                "material",
+                "gear",
+                "raven",
+                "consumable",
+                "event_item",
+                "skin_decor"
             ]
         },
         "package": {
