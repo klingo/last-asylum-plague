@@ -200,7 +200,7 @@
                 },
                 "crafted_from": {
                     "$ref": "#/definitions/itemQuantities",
-                    "description": "Recipe: the item can be crafted from these ingredients (e.g. 9 Lv.1 Sharp Beaks -> 1 Lv.3 Sharp Beak). Used by the planners; in the valuation it caps the item's worth at the ingredients' worth."
+                    "description": "Recipe: the item can be crafted from these ingredients (e.g. 800 UR Epigraph Shards -> 1 Frenzied Flock IV). Used by the planners; in the valuation it caps the item's worth at the ingredients' worth."
                 }
             }
         },

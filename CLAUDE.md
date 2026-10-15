@@ -50,7 +50,11 @@ is stored in `pack_data.json`: `point-fit.js` fits the "leaf" items live from ev
 least squares, shop offers as weak extra equations, data-derived ties), and everything else is derived from its
 structure (`contains` = sum, random `drop_table` = expected value, `choice` = best options, `substitutes_for` =
 best target, `value_equivalent` = sum of the listed items, `reversible` crafting chains propagate one value both
-ways, `crafted_from` recipes cap an item at its ingredients and weakly tie it to them). `fitSensitivity` (leave one
+ways, `crafted_from` recipes cap an item at its ingredients and weakly tie it to them; a single-entry
+`value_equivalent` makes a value level chain, e.g. raven gear Lv.1 → Lv.3 → Lv.5 at 9:1, worth only: the levels
+can't be crafted). Item Priorities lists every chain once, under its top item, with the priority on its base; Item
+Sources groups only convertible (reversible) chains and lists value levels each (`itemChainTops` in
+`item-sources.js`). `fitSensitivity` (leave one
 pack family out) flags values that hinge on one pack. The user's item priorities (`settings.js`: Don't care / Low /
 Normal / High = 0 / 50 / 100 / 150 %) multiply values after the fit (`weights` in `item-values.js`); VIP points,
 alliance chests, ... start at Don't care — they stay in the fit (the deal % counts them). Moon Coins and Star Moon

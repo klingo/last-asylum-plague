@@ -4,7 +4,8 @@
  * - a pick-one chest counts as picking this item (its best `select_count` options);
  * - a random chest counts at its expected amount (flagged `random`);
  * - a generic item counts where it can be used (1 generic Speedup = 1 Construction Speedup).
- * Recipes (`crafted_from`) and `value_equivalent` aren't contents, so they don't count.
+ * Recipes (`crafted_from`) and `value_equivalent` aren't contents, so they don't count (a Lv.3 Sharp
+ * Beak is worth 9 Lv.1 but can't be turned into them).
  *
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
@@ -27,21 +28,50 @@ function isContainerItem(item) {
 }
 
 /**
- * Base item -> top item of every reversible crafting chain (4 Cloth ⇄ 1 Leather ⇄ ... ⇄ 1 Tempered
- * Steel). The base carries the chain's value (a priority on it spreads up the chain), but pages list
- * the chain under its top item, the one players think in (Tempered Steel rather than Cloth).
+ * `{ lowerId, convertible }` if the item is one level of a chain, else null:
+ * - a reversible chain (4 Leather ⇄ 1 Brass): convertible, the levels really turn into each other;
+ * - a value level (`value_equivalent` with one entry: a Lv.3 Sharp Beak is worth exactly 9 Lv.1): worth
+ *   only, the levels can't be converted.
  */
-function reversibleChainTops(items) {
+function chainLink(item) {
+    const contains = Object.entries(item?.contains || {});
+    if (item?.reversible && contains.length === 1) {
+        return { lowerId: contains[0][0], convertible: true };
+    }
+    const equivalent = Object.entries(item?.value_equivalent || {});
+    if (equivalent.length === 1) {
+        return { lowerId: equivalent[0][0], convertible: false };
+    }
+    return null;
+}
+
+/** A value level (Lv.3 / Lv.5 Sharp Beak): its own item with its own sources, worth a multiple of the level below. */
+function isValueLevel(item) {
+    return chainLink(item)?.convertible === false;
+}
+
+/**
+ * Base item -> top item of every chain (4 Cloth ⇄ 1 Leather ⇄ ... ⇄ 1 Tempered Steel; Lv.1 → Lv.3 → Lv.5
+ * Sharp Beak by value). The base carries the chain's value (a priority on it spreads up the chain), but
+ * pages list the chain under its top item, the one players think in (Tempered Steel rather than Cloth).
+ * `convertibleOnly`: only chains whose levels really turn into each other (Item Sources counts across
+ * those levels, but not across value levels).
+ */
+function itemChainTops(items, { convertibleOnly = false } = {}) {
+    const linkOf = (item) => {
+        const link = chainLink(item);
+        return link && (link.convertible || !convertibleOnly) ? link : null;
+    };
     const parentOf = new Map();
     for (const [id, item] of Object.entries(items)) {
-        const entries = Object.entries(item.contains || {});
-        if (item.reversible && entries.length === 1) {
-            parentOf.set(entries[0][0], id);
+        const link = linkOf(item);
+        if (link) {
+            parentOf.set(link.lowerId, id);
         }
     }
     const tops = new Map();
     for (const childId of parentOf.keys()) {
-        if (items[childId]?.reversible) {
+        if (linkOf(items[childId])) {
             continue; // not the base of its chain
         }
         let top = childId;
@@ -133,4 +163,4 @@ function createUnitCounter(items, targetId) {
     return { ofItem: (id) => ofItem(id), ofBundle };
 }
 
-export { createUnitCounter, isContainerItem, reversibleChainTops };
+export { createUnitCounter, isContainerItem, isValueLevel, itemChainTops };

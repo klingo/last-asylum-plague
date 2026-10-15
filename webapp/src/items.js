@@ -6,7 +6,7 @@ import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
 import { fitSensitivity, sensitivityFamilies, isDependent } from './lib/point-fit.js';
 import { currencyItemIds } from './lib/catalog.js';
-import { isContainerItem, reversibleChainTops } from './lib/item-sources.js';
+import { isContainerItem, itemChainTops } from './lib/item-sources.js';
 import { DEFAULT_SETTINGS, PRIORITY_LEVELS } from './lib/settings';
 import { itemDisplayName } from './lib/labels';
 import { infoIconHtml } from './lib/requires-tooltip';
@@ -30,8 +30,10 @@ let data = null;
 let panel = null;
 let valuation = null;
 let currencies = new Set();
-// Reversible crafting chains (4 Cloth ⇄ 1 Leather ⇄ ... ⇄ 1 Tempered Steel): base item -> top item.
+// Chains (4 Cloth ⇄ 1 Leather ⇄ ... ⇄ 1 Tempered Steel; Lv.1 → Lv.5 raven gear by value): base item -> top item.
 let chainTops = new Map();
+// The level at the start of a chain item's name ("Lv.5 Sharp Beak", "LV5 ...").
+const LEVEL_PREFIX = /^(lv\.?\s*\d+)\s+/i;
 // Leave-one-out results of the deal % fit (computed in the background after the first render).
 let sensitivity = null;
 
@@ -110,13 +112,18 @@ function render() {
     const rows = Object.entries(data.items)
         .filter(([id, item]) => !currencies.has(id) && (!isDerived(item) || priorityOf(id) !== 'normal'))
         // A chain base (Cloth) is shown as its top item (Tempered Steel); the priority stays on the base.
+        // A level chain is named without its level ("Sharp Beak", not "Lv.5 Sharp Beak"): the priority
+        // covers every level. The level moves next to the worth, which is the top item's.
         .map(([id, item]) => {
             const shownId = chainTops.get(id) ?? id;
+            const fullName = itemDisplayName(data.items, shownId, locale);
+            const level = shownId !== id ? fullName.match(LEVEL_PREFIX) : null;
             return {
                 id,
                 shownId,
                 item: data.items[shownId] ?? item,
-                name: itemDisplayName(data.items, shownId, locale),
+                name: level ? fullName.slice(level[0].length) : fullName,
+                level: level ? level[1] : null,
             };
         })
         .filter(({ id }) => !changedOnly.checked || priorityOf(id) !== 'normal')
@@ -156,11 +163,11 @@ function render() {
                 <tr class="table-group" id="cat-${category}"><th colspan="3">${categoryLabel(category)}</th></tr>
                 ${members
                     .map(
-                        ({ id, shownId, name }) => `
+                        ({ id, shownId, name, level }) => `
                 <tr>
                     <td><span class="item-cell"><span data-item-id="${shownId}"></span>${name}${shownId === id && isDerived(data.items[id]) ? ` <span class="text-dim">(${t('items.derivedNote')})</span>` : ''}</span></td>
                     <td>${priorityHtml(id)}</td>
-                    <td class="text-right">${worthHtml(shownId)}${uncertainHtml(id)}</td>
+                    <td class="text-right">${worthHtml(shownId)}${level ? ` <span class="text-dim">(${level})</span>` : ''}${uncertainHtml(id)}</td>
                 </tr>`,
                     )
                     .join('')}`,
@@ -211,7 +218,7 @@ async function recompute(settings) {
 async function init() {
     data = await loadPackData();
     currencies = currencyItemIds(data.exchange_shops);
-    chainTops = reversibleChainTops(data.items);
+    chainTops = itemChainTops(data.items);
     panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
         // No controls here: the worth column uses the weekly spend set on the Ranking page.
         fields: [],

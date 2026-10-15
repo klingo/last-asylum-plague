@@ -5,7 +5,7 @@ import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
 import { isSeasonalOff, packageWeeklyCapacity } from './lib/catalog.js';
-import { createUnitCounter, isContainerItem, reversibleChainTops } from './lib/item-sources.js';
+import { createUnitCounter, isContainerItem, isValueLevel, itemChainTops } from './lib/item-sources.js';
 import { createItemPicker } from './lib/item-picker';
 import { packageDisplayName, itemDisplayName, escapeHtml } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
@@ -301,12 +301,13 @@ async function init() {
     settings = panel.getSettings();
     // Only base items: a container (e.g. Herb Level Supply) just stands for what it contains, and its
     // contents are found through it anyway (pick Herbs to see every pack with Herb Level Supplies).
-    // Crafting chains appear once, as their top item (Tempered Steel, not Cloth).
-    const chainTops = reversibleChainTops(data.items);
+    // Crafting chains appear once, as their top item (Tempered Steel, not Cloth). Value levels (Lv.1 /
+    // Lv.3 / Lv.5 Sharp Beak: worth 9:1, but not convertible) are listed each, with their own sources.
+    const chainTops = itemChainTops(data.items, { convertibleOnly: true });
     chainBaseOf = new Map([...chainTops].map(([baseId, topId]) => [topId, baseId]));
     baseItems = Object.fromEntries(
         Object.entries(data.items)
-            .filter(([id, item]) => !isContainerItem(item) || chainBaseOf.has(id))
+            .filter(([id, item]) => !isContainerItem(item) || chainBaseOf.has(id) || isValueLevel(item))
             .filter(([id]) => !chainTops.has(id)),
     );
     itemPicker.setItems(baseItems);
