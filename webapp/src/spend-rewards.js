@@ -6,6 +6,7 @@ import { solveWeeklyPlan } from './lib/planner.js';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
 import { trackTiers, trackPointsForPrice } from './lib/spend-tracks.js';
+import { localDayNumber, scheduleRuns } from './lib/schedule.js';
 import { itemDisplayName } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { t, getLocale, categoryLabel, applyStaticTranslations } from './lib/i18n';
@@ -277,6 +278,17 @@ async function init() {
     });
     settings = panel.getSettings();
     populateTrackSelect();
+    // Pre-select the track running today according to the recorded schedule (the first, should there be several).
+    const today = localDayNumber(new Date());
+    const running = [...scheduleRuns(data)].find(
+        ([id, { kind, runs }]) =>
+            kind === 'track' &&
+            data.spend_reward_tracks?.[id] &&
+            runs.some((run) => run.start <= today && today <= run.end),
+    );
+    if (running) {
+        trackPicker.setValue(running[0]);
+    }
     window.addEventListener('localechange', () => {
         applyStaticTranslations();
         populateTrackSelect();
