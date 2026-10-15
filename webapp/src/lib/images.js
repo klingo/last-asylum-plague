@@ -1,7 +1,7 @@
 /**
- * Item image handling. No real item images exist yet, so this simply establishes the
- * convention (assets/items/<item_id>.png) and a graceful fallback to a placeholder icon,
- * so images can be dropped in later without touching any rendering code.
+ * Item image handling: assets/items/<category>/<image>.png, sorted by the item's `category`. An image
+ * not sorted into its folder yet is found directly in assets/items/; a missing one falls back to a
+ * placeholder icon, so images can be dropped in later without touching any rendering code.
  */
 import { t, localizedName } from './i18n';
 
@@ -14,18 +14,24 @@ const imageAliases = new Map();
 const itemNames = new Map();
 // itemId -> its `rarity` ("mr", "ur", "ssr", "sr", "r"), which colours the image's border.
 const itemRarities = new Map();
+// itemId -> its `category`: the sub-folder of assets/items its image lives in.
+const itemCategories = new Map();
 
-/** Registers every item's `image` reference (items without an image of their own), name and rarity. */
+/** Registers every item's `image` reference (items without an image of their own), name, rarity and category. */
 function setItemImageAliases(items) {
     imageAliases.clear();
     itemNames.clear();
     itemRarities.clear();
+    itemCategories.clear();
     for (const [id, item] of Object.entries(items || {})) {
         if (item.image) {
             imageAliases.set(id, item.image);
         }
         if (item.rarity) {
             itemRarities.set(id, item.rarity);
+        }
+        if (item.category) {
+            itemCategories.set(id, item.category);
         }
         itemNames.set(id, item.name);
     }
@@ -36,8 +42,39 @@ function rarityClass(itemId) {
     return itemRarities.has(itemId) ? `item-icon--${itemRarities.get(itemId)}` : '';
 }
 
+/**
+ * assets/items/<category>/<image>.png. The image is the item's own id or the `image` it borrows; the
+ * folder is the category of the item the image belongs to (the borrowed item's, else its own).
+ */
 function getItemImageUrl(itemId) {
+    const image = imageAliases.get(itemId) ?? itemId;
+    const category = itemCategories.get(image) ?? itemCategories.get(itemId);
+    return category ? `${import.meta.env.BASE_URL}assets/items/${category}/${image}.png` : unsortedImageUrl(itemId);
+}
+
+/** The same image directly in assets/items, not sorted into its category folder (yet). */
+function unsortedImageUrl(itemId) {
     return `${import.meta.env.BASE_URL}assets/items/${imageAliases.get(itemId) ?? itemId}.png`;
+}
+
+/**
+ * Sets an item's image on an <img>: its category folder first, then the unsorted assets/items folder,
+ * then `onMissing()` (placeholder, hide, ...).
+ */
+function setItemImageSrc(img, itemId, onMissing) {
+    const sorted = getItemImageUrl(itemId);
+    const unsorted = unsortedImageUrl(itemId);
+    let triedUnsorted = sorted === unsorted;
+    img.onerror = () => {
+        if (!triedUnsorted) {
+            triedUnsorted = true;
+            img.src = unsorted;
+            return;
+        }
+        img.onerror = null;
+        onMissing();
+    };
+    img.src = sorted;
 }
 
 /**
@@ -56,7 +93,6 @@ function banknoteIconHtml(className = 'currency-icon') {
  */
 function createItemImage(itemId, altText, className = 'item-icon') {
     const img = document.createElement('img');
-    img.src = getItemImageUrl(itemId);
     const name = itemNames.has(itemId) ? localizedName(itemNames.get(itemId)) : '';
     img.alt = altText || itemId;
     if (name) {
@@ -67,16 +103,16 @@ function createItemImage(itemId, altText, className = 'item-icon') {
         img.classList.add(rarityClass(itemId));
     }
     img.loading = 'lazy';
-    img.onerror = () => {
-        img.onerror = null;
+    setItemImageSrc(img, itemId, () => {
         img.src = PLACEHOLDER_ICON;
         img.classList.add('item-icon--placeholder');
-    };
+    });
     return img;
 }
 
 export {
     getItemImageUrl,
+    setItemImageSrc,
     setItemImageAliases,
     rarityClass,
     createItemImage,

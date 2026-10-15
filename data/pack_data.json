@@ -238,7 +238,7 @@
                 "en": "Diamond Golden Egg",
                 "de": "Diamant-Gold-Ei"
             },
-            "category": "chest",
+            "category": "consumable",
             "rarity": "ur",
             "contains": {
                 "diamonds": 400
@@ -1217,7 +1217,7 @@
                 "en": "Random Gearstone Supply",
                 "de": "Zufällige Ausrüstungssteinvorräte"
             },
-            "category": "material",
+            "category": "chest",
             "rarity": "ur",
             "type": "random",
             "drop_table": [
@@ -1514,7 +1514,7 @@
                 "en": "Speedup Supply",
                 "de": "Beschleunigungsvorrat"
             },
-            "category": "speedup",
+            "category": "chest",
             "rarity": "r",
             "type": "random",
             "drop_table": [

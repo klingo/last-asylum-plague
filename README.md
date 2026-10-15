@@ -44,7 +44,7 @@ its contents without a common value scale. The tool uses one:
 
 Weekly spend, events, seasonal passes on sale (e.g. the Gear Pass) and item priorities are shared by all pages
 (saved in the browser). Item images:
-drop a `<item_id>.png` into `webapp/public/assets/items/` (placeholder otherwise). Every item's `rarity`
+drop a `<item_id>.png` into `webapp/public/assets/items/<category>/` (e.g. `items/chest/`; images not sorted yet are also found directly in `items/`, placeholder otherwise). Every item's `rarity`
 (`mr`, `ur`, `ssr`, `sr`, `r`, or `null` for none) colours its image's border.
 
 ### Running locally

@@ -7,7 +7,7 @@
  * picking closes the panel, Esc / clicking outside closes it without changing anything. On phones
  * (narrow screens) the panel is a full-screen sheet with a back button and large rows.
  */
-import { getItemImageUrl, rarityClass } from './images';
+import { setItemImageSrc, rarityClass } from './images';
 import { localizedName, categoryLabel, t } from './i18n';
 
 let pickerCount = 0;
@@ -112,8 +112,12 @@ function createItemPicker({
         triggerText.classList.toggle('is-placeholder', !item);
         triggerIcon.hidden = true;
         if (item && icons) {
-            triggerIcon.src = getItemImageUrl(item.id);
+            // Shown by the 'load' listener once one of its locations has it (stays hidden otherwise).
+            setItemImageSrc(triggerIcon, item.id, () => {
+                triggerIcon.hidden = true;
+            });
         } else {
+            triggerIcon.onerror = null;
             triggerIcon.removeAttribute('src');
         }
         back.setAttribute('aria-label', t('picker.close'));
@@ -182,12 +186,11 @@ function createItemPicker({
             const iconSlot = document.createElement('span');
             iconSlot.className = 'item-picker__icon';
             const img = document.createElement('img');
-            img.src = getItemImageUrl(item.id);
             img.alt = '';
             img.loading = 'lazy';
             img.className = `item-icon item-icon--sm ${rarityClass(item.id)}`.trim();
             // Missing images stay blank so every name lines up under the icon column.
-            img.onerror = () => img.remove();
+            setItemImageSrc(img, item.id, () => img.remove());
             iconSlot.appendChild(img);
             option.appendChild(iconSlot);
         }

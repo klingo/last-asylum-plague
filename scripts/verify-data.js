@@ -124,10 +124,15 @@ async function verifyData() {
             }
 
             // Check image: an item whose image this one borrows, or an image of its own name in
-            // webapp/public/assets/items (shared by several items, e.g. every rarity of a supply).
+            // webapp/public/assets/items/<category> (or not sorted yet, directly in assets/items), shared by
+            // several items, e.g. every rarity of a supply.
             if (item.image) {
                 referencedItemKeys.add(item.image);
-                if (!itemKeys.has(item.image) && !fs.existsSync(path.join(ITEM_IMAGES_DIR, `${item.image}.png`))) {
+                const imageFiles = [
+                    path.join(ITEM_IMAGES_DIR, item.category || '', `${item.image}.png`),
+                    path.join(ITEM_IMAGES_DIR, `${item.image}.png`),
+                ];
+                if (!itemKeys.has(item.image) && !imageFiles.some((file) => fs.existsSync(file))) {
                     reportError(
                         'Item Reference',
                         `Item "${itemId}" image references neither an item nor an image: "${item.image}"`,
