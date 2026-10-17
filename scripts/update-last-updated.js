@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
 
-const DATA_PATH = path.join(__dirname, '..', 'data', 'pack_data.json');
+const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
 
 function updateLastUpdated() {
     if (!fs.existsSync(DATA_PATH)) {

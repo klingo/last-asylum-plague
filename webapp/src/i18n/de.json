@@ -32,7 +32,6 @@
         "anyDay": "jeden Tag",
         "tierSuffix": "(Stufe {tier})",
         "loadError": "Daten konnten nicht geladen werden: {message}",
-        "fetchError": "{file} konnte nicht geladen werden: {status} {statusText}",
         "reset": "Zurücksetzen",
         "howItWorks": "So funktioniert's"
     },

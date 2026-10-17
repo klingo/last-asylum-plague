@@ -24,7 +24,6 @@ build
 coverage
 test-results
 output
-webapp/public/data
 
 # IDE
 .idea

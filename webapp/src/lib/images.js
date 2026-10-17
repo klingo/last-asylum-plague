@@ -7,74 +7,59 @@ import { t, localizedName } from './i18n';
 
 const PLACEHOLDER_ICON = `${import.meta.env.BASE_URL}icons/placeholder-item.svg`;
 const BANKNOTE_ICON_URL = `${import.meta.env.BASE_URL}assets/currencies/banknote.png`;
+const ITEM_IMAGES_URL = `${import.meta.env.BASE_URL}assets/items/`;
 
-// itemId -> item id whose image it borrows (the data's `image` field), set when the data is loaded.
-const imageAliases = new Map();
-// itemId -> its localized `name` field, for the images' mouse-over title.
-const itemNames = new Map();
-// itemId -> its `rarity` ("mr", "ur", "ssr", "sr", "r"), which colours the image's border.
-const itemRarities = new Map();
-// itemId -> its `category`: the sub-folder of assets/items its image lives in.
-const itemCategories = new Map();
+// itemId -> { urls, name, rarity }, built from the data when it's loaded. `urls`: where its image may be, in
+// the order tried (category folder, then unsorted). Image URLs are only ever taken from here, never built from
+// an id read back from the page, so an id the data doesn't know gets the placeholder.
+const itemImages = new Map();
 
-/** Registers every item's `image` reference (items without an image of their own), name, rarity and category. */
+/** URL of "<segment>/.../<last>.png" below assets/items, every segment URL-encoded. */
+function imageUrl(...segments) {
+    return `${ITEM_IMAGES_URL}${segments.map(encodeURIComponent).join('/')}.png`;
+}
+
+/**
+ * Registers every item's image, name and rarity. The image is the item's own id or the `image` it borrows;
+ * it lives in assets/items/<category>/ (the category of the item the image belongs to, else the item's own),
+ * or directly in assets/items/ while it isn't sorted yet.
+ */
 function setItemImageAliases(items) {
-    imageAliases.clear();
-    itemNames.clear();
-    itemRarities.clear();
-    itemCategories.clear();
+    itemImages.clear();
     for (const [id, item] of Object.entries(items || {})) {
-        if (item.image) {
-            imageAliases.set(id, item.image);
-        }
-        if (item.rarity) {
-            itemRarities.set(id, item.rarity);
-        }
-        if (item.category) {
-            itemCategories.set(id, item.category);
-        }
-        itemNames.set(id, item.name);
+        const image = item.image ?? id;
+        const category = items[image]?.category ?? item.category;
+        const unsorted = imageUrl(image);
+        itemImages.set(id, {
+            urls: category ? [imageUrl(category, image), unsorted] : [unsorted],
+            name: item.name,
+            rarity: item.rarity || null,
+        });
     }
 }
 
 /** The class that colours an item image's border by the item's rarity ('' = the neutral border). */
 function rarityClass(itemId) {
-    return itemRarities.has(itemId) ? `item-icon--${itemRarities.get(itemId)}` : '';
-}
-
-/**
- * assets/items/<category>/<image>.png. The image is the item's own id or the `image` it borrows; the
- * folder is the category of the item the image belongs to (the borrowed item's, else its own).
- */
-function getItemImageUrl(itemId) {
-    const image = imageAliases.get(itemId) ?? itemId;
-    const category = itemCategories.get(image) ?? itemCategories.get(itemId);
-    return category ? `${import.meta.env.BASE_URL}assets/items/${category}/${image}.png` : unsortedImageUrl(itemId);
-}
-
-/** The same image directly in assets/items, not sorted into its category folder (yet). */
-function unsortedImageUrl(itemId) {
-    return `${import.meta.env.BASE_URL}assets/items/${imageAliases.get(itemId) ?? itemId}.png`;
+    const rarity = itemImages.get(itemId)?.rarity;
+    return rarity ? `item-icon--${rarity}` : '';
 }
 
 /**
  * Sets an item's image on an <img>: its category folder first, then the unsorted assets/items folder,
- * then `onMissing()` (placeholder, hide, ...).
+ * then `onMissing()` (placeholder, hide, ...). An item the data doesn't know goes straight to `onMissing()`.
  */
 function setItemImageSrc(img, itemId, onMissing) {
-    const sorted = getItemImageUrl(itemId);
-    const unsorted = unsortedImageUrl(itemId);
-    let triedUnsorted = sorted === unsorted;
-    img.onerror = () => {
-        if (!triedUnsorted) {
-            triedUnsorted = true;
-            img.src = unsorted;
+    const urls = [...(itemImages.get(itemId)?.urls ?? [])];
+    const tryNext = () => {
+        if (urls.length === 0) {
+            img.onerror = null;
+            onMissing();
             return;
         }
-        img.onerror = null;
-        onMissing();
+        img.src = urls.shift();
     };
-    img.src = sorted;
+    img.onerror = tryNext;
+    tryNext();
 }
 
 /**
@@ -93,7 +78,7 @@ function banknoteIconHtml(className = 'currency-icon') {
  */
 function createItemImage(itemId, altText, className = 'item-icon') {
     const img = document.createElement('img');
-    const name = itemNames.has(itemId) ? localizedName(itemNames.get(itemId)) : '';
+    const name = localizedName(itemImages.get(itemId)?.name);
     img.alt = altText || itemId;
     if (name) {
         img.title = name;
@@ -111,7 +96,6 @@ function createItemImage(itemId, altText, className = 'item-icon') {
 }
 
 export {
-    getItemImageUrl,
     setItemImageSrc,
     setItemImageAliases,
     rarityClass,

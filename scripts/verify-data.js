@@ -1,11 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-const { pathToFileURL } = require('url');
-const Ajv = require('ajv');
+import fs from 'node:fs';
+import path from 'node:path';
+import Ajv from 'ajv';
+import * as gearPath from '../webapp/src/lib/gear-path.js';
+import { fitItemPoints, fitSensitivity, isDependent } from '../webapp/src/lib/point-fit.js';
+import { resolveItemValues } from '../webapp/src/lib/item-values.js';
+import { currencyItemIds } from '../webapp/src/lib/catalog.js';
 
-const DATA_PATH = path.join(__dirname, '..', 'data', 'pack_data.json');
-const SCHEMA_PATH = path.join(__dirname, '..', 'data', 'pack_data.schema.json');
-const ITEM_IMAGES_DIR = path.join(__dirname, '..', 'webapp', 'public', 'assets', 'items');
+const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
+const SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.schema.json');
+const ITEM_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'items');
 
 /**
  * Validates data integrity of pack_data.json
@@ -517,13 +520,18 @@ async function verifyData() {
 
     // 8b. Squad guides (Gear Path page): heroes, slots and gear exist, and every path step is possible at its
     // point (webapp/src/lib/gear-path.js: crafted first, level caps by stars, minimum levels for stars).
-    const gearPath = await import(
-        pathToFileURL(path.join(__dirname, '..', 'webapp', 'src', 'lib', 'gear-path.js')).href
-    );
     checkCategory('Squad Guides', ({ reportError, reportWarning }) => {
         const heroes = data.heroes || {};
         for (const [heroId, hero] of Object.entries(heroes)) {
-            const image = path.join(__dirname, '..', 'webapp', 'public', 'assets', 'heroes', `${hero.image}.png`);
+            const image = path.join(
+                import.meta.dirname,
+                '..',
+                'webapp',
+                'public',
+                'assets',
+                'heroes',
+                `${hero.image}.png`,
+            );
             if (!fs.existsSync(image)) {
                 reportError(
                     'Hero Image',
@@ -639,12 +647,6 @@ async function verifyData() {
     // 9. Points fitted from the deal % (webapp/src/lib/point-fit.js), and items whose worth can't
     // be resolved from them (not in any pack with a deal %, and nothing to derive one from).
     // Currencies are valued by what they buy, so they're skipped here.
-    const libDir = path.join(__dirname, '..', 'webapp', 'src', 'lib');
-    const { fitItemPoints, fitSensitivity, isDependent } = await import(
-        pathToFileURL(path.join(libDir, 'point-fit.js')).href
-    );
-    const { resolveItemValues } = await import(pathToFileURL(path.join(libDir, 'item-values.js')).href);
-    const { currencyItemIds } = await import(pathToFileURL(path.join(libDir, 'catalog.js')).href);
     const fit = fitItemPoints(data);
     const { diagnostics } = fit;
     const percent = (value) => `${(value * 100).toFixed(1)}%`;

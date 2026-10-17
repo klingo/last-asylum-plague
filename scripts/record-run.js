@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'node:fs';
+import path from 'node:path';
+import { execSync } from 'node:child_process';
 
-const ROOT = path.join(__dirname, '..');
+const ROOT = path.join(import.meta.dirname, '..');
 const DATA_PATH = path.join(ROOT, 'data', 'pack_data.json');
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const DAYS_PATTERN = /^\d+$/;

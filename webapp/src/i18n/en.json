@@ -32,7 +32,6 @@
         "anyDay": "any day",
         "tierSuffix": "(Tier {tier})",
         "loadError": "Failed to load data: {message}",
-        "fetchError": "Failed to load {file}: {status} {statusText}",
         "reset": "Reset",
         "howItWorks": "How it works"
     },

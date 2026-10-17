@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
 
-const I18N_DIR = path.join(__dirname, '..', 'webapp', 'src', 'i18n');
-const DATA_PATH = path.join(__dirname, '..', 'data', 'pack_data.json');
+const I18N_DIR = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n');
+const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
 const SOURCE_LANG = 'en';
 
 /**

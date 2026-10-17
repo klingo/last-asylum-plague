@@ -29,7 +29,7 @@ jobs:
                   node-version: 24
                   cache: npm
 
-            - name: Install root dependencies
+            - name: Install dependencies
               run: npm ci
 
             - name: Verify pack data
@@ -47,7 +47,7 @@ jobs:
                   node-version: 24
                   cache: npm
 
-            - name: Install root dependencies
+            - name: Install dependencies
               run: npm ci
 
             - name: Lint
@@ -64,18 +64,11 @@ jobs:
               with:
                   node-version: 24
                   cache: npm
-                  cache-dependency-path: |
-                      package-lock.json
-                      webapp/package-lock.json
 
-            - name: Install root dependencies
+            - name: Install dependencies
               run: npm ci
 
-            - name: Install webapp dependencies
-              run: npm ci
-              working-directory: webapp
-
-            - name: Copy pack data and build the webapp
+            - name: Build the webapp
               run: npm run webapp:build
 
             - name: Setup Pages

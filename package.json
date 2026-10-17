@@ -2,10 +2,9 @@
     "name": "last-asylum-plague",
     "private": true,
     "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
+    "description": "Static webapp (item, package and exchange-shop valuation) for Last Asylum: Plague, deployed to GitHub Pages.",
+    "type": "module",
     "scripts": {
-        "copy-pack-data": "node scripts/copy-pack-data.js",
         "format": "prettier --write \"**/*.{js,jsx,json,css}\"",
         "i18n:missing": "node scripts/missing-translations.js",
         "lint": "eslint .",
@@ -14,18 +13,21 @@
         "sort-pack-data": "node scripts/sort-pack-data.js",
         "update-last-updated": "node scripts/update-last-updated.js",
         "verify-data": "node scripts/verify-data.js",
-        "webapp:install": "npm install --prefix webapp",
-        "webapp:dev": "npm run copy-pack-data && npm run dev --prefix webapp",
-        "webapp:build": "npm run copy-pack-data && npm run build --prefix webapp",
-        "webapp:preview": "npm run preview --prefix webapp"
+        "webapp:dev": "vite webapp",
+        "webapp:build": "vite build webapp",
+        "webapp:preview": "vite preview webapp"
+    },
+    "dependencies": {
+        "highs": "^1.15.3"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
-        "@eslint/eslintrc": "^3.3.7",
-        "eslint": "^10.10.0",
-        "globals": "^17.12.0",
+        "ajv": "^6.15.0",
+        "eslint": "^10.12.0",
+        "globals": "^17.13.0",
         "husky": "^9.1.7",
-        "lint-staged": "^16.1.5",
-        "prettier": "3.9.6"
+        "lint-staged": "^17.6.0",
+        "prettier": "3.9.10",
+        "vite": "^6.4.3"
     }
 }
