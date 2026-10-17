@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.calendar"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card schedule" id="schedule" hidden>
+                <h2 data-i18n="calendar.schedule.heading"></h2>
+                <p class="text-dim" data-i18n="calendar.schedule.lead"></p>
+                <div class="schedule__body"></div>
+            </section>
+
+            <section class="card schedule schedule--rotation" id="rotation" hidden>
+                <h2 data-i18n="calendar.rotation.heading"></h2>
+                <p class="text-dim" data-i18n="calendar.rotation.lead"></p>
+                <div class="schedule__body"></div>
+            </section>
+        </main>
+        <footer class="app-footer"><span data-i18n="footer.calendar"></span></footer>
+        <script type="module" src="/src/calendar.js"></script>
+    </body>
+</html>

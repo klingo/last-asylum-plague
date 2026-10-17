@@ -25,9 +25,15 @@ its contents without a common value scale. The tool uses one:
 
 ## Pages
 
+The top nav groups the pages into menus (`NAV_GROUPS` in `webapp/src/nav.js`, the Home cards follow it): **Shop**
+(Ranking, Spend Rewards, Best Choice Pick), **Events** (Calendar, Event Plan), **Items** (Item Priorities, Item Sources,
+Compare) and **Heroes** (Gear Path).
+
 - **Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale); entries of unknown
   worth are listed unranked.
+- **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below) and the Weekday
+  Offers of the next 7 days.
 - **Events** (`events.html`) — a ticked event's (or the VIP Shop's) part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
   and a step table of how much spending more on the event still pays off.
@@ -68,7 +74,7 @@ npm run record-run -- <ids...> [START] <DAYS>   # records when events / seasonal
 `record-run` fills the `schedule` section of `pack_data.json`: per event, seasonal pass and spend reward track the
 start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;
 the end is computed from the number of days). Recording the same start again corrects the length. Events without
-packs (`"category": "ingame_event"` in `events`) can be tracked this way too. The Home page shows it as the Event
+packs (`"category": "ingame_event"` in `events`) can be tracked this way too. The Calendar page shows it as the Event
 Schedule timeline (last week, this week, 4 weeks ahead) with a simple forecast: an entry recorded at least twice
 repeats its usual rhythm (median days between starts, median length). Below it, Weekday Offers shows which
 `weekly_rotation` packs are on sale today and in the next 6 days (from their `available_days`), each with the

@@ -69,22 +69,159 @@ a:hover {
     text-decoration: none;
 }
 
+/* Top nav: Home plus menus (Shop, Events, Items, Heroes), each a dropdown of its pages. */
 .app-nav {
     display: flex;
+    align-items: center;
     gap: 8px;
 }
 
-.app-nav a {
+.app-nav > a,
+.app-nav__group-button {
     padding: 6px 12px;
     border-radius: var(--radius);
     color: var(--text-dim);
     border: 1px solid transparent;
+    background: none;
+    font: inherit;
+    cursor: pointer;
 }
 
-.app-nav a.active {
+.app-nav > a:hover,
+.app-nav__group-button:hover {
+    color: var(--text);
+    background: none;
+    border-color: transparent;
+    text-decoration: none;
+}
+
+.app-nav > a.active,
+.app-nav__group.active > .app-nav__group-button {
     color: var(--text);
     background: var(--panel-alt);
     border-color: var(--border);
+}
+
+.app-nav__caret {
+    margin-left: 6px;
+    font-size: 0.75em;
+}
+
+.app-nav__group {
+    position: relative;
+}
+
+.app-nav__menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    flex-direction: column;
+    min-width: 200px;
+    padding: 6px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
+}
+
+.app-nav__group.open > .app-nav__menu {
+    display: flex;
+}
+
+@media (hover: hover) {
+    .app-nav__group:hover > .app-nav__menu {
+        display: flex;
+    }
+}
+
+.app-nav__menu a {
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+.app-nav__menu a:hover,
+.app-nav__menu a.active {
+    color: var(--text);
+    background: var(--panel-alt);
+    text-decoration: none;
+}
+
+.app-nav__toggle {
+    display: none;
+}
+
+.app-nav__toggle,
+.app-nav__toggle:hover {
+    padding: 4px 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--panel-alt);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+/* Wide screens (header fits on one row, EN and DE): the header stays on top while scrolling. */
+@media (min-width: 1001px) {
+    .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 12px rgb(0 0 0 / 35%);
+    }
+}
+
+/* Narrow screens (the full nav would wrap): ☰ shows the menus stacked, every menu expanded. */
+@media (max-width: 1000px) {
+    .app-header h1 {
+        flex: 1;
+    }
+
+    .app-nav__toggle {
+        display: block;
+        order: 2;
+    }
+
+    .lang-switch {
+        order: 1;
+    }
+
+    .app-nav {
+        display: none;
+        order: 3;
+        flex-basis: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .app-header.nav-open .app-nav {
+        display: flex;
+    }
+
+    .app-nav__group-button {
+        width: 100%;
+        text-align: left;
+        cursor: default;
+    }
+
+    .app-nav__caret {
+        display: none;
+    }
+
+    .app-nav__menu,
+    .app-nav__group:hover > .app-nav__menu {
+        display: flex;
+        position: static;
+        min-width: 0;
+        padding: 0 0 0 16px;
+        background: none;
+        border: none;
+        box-shadow: none;
+    }
 }
 
 .lang-switch select {
@@ -126,9 +263,19 @@ main {
     font-size: 1.05rem;
 }
 
+/* Home: the pages grouped like the nav menus; auto-fill keeps the columns aligned across groups. */
+.welcome-group {
+    margin-bottom: 24px;
+}
+
+.welcome-group h2 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+}
+
 .welcome-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
 }
 
@@ -610,7 +757,8 @@ tbody tr.choice-details:hover {
     position: absolute;
     /* "\n" in a tooltip text starts a new line. */
     white-space: pre-line;
-    z-index: 50;
+    /* Above the sticky header. */
+    z-index: 300;
     max-width: 260px;
     padding: 6px 10px;
     background: var(--panel-alt);
@@ -950,7 +1098,18 @@ tbody tr.choice-details:hover {
     color: var(--accent);
     font-size: 0.95rem;
     text-transform: none;
+}
+
+/* The category jump links target the group row. */
+.table-group {
     scroll-margin-top: 12px;
+}
+
+/* Below the sticky header (66px, wide screens). */
+@media (min-width: 1001px) {
+    .table-group {
+        scroll-margin-top: 80px;
+    }
 }
 
 /* My Items: Don't care / Low / Normal / High as a segmented control. */
@@ -1492,10 +1651,6 @@ tbody tr.choice-details:hover {
 }
 
 /* Home: schedule timeline (one row per event / pass / track, one column per day, weeks Monday-Sunday). */
-.schedule {
-    margin-top: 20px;
-}
-
 .schedule__legend {
     display: flex;
     flex-wrap: wrap;

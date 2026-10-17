@@ -5,14 +5,22 @@
     "nav": {
         "home": "Home",
         "rankings": "Ranking",
-        "events": "Events",
+        "calendar": "Calendar",
+        "eventPlan": "Event Plan",
         "sources": "Item Sources",
         "choices": "Best Choice Pick",
         "spendRewards": "Spend Rewards",
         "gear": "Gear Path",
         "language": "Language",
         "items": "Item Priorities",
-        "compare": "Compare"
+        "compare": "Compare",
+        "menu": "Menu",
+        "groups": {
+            "shop": "Shop",
+            "events": "Events",
+            "items": "Items",
+            "heroes": "Heroes"
+        }
     },
     "common": {
         "unlimited": "Unlimited",
@@ -88,6 +96,7 @@
     "docTitle": {
         "welcome": "Last Asylum Pack Solver",
         "rankings": "Ranking - Last Asylum Pack Solver",
+        "calendar": "Calendar - Last Asylum Pack Solver",
         "events": "Events - Last Asylum Pack Solver",
         "sources": "Item Sources - Last Asylum Pack Solver",
         "choices": "Best Choice Pick - Last Asylum Pack Solver",
@@ -99,6 +108,7 @@
     "footer": {
         "welcome": "Last Asylum Pack Solver — computed live from pack_data.json",
         "rankings": "Last Asylum Pack Solver — ranking computed live from pack_data.json",
+        "calendar": "Last Asylum Pack Solver — schedule recorded in pack_data.json",
         "events": "Last Asylum Pack Solver — event plans computed live from pack_data.json",
         "sources": "Last Asylum Pack Solver — item sources computed live from pack_data.json",
         "choices": "Last Asylum Pack Solver — choice options valued live from pack_data.json",
@@ -112,13 +122,16 @@
         "heading": "Welcome",
         "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from manually harvested pack data. Every value is based on the game's own deal percentages, your weekly Banknote spend and how much each item matters to you.",
         "rankingsDescription": "Every package and pass ranked by how much value it brings for its price. A ratio of 1.0 or more = worth buying at your weekly spend.",
+        "calendarDescription": "What runs when: the event schedule with a forecast for the coming weeks, and the packs on sale on fixed weekdays.",
         "eventsDescription": "Pick an event: which of its packs to buy at your weekly spend, what to buy with its coins (in unlock order) and whether spending more on it still pays off.",
         "sourcesDescription": "Pick an item and see every pack and shop offer that gives it, even nested in chests and supplies, ranked by what one unit costs.",
         "choicesDescription": "Pick a choice chest, a package with options, or a group you can only buy one of (e.g. calendar packs) and see which is worth the most.",
         "spendRewardsDescription": "Pick a cumulative spend-reward track and see up to which tier spending more still pays off.",
         "gearDescription": "A squad's UR gear: in which order to craft it and to raise its levels and stars, step by step.",
         "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
-        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it.",
+        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it."
+    },
+    "calendar": {
         "schedule": {
             "heading": "Event Schedule",
             "lead": "What ran last week and this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; hover a bar for its dates.",

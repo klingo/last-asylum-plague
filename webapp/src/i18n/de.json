@@ -5,14 +5,22 @@
     "nav": {
         "home": "Start",
         "rankings": "Rangliste",
-        "events": "Events",
+        "calendar": "Kalender",
+        "eventPlan": "Eventplan",
         "sources": "Gegenstandsquellen",
         "choices": "Beste Wahl",
         "spendRewards": "Ausgabenbelohnungen",
         "gear": "Ausrüstungspfad",
         "language": "Sprache",
         "items": "Gegenstandsprioritäten",
-        "compare": "Vergleich"
+        "compare": "Vergleich",
+        "menu": "Menü",
+        "groups": {
+            "shop": "Shop",
+            "events": "Events",
+            "items": "Gegenstände",
+            "heroes": "Helden"
+        }
     },
     "common": {
         "unlimited": "Unbegrenzt",
@@ -88,6 +96,7 @@
     "docTitle": {
         "welcome": "Last Asylum Pack Solver",
         "rankings": "Rangliste - Last Asylum Pack Solver",
+        "calendar": "Kalender - Last Asylum Pack Solver",
         "events": "Events - Last Asylum Pack Solver",
         "sources": "Gegenstandsquellen - Last Asylum Pack Solver",
         "choices": "Beste Wahl - Last Asylum Pack Solver",
@@ -99,6 +108,7 @@
     "footer": {
         "welcome": "Last Asylum Pack Solver — live aus pack_data.json berechnet",
         "rankings": "Last Asylum Pack Solver — Rangliste live aus pack_data.json berechnet",
+        "calendar": "Last Asylum Pack Solver — Zeitplan aus pack_data.json",
         "events": "Last Asylum Pack Solver — Event-Pläne live aus pack_data.json berechnet",
         "sources": "Last Asylum Pack Solver — Gegenstandsquellen live aus pack_data.json berechnet",
         "choices": "Last Asylum Pack Solver — Wahloptionen live aus pack_data.json bewertet",
@@ -112,13 +122,16 @@
         "heading": "Willkommen",
         "intro": "Werkzeuge, um herauszufinden, wie du deine Banknoten in Last Asylum: Plague am besten ausgibst – live berechnet aus manuell erfassten Paketdaten. Jeder Wert basiert auf den Deal-Prozentwerten des Spiels, deinen wöchentlichen Banknoten-Ausgaben und darauf, wie wichtig dir jeder Gegenstand ist.",
         "rankingsDescription": "Jedes Paket und jeder Pass, geordnet danach, wie viel Wert es für seinen Preis bringt. Ein Ratio von 1,0 oder mehr = lohnt sich bei deinen wöchentlichen Ausgaben.",
+        "calendarDescription": "Was wann läuft: der Event-Zeitplan mit Prognose für die nächsten Wochen und die Pakete, die an festen Wochentagen angeboten werden.",
         "eventsDescription": "Wähle ein Event: welche seiner Pakete du bei deinen wöchentlichen Ausgaben kaufen solltest, was du mit seinen Münzen kaufst (in Freischaltreihenfolge) und ob sich mehr Ausgaben dafür noch lohnen.",
         "sourcesDescription": "Wähle einen Gegenstand und sieh alle Pakete und Shop-Angebote, die ihn geben – auch verschachtelt in Truhen und Vorräten –, geordnet nach den Kosten pro Einheit.",
         "choicesDescription": "Wähle eine Wahltruhe, ein Paket mit Optionen oder eine Gruppe, von der du nur eines kaufen kannst (z. B. Kalenderpakete), und sieh, was am meisten wert ist.",
         "spendRewardsDescription": "Wähle eine kumulative Ausgabenbelohnungs-Leiste und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
         "gearDescription": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Stufen und Sterne erhöhst, Schritt für Schritt.",
         "itemsDescription": "Sag dem Tool, welche Gegenstände dir egal sind und welche dir besonders wichtig sind. Jede Seite nutzt das.",
-        "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen.",
+        "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen."
+    },
+    "calendar": {
         "schedule": {
             "heading": "Event-Zeitplan",
             "lead": "Was letzte und diese Woche lief und was in den nächsten vier wahrscheinlich kommt. Prognosen wiederholen den üblichen Rhythmus eines Eintrags, sobald er mindestens zweimal erfasst wurde; fahre über einen Balken für seine Daten.",

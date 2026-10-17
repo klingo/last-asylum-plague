@@ -36,9 +36,9 @@ npm run record-run -- <ids...> [START] <DAYS> | --show [ids]  # record when even
 `schedule` in `pack_data.json` records per event, seasonal pass family and spend reward track its runs as
 inclusive `{ start, end }` dates (`record-run` computes the end from the start and the number of days). Events with
 `"category": "ingame_event"` have no packs or shop and are only tracked there (not offered under "Events this
-week"). The Home page shows it as the "Event Schedule" timeline (last week, this week, 4 ahead) with a simple
-forecast (`lib/schedule.js`: ids with at least two runs repeat their median gap between starts and median length).
-Below it, "Weekday Offers" charts the `weekly_rotation` packs for today and the next 6 days from their
+week"). The Calendar page (`calendar.html`, Events menu) shows it as the "Event Schedule" timeline (last week, this
+week, 4 ahead) with a simple forecast (`lib/schedule.js`: ids with at least two runs repeat their median gap between
+starts and median length). Below it, "Weekday Offers" charts the `weekly_rotation` packs for today and the next 6 days from their
 `available_days` (not recorded, not forecast).
 
 The Gear Path page (`gear.html`) reads `heroes`, `gear_upgrades` and `squad_guides`: a squad's formation by
@@ -101,7 +101,7 @@ webapp/src/lib/planner.js         # the worth model (weekly budget LP)
 webapp/src/lib/acquire.js         # cheapest plan for a set of needs (Compare)
 webapp/src/lib/spend-tracks.js    # spend reward tracks (tier costs, track points per purchase)
 webapp/src/lib/item-sources.js    # units of one item a purchase gives, nested (Item Sources page)
-webapp/src/lib/schedule.js        # recorded schedule as runs per id + simple forecast (Home timeline)
+webapp/src/lib/schedule.js        # recorded schedule as runs per id + simple forecast (Calendar timeline)
 webapp/src/lib/gear-path.js       # squad gear paths: state per step, caps/requirements, merge, step costs (Gear Path)
 webapp/src/lib/lp.js              # HiGHS wrapper (LP text builder, duals); highs-browser.js locates the .wasm
 webapp/src/lib/valuation.js       # the one worth interface for the pages
