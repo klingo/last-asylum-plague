@@ -30,11 +30,12 @@ The top nav groups the pages into menus (`NAV_GROUPS` in `webapp/src/nav.js`, th
 Compare) and **Heroes** (Gear Path).
 
 - **Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
-  ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale); entries of unknown
-  worth are listed unranked.
+  ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
+  "other pick" when a bundle or another member of its group is bought instead). "Plan only" shows just the weekly
+  shopping list, the Type pills filter by kind; entries of unknown worth are listed unranked.
 - **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below) and the Weekday
   Offers of the next 7 days.
-- **Events** (`events.html`) — a ticked event's (or the VIP Shop's) part of the same weekly plan: which event packs
+- **Events** (`events.html`) — one tab per ticked event (and the VIP Shop): its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
   and a step table of how much spending more on the event still pays off.
 - **Item Sources** (`sources.html`) — pick one item: every pack and shop offer on sale this week that gives it,
@@ -58,18 +59,26 @@ Compare) and **Heroes** (Gear Path).
   `star_path`) in `pack_data.json`; `verify-data` checks that the paths can be completed without a deadlock.
 
 Weekly spend, events, seasonal passes on sale (e.g. the Gear Pass) and item priorities are shared by all pages
-(saved in the browser). Item images:
+(saved in the browser). In the setup bar, events and passes the calendar shows running today carry a green dot, and
+"Use this week's calendar" selects exactly those; the bar also shows what your last Banknote buys (hover it for the
+explanation). Item names link to Item Sources, and the pages keep their selection in the URL (a reload or a shared
+link opens the same item, event, track or comparison). On phones the tables drop their secondary columns. Item images:
 drop a `<item_id>.png` into `webapp/public/assets/items/<category>/` (e.g. `items/chest/`; images not sorted yet are also found directly in `items/`, placeholder otherwise). Every item's `rarity`
 (`mr`, `ur`, `ssr`, `sr`, `r`, or `null` for none) colours its image's border.
 
 ### Running locally
 
 ```bash
-npm run webapp:install         # first time only
-npm run webapp:dev             # copies data/pack_data.json into webapp/public/data, starts the Vite dev server
-npm run verify-data            # validates pack_data.json (schema, references, deal % fit, items without a worth)
+npm install                    # first time only (one package for everything)
+npm run webapp:dev             # Vite dev server; the app imports data/pack_data.json directly
+npm test                       # unit + golden tests of the valuation core (test/)
+npm run verify-data            # validates pack_data.json (schema, references, deal % fit, items without a worth, code labels)
+npm run i18n:missing -- de     # what German still lacks (UI texts, code labels, data names)
 npm run record-run -- <ids...> [START] <DAYS>   # records when events / seasonal passes / spend tracks run (--show)
 ```
+
+The code is split into `webapp/src/core/` (the valuation: pure modules without DOM, shared with the scripts and
+tests), `webapp/src/ui/` (browser helpers) and `webapp/src/pages/` (one script per page).
 
 `record-run` fills the `schedule` section of `pack_data.json`: per event, seasonal pass and spend reward track the
 start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;
@@ -82,8 +91,8 @@ image of its main item (the package's `icon`, else its first item other than dia
 
 ### Deploying to GitHub Pages
 
-`.github/workflows/deploy-webapp.yml` copies the current `data/pack_data.json` and builds the webapp, then deploys
-it on every push to `master`, or manually via "Run workflow". Since the webapp computes everything live from that
+`.github/workflows/deploy-webapp.yml` lints, tests and builds the webapp with the current `data/pack_data.json`, then
+deploys it on every push to `master`, or manually via "Run workflow". Since the webapp computes everything live from that
 data, the deployed site is always in sync with `data/pack_data.json` at deploy time.
 
 One-time repository setup: in **Settings → Pages**, set **Source** to **GitHub Actions**.
