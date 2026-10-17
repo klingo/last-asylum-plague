@@ -6,7 +6,7 @@ import { escapeHtml } from './lib/labels';
 import { enableInfoTooltips } from './lib/tooltip';
 import { createItemImage } from './lib/images';
 import { DEFAULT_NONE_ITEMS } from './lib/settings';
-import { packageFamilyId } from './lib/catalog.js';
+import { packageFamilyId } from './core/pack-data.js';
 import {
     dayDate,
     forecastRuns,
@@ -15,7 +15,7 @@ import {
     scheduleRuns,
     weekdayIndex,
     weekdayRuns,
-} from './lib/schedule.js';
+} from './core/schedule.js';
 
 renderNav('calendar');
 applyStaticTranslations();

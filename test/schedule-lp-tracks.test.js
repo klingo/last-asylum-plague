@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { scheduleRuns, forecastRuns, weekdayRuns, weekdayIndex } from '../webapp/src/lib/schedule.js';
-import { createModel, addTerm, toLpText, varName, solveModel, loadHighs } from '../webapp/src/lib/lp.js';
-import { cheapestCostForPoints, trackTiers, trackPointsForPrice } from '../webapp/src/lib/spend-tracks.js';
+import { scheduleRuns, forecastRuns, weekdayRuns, weekdayIndex } from '../webapp/src/core/schedule.js';
+import { createModel, addTerm, toLpText, varName, solveModel, loadHighs } from '../webapp/src/core/lp.js';
+import { cheapestCostForPoints, trackTiers, trackPointsForPrice } from '../webapp/src/core/spend-tracks.js';
 
 test('schedule: runs per id and their kind', () => {
     const runs = scheduleRuns({

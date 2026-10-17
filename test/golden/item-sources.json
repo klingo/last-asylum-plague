@@ -1,0 +1,1353 @@
+{
+    "units": {
+        "speedup": {
+            "offer:recluse_merchant:speedup_5m_great": {
+                "units": 65,
+                "random": false
+            },
+            "offer:recluse_merchant:speedup_5m2_great": {
+                "units": 50,
+                "random": false
+            },
+            "offer:recluse_merchant:speedup_60m_normal": {
+                "units": 1860,
+                "random": false
+            },
+            "offer:starry_bazaar:speedup_3h": {
+                "units": 180,
+                "random": false
+            },
+            "offer:starry_bazaar:speedup_60m": {
+                "units": 60,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:speedup": {
+                "units": 600,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:n_speedup": {
+                "units": 1000,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:r_speedup": {
+                "units": 1920,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:sr_speedup": {
+                "units": 4800,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:ssr_speedup": {
+                "units": 9600,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:ur_speedup": {
+                "units": 24000,
+                "random": false
+            },
+            "offer:vip_shop:speedup_3h": {
+                "units": 180,
+                "random": false
+            },
+            "offer:vip_shop:speedup_5m": {
+                "units": 5,
+                "random": false
+            },
+            "offer:vip_shop:speedup_60m": {
+                "units": 60,
+                "random": false
+            },
+            "offer:vip_shop:speedup_8h": {
+                "units": 480,
+                "random": false
+            },
+            "package:develop_territory": {
+                "units": 950,
+                "random": false
+            },
+            "package:epigraph_pass_t1": {
+                "units": 450,
+                "random": false
+            },
+            "package:epigraph_pass_t2": {
+                "units": 700,
+                "random": false
+            },
+            "package:gear_pass_t1": {
+                "units": 112.5,
+                "random": true
+            },
+            "package:gear_pass_t2": {
+                "units": 125,
+                "random": true
+            },
+            "package:login_rewards": {
+                "units": 540,
+                "random": false
+            },
+            "package:premium_monthly_pass": {
+                "units": 9300,
+                "random": false
+            },
+            "package:research_tome_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:research_tome_pack_t2": {
+                "units": 750,
+                "random": false
+            },
+            "package:research_tome_pack_t3": {
+                "units": 1000,
+                "random": false
+            },
+            "package:speedup_special_pack_t1": {
+                "units": 1000,
+                "random": false
+            },
+            "package:stamina_discount_pack": {
+                "units": 1000,
+                "random": false
+            },
+            "package:tempered_arms_t1": {
+                "units": 512.5,
+                "random": true
+            },
+            "package:twin_dragon_brooch_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:universal_speedup_pack_t1": {
+                "units": 925,
+                "random": false
+            },
+            "package:ur_gear_crafting": {
+                "units": 3000,
+                "random": false
+            },
+            "package:weekly_special_t1": {
+                "units": 3780,
+                "random": false
+            },
+            "package:weekly_special_t2": {
+                "units": 3780,
+                "random": false
+            }
+        },
+        "cloth": {
+            "offer:recluse_merchant:tempered_steel_great": {
+                "units": 7680,
+                "random": false
+            },
+            "offer:recluse_merchant:tempered_steel_normal": {
+                "units": 25600,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:tempered_steel_daily": {
+                "units": 25600,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:tempered_steel_weekly": {
+                "units": 25600,
+                "random": false
+            },
+            "offer:vip_shop:brass": {
+                "units": 16,
+                "random": false
+            },
+            "offer:vip_shop:refined_iron": {
+                "units": 64,
+                "random": false
+            },
+            "offer:vip_shop:tempered_steel": {
+                "units": 256,
+                "random": false
+            },
+            "package:calendar_gift_gear_pack": {
+                "units": 9600,
+                "random": false
+            },
+            "package:gear_enhancement": {
+                "units": 2088,
+                "random": false
+            },
+            "package:gear_pass_t1": {
+                "units": 38400,
+                "random": false
+            },
+            "package:gear_pass_t2": {
+                "units": 76800,
+                "random": false
+            },
+            "package:premium_monthly_pass": {
+                "units": 96000,
+                "random": false
+            },
+            "package:ur_blueprint_offer_t1": {
+                "units": 12800,
+                "random": false
+            },
+            "package:ur_blueprint_offer_t2": {
+                "units": 25600,
+                "random": false
+            },
+            "package:ur_blueprint_offer_t3": {
+                "units": 64000,
+                "random": false
+            },
+            "package:ur_gear_crafting": {
+                "units": 192000,
+                "random": false
+            },
+            "package:weekly_special_t1": {
+                "units": 71680,
+                "random": false
+            },
+            "package:weekly_special_t2": {
+                "units": 71680,
+                "random": false
+            }
+        },
+        "herbs": {
+            "offer:recluse_merchant:resource_supply_ssr_great": {
+                "units": 1735440,
+                "random": false
+            },
+            "offer:recluse_merchant:resource_supply_ur": {
+                "units": 15618900,
+                "random": false
+            },
+            "offer:starry_bazaar:resource_supply_ssr": {
+                "units": 867720,
+                "random": false
+            },
+            "offer:stone_blade_exchange_shop:resource_supply_ssr": {
+                "units": 867720,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:deluxe_choice_chest": {
+                "units": 39047250,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:resource_supply_ssr": {
+                "units": 867720,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:sr_resource_supply_ur": {
+                "units": 104126000,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:ssr_resource_supply_ur": {
+                "units": 208252000,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:ur_resource_supply_ur": {
+                "units": 520630000,
+                "random": false
+            },
+            "offer:vip_shop:herb_level_supply_sr": {
+                "units": 108470,
+                "random": false
+            },
+            "package:blades_out_deluxe_pack": {
+                "units": 14811218,
+                "random": true
+            },
+            "package:blades_out_premium_pack": {
+                "units": 74056090.2,
+                "random": true
+            },
+            "package:blades_out_rare_pack": {
+                "units": 29622436.1,
+                "random": true
+            },
+            "package:blades_out_select_pack": {
+                "units": 7405609.02,
+                "random": true
+            },
+            "package:blades_out_ultimate_pack": {
+                "units": 148112180,
+                "random": true
+            },
+            "package:building_speedup_pack_t1": {
+                "units": 2603150,
+                "random": false
+            },
+            "package:building_upgrade_pack": {
+                "units": 5230300,
+                "random": false
+            },
+            "package:calendar_gift_gear_pack": {
+                "units": 180000,
+                "random": false
+            },
+            "package:calendar_gift_hero_pack": {
+                "units": 180000,
+                "random": false
+            },
+            "package:calendar_gift_inscription_pack": {
+                "units": 180000,
+                "random": false
+            },
+            "package:calendar_gift_raven_pack": {
+                "units": 180000,
+                "random": false
+            },
+            "package:copper_coin_pack_24h": {
+                "units": 150000,
+                "random": false
+            },
+            "package:copper_coin_pack_6h": {
+                "units": 60000,
+                "random": false
+            },
+            "package:copper_coin_pack_72h": {
+                "units": 300000,
+                "random": false
+            },
+            "package:curio_pack_pack": {
+                "units": 13015750,
+                "random": false
+            },
+            "package:curio_pack_t1": {
+                "units": 30000,
+                "random": false
+            },
+            "package:develop_territory": {
+                "units": 33960950,
+                "random": false
+            },
+            "package:development_pack_t1": {
+                "units": 18222050,
+                "random": false
+            },
+            "package:development_pack_t2": {
+                "units": 36444100,
+                "random": false
+            },
+            "package:development_pack_t4": {
+                "units": 182220500,
+                "random": false
+            },
+            "package:dragon_blood_pack_t1": {
+                "units": 1735440,
+                "random": false
+            },
+            "package:enhance_heroes": {
+                "units": 12000,
+                "random": false
+            },
+            "package:exclusive_weapon_pass": {
+                "units": 630000,
+                "random": false
+            },
+            "package:falcon_tower_pass_t1": {
+                "units": 630000,
+                "random": false
+            },
+            "package:gear_enhancement": {
+                "units": 867720,
+                "random": false
+            },
+            "package:gear_pass_t1": {
+                "units": 28634760,
+                "random": false
+            },
+            "package:gear_pass_t2": {
+                "units": 66814440,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t1": {
+                "units": 17354400,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t2": {
+                "units": 34708800,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t3": {
+                "units": 69417600,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t4": {
+                "units": 138835200,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t5": {
+                "units": 138835200,
+                "random": false
+            },
+            "package:hero_growth_pack_t1": {
+                "units": 12000,
+                "random": false
+            },
+            "package:might_special_pack_t1": {
+                "units": 12000,
+                "random": false
+            },
+            "package:mystic_cabinet_i_t1": {
+                "units": 15618900,
+                "random": false
+            },
+            "package:mystic_cabinet_i_t2": {
+                "units": 31237800,
+                "random": false
+            },
+            "package:mystic_cabinet_i_t3": {
+                "units": 62475600,
+                "random": false
+            },
+            "package:premium_grain_pack_t1": {
+                "units": 24000,
+                "random": false
+            },
+            "package:premium_herb_pack_t1": {
+                "units": 20849200,
+                "random": false
+            },
+            "package:premium_timber_pack_t1": {
+                "units": 24000,
+                "random": false
+            },
+            "package:quick_research_pack_t1": {
+                "units": 13015750,
+                "random": false
+            },
+            "package:quick_research_pack_t2": {
+                "units": 26031500,
+                "random": false
+            },
+            "package:raven_epigraph": {
+                "units": 300000,
+                "random": false
+            },
+            "package:raven_essence": {
+                "units": 240000,
+                "random": false
+            },
+            "package:raven_essence_pack": {
+                "units": 12000,
+                "random": false
+            },
+            "package:raven_gear_pack": {
+                "units": 2603160,
+                "random": false
+            },
+            "package:research_pack": {
+                "units": 445880,
+                "random": false
+            },
+            "package:research_special_pack_t1": {
+                "units": 2615150,
+                "random": false
+            },
+            "package:research_tome_pack_t1": {
+                "units": 1735440,
+                "random": false
+            },
+            "package:research_tome_pack_t2": {
+                "units": 2603160,
+                "random": false
+            },
+            "package:research_tome_pack_t3": {
+                "units": 5206320,
+                "random": false
+            },
+            "package:resource_special_pack_t1": {
+                "units": 18222050,
+                "random": false
+            },
+            "package:resource_special_pack_t2": {
+                "units": 36444100,
+                "random": false
+            },
+            "package:resource_special_pack_t3": {
+                "units": 72888200,
+                "random": false
+            },
+            "package:speedup_special_pack_t1": {
+                "units": 2603150,
+                "random": false
+            },
+            "package:stamina_discount_pack": {
+                "units": 120000,
+                "random": false
+            },
+            "package:strange_bazaar_exquisite_pack": {
+                "units": 60000,
+                "random": false
+            },
+            "package:strange_bazaar_premium_pack": {
+                "units": 300000,
+                "random": false
+            },
+            "package:strange_bazaar_rare_pack": {
+                "units": 120000,
+                "random": false
+            },
+            "package:strange_bazaar_select_pack": {
+                "units": 30000,
+                "random": false
+            },
+            "package:strange_bazaar_ultimate_pack": {
+                "units": 60000,
+                "random": false
+            },
+            "package:study_scroll": {
+                "units": 213458300,
+                "random": false
+            },
+            "package:surprise_encounter_exquisite_pack": {
+                "units": 60000,
+                "random": false
+            },
+            "package:surprise_encounter_premium_pack": {
+                "units": 300000,
+                "random": false
+            },
+            "package:surprise_encounter_rare_pack": {
+                "units": 120000,
+                "random": false
+            },
+            "package:surprise_encounter_select_pack": {
+                "units": 30000,
+                "random": false
+            },
+            "package:surprise_encounter_ultimate_pack": {
+                "units": 600000,
+                "random": false
+            },
+            "package:tempered_arms_t1": {
+                "units": 24296160,
+                "random": false
+            },
+            "package:troop_training_pack": {
+                "units": 5218300,
+                "random": false
+            },
+            "package:twin_dragon_brooch_pack_t1": {
+                "units": 1735440,
+                "random": false
+            },
+            "package:universal_speedup_pack_t1": {
+                "units": 216940,
+                "random": false
+            },
+            "package:ur_gear_crafting": {
+                "units": 13615750,
+                "random": false
+            },
+            "package:value_gear_pack_t1": {
+                "units": 30000,
+                "random": false
+            },
+            "package:weekly_herb_pass": {
+                "units": 54666150,
+                "random": false
+            },
+            "package:weekly_pass": {
+                "units": 54666150,
+                "random": false
+            },
+            "package:weekly_special_t1": {
+                "units": 36444100,
+                "random": false
+            },
+            "package:weekly_special_t2": {
+                "units": 36444100,
+                "random": false
+            }
+        },
+        "raven_essence": {
+            "offer:recluse_merchant:raven_essence_great": {
+                "units": 25,
+                "random": false
+            },
+            "offer:recluse_merchant:raven_essence_normal": {
+                "units": 15,
+                "random": false
+            },
+            "offer:starry_bazaar:raven_essence": {
+                "units": 20,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:deluxe_choice_chest": {
+                "units": 40,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:n_raven_essence": {
+                "units": 20,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:r_raven_essence": {
+                "units": 40,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:sr_raven_essence": {
+                "units": 100,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:ssr_raven_essence": {
+                "units": 200,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:ur_raven_essence": {
+                "units": 500,
+                "random": false
+            },
+            "offer:vip_shop:raven_essence": {
+                "units": 1,
+                "random": false
+            },
+            "package:calendar_gift_inscription_pack": {
+                "units": 30,
+                "random": false
+            },
+            "package:calendar_gift_raven_pack": {
+                "units": 140,
+                "random": false
+            },
+            "package:enhance_might": {
+                "units": 10,
+                "random": false
+            },
+            "package:era_of_revival_raven_essence_weekly_pass": {
+                "units": 105,
+                "random": false
+            },
+            "package:login_rewards": {
+                "units": 2,
+                "random": false
+            },
+            "package:raven_essence": {
+                "units": 150,
+                "random": false
+            },
+            "package:raven_essence_pack": {
+                "units": 10,
+                "random": false
+            },
+            "package:raven_growth_pack_t1": {
+                "units": 20,
+                "random": false
+            },
+            "package:ravens_might_t1": {
+                "units": 47,
+                "random": false
+            },
+            "package:weekly_pass": {
+                "units": 105,
+                "random": false
+            },
+            "package:weekly_special_t1": {
+                "units": 70,
+                "random": false
+            },
+            "package:weekly_special_t2": {
+                "units": 70,
+                "random": false
+            }
+        },
+        "ur_hero_omni_shard": {
+            "offer:recluse_merchant:ur_hero_omni_shard_great": {
+                "units": 1,
+                "random": false
+            },
+            "offer:recluse_merchant:ur_hero_omni_shard_normal": {
+                "units": 10,
+                "random": false
+            },
+            "offer:starry_bazaar:ur_hero_and_awaken_choice_chest": {
+                "units": 1,
+                "random": false
+            },
+            "offer:stone_blade_exchange_shop:ur_hero_omni_shard": {
+                "units": 10,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:deluxe_choice_chest": {
+                "units": 10,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:ur_hero_and_awaken_choice_chest": {
+                "units": 10,
+                "random": false
+            },
+            "offer:strange_bazaar_shop:ur_hero_omni_shard": {
+                "units": 1,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:sr_ur_hero_omni_shard": {
+                "units": 24,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:ssr_ur_hero_omni_shard": {
+                "units": 48,
+                "random": false
+            },
+            "offer:surprise_encounter_shop:ur_ur_hero_omni_shard": {
+                "units": 120,
+                "random": false
+            },
+            "package:calendar_gift_hero_pack": {
+                "units": 55,
+                "random": false
+            },
+            "package:falcon_tower_pass_t1": {
+                "units": 55,
+                "random": false
+            },
+            "package:hero_promotion": {
+                "units": 75,
+                "random": false
+            },
+            "package:login_rewards": {
+                "units": 2,
+                "random": false
+            },
+            "package:mystic_cabinet_ii_t1": {
+                "units": 5,
+                "random": false
+            },
+            "package:weekly_special_t1": {
+                "units": 8,
+                "random": false
+            },
+            "package:weekly_special_t2": {
+                "units": 8,
+                "random": false
+            }
+        },
+        "lv1_sharp_beak": {
+            "package:calendar_gift_raven_pack": {
+                "units": 3.50007,
+                "random": true
+            },
+            "package:raven_gear_special_pack_t1": {
+                "units": 0.16667,
+                "random": true
+            },
+            "package:ravens_might_t1": {
+                "units": 5.0001,
+                "random": true
+            }
+        },
+        "diamonds": {
+            "package:awaken_shard_t1": {
+                "units": 700,
+                "random": false
+            },
+            "package:awaken_shard_t2": {
+                "units": 1400,
+                "random": false
+            },
+            "package:awakening_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:awakening_special_pack_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:blades_out_deluxe_pack": {
+                "units": 1000,
+                "random": false
+            },
+            "package:blades_out_premium_pack": {
+                "units": 5000,
+                "random": false
+            },
+            "package:blades_out_rare_pack": {
+                "units": 2000,
+                "random": false
+            },
+            "package:blades_out_select_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:blades_out_ultimate_pack": {
+                "units": 10000,
+                "random": false
+            },
+            "package:building_speedup_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:building_upgrade_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:calendar_gift_gear_pack": {
+                "units": 2500,
+                "random": false
+            },
+            "package:calendar_gift_hero_pack": {
+                "units": 2500,
+                "random": false
+            },
+            "package:calendar_gift_inscription_pack": {
+                "units": 2500,
+                "random": false
+            },
+            "package:calendar_gift_raven_pack": {
+                "units": 2500,
+                "random": false
+            },
+            "package:curio_boost": {
+                "units": 10000,
+                "random": false
+            },
+            "package:curio_pack_pack": {
+                "units": 10000,
+                "random": false
+            },
+            "package:curio_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:develop_territory": {
+                "units": 2000,
+                "random": false
+            },
+            "package:development_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:development_pack_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:development_pack_t4": {
+                "units": 5000,
+                "random": false
+            },
+            "package:diamond_100": {
+                "units": 100,
+                "random": false
+            },
+            "package:diamond_1000": {
+                "units": 1000,
+                "random": false
+            },
+            "package:diamond_10000": {
+                "units": 10000,
+                "random": false
+            },
+            "package:diamond_2000": {
+                "units": 2000,
+                "random": false
+            },
+            "package:diamond_500": {
+                "units": 500,
+                "random": false
+            },
+            "package:diamond_5000": {
+                "units": 5000,
+                "random": false
+            },
+            "package:dragon_blood_pack_t1": {
+                "units": 1000,
+                "random": false
+            },
+            "package:enhance_heroes": {
+                "units": 500,
+                "random": false
+            },
+            "package:enhance_might": {
+                "units": 10000,
+                "random": false
+            },
+            "package:enhancement_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:era_of_revival_raven_essence_weekly_pass": {
+                "units": 500,
+                "random": false
+            },
+            "package:exclusive_weapon": {
+                "units": 10000,
+                "random": false
+            },
+            "package:exclusive_weapon_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:exclusive_weapon_pass": {
+                "units": 2000,
+                "random": false
+            },
+            "package:exp_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:falcon_tower_pass_t1": {
+                "units": 2000,
+                "random": false
+            },
+            "package:gear_enhancement": {
+                "units": 500,
+                "random": false
+            },
+            "package:hero_awaken": {
+                "units": 10000,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t1": {
+                "units": 1000,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t2": {
+                "units": 2000,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t3": {
+                "units": 5000,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t4": {
+                "units": 10000,
+                "random": false
+            },
+            "package:hero_awaken_growth_pack_t5": {
+                "units": 10000,
+                "random": false
+            },
+            "package:hero_exclusive_weapon_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:hero_exclusive_weapon_pack_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:hero_exclusive_weapon_pack_t3": {
+                "units": 2000,
+                "random": false
+            },
+            "package:hero_exclusive_weapon_pack_t4": {
+                "units": 5000,
+                "random": false
+            },
+            "package:hero_exclusive_weapon_pack_t5": {
+                "units": 10000,
+                "random": false
+            },
+            "package:hero_exclusive_weapon_pack_t6": {
+                "units": 10000,
+                "random": false
+            },
+            "package:hero_growth_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:hero_promotion": {
+                "units": 10000,
+                "random": false
+            },
+            "package:hero_shard_t1": {
+                "units": 700,
+                "random": false
+            },
+            "package:hero_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:login_rewards": {
+                "units": 250,
+                "random": false
+            },
+            "package:might_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:moon_coin_deluxe_pack": {
+                "units": 1000,
+                "random": false
+            },
+            "package:moon_coin_majestic_pack": {
+                "units": 5800,
+                "random": false
+            },
+            "package:moon_coin_premium_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:moon_coin_rare_pack": {
+                "units": 2400,
+                "random": false
+            },
+            "package:moon_coin_special_pack": {
+                "units": 200,
+                "random": false
+            },
+            "package:moon_coin_supreme_pack": {
+                "units": 11200,
+                "random": false
+            },
+            "package:moon_coin_value_pack": {
+                "units": 100,
+                "random": false
+            },
+            "package:mystic_cabinet_i_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:mystic_cabinet_i_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:mystic_cabinet_i_t3": {
+                "units": 2000,
+                "random": false
+            },
+            "package:mystic_cabinet_ii_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:mystic_cabinet_iii_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:premium_grain_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:premium_herb_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:premium_monthly_pass": {
+                "units": 5500,
+                "random": false
+            },
+            "package:premium_timber_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:quick_research_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:quick_research_pack_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:raven_epigraph": {
+                "units": 5000,
+                "random": false
+            },
+            "package:raven_epigraph_offer_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:raven_epigraph_offer_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:raven_essence": {
+                "units": 5000,
+                "random": false
+            },
+            "package:raven_essence_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:raven_evolve_guide": {
+                "units": 500,
+                "random": false
+            },
+            "package:raven_gear": {
+                "units": 5000,
+                "random": false
+            },
+            "package:raven_gear_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:raven_gear_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:raven_growth_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:recluse_coin_deluxe_pack": {
+                "units": 1000,
+                "random": false
+            },
+            "package:recluse_coin_majestic_pack": {
+                "units": 5000,
+                "random": false
+            },
+            "package:recluse_coin_premium_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:recluse_coin_rare_pack": {
+                "units": 2000,
+                "random": false
+            },
+            "package:recluse_coin_supreme_pack": {
+                "units": 10000,
+                "random": false
+            },
+            "package:research_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:research_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:research_tome_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:research_tome_pack_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:research_tome_pack_t3": {
+                "units": 2000,
+                "random": false
+            },
+            "package:resource_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:resource_special_pack_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:resource_special_pack_t3": {
+                "units": 2000,
+                "random": false
+            },
+            "package:speedup_special_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:stamina_discount_pack": {
+                "units": 1000,
+                "random": false
+            },
+            "package:strange_bazaar_exquisite_pack": {
+                "units": 1000,
+                "random": false
+            },
+            "package:strange_bazaar_premium_pack": {
+                "units": 5000,
+                "random": false
+            },
+            "package:strange_bazaar_rare_pack": {
+                "units": 2000,
+                "random": false
+            },
+            "package:strange_bazaar_select_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:strange_bazaar_ultimate_pack": {
+                "units": 10000,
+                "random": false
+            },
+            "package:study_scroll": {
+                "units": 10000,
+                "random": false
+            },
+            "package:surprise_encounter_exquisite_pack": {
+                "units": 1000,
+                "random": false
+            },
+            "package:surprise_encounter_premium_pack": {
+                "units": 5000,
+                "random": false
+            },
+            "package:surprise_encounter_rare_pack": {
+                "units": 2000,
+                "random": false
+            },
+            "package:surprise_encounter_select_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:surprise_encounter_ultimate_pack": {
+                "units": 10000,
+                "random": false
+            },
+            "package:survivor_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:troop_training_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:twin_dragon_brooch_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:universal_speedup_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:ur_blueprint_offer_t1": {
+                "units": 1000,
+                "random": false
+            },
+            "package:ur_blueprint_offer_t2": {
+                "units": 2000,
+                "random": false
+            },
+            "package:ur_blueprint_offer_t3": {
+                "units": 5000,
+                "random": false
+            },
+            "package:ur_gear_crafting": {
+                "units": 5000,
+                "random": false
+            },
+            "package:value_gear_pack_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:weekly_grain_pass": {
+                "units": 500,
+                "random": false
+            },
+            "package:weekly_herb_pass": {
+                "units": 500,
+                "random": false
+            },
+            "package:weekly_hero_exp_pass": {
+                "units": 500,
+                "random": false
+            },
+            "package:weekly_pass": {
+                "units": 2500,
+                "random": false
+            },
+            "package:weekly_special_t1": {
+                "units": 500,
+                "random": false
+            },
+            "package:weekly_special_t2": {
+                "units": 1000,
+                "random": false
+            },
+            "package:weekly_timber_pass": {
+                "units": 500,
+                "random": false
+            }
+        }
+    },
+    "containers": [
+        "antitoxin_level_supply_r",
+        "antitoxin_level_supply_sr",
+        "antitoxin_level_supply_ssr",
+        "antitoxin_level_supply_ur",
+        "awaken_shard_choice_chest",
+        "battlebreaker_loot",
+        "berserker_loot",
+        "brass",
+        "curio_chest_ssr",
+        "curio_chest_ur",
+        "deluxe_choice_chest",
+        "diamond_golden_egg",
+        "excl_weapon_shard_choice_chest",
+        "exclusive_weapon_omni_shard",
+        "frenzied_flock_iv_ranger",
+        "frenzied_flock_iv_warlock",
+        "frenzied_flock_iv_warrior",
+        "grain_level_supply_sr",
+        "grain_level_supply_ssr",
+        "grain_level_supply_ur",
+        "guard_of_nature_iv_ranger",
+        "guard_of_nature_iv_warlock",
+        "guard_of_nature_iv_warrior",
+        "herb_level_supply_sr",
+        "herb_level_supply_ssr",
+        "herb_level_supply_ur",
+        "hero_awaken_omni_shard",
+        "holy_sword_loot",
+        "iron_guard_loot",
+        "leather",
+        "lv1_raven_gear_chest",
+        "lv3_attackers_claw",
+        "lv3_eye_of_perception",
+        "lv3_feather_of_the_night",
+        "lv3_heart_of_wisdom",
+        "lv3_raven_gear_chest",
+        "lv3_sharp_beak",
+        "lv3_tail_of_wind",
+        "lv5_attackers_claw",
+        "lv5_eye_of_perception",
+        "lv5_feather_of_the_night",
+        "lv5_heart_of_wisdom",
+        "lv5_raven_gear_chest",
+        "lv5_raven_gear_choice_chest",
+        "lv5_sharp_beak",
+        "lv5_tail_of_wind",
+        "mythic_era_reward",
+        "protective_charm_iv_ranger",
+        "protective_charm_iv_warlock",
+        "protective_charm_iv_warrior",
+        "r_epigraph_chest",
+        "random_gear_chest",
+        "random_gearstone_supply",
+        "refined_iron",
+        "resource_supply_general",
+        "resource_supply_sr",
+        "resource_supply_ssr",
+        "resource_supply_ur",
+        "reversal_power_iv_ranger",
+        "reversal_power_iv_warlock",
+        "reversal_power_iv_warrior",
+        "rock_loot",
+        "speedup",
+        "speedup_supply",
+        "sr_epigraph_chest",
+        "sr_hero_omni_shard",
+        "ssr_epigraph_chest",
+        "ssr_hero_omni_shard",
+        "tempered_steel",
+        "timber_level_supply_sr",
+        "timber_level_supply_ssr",
+        "timber_level_supply_ur",
+        "universal_curio_random_chest",
+        "ur_adventure_chest",
+        "ur_epigraph_chest",
+        "ur_epigraph_choice_chest",
+        "ur_hero_and_awaken_choice_chest",
+        "ur_hero_choice_chest",
+        "ur_hero_omni_shard"
+    ],
+    "valueLevels": [
+        "lv3_attackers_claw",
+        "lv3_eye_of_perception",
+        "lv3_feather_of_the_night",
+        "lv3_heart_of_wisdom",
+        "lv3_sharp_beak",
+        "lv3_tail_of_wind",
+        "lv5_attackers_claw",
+        "lv5_eye_of_perception",
+        "lv5_feather_of_the_night",
+        "lv5_heart_of_wisdom",
+        "lv5_sharp_beak",
+        "lv5_tail_of_wind"
+    ],
+    "chainTops": {
+        "cloth": "tempered_steel",
+        "lv1_attackers_claw": "lv5_attackers_claw",
+        "lv1_eye_of_perception": "lv5_eye_of_perception",
+        "lv1_feather_of_the_night": "lv5_feather_of_the_night",
+        "lv1_heart_of_wisdom": "lv5_heart_of_wisdom",
+        "lv1_sharp_beak": "lv5_sharp_beak",
+        "lv1_tail_of_wind": "lv5_tail_of_wind"
+    },
+    "convertibleChainTops": {
+        "cloth": "tempered_steel"
+    }
+}

@@ -4,7 +4,7 @@ import { loadPackData } from './lib/data';
 import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
-import { packageWeeklyCapacity, isSeasonalOff } from './lib/catalog.js';
+import { packageWeeklyCapacity, isOnSale } from './core/catalog.js';
 import { packageDisplayName, packageDisplayText, itemDisplayName, purchaseType } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
 import { enableInfoTooltips } from './lib/tooltip';
@@ -70,11 +70,7 @@ function buildEntries() {
     const planned = new Map(valuation.plan.purchases.map((p) => [p.id, p.count]));
     const result = [];
     for (const [id, pkg] of Object.entries(data.packages)) {
-        if (
-            !(pkg.price > 0) ||
-            (pkg.event_id && !activeEventIds.has(pkg.event_id)) ||
-            isSeasonalOff(id, pkg, settings.seasonalPasses)
-        ) {
+        if (!isOnSale(id, pkg, { activeEventIds, seasonalPasses: settings.seasonalPasses })) {
             continue;
         }
         const b = valuation.bundle(pkg, pkg.price);

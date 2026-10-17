@@ -4,7 +4,7 @@
  * 1. Crafting: every hero gets all their UR pieces first, step by step.
  * 2. Upgrades, unlocked after crafting: two queues, one card each (the next level step and the next star step). Which
  *    one to take depends on what you have (star steps use Gear Blueprints). Levels and stars wait for each other
- *    (lib/gear-path.js works out what a step needs); a blocked step says what it needs first.
+ *    (core/gear-path.js works out what a step needs); a blocked step says what it needs first.
  * The hero factions (Warriors, Rangers, Warlocks) share the paths; each slot has a hero per faction. The progress
  * (steps done per queue) is saved in this browser, per faction.
  */
@@ -26,7 +26,7 @@ import {
     stepCost,
     stepItems,
     stepSlots,
-} from './lib/gear-path.js';
+} from './core/gear-path.js';
 
 renderNav('gear');
 applyStaticTranslations();

@@ -7,8 +7,8 @@
  * price)` values a package / reward bundle as `{ points, worth, ratio, incomplete, parts, picked }`
  * where ratio = worth ÷ price: 1.0 or more = worth buying at your weekly spend.
  */
-import { fitItemPoints } from './point-fit.js';
-import { solveWeeklyPlan } from './planner.js';
+import { fitItemPoints } from '../core/point-fit.js';
+import { solveWeeklyPlan } from '../core/planner.js';
 import { loadBrowserHighs } from './highs-browser';
 import { priorityWeights } from './settings';
 import { t } from './i18n';

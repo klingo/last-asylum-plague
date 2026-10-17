@@ -4,8 +4,7 @@ import { loadPackData } from './lib/data';
 import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
-import { solveNeeds } from './lib/acquire.js';
-import { isSeasonalOff } from './lib/catalog.js';
+import { solveNeeds } from './core/acquire.js';
 import {
     packageDisplayName,
     itemDisplayName,
@@ -48,15 +47,6 @@ const gold = (value, digits = 0) =>
         ? `<span class="text-gold">${formatThousands(value, digits)}</span> ${banknoteIconHtml()}`
         : t('common.notAvailable');
 
-/** Package ids of the seasonal passes that aren't on sale right now. */
-function unavailablePassIds() {
-    return new Set(
-        Object.entries(data.packages)
-            .filter(([id, pkg]) => isSeasonalOff(id, pkg, settings.seasonalPasses))
-            .map(([id]) => id),
-    );
-}
-
 /** Worth of the side and the cheapest guaranteed way to get it within the chosen days. */
 function evaluate(side) {
     const itemId = side.picker.getValue();
@@ -70,7 +60,7 @@ function evaluate(side) {
         startDay: todayWeekdayIndex(),
         activeEventIds: new Set(settings.activeEvents),
         includeExclusives: false,
-        excluded: unavailablePassIds(),
+        seasonalPasses: settings.seasonalPasses,
         worthOf: (id) => valuation.worth(id) ?? 0,
     });
     return { itemId, amount, worth: Number.isFinite(unitWorth) ? unitWorth * amount : NaN, plan };
@@ -86,7 +76,7 @@ function stepsHtml(plan, locale) {
             (o) => `${formatThousands(o.count)} × ${offerDisplayName(o.shop, o.offer, data.items, locale)}`,
         ),
         ...plan.conversions
-            .filter((c) => c.kind !== 'open' || c.random)
+            .filter((c) => c.kind !== 'open')
             .map((c) => `${formatSignificant(c.count)} × ${conversionLabel(c, data.items, locale)}`),
     ];
     return lines.length ? `<ul class="parts-list">${lines.map((line) => `<li>${line}</li>`).join('')}</ul>` : '';

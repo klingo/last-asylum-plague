@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { expandPackageFamilies } from '../webapp/src/lib/catalog.js';
+import { normalizePackData } from '../webapp/src/core/pack-data.js';
 
 const FIXTURE_PATH = path.join(import.meta.dirname, 'fixtures', 'pack_data.json');
 const GOLDEN_DIR = path.join(import.meta.dirname, 'golden');
@@ -15,7 +15,7 @@ const TOLERANCE = 1e-6;
 /** The fixture as the webapp sees it: package tier ladders expanded (ui data.js does the same). */
 function loadFixture() {
     const raw = JSON.parse(fs.readFileSync(FIXTURE_PATH, 'utf8'));
-    return { ...raw, packages: expandPackageFamilies(raw.packages || {}) };
+    return normalizePackData(raw);
 }
 
 /** 9 significant digits: stable in the file, and well inside TOLERANCE. */

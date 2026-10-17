@@ -1,6 +1,6 @@
 /**
  * Fits every item's worth in POINTS live from the in-game deal % — the base values item-values.js
- * builds everything else on. Nothing is stored in pack_data.json; only the user's overrides are.
+ * builds everything else on. Nothing is stored in pack_data.json.
  *
  * A package with deal % D at price P says "my contents are worth P * D / 100 diamonds". With one
  * unknown value per "leaf" item (an item with no structure to derive a value from), every package
@@ -23,14 +23,16 @@
  * - A `crafted_from` recipe caps an item at its ingredients' worth (strongly: an item is never
  *   worth more than crafting it) and weakly ties it to them (the ratio fills in where the packs say
  *   little, e.g. Lv.1 raven gear; where they're clear, the packs win).
- * - Overrides are pinned (also down their reversible chain), so the rest rebalances around them.
- *   Ignored items are NOT pinned to 0 here — the deal % counts them — they're zeroed later.
+ * - Items the user doesn't care about are NOT pinned to 0 here (the deal % counts them); their
+ *   priority weighs them later (item-values.js `weights`).
  *
  * Solved with Levenberg-Marquardt on log values (deterministic, a few milliseconds).
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
-import { expandPackageFamilies, packageFamilyId, currencyItemIds } from './catalog.js';
+import { currencyItemIds } from './catalog.js';
+import { packageFamilyId } from './pack-data.js';
 import { lendReversible } from './item-values.js';
+import { itemKind, isRandomItem, substituteTargets } from './items.js';
 
 // Obtained through event mechanics the data doesn't model (Moon Coin machine): left out of the
 // fit, so they stay unknown.
@@ -60,21 +62,10 @@ function quantile(values, q) {
     return sorted.length === 0 ? NaN : sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * q))];
 }
 
-function substituteTargets(item) {
-    return Array.isArray(item.substitutes_for)
-        ? item.substitutes_for.map((targetId) => [targetId, 1])
-        : Object.entries(item.substitutes_for);
-}
-
+/** A fit parameter: nothing to derive the item from (a recipe only caps and hints, see buildEquations). */
 function isLeaf(item) {
-    return (
-        item &&
-        !item.value_equivalent &&
-        !(item.type === 'random' && Array.isArray(item.drop_table)) &&
-        !(item.type === 'choice' && item.choice) &&
-        !item.contains &&
-        !item.substitutes_for
-    );
+    const kind = itemKind(item);
+    return kind === 'leaf' || kind === 'recipe';
 }
 
 /** Union-find of interchangeable leaf items -> Map itemId -> representative id. */
@@ -94,7 +85,7 @@ function tieGroups(items, pinned, currencyIds) {
     };
     // (Single-target substitutes need no tie: they expand into their target.)
     for (const item of Object.values(items)) {
-        if (item.type === 'random' && Array.isArray(item.drop_table)) {
+        if (isRandomItem(item)) {
             const byOdds = new Map();
             for (const drop of item.drop_table) {
                 const entries = Object.entries(drop.contains || {});
@@ -119,7 +110,7 @@ function tieGroups(items, pinned, currencyIds) {
 
 /**
  * Expands bundles into `{ terms: Map<param, qty>, constant, skip }`: leaf items become fit
- * parameters, pinned items (anchor, overrides) a constant; `skip` = contains an unmodelled or
+ * parameters, pinned items (the anchor and its reversible chain) a constant; `skip` = contains an unmodelled or
  * unknown item.
  */
 function createExpander(items, pinned, groupOf, choicePick) {
@@ -156,22 +147,31 @@ function createExpander(items, pinned, groupOf, choicePick) {
             return;
         }
         visiting.add(id);
-        if (item.value_equivalent) {
-            expandInto(acc, item.value_equivalent, qty, visiting);
-        } else if (item.type === 'random' && Array.isArray(item.drop_table)) {
-            for (const drop of item.drop_table) {
-                expandInto(acc, drop.contains, qty * drop.probability, visiting);
+        switch (itemKind(item)) {
+            case 'equivalent':
+                expandInto(acc, item.value_equivalent, qty, visiting);
+                break;
+            case 'random':
+                for (const drop of item.drop_table) {
+                    expandInto(acc, drop.contains, qty * drop.probability, visiting);
+                }
+                break;
+            case 'choice':
+                addOptions(acc, id, item.choice.choices || [], item.choice.select_count || 1, qty, visiting);
+                break;
+            case 'contains':
+                expandInto(acc, item.contains, qty, visiting);
+                break;
+            case 'substitute': {
+                const options = substituteTargets(item).map(([targetId, n]) => ({ [targetId]: n }));
+                addOptions(acc, id, options, 1, qty, visiting);
+                break;
             }
-        } else if (item.type === 'choice' && item.choice) {
-            addOptions(acc, id, item.choice.choices || [], item.choice.select_count || 1, qty, visiting);
-        } else if (item.contains) {
-            expandInto(acc, item.contains, qty, visiting);
-        } else if (item.substitutes_for) {
-            const options = substituteTargets(item).map(([targetId, n]) => ({ [targetId]: n }));
-            addOptions(acc, id, options, 1, qty, visiting);
-        } else {
-            const param = groupOf(id);
-            acc.terms.set(param, (acc.terms.get(param) || 0) + qty);
+            default: {
+                // A leaf (or recipe item): one fit parameter, shared by its tie group.
+                const param = groupOf(id);
+                acc.terms.set(param, (acc.terms.get(param) || 0) + qty);
+            }
         }
         visiting.delete(id);
     }
@@ -452,27 +452,21 @@ function solveLogFit(params, equations, prior, initial = null) {
 }
 
 /**
- * Fits the base points of all leaf items.
- * - `overrides`: `{ itemId: points }` set by the user; pinned in the fit.
+ * Fits the base points of all leaf items (`data`: normalized, see pack-data.js).
  * - `excludeFamilies`: Set of package family ids left out (fitSensitivity).
  * - `initialValues`: Map parameter -> value to start from (a previous fit's `paramValues`).
  * Returns `{ points, diagnostics, paramValues }`:
- * - `points`: Map itemId -> `{ value, source: 'fit'|'override'|'reversible', uncertainty?, support? }`
+ * - `points`: Map itemId -> `{ value, source: 'fit'|'reversible', uncertainty?, support? }`
  *   (pass it to item-values.js as `basePoints`); currencies are not included.
  * - `diagnostics`: `{ packages: [{ id, ratio }], medianError, p90Error, parameters, equations }`
  *   where ratio = fitted contents / what the deal % says (1 = exact).
  */
-function fitItemPoints(data, { overrides = {}, excludeFamilies = null, initialValues = null } = {}) {
+function fitItemPoints(data, { excludeFamilies = null, initialValues = null } = {}) {
     const items = data.items || {};
-    const packages = expandPackageFamilies(data.packages || {});
+    const packages = data.packages || {};
     const currencyIds = currencyItemIds(data.exchange_shops);
 
     const pinned = new Map([[ANCHOR_ID, { value: 1, source: 'anchor' }]]);
-    for (const [id, value] of Object.entries(overrides || {})) {
-        if (items[id] && !currencyIds.has(id) && Number.isFinite(value) && value >= 0) {
-            pinned.set(id, { value, source: 'override' });
-        }
-    }
     lendReversible(items, pinned);
     const groupOf = tieGroups(items, pinned, currencyIds);
 
@@ -573,23 +567,21 @@ function fitItemPoints(data, { overrides = {}, excludeFamilies = null, initialVa
 
 /** Package families with a deal % (the units fitSensitivity leaves out). */
 function sensitivityFamilies(data) {
-    const packages = expandPackageFamilies(data.packages || {});
-    const families = Object.entries(packages)
+    const families = Object.entries(data.packages || {})
         .filter(([, pkg]) => pkg.deal_percentage != null && pkg.price > 0)
         .map(([id, pkg]) => packageFamilyId(id, pkg));
     return [...new Set(families)];
 }
 
 /**
- * Leave-one-out sensitivity of a fit (`base` = fitItemPoints' result for the same overrides):
+ * Leave-one-out sensitivity of a fit (`base` = fitItemPoints' result for the same data):
  * refits without each package family in `families` and records per fitted item the largest change
  * `{ factor, family }` (factor Infinity = the item has no value at all without that family).
  * Accumulates into `into`, so callers can run it in chunks. The flag: `isDependent(entry)`.
  */
-function fitSensitivity(data, base, { overrides = {}, families = sensitivityFamilies(data), into = new Map() } = {}) {
+function fitSensitivity(data, base, { families = sensitivityFamilies(data), into = new Map() } = {}) {
     for (const family of families) {
         const refit = fitItemPoints(data, {
-            overrides,
             excludeFamilies: new Set([family]),
             initialValues: base.paramValues,
         });

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { starStep, starsOfStep, mergePaths, crossNeeds } from '../webapp/src/lib/gear-path.js';
+import { starStep, starsOfStep, mergePaths, crossNeeds } from '../webapp/src/core/gear-path.js';
 import { loadFixture, expectGolden } from './helpers.js';
 
 const data = loadFixture();

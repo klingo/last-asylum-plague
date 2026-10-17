@@ -10,6 +10,8 @@
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
 
+import { itemKind, substituteTargets } from './items.js';
+
 const NONE = Object.freeze({ units: 0, random: false });
 
 /**
@@ -18,13 +20,7 @@ const NONE = Object.freeze({ units: 0, random: false });
  * base items.
  */
 function isContainerItem(item) {
-    return Boolean(
-        item.value_equivalent ||
-        (item.type === 'random' && item.drop_table) ||
-        (item.type === 'choice' && item.choice) ||
-        item.contains ||
-        item.substitutes_for,
-    );
+    return ['equivalent', 'random', 'choice', 'contains', 'substitute'].includes(itemKind(item));
 }
 
 /**
@@ -83,12 +79,6 @@ function itemChainTops(items, { convertibleOnly = false } = {}) {
     return tops;
 }
 
-function substituteTargets(item) {
-    return Array.isArray(item.substitutes_for)
-        ? item.substitutes_for.map((targetId) => [targetId, 1])
-        : Object.entries(item.substitutes_for);
-}
-
 /**
  * Unit counter for `targetId`. Returns `{ ofItem(id), ofBundle({ contains, choice }) }`, each giving
  * `{ units, random }` per one of that item / one purchase of that bundle.
@@ -131,23 +121,30 @@ function createUnitCounter(items, targetId) {
         }
         visiting.add(id);
         let result = NONE;
-        if (item.type === 'random' && Array.isArray(item.drop_table)) {
-            let units = 0;
-            for (const drop of item.drop_table) {
-                units += drop.probability * ofContents(drop.contains, visiting).units;
-            }
-            result = { units, random: units > 0 };
-        } else if (item.type === 'choice' && item.choice) {
-            result = ofChoice(item.choice, visiting);
-        } else if (item.contains) {
-            result = ofContents(item.contains, visiting);
-        } else if (item.substitutes_for) {
-            for (const [target, qty] of substituteTargets(item)) {
-                const r = ofItem(target, visiting);
-                if (qty * r.units > result.units) {
-                    result = { units: qty * r.units, random: r.random };
+        // A value_equivalent isn't contents (a Lv.3 Sharp Beak can't be turned into Lv.1), nor is a recipe.
+        switch (itemKind(item)) {
+            case 'random': {
+                let units = 0;
+                for (const drop of item.drop_table) {
+                    units += drop.probability * ofContents(drop.contains, visiting).units;
                 }
+                result = { units, random: units > 0 };
+                break;
             }
+            case 'choice':
+                result = ofChoice(item.choice, visiting);
+                break;
+            case 'contains':
+                result = ofContents(item.contains, visiting);
+                break;
+            case 'substitute':
+                for (const [target, qty] of substituteTargets(item)) {
+                    const r = ofItem(target, visiting);
+                    if (qty * r.units > result.units) {
+                        result = { units: qty * r.units, random: r.random };
+                    }
+                }
+                break;
         }
         visiting.delete(id);
         memo.set(id, result);

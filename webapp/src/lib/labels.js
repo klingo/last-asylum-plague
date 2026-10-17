@@ -4,7 +4,7 @@
  * except the `...Text` variants for plain-text use (e.g. the item picker).
  */
 import { localizedName, t } from './i18n';
-import { isPass } from './catalog.js';
+import { isPass } from '../core/catalog.js';
 import { formatThousands } from './format';
 
 function escapeHtml(text) {

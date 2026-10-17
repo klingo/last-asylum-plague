@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Ajv from 'ajv';
-import * as gearPath from '../webapp/src/lib/gear-path.js';
-import { fitItemPoints, fitSensitivity, isDependent } from '../webapp/src/lib/point-fit.js';
-import { resolveItemValues } from '../webapp/src/lib/item-values.js';
-import { currencyItemIds } from '../webapp/src/lib/catalog.js';
+import * as gearPath from '../webapp/src/core/gear-path.js';
+import { fitItemPoints, fitSensitivity, isDependent } from '../webapp/src/core/point-fit.js';
+import { resolveItemValues } from '../webapp/src/core/item-values.js';
+import { currencyItemIds } from '../webapp/src/core/catalog.js';
+import { normalizePackData } from '../webapp/src/core/pack-data.js';
 
 const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
 const SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.schema.json');
@@ -16,8 +17,8 @@ const ITEM_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public',
  * - Relational integrity (items, packages, exchange shops)
  * - Package tier ladder gap detection
  * - Drop table probability distributions
- * - Item points fitted from the deal % (webapp/src/lib/point-fit.js) and items whose worth can't be
- *   resolved (webapp/src/lib/item-values.js)
+ * - Item points fitted from the deal % (webapp/src/core/point-fit.js) and items whose worth can't be
+ *   resolved (webapp/src/core/item-values.js)
  */
 async function verifyData() {
     console.log('Starting Pack Data Verification...\n');
@@ -160,7 +161,7 @@ async function verifyData() {
             }
 
             // Check value_equivalent (valuation-only "worth N of another item" fact, see
-            // webapp/src/lib/item-values.js).
+            // webapp/src/core/item-values.js).
             if (item.value_equivalent && typeof item.value_equivalent === 'object') {
                 for (const subItemId of Object.keys(item.value_equivalent)) {
                     referencedItemKeys.add(subItemId);
@@ -519,7 +520,7 @@ async function verifyData() {
     });
 
     // 8b. Squad guides (Gear Path page): heroes, slots and gear exist, and every path step is possible at its
-    // point (webapp/src/lib/gear-path.js: crafted first, level caps by stars, minimum levels for stars).
+    // point (webapp/src/core/gear-path.js: crafted first, level caps by stars, minimum levels for stars).
     checkCategory('Squad Guides', ({ reportError, reportWarning }) => {
         const heroes = data.heroes || {};
         for (const [heroId, hero] of Object.entries(heroes)) {
@@ -644,10 +645,12 @@ async function verifyData() {
         }
     });
 
-    // 9. Points fitted from the deal % (webapp/src/lib/point-fit.js), and items whose worth can't
+    // 9. Points fitted from the deal % (webapp/src/core/point-fit.js), and items whose worth can't
     // be resolved from them (not in any pack with a deal %, and nothing to derive one from).
     // Currencies are valued by what they buy, so they're skipped here.
-    const fit = fitItemPoints(data);
+    // The core modules read the normalized data (tier ladders expanded); the checks above read the raw file.
+    const normalized = normalizePackData(data);
+    const fit = fitItemPoints(normalized);
     const { diagnostics } = fit;
     const percent = (value) => `${(value * 100).toFixed(1)}%`;
     console.log('Fitting Item Points from Deal %...');
@@ -658,7 +661,7 @@ async function verifyData() {
     console.log(`  - Furthest off: ${worst.map((p) => `${p.id} (${p.ratio.toFixed(2)}x)`).join(', ')}`);
     const uncertain = [...fit.points].filter(([, entry]) => entry.uncertain).map(([id]) => id);
     console.log(`  - Uncertain (barely determined by the packs): ${uncertain.join(', ') || 'none'}`);
-    const sensitivity = fitSensitivity(data, fit);
+    const sensitivity = fitSensitivity(normalized, fit);
     const dependent = [...sensitivity]
         .filter(([, s]) => isDependent(s))
         .sort((a, b) => b[1].factor - a[1].factor)

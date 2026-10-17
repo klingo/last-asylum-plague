@@ -1,14 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { expandPackageFamilies, packageFamilyId } from '../webapp/src/core/pack-data.js';
 import {
-    expandPackageFamilies,
-    packageFamilyId,
     isSeasonalOff,
     bundledPairs,
     packageWeeklyCapacity,
     offerWeeklyCapacity,
     capacityInWindow,
-} from '../webapp/src/lib/catalog.js';
+} from '../webapp/src/core/catalog.js';
 
 test('tier ladders expand into one package per tier, each requiring the one below', () => {
     const packages = expandPackageFamilies({

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveItemValues, bundleValue } from '../webapp/src/lib/item-values.js';
+import { resolveItemValues, bundleValue } from '../webapp/src/core/item-values.js';
 
 // Base points (as point-fit.js would give them) for the leaves of the small item set below.
 const basePoints = new Map([

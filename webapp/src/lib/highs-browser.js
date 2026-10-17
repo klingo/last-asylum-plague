@@ -3,7 +3,7 @@
  * loader at it. Only pages that actually solve something import this (lazy-loaded solver).
  */
 import wasmUrl from 'highs/runtime?url';
-import { loadHighs } from './lp.js';
+import { loadHighs } from '../core/lp.js';
 
 function loadBrowserHighs() {
     return loadHighs({ locateFile: () => wasmUrl });

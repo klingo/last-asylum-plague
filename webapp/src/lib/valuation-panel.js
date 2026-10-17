@@ -10,7 +10,7 @@
  */
 import { localizedName, applyStaticTranslations, t } from './i18n';
 import { loadSettings, saveSettings } from './settings';
-import { expandPackageFamilies, packageFamilyId } from './catalog.js';
+import { packageFamilyId } from '../core/pack-data.js';
 import { escapeHtml } from './labels';
 import { banknoteIconHtml } from './images';
 import { formatThousands } from './format';
@@ -22,7 +22,7 @@ const SETTINGS_KEY = 'lasps_valuation';
 /** Seasonal package families (one entry per tier ladder): [familyId, { name }]. */
 function passFamilies(packages) {
     const families = new Map();
-    for (const [id, pkg] of Object.entries(expandPackageFamilies(packages || {}))) {
+    for (const [id, pkg] of Object.entries(packages || {})) {
         if (pkg.seasonal && !families.has(packageFamilyId(id, pkg))) {
             families.set(packageFamilyId(id, pkg), { name: pkg.name });
         }

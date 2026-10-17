@@ -7,10 +7,7 @@ export default defineConfig([
         extends: [js.configs.recommended],
 
         languageOptions: {
-            globals: {
-                ...globals.browser,
-                ...globals.node,
-            },
+            globals: { ...globals.es2024 },
             ecmaVersion: 'latest',
             sourceType: 'module',
 
@@ -53,5 +50,34 @@ export default defineConfig([
         },
 
         ignores: ['**/dist/**/*', '**/node_modules/**', '**/coverage/**/*'],
+    },
+    {
+        // The webapp's pages and UI helpers run in the browser.
+        files: ['webapp/src/**/*.js'],
+        ignores: ['webapp/src/core/**'],
+        languageOptions: {
+            globals: { ...globals.browser },
+        },
+    },
+    {
+        // The pure modules: no DOM, no Node (only the language's own globals, set above), no UI imports, so
+        // the webapp, scripts and tests share them.
+        files: ['webapp/src/core/**/*.js'],
+        rules: {
+            'no-restricted-imports': [
+                'error',
+                { patterns: [{ group: ['../*', '!../core/*'], message: 'core/ modules may only import core/.' }] },
+            ],
+        },
+    },
+    {
+        // Command-line tools, tests and config files run in Node; the tools and tests report on the console.
+        files: ['scripts/**/*.js', 'test/**/*.js', '*.{js,mjs}', 'webapp/*.js'],
+        languageOptions: {
+            globals: { ...globals.node },
+        },
+        rules: {
+            'no-console': 'off',
+        },
     },
 ]);

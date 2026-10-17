@@ -2,18 +2,19 @@
  * What can be bought, and how often. Pure data rules shared by every valuation module — no DOM,
  * no i18n — so Node scripts (verify-data) can import it too.
  *
- * All capacities are "purchases per week", the unit both the simple and the accurate model
- * work in:
+ * All capacities are "purchases per week", the unit the weekly plan (planner.js) works in:
  * - daily limits count once per available day (7, or the number of `available_days`);
  * - weekly limits count once; biweekly limits 7/14 and monthly limits 7/30 (the pass delivers its
  *   contents over 14 / 30 days, so a week gets that share of it for that share of the price);
  * - `lifetime` limits are the total ever, `event` limits the total per event run (when included);
  * - `purchase_limit: null` (plain diamond top-ups) is unlimited.
  *
- * The planners (acquire.js) instead count purchases inside a window of days. With a start weekday
+ * The cheapest plan for needs (acquire.js) instead counts purchases inside a window of days. With a start weekday
  * the window is a real calendar: daily limits count the window's available days, weekly limits
  * the Monday-based weeks it touches (weekly limits reset on Monday).
  */
+
+import { packageFamilyId } from './pack-data.js';
 
 const DAYS_PER_WEEK = 7;
 const DAYS_PER_MONTH = 30;
@@ -37,43 +38,24 @@ function deliveryPeriod(pkg) {
 }
 
 /**
- * `pack_data.json` authors a package family (e.g. a T1/T2 daily offer ladder) as one object
- * with a `tiers` map. Everything downstream wants one flat SKU per id (`awaken_shard_t1`, ...),
- * each with its own `tier` and a `requires` link to the previous tier (null for the lowest).
- */
-function expandPackageFamilies(packages) {
-    const expanded = {};
-    for (const [id, pkg] of Object.entries(packages)) {
-        if (!pkg.tiers) {
-            expanded[id] = pkg;
-            continue;
-        }
-        const { tiers, ...family } = pkg;
-        const tierNumbers = Object.keys(tiers)
-            .map(Number)
-            .sort((a, b) => a - b);
-        let previousId = null;
-        for (const tierNum of tierNumbers) {
-            const tierId = `${id}_t${tierNum}`;
-            expanded[tierId] = { ...family, ...tiers[String(tierNum)], tier: tierNum, requires: previousId };
-            previousId = tierId;
-        }
-    }
-    return expanded;
-}
-
-/** A (flattened) package's family id: tiers `<family>_t<N>` share one. */
-function packageFamilyId(id, pkg) {
-    return pkg.tier != null ? id.replace(/_t\d+$/, '') : id;
-}
-
-/**
  * True for a seasonal package (`seasonal: true`, e.g. the Gear Pass) that isn't on sale right now.
  * `seasonalPasses`: family ids of the seasonal passes on sale (several can be at once; undefined =
  * don't filter, e.g. for scripts). Packages without the flag are always available.
  */
 function isSeasonalOff(id, pkg, seasonalPasses) {
     return seasonalPasses !== undefined && Boolean(pkg.seasonal) && !seasonalPasses.includes(packageFamilyId(id, pkg));
+}
+
+/**
+ * Whether a (flattened) package is on sale this week: it has a price, its event (if any) is running and, if
+ * it's seasonal, it's on sale. `activeEventIds`: Set (null = every event); `seasonalPasses`: family ids
+ * (undefined = every seasonal pass, see isSeasonalOff).
+ */
+function isOnSale(id, pkg, { activeEventIds = null, seasonalPasses } = {}) {
+    if (!(pkg.price > 0) || (pkg.event_id && activeEventIds && !activeEventIds.has(pkg.event_id))) {
+        return false;
+    }
+    return !isSeasonalOff(id, pkg, seasonalPasses);
 }
 
 /**
@@ -197,21 +179,13 @@ function capacityInWindow(
 
 /**
  * Purchases of a (flattened) package possible within `days` (see capacityInWindow).
- * - Event-tied packages need their event in `activeEventIds` (null = all) and ignore their limit
- *   entirely with `exceedEventPackLimits`.
+ * - Event-tied packages need their event in `activeEventIds` (null = all).
  * - Lifetime-limited packages without an event need `includeExclusives`.
  */
-function packageCapacityForDays(
-    pkg,
-    days,
-    { activeEventIds = null, exceedEventPackLimits = false, includeExclusives = true, startDay = null } = {},
-) {
+function packageCapacityForDays(pkg, days, { activeEventIds = null, includeExclusives = true, startDay = null } = {}) {
     if (pkg.event_id) {
         if (activeEventIds && !activeEventIds.has(pkg.event_id)) {
             return 0;
-        }
-        if (exceedEventPackLimits) {
-            return Infinity;
         }
     } else if (isLifetimeLimited(pkg) && !includeExclusives) {
         return 0;
@@ -228,10 +202,9 @@ export {
     DAYS_PER_WEEK,
     isPass,
     isLifetimeLimited,
-    expandPackageFamilies,
-    packageFamilyId,
     bundledPairs,
     isSeasonalOff,
+    isOnSale,
     currencyItemIds,
     packageWeeklyCapacity,
     offerWeeklyCapacity,

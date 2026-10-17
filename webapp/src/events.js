@@ -2,11 +2,11 @@ import './style.css';
 import { renderNav } from './nav';
 import { loadPackData } from './lib/data';
 import { buildValuation, modelSummaryText, planOptions } from './lib/valuation';
-import { solveWeeklyPlan } from './lib/planner.js';
+import { solveWeeklyPlan } from './core/planner.js';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
-import { expandPackageFamilies, packageWeeklyCapacity, offerWeeklyCapacity } from './lib/catalog.js';
-import { createUnitCounter } from './lib/item-sources.js';
+import { packageWeeklyCapacity, offerWeeklyCapacity, isOnSale } from './core/catalog.js';
+import { createUnitCounter } from './core/item-sources.js';
 import { createItemPicker } from './lib/item-picker';
 import { packageDisplayName, itemDisplayName, bundleLabel } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
@@ -128,9 +128,12 @@ const eventPackSpend = (plan, eventId) => eventPurchases(plan, eventId).reduce((
 /** Most Banknotes the event's packages can take per week (unlimited with exceeded limits). */
 function eventMaxSpend(eventId) {
     const rules = { activeEventIds: new Set([eventId]) };
-    const packages = Object.values(expandPackageFamilies(data.packages)).filter(
-        (pkg) => pkg.event_id === eventId && pkg.price > 0 && packageWeeklyCapacity(pkg, rules) > 0,
-    );
+    const packages = Object.entries(data.packages)
+        .filter(
+            ([id, pkg]) =>
+                pkg.event_id === eventId && isOnSale(id, pkg, rules) && packageWeeklyCapacity(pkg, rules) > 0,
+        )
+        .map(([, pkg]) => pkg);
     if (exceeding() && packages.length > 0) {
         return Infinity;
     }
@@ -139,9 +142,9 @@ function eventMaxSpend(eventId) {
 
 /** Price of the event's cheapest pack (whole packs rarely hit a spend level exactly). */
 function cheapestEventPack(eventId) {
-    const prices = Object.values(expandPackageFamilies(data.packages))
-        .filter((pkg) => pkg.event_id === eventId && pkg.price > 0)
-        .map((pkg) => pkg.price);
+    const prices = Object.entries(data.packages)
+        .filter(([id, pkg]) => pkg.event_id === eventId && isOnSale(id, pkg))
+        .map(([, pkg]) => pkg.price);
     return prices.length > 0 ? Math.min(...prices) : 0;
 }
 

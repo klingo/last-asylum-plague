@@ -3,11 +3,10 @@
  * fixture. They pin today's numbers, so a refactor that changes any of them fails here.
  */
 import { test } from 'node:test';
-import { fitItemPoints, fitSensitivity } from '../webapp/src/lib/point-fit.js';
-import { solveWeeklyPlan } from '../webapp/src/lib/planner.js';
-import { solveNeeds } from '../webapp/src/lib/acquire.js';
-import { isSeasonalOff } from '../webapp/src/lib/catalog.js';
-import { loadHighs } from '../webapp/src/lib/lp.js';
+import { fitItemPoints, fitSensitivity } from '../webapp/src/core/point-fit.js';
+import { solveWeeklyPlan } from '../webapp/src/core/planner.js';
+import { solveNeeds } from '../webapp/src/core/acquire.js';
+import { loadHighs } from '../webapp/src/core/lp.js';
 import { DEFAULT_SETTINGS, priorityWeights } from '../webapp/src/lib/settings.js';
 import { loadFixture, expectGolden } from './helpers.js';
 
@@ -115,11 +114,6 @@ function conversionCounts(conversions) {
 
 test('cheapest plan for needs (Compare)', () => {
     const plan = solveWeeklyPlan(highs, data, planOptions());
-    const excluded = new Set(
-        Object.entries(data.packages)
-            .filter(([id, pkg]) => isSeasonalOff(id, pkg, []))
-            .map(([id]) => id),
-    );
     const needs = { raven_essence: 100, lv5_sharp_beak: 1, speedup: 10000, ur_hero_omni_shard: 20 };
     const results = {};
     for (const [itemId, amount] of Object.entries(needs)) {
@@ -128,7 +122,7 @@ test('cheapest plan for needs (Compare)', () => {
             startDay: 0,
             activeEventIds: new Set(),
             includeExclusives: false,
-            excluded,
+            seasonalPasses: [],
             worthOf: (id) => plan.worth(id) ?? 0,
         });
         results[itemId] = {

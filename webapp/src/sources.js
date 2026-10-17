@@ -4,8 +4,8 @@ import { loadPackData } from './lib/data';
 import { buildValuation, modelSummaryText } from './lib/valuation';
 import { mountValuationPanel } from './lib/valuation-panel';
 import { withLoading } from './lib/loading';
-import { isSeasonalOff, packageWeeklyCapacity } from './lib/catalog.js';
-import { createUnitCounter, isContainerItem, isValueLevel, itemChainTops } from './lib/item-sources.js';
+import { isOnSale, packageWeeklyCapacity } from './core/catalog.js';
+import { createUnitCounter, isContainerItem, isValueLevel, itemChainTops } from './core/item-sources.js';
 import { createItemPicker } from './lib/item-picker';
 import { packageDisplayName, itemDisplayName, escapeHtml } from './lib/labels';
 import { createItemImage, banknoteIconHtml } from './lib/images';
@@ -50,7 +50,8 @@ function coinCost(currencyId, amount, activeEventIds) {
     const packs = Object.entries(data.packages)
         .filter(
             ([id, pkg]) =>
-                pkg.price > 0 && pkg.contains?.[currencyId] > 0 && !isSeasonalOff(id, pkg, settings.seasonalPasses),
+                pkg.contains?.[currencyId] > 0 &&
+                isOnSale(id, pkg, { activeEventIds, seasonalPasses: settings.seasonalPasses }),
         )
         .map(([id, pkg]) => ({
             id,
@@ -120,11 +121,7 @@ function buildSources(targetId) {
     };
 
     for (const [id, pkg] of Object.entries(data.packages)) {
-        if (
-            !(pkg.price > 0) ||
-            (pkg.event_id && !activeEventIds.has(pkg.event_id)) ||
-            isSeasonalOff(id, pkg, settings.seasonalPasses)
-        ) {
+        if (!isOnSale(id, pkg, { activeEventIds, seasonalPasses: settings.seasonalPasses })) {
             continue;
         }
         const { units, random } = unitsOf(counter.ofBundle(pkg));
