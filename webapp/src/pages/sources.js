@@ -1,14 +1,15 @@
 import { startPage } from '../ui/page.js';
-import { buildValuation, modelSummaryText } from '../ui/valuation.js';
+import { buildValuation } from '../ui/valuation.js';
+import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
-import { createUnitCounter, isContainerItem, isValueLevel, itemChainTops } from '../core/item-sources.js';
+import { createUnitCounter, sourcesListing } from '../core/item-sources.js';
 import { createItemPicker } from '../ui/item-picker.js';
 import { packageDisplayName, itemDisplayName } from '../ui/labels.js';
 import { escapeHtml, banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
-import { gridCell, gridNum, gridHeader, gridRow } from '../ui/grid.js';
+import { gridCell, gridNum, gridHeader, gridRow, gridTable } from '../ui/grid.js';
 import { formatThousands, formatSignificant } from '../ui/format.js';
 import { ratioBarHtml } from '../ui/ratio-bar.js';
 import { infoIconHtml } from '../ui/info-icon.js';
@@ -19,7 +20,7 @@ const itemPicker = createItemPicker({
     trigger: document.getElementById('item-search'),
     onChange: () => {
         render();
-        syncUrl();
+        setUrlParams({ item: itemPicker.getValue() });
     },
 });
 const sourcesPrompt = document.getElementById('sources-prompt');
@@ -30,6 +31,7 @@ const sourcesTable = document.getElementById('sources-table');
 let data = null;
 let settings = null;
 let valuation = null;
+let panel = null;
 let baseItems = {};
 // Top item of a crafting chain (Tempered Steel) -> its base (Cloth), whose units are counted.
 let chainBaseOf = new Map();
@@ -213,7 +215,7 @@ function render() {
         count: formatThousands(sources.length),
         item: localizedName(data.items[targetId].name, locale),
         worth: unitWorth === null ? t('common.unknown') : formatSignificant(unitWorth),
-    })} ${modelSummaryText(valuation)}`;
+    })}`;
     if (sources.length === 0) {
         sourcesTable.innerHTML = '';
         return;
@@ -229,7 +231,9 @@ function render() {
     }
     const cell = (html, className = '') => gridCell(html, { className });
     const num = gridNum;
-    const header = (key, isNum = false) => gridHeader(t(`sources.table.${key}`), { num: isNum });
+    // Gives, Share and Item ratio are hidden on phones.
+    const WIDE = { wide: true };
+    const header = (key, isNum = false, wide = false) => gridHeader(t(`sources.table.${key}`), { num: isNum, wide });
     const perUnitHeader = gridHeader(
         unitScale === 1
             ? t('sources.table.perUnit')
@@ -251,12 +255,15 @@ function render() {
                     `${s.iconId ? iconHtml(s.iconId) : ''}<span class="source-name"><span>${s.nameHtml}</span>${via}</span>`,
                     'item-cell',
                 ),
-                num(`${s.random ? '~' : ''}×${amount(s.units)}`),
+                num(`${s.random ? '~' : ''}×${amount(s.units)}`, WIDE),
                 num(s.priceHtml),
                 num(s.perUnit === null ? t('common.dash') : gold(formatSignificant(s.perUnit * unitScale))),
                 num(s.ratio === null ? t('common.dash') : ratioBarHtml(s.ratio, maxRatio, { digits: 3 })),
-                num(shareHtml(s.share)),
-                num(s.itemRatio === null ? t('common.dash') : ratioBarHtml(s.itemRatio, maxItemRatio, { digits: 3 })),
+                num(shareHtml(s.share), WIDE),
+                num(
+                    s.itemRatio === null ? t('common.dash') : ratioBarHtml(s.itemRatio, maxItemRatio, { digits: 3 }),
+                    WIDE,
+                ),
             ],
             { buy: s.bought },
         );
@@ -264,34 +271,22 @@ function render() {
     const headerRow = gridRow([
         header('rank', true),
         header('source'),
-        header('gives', true),
+        header('gives', true, true),
         header('price', true),
         perUnitHeader,
         header('ratio', true),
-        header('share', true),
-        header('itemRatio', true),
+        header('share', true, true),
+        header('itemRatio', true, true),
     ]);
-    sourcesTable.innerHTML = headerRow + rows.join('');
+    sourcesTable.innerHTML = gridTable(headerRow, rows.join(''));
     hydrateItemIcons(sourcesTable);
     enableInfoTooltips(sourcesTable);
-}
-
-function syncUrl() {
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams();
-    const lang = url.searchParams.get('lang');
-    if (lang) {
-        params.set('lang', lang);
-    }
-    if (itemPicker.getValue()) {
-        params.set('item', itemPicker.getValue());
-    }
-    window.history.replaceState(null, '', `${url.pathname}${params.size ? `?${params}` : ''}${url.hash}`);
 }
 
 async function recompute() {
     await withLoading(async () => {
         valuation = await buildValuation(data, settings);
+        panel.showRate(valuation);
         render();
     });
 }
@@ -299,24 +294,20 @@ async function recompute() {
 async function init(loaded) {
     data = loaded;
     settings = getSettings();
-    mountValuationPanel(document.getElementById('valuation-panel'), data, { fields: ['budget', 'events', 'passes'] });
+    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        fields: ['budget', 'events', 'passes'],
+    });
     onSettingsChange((next) => {
         settings = next;
         recompute();
     });
-    // Only base items: a container (e.g. Herb Level Supply) just stands for what it contains, and its
-    // contents are found through it anyway (pick Herbs to see every pack with Herb Level Supplies).
-    // Crafting chains appear once, as their top item (Tempered Steel, not Cloth). Value levels (Lv.1 /
-    // Lv.3 / Lv.5 Sharp Beak: worth 9:1, but not convertible) are listed each, with their own sources.
-    const chainTops = itemChainTops(data.items, { convertibleOnly: true });
-    chainBaseOf = new Map([...chainTops].map(([baseId, topId]) => [topId, baseId]));
-    baseItems = Object.fromEntries(
-        Object.entries(data.items)
-            .filter(([id, item]) => !isContainerItem(item) || chainBaseOf.has(id) || isValueLevel(item))
-            .filter(([id]) => !chainTops.has(id)),
-    );
+    // Only base items (see sourcesListing): containers stand for their contents, crafting chains appear as their
+    // top item, value levels each.
+    const listing = sourcesListing(data.items);
+    chainBaseOf = listing.chainBaseOf;
+    baseItems = Object.fromEntries([...listing.listed].map((id) => [id, data.items[id]]));
     itemPicker.setItems(baseItems);
-    const itemParam = new URLSearchParams(window.location.search).get('item');
+    const itemParam = urlParam('item');
     if (itemParam && baseItems[itemParam]) {
         itemPicker.setValue(itemParam);
     }

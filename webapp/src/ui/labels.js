@@ -6,6 +6,8 @@
 import { localizedName, t } from './i18n.js';
 import { formatThousands } from './format.js';
 import { escapeHtml } from './html.js';
+import { itemSourcesHref } from './url.js';
+import { sourcesListing } from '../core/item-sources.js';
 
 /** A package's plain-text name, with a localized "(Tier N)" suffix when it belongs to a tier ladder. */
 function packageDisplayText(pkg, locale) {
@@ -20,6 +22,26 @@ function packageDisplayName(pkg, locale) {
 
 function itemDisplayName(items, itemId, locale) {
     return escapeHtml(localizedName(items[itemId]?.name, locale) || itemId);
+}
+
+// The Item Sources listing per items object (computed once per page).
+const listings = new WeakMap();
+
+/**
+ * `html` (usually the item's name) as a link to Item Sources for `itemId` ("where do I get this?"), or as it
+ * is for items Item Sources doesn't list (chests, supplies: their contents are listed instead).
+ */
+function itemLinkHtml(items, itemId, html) {
+    if (!listings.has(items)) {
+        listings.set(items, sourcesListing(items));
+    }
+    const target = listings.get(items).sourcesItemFor(itemId);
+    return target ? `<a class="item-link" href="${escapeHtml(itemSourcesHref(target))}">${html}</a>` : html;
+}
+
+/** itemDisplayName, linked to Item Sources (see itemLinkHtml). */
+function itemLinkName(items, itemId, locale) {
+    return itemLinkHtml(items, itemId, itemDisplayName(items, itemId, locale));
 }
 
 /** "<Shop> - <Item> ×<qty>" name of an exchange-shop offer (a shop can sell one item in several sizes). */
@@ -65,6 +87,8 @@ export {
     packageDisplayText,
     packageDisplayName,
     itemDisplayName,
+    itemLinkHtml,
+    itemLinkName,
     offerDisplayName,
     bundleLabel,
     todayWeekdayIndex,

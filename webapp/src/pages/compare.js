@@ -1,5 +1,6 @@
 import { startPage } from '../ui/page.js';
-import { buildValuation, modelSummaryText } from '../ui/valuation.js';
+import { buildValuation } from '../ui/valuation.js';
+import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
@@ -36,6 +37,7 @@ const compareNote = document.getElementById('compare-note');
 let data = null;
 let settings = null;
 let valuation = null;
+let panel = null;
 let runId = 0;
 
 const gold = (value, digits = 0) =>
@@ -116,15 +118,15 @@ function render(results) {
         const best = Number.isFinite(va) && Number.isFinite(vb) && va !== vb ? (better(va, vb) ? 'a' : 'b') : null;
         const cell = (r, v, side) =>
             `<td class="compare-table__${side} ${best === side ? 'compare-table__best' : ''}">${r ? format(r, v) : ''}</td>`;
-        return `<tr>${cell(a, va, 'a')}<th class="compare-table__label">${label}</th>${cell(b, vb, 'b')}</tr>`;
+        return `<tr>${cell(a, va, 'a')}<th scope="row" class="compare-table__label">${label}</th>${cell(b, vb, 'b')}</tr>`;
     };
     const reachableGold = (r, v) =>
         r.plan.reachable ? gold(v) : `<span class="text-dim">${t('compare.unreachable')}</span>`;
     compareTable.innerHTML = `
         <thead><tr>
-            <th class="compare-table__a"><span class="compare-bar__swatch compare-bar__swatch--a"></span> ${name(a)}</th>
-            <th class="compare-table__label"></th>
-            <th class="compare-table__b"><span class="compare-bar__swatch compare-bar__swatch--b"></span> ${name(b)}</th>
+            <th scope="col" class="compare-table__a"><span class="compare-bar__swatch compare-bar__swatch--a"></span> ${name(a)}</th>
+            <td class="compare-table__label"></td>
+            <th scope="col" class="compare-table__b"><span class="compare-bar__swatch compare-bar__swatch--b"></span> ${name(b)}</th>
         </tr></thead>
         <tbody>
             ${row(
@@ -148,7 +150,7 @@ function render(results) {
             ${row(t('compare.net'), net, reachableGold, (x, y) => x < y)}
             <tr>
                 <td class="compare-table__a">${a ? stepsHtml(a.plan, locale) : ''}</td>
-                <th class="compare-table__label">${t('compare.how')}</th>
+                <th scope="row" class="compare-table__label">${t('compare.how')}</th>
                 <td class="compare-table__b">${b ? stepsHtml(b.plan, locale) : ''}</td>
             </tr>
         </tbody>`;
@@ -168,13 +170,44 @@ function render(results) {
         parts.push(tHtml('compare.verdictCost', { cheaper: name(cheaper), dearer: name(dearer) }));
     }
     verdict.innerHTML = parts.join(' ');
-    compareNote.textContent = `${t('compare.note')} ${modelSummaryText(valuation)}`;
+    compareNote.textContent = t('compare.note');
+}
+
+/** Both sides and the days in the URL: `?a=<item>&an=<amount>&b=<item>&bn=<amount>&days=<n>`. */
+function syncUrl() {
+    const [a, b] = sides;
+    setUrlParams({
+        a: a.picker.getValue(),
+        an: a.picker.getValue() ? a.amount.value : null,
+        b: b.picker.getValue(),
+        bn: b.picker.getValue() ? b.amount.value : null,
+        days: daysInput.value !== '7' ? daysInput.value : null,
+    });
+}
+
+/** The sides and days a link (or a reload) asks for. */
+function readUrl() {
+    for (const side of sides) {
+        const itemId = urlParam(side.key);
+        if (itemId && data.items[itemId]) {
+            side.picker.setValue(itemId);
+            const amount = Number(urlParam(`${side.key}n`));
+            if (amount > 0) {
+                side.amount.value = String(Math.floor(amount));
+            }
+        }
+    }
+    const days = Number(urlParam('days'));
+    if (days >= 1) {
+        daysInput.value = String(Math.floor(days));
+    }
 }
 
 async function recompute() {
     if (!data || !valuation) {
         return;
     }
+    syncUrl();
     const run = ++runId;
     await withLoading(() => {
         if (run === runId) {
@@ -186,6 +219,7 @@ async function recompute() {
 async function revalue() {
     await withLoading(async () => {
         valuation = await buildValuation(data, settings);
+        panel.showRate(valuation);
     });
     await recompute();
 }
@@ -193,7 +227,9 @@ async function revalue() {
 async function init(loaded) {
     data = loaded;
     settings = getSettings();
-    mountValuationPanel(document.getElementById('valuation-panel'), data, { fields: ['budget', 'events', 'passes'] });
+    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        fields: ['budget', 'events', 'passes'],
+    });
     onSettingsChange((next) => {
         settings = next;
         revalue();
@@ -203,6 +239,7 @@ async function init(loaded) {
         side.amount.addEventListener('change', () => recompute());
     }
     daysInput.addEventListener('change', () => recompute());
+    readUrl();
     await revalue();
 }
 

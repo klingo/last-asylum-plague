@@ -1441,7 +1441,8 @@ tbody tr.choice-details:hover {
     border-radius: 3px;
 }
 
-.ranking-grid__row {
+.ranking-grid__row,
+.ranking-grid__group {
     display: contents;
 }
 
@@ -1749,17 +1750,6 @@ tbody tr.choice-details:hover {
 
 .schedule__icon.item-icon--placeholder {
     padding: 2px;
-}
-
-/* Weekday offers: half the page on wide screens, full width on smaller ones. */
-.schedule--rotation {
-    max-width: 50%;
-}
-
-@media (max-width: 1100px) {
-    .schedule--rotation {
-        max-width: none;
-    }
 }
 
 .schedule__row {
@@ -2838,4 +2828,96 @@ tbody tr.choice-details:hover {
 
 .gear-help p .gear-help__piece .item-icon {
     margin: -4px 0;
+}
+
+/* Phones: the grids drop the columns marked wide-only (grid.js `wide`: Type, Category, Worth on the Ranking;
+   Gives, Share, Item ratio on Item Sources; Limit, Cost in Banknotes in the Events shop), so the deciding
+   columns fit without scrolling sideways. Their Details keep the same columns. */
+@media (max-width: 640px) {
+    .ranking-grid__cell--wide {
+        display: none;
+    }
+
+    /* The name column takes what's left; the number columns are as wide as their content (a price and its
+       icon never squeeze into the next column). */
+    .ranking-grid--rankings {
+        grid-template-columns: minmax(80px, 1fr) max-content minmax(56px, max-content) max-content max-content;
+    }
+
+    /* The Ranking's "/ 7" after a count and the weekly-share icon at a price: details for wide screens. */
+    .buy-limit,
+    .price-info {
+        display: none;
+    }
+
+    /* A long "Buy" text ("in Weekly Pass") wraps inside its cell instead of running into the next one. */
+    .ranking-grid__cell--num {
+        flex-wrap: wrap;
+    }
+
+    .sources-grid {
+        grid-template-columns: max-content minmax(90px, 1fr) max-content max-content max-content;
+    }
+
+    .events-shop-grid {
+        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content;
+    }
+
+    .events-shop-grid--locks {
+        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content max-content;
+    }
+
+    .ranking-grid__cell {
+        padding: 8px 4px;
+    }
+
+    .ranking-grid__cell--header {
+        letter-spacing: 0;
+    }
+}
+
+/* Setup panel: the dot of an event / pass the calendar shows running today, and the button using them. */
+.toggle-chip__now {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-left: 4px;
+    border-radius: 50%;
+    background: var(--good);
+    vertical-align: middle;
+}
+
+.setup-panel__calendar {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    font-size: 0.85rem;
+}
+
+/* The plan's rate in the setup bar: its explanation on hover / focus. */
+.setup-chip--rate {
+    color: var(--text-dim);
+    border-bottom: 1px dotted var(--text-dim);
+    cursor: help;
+}
+
+/* An item name linking to Item Sources ("where do I get this?"): reads as text, shows it's a link on hover. */
+.item-link {
+    color: inherit;
+    text-decoration: underline dotted var(--text-dim);
+    text-underline-offset: 3px;
+}
+
+.item-link:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+}
+
+/* A small secondary button inside a line of text (Events: "Choose events"). */
+.btn-small {
+    margin-left: 6px;
+    padding: 2px 10px;
+    font-size: 0.8rem;
 }

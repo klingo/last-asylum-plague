@@ -11,6 +11,7 @@
 import { startPage } from '../ui/page.js';
 import { enumLabel, localizedName, t, tHtml } from '../ui/i18n.js';
 import { escapeHtml, hydrateItemIcons } from '../ui/html.js';
+import { itemLinkHtml } from '../ui/labels.js';
 import { formatThousands } from '../ui/format.js';
 import {
     MR_STEP,
@@ -61,6 +62,8 @@ let mrOnHold = false;
 const openLists = new Set();
 
 const itemName = (itemId) => localizedName(data.items[itemId]?.name) || itemId;
+// A blueprint's name, linked to Item Sources (where to get it).
+const blueprintLink = (itemId) => itemLinkHtml(data.items, itemId, escapeHtml(itemName(itemId)));
 const heroName = (heroId) => localizedName(data.heroes?.[heroId]?.name) || heroId;
 // A slot's hero in the faction shown.
 const heroOf = (slot) => guide.slots[slot]?.heroes?.[shownFaction];
@@ -586,7 +589,7 @@ function nextCardHtml(path, titleKey) {
     } else {
         const blueprint = path === 'stars' ? blueprintOf(next) : null;
         const uses = blueprint
-            ? `<p class="gear-next__uses">${escapeHtml(t('gear.uses'))} <span data-item-id="${blueprint}"></span> ${escapeHtml(itemName(blueprint))}</p>`
+            ? `<p class="gear-next__uses">${escapeHtml(t('gear.uses'))} <span data-item-id="${blueprint}"></span> ${blueprintLink(blueprint)}</p>`
             : '';
         const need = path === 'craft' || locked || canAdvance(path) ? null : needOf(next);
         blocked = need ? blockedHtml(need) : '';
@@ -623,7 +626,7 @@ function heldNoteHtml() {
     if (!held || !blueprint) {
         return '';
     }
-    return `<p class="gear-held-note">${ACTION_ICONS.hold} ${escapeHtml(t('gear.heldNote', { count: held }))} <span data-item-id="${blueprint}"></span> ${escapeHtml(itemName(blueprint))}</p>`;
+    return `<p class="gear-held-note">${ACTION_ICONS.hold} ${escapeHtml(t('gear.heldNote', { count: held }))} <span data-item-id="${blueprint}"></span> ${blueprintLink(blueprint)}</p>`;
 }
 
 function renderGuide() {

@@ -19,11 +19,14 @@
                 <div id="valuation-panel"></div>
                 <div class="form-row">
                     <div class="field field--wide">
-                        <label for="event-select" data-i18n="events.eventLabel"></label>
-                        <div class="item-picker"><button type="button" id="event-select"></button></div>
+                        <span class="field-label" id="event-tabs-label" data-i18n="events.eventLabel"></span>
+                        <div class="toggle-chips" id="event-tabs" role="group" aria-labelledby="event-tabs-label"></div>
                     </div>
                 </div>
-                <p class="footnote" data-i18n="events.tickHint"></p>
+                <p class="footnote">
+                    <span data-i18n="events.tickHint"></span>
+                    <button type="button" class="btn-secondary btn-small" id="choose-events" data-i18n="events.chooseEvents"></button>
+                </p>
             </section>
 
             <section class="card" id="event-prompt-card">

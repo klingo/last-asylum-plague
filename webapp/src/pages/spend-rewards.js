@@ -1,5 +1,6 @@
 import { startPage } from '../ui/page.js';
-import { buildValuation, modelSummaryText, planOptions } from '../ui/valuation.js';
+import { buildValuation, planOptions } from '../ui/valuation.js';
+import { urlParam, setUrlParams } from '../ui/url.js';
 import { solveWeeklyPlan } from '../core/planner.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
@@ -12,6 +13,7 @@ import {
     gridNum,
     gridHeader,
     gridRow,
+    gridTable,
     gridDetails,
     detailsToggleHtml,
     wireDetailsToggles,
@@ -30,6 +32,7 @@ const trackPicker = createItemPicker({
     icons: false,
     onChange: () => {
         expandedKeys.clear();
+        setUrlParams({ track: trackPicker.getValue() });
         withLoading(render);
     },
 });
@@ -42,6 +45,7 @@ const tiersNote = document.getElementById('tiers-note');
 let data = null;
 let settings = null;
 let valuation = null;
+let panel = null;
 const expandedKeys = new Set();
 
 /** The Details block of a tier: its reward's contents in the table's columns. */
@@ -49,7 +53,7 @@ function detailsHtml(key, tier) {
     const header = gridRow([
         gridHeader(t('spendRewards.table.item')),
         gridHeader(t('rankings.table.category')),
-        gridHeader(t('rankings.table.pointsEach'), { num: true }),
+        gridHeader(t('rankings.table.worthEach'), { num: true }),
         gridHeader(t('rankings.table.worth'), { num: true }),
         gridHeader(),
         gridHeader(),
@@ -59,7 +63,7 @@ function detailsHtml(key, tier) {
         gridRow([
             gridCell(part.item, { className: 'item-cell' }),
             gridCell(part.category),
-            gridNum(part.points),
+            gridNum(part.worthEach),
             gridNum(part.worth),
             gridCell(),
             gridCell(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
@@ -191,7 +195,7 @@ function render() {
     } else {
         verdict = reachedText + t('spendRewards.verdictNone');
     }
-    tiersNote.textContent = `${verdict} ${t('spendRewards.note')} ${modelSummaryText(valuation)}`;
+    tiersNote.textContent = `${verdict} ${t('spendRewards.note')}`;
 
     const maxRatio = Math.max(1, ...tiers.map((tier) => tier.ratio).filter(Number.isFinite));
     const rows = tiers
@@ -201,7 +205,7 @@ function render() {
             const row = gridRow([
                 gridCell(
                     usesPoints
-                        ? `${label} (<span class="text-gold">${formatThousands(tier.threshold)}</span>&nbsp;${t('spendRewards.pointsSuffix')})`
+                        ? `${label} (${formatThousands(tier.threshold)}&nbsp;${t('spendRewards.pointsSuffix')})`
                         : label,
                 ),
                 gridNum(banknotesHtml(formatThousands(tier.cumulativeCost, 0))),
@@ -236,7 +240,7 @@ function render() {
         gridHeader(t('spendRewards.table.ratio'), { num: true }),
         gridHeader(),
     ]);
-    tiersTable.innerHTML = header + rows;
+    tiersTable.innerHTML = gridTable(header, rows);
     hydrateItemIcons(tiersTable);
     wireDetailsToggles(tiersTable, expandedKeys);
 }
@@ -256,6 +260,7 @@ function populateTrackSelect() {
 async function recompute() {
     await withLoading(async () => {
         valuation = await buildValuation(data, settings);
+        panel.showRate(valuation);
         render();
     });
 }
@@ -264,7 +269,7 @@ startPage('spend-rewards', {
     async init(loaded) {
         data = loaded;
         settings = getSettings();
-        mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
             fields: ['budget', 'events', 'passes'],
         });
         onSettingsChange((next) => {
@@ -280,7 +285,11 @@ startPage('spend-rewards', {
                 data.spend_reward_tracks?.[id] &&
                 runs.some((run) => run.start <= today && today <= run.end),
         );
-        if (running) {
+        // A track in the URL (a shared link, a reload) wins over today's.
+        const fromUrl = urlParam('track');
+        if (fromUrl && data.spend_reward_tracks?.[fromUrl]) {
+            trackPicker.setValue(fromUrl);
+        } else if (running) {
             trackPicker.setValue(running[0]);
         }
         await recompute();

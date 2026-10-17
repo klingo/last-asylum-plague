@@ -4,14 +4,21 @@
  * button that opens the controls below it (spend | events | passes; toggle chips for events and passes).
  * Changes go to the settings store (settings.js `updateSettings`); pages listen with `onSettingsChange`.
  *
+ * Events and passes the recorded calendar (`schedule`) shows running today carry a dot, and one button
+ * selects exactly those. The page shows its plan's rate in the bar with `showRate(valuation)`.
+ *
  * `fields`: which controls to show, any of 'budget', 'events', 'passes'.
+ * Returns `{ open(), showRate(valuation) }`.
  */
 import { localizedName, applyStaticTranslations, t, tHtml } from './i18n.js';
 import { getSettings, updateSettings, onSettingsChange, SETTINGS_KEY } from './settings.js';
 import { packageFamilyId } from '../core/pack-data.js';
-import { escapeHtml } from './html.js';
+import { localDayNumber, scheduleRuns } from '../core/schedule.js';
+import { escapeHtml, escapeAttr } from './html.js';
 import { banknoteIconHtml } from './images.js';
 import { formatThousands } from './format.js';
+import { enableInfoTooltips } from './tooltip.js';
+import { modelSummaryText } from './valuation.js';
 
 // Whether the setup panel is open: a UI preference (not a setting, so toggling doesn't recompute).
 const OPEN_KEY = 'lasps_setup_open';
@@ -25,6 +32,16 @@ function passFamilies(packages) {
         }
     }
     return [...families];
+}
+
+/** Ids (events, pass families, tracks) the recorded calendar shows running today. */
+function runningToday(data) {
+    const today = localDayNumber(new Date());
+    return new Set(
+        [...scheduleRuns(data)]
+            .filter(([, { runs }]) => runs.some((run) => run.start <= today && today <= run.end))
+            .map(([id]) => id),
+    );
 }
 
 const ALL_FIELDS = ['budget', 'events', 'passes'];
@@ -47,15 +64,20 @@ function saveOpen(open) {
     }
 }
 
-/** A labelled group of toggle chips (events / passes) for the settings list `key`. */
-function chipGroupHtml(key, labelKey, entries) {
+/** A labelled group of toggle chips (events / passes) for the settings list `key`; `running`: ids running today. */
+function chipGroupHtml(key, labelKey, entries, running) {
     if (entries.length === 0) {
         return '';
     }
+    const nowLabel = escapeAttr(t('valuation.nowRunning'));
     const chips = entries
         .map(
             ([id, entry]) =>
-                `<button type="button" class="toggle-chip" data-key="${key}" data-value="${id}" aria-pressed="false">${escapeHtml(localizedName(entry.name))}</button>`,
+                `<button type="button" class="toggle-chip" data-key="${key}" data-value="${escapeHtml(id)}" aria-pressed="false">${escapeHtml(localizedName(entry.name))}${
+                    running.has(id)
+                        ? ` <span class="toggle-chip__now" title="${nowLabel}"><span class="sr-only">${nowLabel}</span></span>`
+                        : ''
+                }</button>`,
         )
         .join('');
     return `
@@ -67,6 +89,7 @@ function chipGroupHtml(key, labelKey, entries) {
 
 function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
     let open = loadOpen();
+    let valuation = null;
     const show = new Set(fields);
     const sorted = (object) =>
         Object.entries(object || {}).sort(([, a], [, b]) => localizedName(a.name).localeCompare(localizedName(b.name)));
@@ -76,8 +99,12 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
     const shoppableEvents = Object.fromEntries(
         Object.entries(data.events || {}).filter(([, event]) => event.category !== 'ingame_event'),
     );
+    const running = runningToday(data);
+    const runningEvents = Object.keys(shoppableEvents).filter((id) => running.has(id));
+    const runningPasses = passes.map(([id]) => id).filter((id) => running.has(id));
+    const offerCalendar = (show.has('events') || show.has('passes')) && Object.keys(data.schedule || {}).length > 0;
 
-    /** "🪙 20,000 / week · Events: … · Passes: …" for the page's fields. */
+    /** "🪙 20,000 / week · Events: … · Passes: … · Last Banknote: 41.41 pts" for the page's fields. */
     function renderSummary() {
         const settings = getSettings();
         const summary = container.querySelector('.setup-bar__summary');
@@ -105,7 +132,19 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
             };
             parts.push(tHtml('valuation.summaryPasses', { list: names(settings.seasonalPasses, passName) }));
         }
-        summary.innerHTML = parts.map((part) => `<span class="setup-chip">${part}</span>`).join('');
+        const chips = parts.map((part) => `<span class="setup-chip">${part}</span>`);
+        if (valuation) {
+            // How points become Banknotes at this spend: short in the bar, the full sentence on hover / focus.
+            const explanation = escapeAttr(modelSummaryText(valuation));
+            chips.push(
+                `<span class="setup-chip setup-chip--rate" tabindex="0" data-tooltip="${explanation}" aria-label="${explanation}">${t(
+                    'valuation.rateChip',
+                    { rate: formatThousands(valuation.rate, 2) },
+                )}</span>`,
+            );
+        }
+        summary.innerHTML = chips.join('');
+        enableInfoTooltips(summary);
     }
 
     function renderToggle() {
@@ -134,8 +173,16 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
                         </div>`
                         : ''
                 }
-                ${show.has('events') ? chipGroupHtml('activeEvents', 'valuation.eventsLabel', sorted(shoppableEvents)) : ''}
-                ${show.has('passes') ? chipGroupHtml('seasonalPasses', 'valuation.passesLabel', passes) : ''}
+                ${show.has('events') ? chipGroupHtml('activeEvents', 'valuation.eventsLabel', sorted(shoppableEvents), running) : ''}
+                ${show.has('passes') ? chipGroupHtml('seasonalPasses', 'valuation.passesLabel', passes, running) : ''}
+                ${
+                    offerCalendar
+                        ? `<div class="setup-panel__calendar">
+                            <button type="button" class="btn-secondary" id="vp-calendar" data-i18n="valuation.useCalendar"></button>
+                            <span class="text-dim"><span class="toggle-chip__now" aria-hidden="true"></span> <span data-i18n="valuation.useCalendarHint"></span></span>
+                        </div>`
+                        : ''
+                }
             </div>`;
         applyStaticTranslations(container);
         renderSummary();
@@ -158,6 +205,16 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
                 updateSettings({ [key]: list.includes(value) ? list.filter((id) => id !== value) : [...list, value] });
             });
         }
+        container.querySelector('#vp-calendar')?.addEventListener('click', () => {
+            const patch = {};
+            if (show.has('events')) {
+                patch.activeEvents = runningEvents;
+            }
+            if (show.has('passes')) {
+                patch.seasonalPasses = runningPasses;
+            }
+            updateSettings(patch);
+        });
         renderValues();
     }
 
@@ -180,6 +237,21 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
         renderSummary();
         renderValues();
     });
+
+    return {
+        /** Opens the controls and brings them into view (e.g. "Choose events" on the Events page). */
+        open() {
+            open = true;
+            saveOpen(open);
+            renderToggle();
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+        /** Shows the plan's rate (points per last Banknote) in the bar, the explanation as its tooltip. */
+        showRate(next) {
+            valuation = next;
+            renderSummary();
+        },
+    };
 }
 
 export { mountValuationPanel };

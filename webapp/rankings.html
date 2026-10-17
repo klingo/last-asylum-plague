@@ -23,11 +23,21 @@
                         <input id="search-input" type="search" data-i18n-placeholder="rankings.searchPlaceholder" />
                     </div>
                 </div>
+                <div class="form-row form-row--top">
+                    <div class="field">
+                        <span class="field-label" data-i18n="rankings.show"></span>
+                        <div class="toggle-chips" id="show-mode"></div>
+                    </div>
+                    <div class="field field--wide">
+                        <span class="field-label" data-i18n="rankings.typeFilter"></span>
+                        <div class="toggle-chips" id="type-filter"></div>
+                    </div>
+                </div>
                 <p class="summary-line" id="ranking-meta"></p>
             </section>
 
             <section class="card">
-                <div class="table-wrap"><div id="ranking-table" class="ranking-grid" role="table"></div></div>
+                <div class="table-wrap"><div id="ranking-table" class="ranking-grid ranking-grid--rankings" role="table"></div></div>
                 <div id="ranking-empty" class="empty-state" hidden data-i18n="rankings.empty"></div>
             </section>
         </main>

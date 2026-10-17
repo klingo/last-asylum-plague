@@ -65,6 +65,10 @@ function familyName(familyId) {
 
 /** "uncertain" marker with the reason as tooltip, or ''. */
 function uncertainHtml(id) {
+    // Worth 0 anyway at Don't care: how sure its worth is doesn't matter.
+    if (priorityOf(id) === 'none') {
+        return '';
+    }
     const entry = valuation.fit.points.get(id);
     const dependence = sensitivity?.get(id);
     const reasons = [];

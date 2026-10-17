@@ -160,4 +160,25 @@ function createUnitCounter(items, targetId) {
     return { ofItem: (id) => ofItem(id), ofBundle };
 }
 
-export { createUnitCounter, isContainerItem, isValueLevel, itemChainTops };
+/**
+ * The items Item Sources lists, and which one to open for any item. Only base items: a container (e.g. Herb
+ * Level Supply) just stands for what it contains, and its contents are found through it anyway. Crafting
+ * chains appear once, as their top item (Tempered Steel, not Cloth), counted in their base. Value levels
+ * (Lv.1 / Lv.3 / Lv.5 Sharp Beak: worth 9:1, not convertible) are listed each, with their own sources.
+ * Returns `{ listed: Set, chainBaseOf: Map topId -> baseId, sourcesItemFor(itemId) }`, where
+ * `sourcesItemFor` gives the listed item to open for `itemId` (a chain base opens its top), or null.
+ */
+function sourcesListing(items) {
+    const chainTops = itemChainTops(items, { convertibleOnly: true });
+    const chainBaseOf = new Map([...chainTops].map(([baseId, topId]) => [topId, baseId]));
+    const listed = new Set(
+        Object.entries(items)
+            .filter(([id, item]) => !isContainerItem(item) || chainBaseOf.has(id) || isValueLevel(item))
+            .filter(([id]) => !chainTops.has(id))
+            .map(([id]) => id),
+    );
+    const sourcesItemFor = (itemId) => (listed.has(itemId) ? itemId : (chainTops.get(itemId) ?? null));
+    return { listed, chainBaseOf, sourcesItemFor };
+}
+
+export { createUnitCounter, isContainerItem, isValueLevel, itemChainTops, sourcesListing };

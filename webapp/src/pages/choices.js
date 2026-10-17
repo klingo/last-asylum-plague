@@ -1,5 +1,6 @@
 import { startPage } from '../ui/page.js';
-import { buildValuation, modelSummaryText } from '../ui/valuation.js';
+import { buildValuation } from '../ui/valuation.js';
+import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
@@ -23,13 +24,13 @@ const resetBtn = document.getElementById('reset-btn');
 const form = document.getElementById('choices-form');
 const optionsCard = document.getElementById('options-card');
 const optionsSelectHint = document.getElementById('options-select-hint');
-const optionsMeta = document.getElementById('options-meta');
 const optionsTable = document.getElementById('options-table');
 const optionsEmpty = document.getElementById('options-empty');
 
 let data = null;
 let settings = null;
 let valuation = null;
+let panel = null;
 let choiceSources = {};
 // Packages whose "Details" are open (kept across re-renders, e.g. a changed weekly spend).
 const expandedKeys = new Set();
@@ -91,7 +92,6 @@ function render() {
     }
     const locale = getLocale();
     optionsCard.hidden = false;
-    optionsMeta.textContent = modelSummaryText(valuation);
     if (source.packages) {
         renderGroup(source.packages, locale);
         return;
@@ -152,7 +152,7 @@ function detailRowsHtml(row) {
                 <tr class="choice-details" data-details-key="${key}" ${hidden}>
                     <td></td>
                     <td><span class="item-cell">${part.item}</span></td>
-                    <td class="text-right table-col-fit">${part.points}</td>
+                    <td class="text-right table-col-fit">${part.worthEach}</td>
                     <td class="text-right table-col-fit">${part.unknown ? `<span class="text-bad">${t('choices.incomplete')}</span>` : banknotesHtml(formatThousands(part.worth, 0))}</td>
                     <td></td>
                     <td></td>
@@ -164,7 +164,7 @@ function detailRowsHtml(row) {
         <tr class="choice-details choice-details--header" data-details-key="${key}" ${hidden}>
             <th></th>
             <th>${t('choices.table.item')}</th>
-            <th class="text-right table-col-fit">${t('choices.table.pointsEach')}</th>
+            <th class="text-right table-col-fit">${t('choices.table.worthEach')}</th>
             <th class="text-right table-col-fit">${t('choices.table.worth')}</th>
             <th></th>
             <th></th>
@@ -226,22 +226,15 @@ function renderGroup(packages, locale) {
     wireDetailsToggles(optionsTable, expandedKeys);
 }
 
+/** The chosen chest / package / group in the URL. */
 function syncUrl() {
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams();
-    const lang = url.searchParams.get('lang');
-    if (lang) {
-        params.set('lang', lang);
-    }
-    if (itemPicker.getValue()) {
-        params.set('item', itemPicker.getValue());
-    }
-    window.history.replaceState(null, '', `${url.pathname}${params.size ? `?${params}` : ''}${url.hash}`);
+    setUrlParams({ item: itemPicker.getValue() });
 }
 
 async function recompute() {
     await withLoading(async () => {
         valuation = await buildValuation(data, settings);
+        panel.showRate(valuation);
         render();
     });
 }
@@ -249,14 +242,14 @@ async function recompute() {
 async function init(loaded) {
     data = loaded;
     settings = getSettings();
-    mountValuationPanel(document.getElementById('valuation-panel'), data, { fields: ['budget'] });
+    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, { fields: ['budget'] });
     onSettingsChange((next) => {
         settings = next;
         recompute();
     });
     choiceSources = collectChoiceSources(getLocale());
     itemPicker.setItems(choiceSources);
-    const itemParam = new URLSearchParams(window.location.search).get('item');
+    const itemParam = urlParam('item');
     if (itemParam && choiceSources[itemParam]) {
         itemPicker.setValue(itemParam);
     }

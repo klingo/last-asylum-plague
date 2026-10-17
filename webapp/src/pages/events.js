@@ -1,29 +1,24 @@
 import { startPage } from '../ui/page.js';
-import { buildValuation, modelSummaryText, planOptions } from '../ui/valuation.js';
+import { buildValuation, planOptions } from '../ui/valuation.js';
 import { solveWeeklyPlan } from '../core/planner.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { packageWeeklyCapacity, offerWeeklyCapacity, isOnSale } from '../core/catalog.js';
 import { createUnitCounter } from '../core/item-sources.js';
-import { createItemPicker } from '../ui/item-picker.js';
-import { packageDisplayName, itemDisplayName, bundleLabel } from '../ui/labels.js';
-import { banknotesHtml, escapeAttr, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
-import { gridCell, gridNum, gridHeader, gridRow, gridSection } from '../ui/grid.js';
+import { urlParam, setUrlParams } from '../ui/url.js';
+import { packageDisplayName, itemDisplayName, itemLinkName, bundleLabel } from '../ui/labels.js';
+import { banknotesHtml, escapeAttr, escapeHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { gridCell, gridNum, gridHeader, gridRow, gridTable, gridSection } from '../ui/grid.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { infoIconHtml } from '../ui/info-icon.js';
 import { t, tHtml, getLocale, localizedName } from '../ui/i18n.js';
 import { formatThousands, formatSignificant } from '../ui/format.js';
 import { ratioBarHtml } from '../ui/ratio-bar.js';
 
-// The app's own picker (not a native <select>, whose open list the browser draws itself).
-const eventPicker = createItemPicker({
-    trigger: document.getElementById('event-select'),
-    placeholderKey: 'events.eventPlaceholder',
-    searchPlaceholderKey: 'events.eventSearch',
-    icons: false,
-    onChange: () => onEventChange(),
-});
+// One tab per ticked event and per shop without event (VIP Shop): usually only a few, so one click each.
+const eventTabs = document.getElementById('event-tabs');
+const chooseEvents = document.getElementById('choose-events');
 const exceedLimits = document.getElementById('exceed-limits');
 const exceedLimitsInfo = document.getElementById('exceed-limits-info');
 const exceedField = document.getElementById('exceed-field');
@@ -50,6 +45,9 @@ const STEP_LEVELS = [1000, 2000, 5000, 10000, 20000, 50000];
 let data = null;
 let settings = null;
 let valuation = null;
+let panel = null;
+// The tab shown: `event:<id>` or `shop:<id>` (from the URL first, so a link opens the same event).
+let selectedKey = urlParam('event') ?? '';
 let stepCache = { key: null, steps: null };
 let lockCostCache = { key: null, cost: null };
 // itemId -> whether any pack or another shop gives it (for the "Only here" badge), per shop.
@@ -59,11 +57,13 @@ const gold = banknotesHtml;
 const iconHtml = itemIconSlot;
 const cell = (html, className = '') => gridCell(html, { className });
 const numCell = gridNum;
-const headerCell = (key, num = false) => gridHeader(t(`events.table.${key}`), { num });
+// `wide`: column hidden on phones (Limit, Cost in Banknotes of the shop table).
+const WIDE = { wide: true };
+const headerCell = (key, num = false, wide = false) => gridHeader(t(`events.table.${key}`), { num, wide });
 
 /** The selection: an event (`event:<id>`, with its shop if any) or a shop without event (`shop:<id>`). */
 function selection() {
-    const [kind, id] = eventPicker.getValue().split(':');
+    const [kind, id] = selectedKey.split(':');
     if (kind === 'event' && data.events?.[id]) {
         const shopEntry = Object.entries(data.exchange_shops || {}).find(([, shop]) => shop.event_id === id);
         return { eventId: id, shopId: shopEntry?.[0] ?? null, shop: shopEntry?.[1] ?? null };
@@ -276,7 +276,7 @@ function renderSummary({ eventId, shopId, shop }) {
                 `<ul class="item-list">${totals
                     .map(
                         ({ id, qty, worth }) =>
-                            `<li><span class="item-chip">${iconHtml(id)}${itemDisplayName(data.items, id, locale)}</span><strong class="${qty < 0 ? 'text-bad' : ''}">${qty < 0 ? '−' : '×'}${Number.isInteger(qty) ? formatThousands(Math.abs(qty)) : formatSignificant(Math.abs(qty))}</strong><span>${gold(formatThousands(worth, 0))}</span></li>`,
+                            `<li><span class="item-chip">${iconHtml(id)}${itemLinkName(data.items, id, locale)}</span><strong class="${qty < 0 ? 'text-bad' : ''}">${qty < 0 ? '−' : '×'}${Number.isInteger(qty) ? formatThousands(Math.abs(qty)) : formatSignificant(Math.abs(qty))}</strong><span>${gold(formatThousands(worth, 0))}</span></li>`,
                     )
                     .join('')}</ul>
                 <div class="plan-tile__total">${t('events.totalWorth')} ${gold(formatThousands(totalWorth, 0))}</div>`,
@@ -411,12 +411,12 @@ function renderShop({ shopId, shop }) {
                 gridRow(
                     [
                         cell(
-                            `${iconHtml(offer.item_id)}${itemDisplayName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}${onlyHereBadge(offer)}`,
+                            `${iconHtml(offer.item_id)}${itemLinkName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}${onlyHereBadge(offer)}`,
                             'item-cell',
                         ),
-                        numCell(limitHtml(offer)),
+                        numCell(limitHtml(offer), WIDE),
                         numCell(`${formatThousands(offer.currency_cost)} ${coinIcon}`),
-                        numCell(coinWorth > 0 ? bn(offer.currency_cost * coinWorth) : t('common.dash')),
+                        numCell(coinWorth > 0 ? bn(offer.currency_cost * coinWorth) : t('common.dash'), WIDE),
                         numCell(bn(worth)),
                         numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
                         lockable ? lockCell(offerKey, offer) : '',
@@ -442,9 +442,9 @@ function renderShop({ shopId, shop }) {
                         `${iconHtml(firstItem)}${t('events.bonusTier', { threshold: formatThousands(threshold) })}: ${bundleLabel(reward, data.items, locale)}`,
                         'item-cell',
                     ),
+                    numCell(t('common.dash'), WIDE),
                     numCell(t('common.dash')),
-                    numCell(t('common.dash')),
-                    numCell(t('common.dash')),
+                    numCell(t('common.dash'), WIDE),
                     numCell(bn(b.worth)),
                     numCell(''),
                     lockable ? numCell('') : '',
@@ -456,17 +456,18 @@ function renderShop({ shopId, shop }) {
 
     const header = gridRow([
         headerCell('offer'),
-        headerCell('limit', true),
+        headerCell('limit', true, true),
         headerCell('cost', true),
-        headerCell('costBanknotes', true),
+        headerCell('costBanknotes', true, true),
         headerCell('worth', true),
         headerCell('ratio', true),
         lockable ? headerCell('mustBuy', true) : '',
         headerCell(shop.random_offers ? 'buyIfOffered' : 'buy', true),
     ]);
-    shopTable.innerHTML = `${header}${groups.join('')}${
-        tierRows.length > 0 ? `${gridSection(t('events.bonusSection'))}${tierRows.join('')}` : ''
-    }`;
+    shopTable.innerHTML = gridTable(
+        header,
+        `${groups.join('')}${tierRows.length > 0 ? `${gridSection(t('events.bonusSection'))}${tierRows.join('')}` : ''}`,
+    );
     shopTable.classList.toggle('events-shop-grid--locks', lockable);
     hydrateItemIcons(shopTable);
     enableInfoTooltips(shopTable);
@@ -604,8 +605,8 @@ function renderSteps({ eventId }) {
         headerCell('stepRatio', true),
         headerCell('packs'),
     ]);
-    stepsTable.innerHTML = header + rows.join('');
-    stepsNote.textContent = `${t('events.stepsNote')} ${modelSummaryText(valuation)}`;
+    stepsTable.innerHTML = gridTable(header, rows.join(''));
+    stepsNote.textContent = t('events.stepsNote');
 }
 
 function render() {
@@ -629,19 +630,29 @@ function render() {
     renderSteps(selected);
 }
 
-/** The ticked events (grouped by their category) and the shops without event (VIP Shop). */
+/**
+ * The tabs: the ticked events, then the shops without event (VIP Shop). Keeps the tab shown while it's still
+ * listed, else shows the first one.
+ */
 function populateSelect() {
-    const entries = {};
+    const entries = [];
     for (const id of settings.activeEvents.filter((eventId) => data.events?.[eventId])) {
-        entries[`event:${id}`] = { name: data.events[id].name, category: data.events[id].category || 'special_event' };
+        entries.push([`event:${id}`, data.events[id].name]);
     }
     for (const [id, shop] of Object.entries(data.exchange_shops || {})) {
         if (!shop.event_id) {
-            entries[`shop:${id}`] = { name: shop.name, category: 'shop' };
+            entries.push([`shop:${id}`, shop.name]);
         }
     }
-    // Keeps the current selection while it's still listed.
-    eventPicker.setItems(entries);
+    if (!entries.some(([key]) => key === selectedKey)) {
+        selectedKey = entries[0]?.[0] ?? '';
+    }
+    eventTabs.innerHTML = entries
+        .map(
+            ([key, name]) =>
+                `<button type="button" class="toggle-chip" data-tab="${escapeHtml(key)}" aria-pressed="${key === selectedKey}">${escapeHtml(localizedName(name))}</button>`,
+        )
+        .join('');
 }
 
 /** With exceeded limits, locks or extra diamonds / Banknotes the plan depends on the selection. */
@@ -672,6 +683,7 @@ async function recompute() {
     await withLoading(async () => {
         populateSelect();
         valuation = await buildValuation(data, settings, pageOverrides());
+        panel.showRate(valuation);
         render();
     });
 }
@@ -680,9 +692,22 @@ startPage('events', {
     async init(loaded) {
         data = loaded;
         settings = getSettings();
-        mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
             fields: ['budget', 'events', 'passes'],
         });
+        eventTabs.addEventListener('click', (event) => {
+            const tab = event.target.closest('[data-tab]');
+            if (!tab || tab.dataset.tab === selectedKey) {
+                return;
+            }
+            selectedKey = tab.dataset.tab;
+            for (const button of eventTabs.querySelectorAll('[data-tab]')) {
+                button.setAttribute('aria-pressed', String(button.dataset.tab === selectedKey));
+            }
+            setUrlParams({ event: selectedKey });
+            onEventChange();
+        });
+        chooseEvents.addEventListener('click', () => panel.open());
         onSettingsChange((next) => {
             settings = next;
             recompute();
