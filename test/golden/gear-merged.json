@@ -1,0 +1,592 @@
+{
+    "order": [
+        "craft:0",
+        "craft:1",
+        "craft:2",
+        "craft:3",
+        "craft:4",
+        "craft:5",
+        "craft:6",
+        "craft:7",
+        "craft:8",
+        "craft:9",
+        "craft:10",
+        "craft:11",
+        "craft:12",
+        "craft:13",
+        "craft:14",
+        "craft:15",
+        "craft:16",
+        "craft:17",
+        "craft:18",
+        "craft:19",
+        "level:0",
+        "level:1",
+        "level:2",
+        "level:3",
+        "level:4",
+        "level:5",
+        "level:6",
+        "level:7",
+        "level:8",
+        "level:9",
+        "level:10",
+        "level:11",
+        "level:12",
+        "level:13",
+        "level:14",
+        "level:15",
+        "level:16",
+        "level:17",
+        "level:18",
+        "level:19",
+        "level:20",
+        "level:21",
+        "level:22",
+        "stars:0",
+        "stars:1",
+        "stars:2",
+        "stars:3",
+        "stars:4",
+        "level:23",
+        "level:24",
+        "stars:5",
+        "stars:6",
+        "stars:7",
+        "stars:8",
+        "stars:9",
+        "stars:10",
+        "level:25",
+        "level:26",
+        "stars:11",
+        "stars:12",
+        "level:27",
+        "level:28",
+        "stars:13",
+        "level:29",
+        "level:30",
+        "level:31",
+        "level:32",
+        "level:33",
+        "level:34",
+        "level:35",
+        "level:36",
+        "level:37",
+        "level:38",
+        "level:39",
+        "level:40",
+        "level:41",
+        "level:42",
+        "level:43",
+        "level:44",
+        "level:45",
+        "level:46",
+        "level:47",
+        "stars:14",
+        "stars:15",
+        "stars:16",
+        "level:48",
+        "stars:17",
+        "level:49",
+        "stars:18",
+        "level:50",
+        "stars:19",
+        "level:51",
+        "stars:20",
+        "stars:21",
+        "stars:22",
+        "stars:23",
+        "stars:24",
+        "stars:25",
+        "stars:26",
+        "stars:27",
+        "stars:28",
+        "level:52",
+        "stars:29",
+        "level:53",
+        "stars:30",
+        "level:54",
+        "stars:31",
+        "level:55",
+        "stars:32",
+        "stars:33",
+        "stars:34",
+        "level:56",
+        "stars:35",
+        "level:57",
+        "stars:36",
+        "stars:37",
+        "stars:38",
+        "stars:39",
+        "stars:40",
+        "stars:41",
+        "stars:42",
+        "stars:43",
+        "stars:44",
+        "stars:45",
+        "stars:46",
+        "stars:47",
+        "stars:48",
+        "stars:49",
+        "level:58",
+        "stars:50",
+        "level:59",
+        "stars:51",
+        "level:60",
+        "level:61",
+        "level:62",
+        "stars:52",
+        "stars:53",
+        "stars:54",
+        "level:63",
+        "stars:55",
+        "stars:56",
+        "stars:57",
+        "stars:58"
+    ],
+    "needs": {
+        "level": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            {
+                "path": "stars",
+                "n": 4,
+                "stars": 4
+            },
+            null,
+            {
+                "path": "stars",
+                "n": 10,
+                "stars": 4
+            },
+            null,
+            {
+                "path": "stars",
+                "n": 12,
+                "stars": 4
+            },
+            null,
+            {
+                "path": "stars",
+                "n": 13,
+                "stars": 4
+            },
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            {
+                "path": "stars",
+                "n": 16,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 17,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 18,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 19,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 28,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 29,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 30,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 31,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 34,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 35,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 49,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 50,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 51,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 38,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 39,
+                "stars": 4
+            },
+            {
+                "path": "stars",
+                "n": 54,
+                "stars": 4
+            }
+        ],
+        "stars": [
+            {
+                "path": "level",
+                "n": 0,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 1,
+                "level": 10
+            },
+            {
+                "path": "level",
+                "n": 2,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 3,
+                "level": 10
+            },
+            {
+                "path": "level",
+                "n": 22,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 23,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 4,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 5,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 6,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 7,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 24,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 25,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 26,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 28,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 8,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 9,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 30,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 31,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 32,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 33,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 48,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 49,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 50,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 51,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 13,
+                "level": 10
+            },
+            {
+                "path": "level",
+                "n": 14,
+                "level": 10
+            },
+            {
+                "path": "level",
+                "n": 15,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 16,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 34,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 35,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 40,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 41,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 54,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 55,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 38,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 39,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 19,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 20,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 45,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 46,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 52,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 53,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 27,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 29,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 56,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 57,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 10,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 17,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 18,
+                "level": 20
+            },
+            {
+                "path": "level",
+                "n": 42,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 43,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 44,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 61,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 62,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 47,
+                "level": 40
+            },
+            {
+                "path": "level",
+                "n": 58,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 59,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 60,
+                "level": 60
+            },
+            {
+                "path": "level",
+                "n": 63,
+                "level": 60
+            }
+        ]
+    }
+}

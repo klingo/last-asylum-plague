@@ -53,6 +53,24 @@ jobs:
             - name: Lint
               run: npm run lint
 
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Test
+              run: npm test
+
     build:
         runs-on: ubuntu-latest
         steps:
@@ -80,7 +98,7 @@ jobs:
                   path: webapp/dist
 
     deploy:
-        needs: [build, lint]
+        needs: [build, lint, test]
         runs-on: ubuntu-latest
         environment:
             name: github-pages

@@ -1,0 +1,462 @@
+{
+    "points": {
+        "antitoxin": {
+            "value": 0.0000500370655,
+            "source": "fit",
+            "uncertain": false
+        },
+        "black_raven_fortress": {
+            "value": 222250.879,
+            "source": "fit",
+            "uncertain": false
+        },
+        "cloth": {
+            "value": 0.28345926,
+            "source": "fit",
+            "uncertain": false
+        },
+        "construction_speedup": {
+            "value": 8.03158509,
+            "source": "fit",
+            "uncertain": false
+        },
+        "copper_coin": {
+            "value": 0.00263528655,
+            "source": "fit",
+            "uncertain": false
+        },
+        "demons_eye": {
+            "value": 14816.7253,
+            "source": "fit",
+            "uncertain": false
+        },
+        "direct_relocate": {
+            "value": 598,
+            "source": "fit",
+            "uncertain": false
+        },
+        "dragon_blood": {
+            "value": 15693.8324,
+            "source": "fit",
+            "uncertain": false
+        },
+        "exclusive_weapon_shard": {
+            "value": 1026.02644,
+            "source": "fit",
+            "uncertain": false
+        },
+        "fantasy_city": {
+            "value": 222250.879,
+            "source": "fit",
+            "uncertain": false
+        },
+        "gear_blueprint_mr": {
+            "value": 44450.1758,
+            "source": "fit",
+            "uncertain": false
+        },
+        "gear_blueprint_ur": {
+            "value": 9063.11661,
+            "source": "fit",
+            "uncertain": false
+        },
+        "gearstone": {
+            "value": 2.98748534,
+            "source": "fit",
+            "uncertain": false
+        },
+        "grain": {
+            "value": 0.000190540264,
+            "source": "fit",
+            "uncertain": false
+        },
+        "healing_speedup": {
+            "value": 5.15490038,
+            "source": "fit",
+            "uncertain": false
+        },
+        "herbs": {
+            "value": 0.000366093958,
+            "source": "fit",
+            "uncertain": false
+        },
+        "hero_awaken_shard": {
+            "value": 766.690506,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv1_alliance_chest": {
+            "value": 1982.54193,
+            "source": "fit",
+            "uncertain": true
+        },
+        "lv1_attackers_claw": {
+            "value": 342.067789,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv1_eye_of_perception": {
+            "value": 342.067789,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv1_feather_of_the_night": {
+            "value": 342.067789,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv1_heart_of_wisdom": {
+            "value": 342.067789,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv1_sharp_beak": {
+            "value": 342.067789,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv1_tail_of_wind": {
+            "value": 342.067789,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv2_alliance_chest": {
+            "value": 762.654341,
+            "source": "fit",
+            "uncertain": true
+        },
+        "lv3_alliance_chest": {
+            "value": 5122.90162,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv4_alliance_chest": {
+            "value": 14434.3097,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv5_alliance_chest": {
+            "value": 21074.239,
+            "source": "fit",
+            "uncertain": false
+        },
+        "lv6_alliance_chest": {
+            "value": 29479.4043,
+            "source": "fit",
+            "uncertain": false
+        },
+        "mystic_cabin_permanent": {
+            "value": 592669.01,
+            "source": "fit",
+            "uncertain": false
+        },
+        "r_epigraph": {
+            "value": 2011.57804,
+            "source": "fit",
+            "uncertain": true
+        },
+        "raven_essence": {
+            "value": 296.49935,
+            "source": "fit",
+            "uncertain": false
+        },
+        "raven_evolve_guide": {
+            "value": 140.254875,
+            "source": "fit",
+            "uncertain": false
+        },
+        "raven_fruit": {
+            "value": 0.0529546777,
+            "source": "fit",
+            "uncertain": false
+        },
+        "recruit_ticket": {
+            "value": 718.778509,
+            "source": "fit",
+            "uncertain": false
+        },
+        "red_nutcracker": {
+            "value": 5926.6901,
+            "source": "fit",
+            "uncertain": false
+        },
+        "research_speedup": {
+            "value": 5.15490038,
+            "source": "fit",
+            "uncertain": false
+        },
+        "research_tome": {
+            "value": 10542.2063,
+            "source": "fit",
+            "uncertain": false
+        },
+        "skill_badge": {
+            "value": 2.3742981,
+            "source": "fit",
+            "uncertain": false
+        },
+        "sr_epigraph": {
+            "value": 1133.89161,
+            "source": "fit",
+            "uncertain": true
+        },
+        "sr_hero_shard": {
+            "value": 40,
+            "source": "fit",
+            "uncertain": false
+        },
+        "ssr_armor": {
+            "value": 4957.09428,
+            "source": "fit",
+            "uncertain": true
+        },
+        "ssr_boots": {
+            "value": 4957.09428,
+            "source": "fit",
+            "uncertain": true
+        },
+        "ssr_curio": {
+            "value": 15164.7197,
+            "source": "fit",
+            "uncertain": true
+        },
+        "ssr_epigraph": {
+            "value": 3552.84341,
+            "source": "fit",
+            "uncertain": false
+        },
+        "ssr_epigraph_shard": {
+            "value": 10.4303941,
+            "source": "fit",
+            "uncertain": true
+        },
+        "ssr_gauntlets": {
+            "value": 4957.09428,
+            "source": "fit",
+            "uncertain": true
+        },
+        "ssr_hero_shard": {
+            "value": 198,
+            "source": "fit",
+            "uncertain": false
+        },
+        "ssr_sword": {
+            "value": 4957.09428,
+            "source": "fit",
+            "uncertain": true
+        },
+        "stamina": {
+            "value": 1.4870373,
+            "source": "fit",
+            "uncertain": false
+        },
+        "study_scroll": {
+            "value": 94.1254809,
+            "source": "fit",
+            "uncertain": false
+        },
+        "survivor_recruit_ticket": {
+            "value": 298.275521,
+            "source": "fit",
+            "uncertain": false
+        },
+        "survivor_token": {
+            "value": 237.247229,
+            "source": "fit",
+            "uncertain": true
+        },
+        "timber": {
+            "value": 0.000190540264,
+            "source": "fit",
+            "uncertain": false
+        },
+        "top_up_exp": {
+            "value": 804.590154,
+            "source": "fit",
+            "uncertain": false
+        },
+        "training_speedup": {
+            "value": 5.15490038,
+            "source": "fit",
+            "uncertain": false
+        },
+        "twin_dragon_brooch": {
+            "value": 14374.5489,
+            "source": "fit",
+            "uncertain": false
+        },
+        "universal_curio_shard": {
+            "value": 98.0114667,
+            "source": "fit",
+            "uncertain": false
+        },
+        "ur_armor": {
+            "value": 44613.8485,
+            "source": "fit",
+            "uncertain": true
+        },
+        "ur_boots": {
+            "value": 44613.8485,
+            "source": "fit",
+            "uncertain": true
+        },
+        "ur_curio": {
+            "value": 14546.4501,
+            "source": "fit",
+            "uncertain": false
+        },
+        "ur_epigraph": {
+            "value": 33205.2091,
+            "source": "fit",
+            "uncertain": false
+        },
+        "ur_epigraph_shard": {
+            "value": 42.3094308,
+            "source": "fit",
+            "uncertain": false
+        },
+        "ur_gauntlets": {
+            "value": 44613.8485,
+            "source": "fit",
+            "uncertain": true
+        },
+        "ur_hero_shard": {
+            "value": 1156.0662,
+            "source": "fit",
+            "uncertain": false
+        },
+        "ur_sword": {
+            "value": 44613.8485,
+            "source": "fit",
+            "uncertain": true
+        },
+        "vip_points": {
+            "value": 14.8059095,
+            "source": "fit",
+            "uncertain": false
+        }
+    },
+    "diagnostics": {
+        "packages": {
+            "awaken_shard_t1": 1.09149055,
+            "awaken_shard_t2": 1.03068093,
+            "awakening_special_pack_t1": 0.966158904,
+            "awakening_special_pack_t2": 1.06808304,
+            "blades_out_deluxe_pack": 1.02849674,
+            "blades_out_premium_pack": 1.00208968,
+            "blades_out_rare_pack": 1.08700479,
+            "blades_out_select_pack": 0.927983565,
+            "blades_out_ultimate_pack": 0.966298361,
+            "building_speedup_pack_t1": 1.00698624,
+            "building_upgrade_pack": 1.11137449,
+            "copper_coin_pack_24h": 0.840357513,
+            "copper_coin_pack_6h": 0.791723425,
+            "copper_coin_pack_72h": 1.84433704,
+            "curio_boost": 1.05781924,
+            "curio_pack_pack": 1.15926389,
+            "curio_pack_t1": 0.975204319,
+            "develop_territory": 1.0492634,
+            "development_pack_t1": 0.892094616,
+            "development_pack_t2": 0.978186994,
+            "development_pack_t4": 0.77661513,
+            "dragon_blood_pack_t1": 0.944765105,
+            "enhance_heroes": 1.44161125,
+            "enhance_might": 0.859067098,
+            "enhancement_special_pack_t1": 1.12996944,
+            "epigraph_pass_t1": 1.1346751,
+            "epigraph_pass_t2": 0.838204881,
+            "era_of_revival_raven_essence_weekly_pass": 1.05301739,
+            "exclusive_weapon": 1.05744149,
+            "exclusive_weapon_pack_t1": 1.11464784,
+            "exclusive_weapon_pass": 0.656615332,
+            "exp_special_pack_t1": 1.0214325,
+            "falcon_tower_pass_t1": 0.700467303,
+            "gear_enhancement": 1.25878,
+            "gear_pass_t1": 1.17539135,
+            "gear_pass_t2": 1.07728823,
+            "hero_awaken": 0.976073059,
+            "hero_awaken_growth_pack_t1": 1.0671871,
+            "hero_awaken_growth_pack_t2": 1.11630492,
+            "hero_awaken_growth_pack_t3": 1.08802693,
+            "hero_awaken_growth_pack_t4": 1.05282022,
+            "hero_exclusive_weapon_pack_t1": 0.95265883,
+            "hero_exclusive_weapon_pack_t2": 1.03704157,
+            "hero_exclusive_weapon_pack_t3": 1.08617447,
+            "hero_exclusive_weapon_pack_t4": 1.07243697,
+            "hero_exclusive_weapon_pack_t5": 1.03723182,
+            "hero_growth_pack_t1": 0.996306709,
+            "hero_promotion": 1.13640905,
+            "hero_shard_t1": 1.22419668,
+            "hero_special_pack_t1": 1.18910519,
+            "login_rewards": 1.16092381,
+            "might_special_pack_t1": 1.13343951,
+            "mystic_cabinet_i_t1": 0.803098264,
+            "mystic_cabinet_i_t2": 0.867533386,
+            "mystic_cabinet_i_t3": 0.915345907,
+            "mystic_cabinet_ii_t1": 0.679608372,
+            "mystic_cabinet_iii_t1": 0.72930529,
+            "premium_grain_pack_t1": 1.022749,
+            "premium_herb_pack_t1": 1.10065136,
+            "premium_monthly_pass": 0.860102742,
+            "premium_timber_pack_t1": 1.022749,
+            "quick_research_pack_t1": 0.944559369,
+            "quick_research_pack_t2": 1.02381863,
+            "raven_epigraph": 1.57779482,
+            "raven_epigraph_offer_t1": 0.867636752,
+            "raven_epigraph_offer_t2": 0.946794783,
+            "raven_essence": 0.99330299,
+            "raven_essence_pack": 1.1879952,
+            "raven_evolve_guide": 1.11339579,
+            "raven_gear": 0.93710646,
+            "raven_gear_pack": 1.19693603,
+            "raven_gear_special_pack_t1": 0.870488538,
+            "raven_growth_pack_t1": 0.839791179,
+            "ravens_might_t1": 0.963754449,
+            "recluse_coin_deluxe_pack": 0.960172051,
+            "recluse_coin_majestic_pack": 0.95940376,
+            "recluse_coin_premium_pack": 0.763606106,
+            "recluse_coin_rare_pack": 0.959691725,
+            "recluse_coin_supreme_pack": 0.95930781,
+            "research_pack": 0.769167018,
+            "research_special_pack_t1": 0.831112598,
+            "research_tome_pack_t1": 0.815442099,
+            "research_tome_pack_t2": 1.03215709,
+            "research_tome_pack_t3": 1.08745819,
+            "resource_special_pack_t3": 1.02830879,
+            "speedup_special_pack_t1": 0.982139904,
+            "stamina_discount_pack": 1.12480709,
+            "strange_bazaar_exquisite_pack": 0.98861718,
+            "strange_bazaar_premium_pack": 0.987826128,
+            "strange_bazaar_rare_pack": 0.988122624,
+            "strange_bazaar_select_pack": 0.810376253,
+            "strange_bazaar_ultimate_pack": 0.987101669,
+            "study_scroll": 0.880136843,
+            "surprise_encounter_exquisite_pack": 0.955956797,
+            "surprise_encounter_premium_pack": 0.955191879,
+            "surprise_encounter_rare_pack": 0.95547858,
+            "surprise_encounter_select_pack": 0.761025094,
+            "surprise_encounter_ultimate_pack": 0.95509635,
+            "survivor_pack": 1.20161318,
+            "tempered_arms_t1": 1.03001009,
+            "troop_training_pack": 1.17275333,
+            "twin_dragon_brooch_pack_t1": 0.948085368,
+            "universal_speedup_pack_t1": 0.912398868,
+            "ur_blueprint_offer_t1": 0.983151071,
+            "ur_blueprint_offer_t2": 1.02771948,
+            "ur_blueprint_offer_t3": 0.939400387,
+            "ur_gear_crafting": 1.18251562,
+            "value_gear_pack_t1": 0.974668616,
+            "weekly_grain_pass": 0.977896326,
+            "weekly_herb_pass": 1.19848719,
+            "weekly_hero_exp_pass": 0.812987573,
+            "weekly_pass": 1.61632489,
+            "weekly_special_t1": 1.19288562,
+            "weekly_special_t2": 1.32784191,
+            "weekly_timber_pass": 0.977896326
+        },
+        "medianError": 0.0861744708,
+        "p90Error": 0.236393894,
+        "parameters": 58,
+        "equations": 257
+    }
+}

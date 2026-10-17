@@ -1,0 +1,50 @@
+{
+    "raven_essence": {
+        "reachable": true,
+        "totalCost": 499,
+        "byproductWorth": 68.90053,
+        "packages": {
+            "era_of_revival_raven_essence_weekly_pass": 1
+        },
+        "offers": {},
+        "conversions": {}
+    },
+    "lv5_sharp_beak": {
+        "reachable": true,
+        "totalCost": 4999,
+        "byproductWorth": 1351.01241,
+        "packages": {
+            "raven_gear": 1
+        },
+        "offers": {},
+        "conversions": {
+            "pick:lv5_raven_gear_choice_chest:lv5_sharp_beak": 1
+        }
+    },
+    "speedup": {
+        "reachable": true,
+        "totalCost": 3493,
+        "byproductWorth": 152.477778,
+        "packages": {
+            "speedup_special_pack_t1": 2,
+            "universal_speedup_pack_t1": 5
+        },
+        "offers": {
+            "vip_shop:speedup_3h": 2,
+            "vip_shop:speedup_5m": 6,
+            "vip_shop:speedup_60m": 2,
+            "vip_shop:speedup_8h": 6
+        },
+        "conversions": {}
+    },
+    "ur_hero_omni_shard": {
+        "reachable": true,
+        "totalCost": 9999,
+        "byproductWorth": 2544.58354,
+        "packages": {
+            "hero_promotion": 1
+        },
+        "offers": {},
+        "conversions": {}
+    }
+}

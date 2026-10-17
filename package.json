@@ -11,6 +11,7 @@
         "prepare": "husky",
         "record-run": "node scripts/record-run.js",
         "sort-pack-data": "node scripts/sort-pack-data.js",
+        "test": "node --test \"test/**/*.test.js\"",
         "update-last-updated": "node scripts/update-last-updated.js",
         "verify-data": "node scripts/verify-data.js",
         "webapp:dev": "vite webapp",
