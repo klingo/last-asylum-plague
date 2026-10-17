@@ -8,13 +8,10 @@
  * The hero factions (Warriors, Rangers, Warlocks) share the paths; each slot has a hero per faction. The progress
  * (steps done per queue) is saved in this browser, per faction.
  */
-import './style.css';
-import { renderNav } from './nav';
-import { loadPackData } from './lib/data';
-import { applyStaticTranslations, getLocale, localizedName, t } from './lib/i18n';
-import { createItemImage } from './lib/images';
-import { escapeHtml } from './lib/labels';
-import { formatThousands } from './lib/format';
+import { startPage } from '../ui/page.js';
+import { enumLabel, localizedName, t, tHtml } from '../ui/i18n.js';
+import { escapeHtml, hydrateItemIcons } from '../ui/html.js';
+import { formatThousands } from '../ui/format.js';
 import {
     MR_STEP,
     applyStep,
@@ -26,10 +23,7 @@ import {
     stepCost,
     stepItems,
     stepSlots,
-} from './core/gear-path.js';
-
-renderNav('gear');
-applyStaticTranslations();
+} from '../core/gear-path.js';
 
 const ASSETS = `${import.meta.env.BASE_URL}assets/`;
 const STORAGE_KEY = 'lasps_gear_progress';
@@ -76,7 +70,8 @@ const factionIcon = (faction) => `<img class="gear-badge" src="${ASSETS}factions
 const classIcon = (heroClass) => `<img class="gear-badge" src="${ASSETS}classes/${heroClass}.png" alt="" />`;
 // "★ Stars": a lane's name with its icon (plain text, for texts that are escaped as a whole).
 const laneName = (path) => `${LANE_ICONS[path]} ${t(`gear.lane.${path}`)}`;
-const formatStars = (stars) => stars.toLocaleString(getLocale(), { maximumFractionDigits: 1 });
+// Stars as written in the game (2.6, 4), one decimal at most, in the app's number style in every language.
+const formatStars = (stars) => formatThousands(Number(stars.toFixed(1)));
 const isDone = (entry) => done[entry.path].includes(entry.n);
 const doneCount = (path) => done[path].length;
 const craftComplete = () => doneCount('craft') >= entriesOf.craft.length;
@@ -362,7 +357,7 @@ function slotHtml(state, upcoming, slot) {
                 <img src="${heroImage(hero)}" alt="${escapeHtml(name)}" />
                 <figcaption>
                     <strong>${escapeHtml(name)}</strong>
-                    <span class="gear-class gear-class--${heroClass}">${classIcon(heroClass)}${escapeHtml(t(`gear.class.${heroClass}`))}</span>
+                    <span class="gear-class gear-class--${heroClass}">${classIcon(heroClass)}${escapeHtml(enumLabel('gear.class', heroClass))}</span>
                 </figcaption>
             </figure>
             <div class="gear-square">${square}</div>
@@ -389,7 +384,7 @@ function renderFactions() {
         .map(
             (faction) => `
             <button type="button" class="gear-faction${faction === shownFaction ? ' is-active' : ''}" data-faction="${faction}" style="--faction-color: var(--faction-${faction})" aria-pressed="${faction === shownFaction}">
-                ${factionIcon(faction)} ${escapeHtml(t(`gear.faction.${faction}`))}
+                ${factionIcon(faction)} ${escapeHtml(enumLabel('gear.faction', faction))}
             </button>`,
         )
         .join('');
@@ -399,10 +394,7 @@ function renderFactions() {
 }
 
 function replaceItemIcons(root, className) {
-    root.querySelectorAll('[data-item-id]').forEach((placeholder) => {
-        const itemId = placeholder.getAttribute('data-item-id');
-        placeholder.replaceWith(createItemImage(itemId, itemName(itemId), className));
-    });
+    hydrateItemIcons(root, className, itemName);
 }
 
 /** "Carries", "Tanks", "Whole squad" or the heroes' names. */
@@ -693,17 +685,6 @@ function renderProgress() {
 /** A button inside a help sentence, as it looks on the page: "✓ Done". */
 const chipHtml = (action) => `<span class="gear-chip">${actionLabel(action)}</span>`;
 
-/** A text with HTML in some of its placeholders (`html`); the text itself and `params` are escaped. */
-function richText(key, html = {}, params = {}) {
-    const names = Object.keys(html);
-    const tokens = Object.fromEntries(names.map((name, i) => [name, `\u0001${i}\u0001`]));
-    let text = escapeHtml(t(key, { ...params, ...tokens }));
-    names.forEach((name) => {
-        text = text.replace(tokens[name], html[name]);
-    });
-    return text;
-}
-
 /**
  * "How it works", in the order you use the page: what it does, the faction, reading the squad, crafting, upgrading,
  * blocked steps (rules from the data and an example from the path), the MR switch, mistakes and saving.
@@ -714,7 +695,7 @@ function renderHelp() {
             <h3>${icon(symbol)} ${escapeHtml(t(titleKey))}</h3>
             ${body}
         </section>`;
-    const p = (key, html, params) => `<p>${richText(key, html, params)}</p>`;
+    const p = (key, html = {}, params = {}) => `<p>${tHtml(key, { ...params, ...html })}</p>`;
     const itemHtml = (item) =>
         `<span class="gear-help__piece"><span data-item-id="${item}"></span>${escapeHtml(itemName(item))}</span>`;
     const blueprints = gearSet.blueprints || {};
@@ -723,12 +704,12 @@ function renderHelp() {
     const factionChips = factions
         .map(
             (faction) =>
-                `<span class="gear-faction gear-faction--chip${faction === shownFaction ? ' is-active' : ''}" style="--faction-color: var(--faction-${faction})">${factionIcon(faction)} ${escapeHtml(t(`gear.faction.${faction}`))}</span>`,
+                `<span class="gear-faction gear-faction--chip${faction === shownFaction ? ' is-active' : ''}" style="--faction-color: var(--faction-${faction})">${factionIcon(faction)} ${escapeHtml(enumLabel('gear.faction', faction))}</span>`,
         )
         .join('');
     const slotChip = (slot) => {
         const { class: heroClass } = guide.slots[slot];
-        return `<span class="gear-help__slot"><img class="gear-face" src="${heroImage(heroOf(slot))}" alt="" />${classIcon(heroClass)}${escapeHtml(t(`gear.class.${heroClass}`))} <span class="text-dim">${escapeHtml(heroName(heroOf(slot)))}</span></span>`;
+        return `<span class="gear-help__slot"><img class="gear-face" src="${heroImage(heroOf(slot))}" alt="" />${classIcon(heroClass)}${escapeHtml(enumLabel('gear.class', heroClass))} <span class="text-dim">${escapeHtml(heroName(heroOf(slot)))}</span></span>`;
     };
     const formation = `
         <div class="gear-help__formation">
@@ -849,10 +830,10 @@ function renderHelp() {
             ACTION_ICONS.undo,
             'gear.help.fixTitle',
             `<ul class="gear-help__steps">
-                <li>${richText('gear.help.undoText', { undo: chipHtml('undo') })}</li>
-                <li>${richText('gear.help.listText')}</li>
-                <li>${richText('gear.help.resetText', { startOver: chipHtml('startOver') })}</li>
-                <li>${richText('gear.help.savedText')}</li>
+                <li>${tHtml('gear.help.undoText', { undo: chipHtml('undo') })}</li>
+                <li>${tHtml('gear.help.listText')}</li>
+                <li>${tHtml('gear.help.resetText', { startOver: chipHtml('startOver') })}</li>
+                <li>${tHtml('gear.help.savedText')}</li>
             </ul>`,
         ),
     ].join('');
@@ -868,8 +849,8 @@ function render() {
     renderProgress();
 }
 
-async function init() {
-    data = await loadPackData();
+async function init(loaded) {
+    data = loaded;
     [guideId] = Object.keys(data.squad_guides || {});
     guide = guideId ? data.squad_guides[guideId] : null;
     gearSet = guide ? data.gear_upgrades?.[guide.gear] : null;
@@ -894,19 +875,7 @@ async function init() {
     shownFaction = factions.includes(lastFaction) ? lastFaction : factions[0];
     loadProgress();
     layout.hidden = false;
-    window.addEventListener('localechange', () => {
-        applyStaticTranslations();
-        render();
-    });
     render();
 }
 
-init().catch((error) => {
-    console.error(error);
-    document
-        .querySelector('main')
-        .insertAdjacentHTML(
-            'afterbegin',
-            `<div class="card"><p class="text-bad">${t('common.loadError', { message: escapeHtml(error.message) })}</p></div>`,
-        );
-});
+startPage('gear', { init, onLocaleChange: () => render() });

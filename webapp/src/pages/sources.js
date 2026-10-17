@@ -1,22 +1,19 @@
-import './style.css';
-import { renderNav } from './nav';
-import { loadPackData } from './lib/data';
-import { buildValuation, modelSummaryText } from './lib/valuation';
-import { mountValuationPanel } from './lib/valuation-panel';
-import { withLoading } from './lib/loading';
-import { isOnSale, packageWeeklyCapacity } from './core/catalog.js';
-import { createUnitCounter, isContainerItem, isValueLevel, itemChainTops } from './core/item-sources.js';
-import { createItemPicker } from './lib/item-picker';
-import { packageDisplayName, itemDisplayName, escapeHtml } from './lib/labels';
-import { createItemImage, banknoteIconHtml } from './lib/images';
-import { formatThousands, formatSignificant } from './lib/format';
-import { ratioBarHtml } from './lib/ratio-bar';
-import { infoIconHtml } from './lib/requires-tooltip';
-import { enableInfoTooltips } from './lib/tooltip';
-import { t, getLocale, localizedName, applyStaticTranslations } from './lib/i18n';
-
-renderNav('sources');
-applyStaticTranslations();
+import { startPage } from '../ui/page.js';
+import { buildValuation, modelSummaryText } from '../ui/valuation.js';
+import { mountValuationPanel } from '../ui/valuation-panel.js';
+import { getSettings, onSettingsChange } from '../ui/settings.js';
+import { withLoading } from '../ui/loading.js';
+import { isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
+import { createUnitCounter, isContainerItem, isValueLevel, itemChainTops } from '../core/item-sources.js';
+import { createItemPicker } from '../ui/item-picker.js';
+import { packageDisplayName, itemDisplayName } from '../ui/labels.js';
+import { escapeHtml, banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { gridCell, gridNum, gridHeader, gridRow } from '../ui/grid.js';
+import { formatThousands, formatSignificant } from '../ui/format.js';
+import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { infoIconHtml } from '../ui/info-icon.js';
+import { enableInfoTooltips } from '../ui/tooltip.js';
+import { t, tHtml, getLocale, localizedName } from '../ui/i18n.js';
 
 const itemPicker = createItemPicker({
     trigger: document.getElementById('item-search'),
@@ -37,8 +34,8 @@ let baseItems = {};
 // Top item of a crafting chain (Tempered Steel) -> its base (Cloth), whose units are counted.
 let chainBaseOf = new Map();
 
-const gold = (text) => `<span class="text-gold">${text}</span> ${banknoteIconHtml()}`;
-const iconHtml = (itemId) => `<span data-item-id="${itemId}"></span>`;
+const gold = banknotesHtml;
+const iconHtml = itemIconSlot;
 const amount = (value) => (Number.isInteger(value) ? formatThousands(value) : formatSignificant(value));
 
 /**
@@ -230,39 +227,52 @@ function render() {
     while (cheapest * unitScale < 1 && unitScale < 1e12) {
         unitScale *= 1000;
     }
-    const cell = (html, extra = '') => `<div class="ranking-grid__cell ${extra}" role="cell">${html}</div>`;
-    const num = (html) => cell(html, 'ranking-grid__cell--num');
-    const header = (key, isNum = false) =>
-        `<div class="ranking-grid__cell ranking-grid__cell--header${isNum ? ' ranking-grid__cell--num' : ''}" role="columnheader">${t(`sources.table.${key}`)}</div>`;
-    const perUnitHeader = `<div class="ranking-grid__cell ranking-grid__cell--header ranking-grid__cell--num" role="columnheader">${unitScale === 1 ? t('sources.table.perUnit') : t('sources.table.perUnits', { count: formatThousands(unitScale) })}</div>`;
+    const cell = (html, className = '') => gridCell(html, { className });
+    const num = gridNum;
+    const header = (key, isNum = false) => gridHeader(t(`sources.table.${key}`), { num: isNum });
+    const perUnitHeader = gridHeader(
+        unitScale === 1
+            ? t('sources.table.perUnit')
+            : t('sources.table.perUnits', { count: formatThousands(unitScale) }),
+        { num: true },
+    );
     const rows = sources.map((s, index) => {
         // Items in the source that lead to the target only nested (e.g. Resource Supply (SR) for Herbs),
         // in small grey text under the source's name.
         const via = s.via.length
-            ? `<span class="source-via">${t('sources.via', {
+            ? `<span class="source-via">${tHtml('sources.via', {
                   items: s.via.map((id) => itemDisplayName(data.items, id, locale)).join(', '),
               })}</span>`
             : '';
-        return `<div class="ranking-grid__row${s.bought ? ' ranking-grid__row--buy' : ''}" role="row">
-            ${num(s.perUnit === null ? '' : formatThousands(index + 1))}
-            ${cell(`${s.iconId ? iconHtml(s.iconId) : ''}<span class="source-name"><span>${s.nameHtml}</span>${via}</span>`, 'item-cell')}
-            ${num(`${s.random ? '~' : ''}×${amount(s.units)}`)}
-            ${num(s.priceHtml)}
-            ${num(s.perUnit === null ? t('common.dash') : gold(formatSignificant(s.perUnit * unitScale)))}
-            ${num(s.ratio === null ? t('common.dash') : ratioBarHtml(s.ratio, maxRatio, { digits: 3 }))}
-            ${num(shareHtml(s.share))}
-            ${num(s.itemRatio === null ? t('common.dash') : ratioBarHtml(s.itemRatio, maxItemRatio, { digits: 3 }))}
-        </div>`;
+        return gridRow(
+            [
+                num(s.perUnit === null ? '' : formatThousands(index + 1)),
+                cell(
+                    `${s.iconId ? iconHtml(s.iconId) : ''}<span class="source-name"><span>${s.nameHtml}</span>${via}</span>`,
+                    'item-cell',
+                ),
+                num(`${s.random ? '~' : ''}×${amount(s.units)}`),
+                num(s.priceHtml),
+                num(s.perUnit === null ? t('common.dash') : gold(formatSignificant(s.perUnit * unitScale))),
+                num(s.ratio === null ? t('common.dash') : ratioBarHtml(s.ratio, maxRatio, { digits: 3 })),
+                num(shareHtml(s.share)),
+                num(s.itemRatio === null ? t('common.dash') : ratioBarHtml(s.itemRatio, maxItemRatio, { digits: 3 })),
+            ],
+            { buy: s.bought },
+        );
     });
-    sourcesTable.innerHTML = `
-        <div class="ranking-grid__row" role="row">
-            ${header('rank', true)}${header('source')}${header('gives', true)}${header('price', true)}${perUnitHeader}${header('ratio', true)}${header('share', true)}${header('itemRatio', true)}
-        </div>
-        ${rows.join('')}`;
-    sourcesTable.querySelectorAll('[data-item-id]').forEach((placeholder) => {
-        const itemId = placeholder.getAttribute('data-item-id');
-        placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
-    });
+    const headerRow = gridRow([
+        header('rank', true),
+        header('source'),
+        header('gives', true),
+        header('price', true),
+        perUnitHeader,
+        header('ratio', true),
+        header('share', true),
+        header('itemRatio', true),
+    ]);
+    sourcesTable.innerHTML = headerRow + rows.join('');
+    hydrateItemIcons(sourcesTable);
     enableInfoTooltips(sourcesTable);
 }
 
@@ -286,16 +296,14 @@ async function recompute() {
     });
 }
 
-async function init() {
-    data = await loadPackData();
-    const panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
-        fields: ['budget', 'events', 'passes'],
-        onChange: (next) => {
-            settings = next;
-            recompute();
-        },
+async function init(loaded) {
+    data = loaded;
+    settings = getSettings();
+    mountValuationPanel(document.getElementById('valuation-panel'), data, { fields: ['budget', 'events', 'passes'] });
+    onSettingsChange((next) => {
+        settings = next;
+        recompute();
     });
-    settings = panel.getSettings();
     // Only base items: a container (e.g. Herb Level Supply) just stands for what it contains, and its
     // contents are found through it anyway (pick Herbs to see every pack with Herb Level Supplies).
     // Crafting chains appear once, as their top item (Tempered Steel, not Cloth). Value levels (Lv.1 /
@@ -312,20 +320,13 @@ async function init() {
     if (itemParam && baseItems[itemParam]) {
         itemPicker.setValue(itemParam);
     }
-    window.addEventListener('localechange', () => {
-        applyStaticTranslations();
-        itemPicker.setItems(baseItems);
-        render();
-    });
     await recompute();
 }
 
-init().catch((error) => {
-    console.error(error);
-    document
-        .querySelector('main')
-        .insertAdjacentHTML(
-            'afterbegin',
-            `<div class="card"><p class="text-bad">${t('common.loadError', { message: error.message })}</p></div>`,
-        );
+startPage('sources', {
+    init,
+    onLocaleChange() {
+        itemPicker.setItems(baseItems);
+        render();
+    },
 });

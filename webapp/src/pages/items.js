@@ -1,22 +1,16 @@
-import './style.css';
-import { renderNav } from './nav';
-import { loadPackData } from './lib/data';
-import { buildValuation, modelSummaryText } from './lib/valuation';
-import { mountValuationPanel } from './lib/valuation-panel';
-import { withLoading } from './lib/loading';
-import { fitSensitivity, sensitivityFamilies, isDependent } from './core/point-fit.js';
-import { currencyItemIds } from './core/catalog.js';
-import { isContainerItem, itemChainTops } from './core/item-sources.js';
-import { DEFAULT_SETTINGS, PRIORITY_LEVELS } from './lib/settings';
-import { itemDisplayName } from './lib/labels';
-import { infoIconHtml } from './lib/requires-tooltip';
-import { enableInfoTooltips } from './lib/tooltip';
-import { createItemImage, banknoteIconHtml } from './lib/images';
-import { formatSignificant, formatThousands } from './lib/format';
-import { t, getLocale, localizedName, categoryLabel, applyStaticTranslations } from './lib/i18n';
-
-renderNav('items');
-applyStaticTranslations();
+import { startPage } from '../ui/page.js';
+import { buildValuation, modelSummaryText } from '../ui/valuation.js';
+import { withLoading } from '../ui/loading.js';
+import { fitSensitivity, sensitivityFamilies, isDependent } from '../core/point-fit.js';
+import { currencyItemIds } from '../core/catalog.js';
+import { isContainerItem, itemChainTops } from '../core/item-sources.js';
+import { DEFAULT_SETTINGS, PRIORITY_LEVELS, getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
+import { itemDisplayName } from '../ui/labels.js';
+import { infoIconHtml } from '../ui/info-icon.js';
+import { enableInfoTooltips } from '../ui/tooltip.js';
+import { banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { formatSignificant, formatThousands } from '../ui/format.js';
+import { t, getLocale, localizedName, enumLabel } from '../ui/i18n.js';
 
 const searchInput = document.getElementById('search-input');
 const changedOnly = document.getElementById('changed-only');
@@ -27,7 +21,6 @@ const categoryJump = document.getElementById('category-jump');
 const itemsEmpty = document.getElementById('items-empty');
 
 let data = null;
-let panel = null;
 let valuation = null;
 let currencies = new Set();
 // Chains (4 Cloth ⇄ 1 Leather ⇄ ... ⇄ 1 Tempered Steel; Lv.1 → Lv.5 raven gear by value): base item -> top item.
@@ -37,27 +30,18 @@ const LEVEL_PREFIX = /^(lv\.?\s*\d+)\s+/i;
 // Leave-one-out results of the deal % fit (computed in the background after the first render).
 let sensitivity = null;
 
-/**
- * Items made of other items (chests, supplies, choice chests, omni shards, the gear-material chain
- * above Cloth): their worth follows the items they contain, so they aren't listed — unless they
- * still have a priority of their own (e.g. from the old ignore list), so it can be seen and reset.
- */
-function isDerived(item) {
-    return isContainerItem(item);
-}
-
 function priorityOf(id) {
-    return panel.getSettings().priorities[id] || 'normal';
+    return getSettings().priorities[id] || 'normal';
 }
 
 function setPriority(id, level) {
-    const priorities = { ...panel.getSettings().priorities };
+    const priorities = { ...getSettings().priorities };
     if (level === 'normal') {
         delete priorities[id];
     } else {
         priorities[id] = level;
     }
-    panel.update({ priorities });
+    updateSettings({ priorities });
 }
 
 function priorityHtml(id) {
@@ -103,14 +87,17 @@ function uncertainHtml(id) {
 function worthHtml(id) {
     const worth = valuation.worth(id);
     const text = formatSignificant(worth);
-    return text === null ? t('common.unknown') : `<span class="text-gold">${text}</span> ${banknoteIconHtml()}`;
+    return text === null ? t('common.unknown') : banknotesHtml(text);
 }
 
 function render() {
     const locale = getLocale();
     const search = searchInput.value.trim().toLowerCase();
     const rows = Object.entries(data.items)
-        .filter(([id, item]) => !currencies.has(id) && (!isDerived(item) || priorityOf(id) !== 'normal'))
+        // Items made of other items (chests, supplies, choice chests, omni shards, the gear-material chain above
+        // Cloth): their worth follows the items they contain, so they aren't listed, unless they still have a
+        // priority of their own (e.g. from the old ignore list), so it can be seen and reset.
+        .filter(([id, item]) => !currencies.has(id) && (!isContainerItem(item) || priorityOf(id) !== 'normal'))
         // A chain base (Cloth) is shown as its top item (Tempered Steel); the priority stays on the base.
         // A level chain is named without its level ("Sharp Beak", not "Lv.5 Sharp Beak"): the priority
         // covers every level. The level moves next to the worth, which is the top item's.
@@ -129,11 +116,11 @@ function render() {
         .filter(({ id }) => !changedOnly.checked || priorityOf(id) !== 'normal')
         .filter(
             ({ id, name, item }) =>
-                !search || `${id} ${name} ${categoryLabel(item.category)}`.toLowerCase().includes(search),
+                !search || `${id} ${name} ${enumLabel('category', item.category)}`.toLowerCase().includes(search),
         )
         .sort(
             (a, b) =>
-                categoryLabel(a.item.category).localeCompare(categoryLabel(b.item.category)) ||
+                enumLabel('category', a.item.category).localeCompare(enumLabel('category', b.item.category)) ||
                 a.name.localeCompare(b.name),
         );
     itemsEmpty.hidden = rows.length > 0;
@@ -149,7 +136,7 @@ function render() {
     categoryJump.innerHTML = [...groups]
         .map(
             ([category, members]) =>
-                `<a href="#cat-${category}" class="pill">${categoryLabel(category)} (${members.length})</a>`,
+                `<a href="#cat-${category}" class="pill">${enumLabel('category', category)} (${members.length})</a>`,
         )
         .join('');
     itemsTable.innerHTML = rows.length
@@ -160,12 +147,12 @@ function render() {
             </tr></thead><tbody>${[...groups]
                 .map(
                     ([category, members]) => `
-                <tr class="table-group" id="cat-${category}"><th colspan="3">${categoryLabel(category)}</th></tr>
+                <tr class="table-group" id="cat-${category}"><th colspan="3">${enumLabel('category', category)}</th></tr>
                 ${members
                     .map(
                         ({ id, shownId, name, level }) => `
                 <tr>
-                    <td><span class="item-cell"><span data-item-id="${shownId}"></span>${name}${shownId === id && isDerived(data.items[id]) ? ` <span class="text-dim">(${t('items.derivedNote')})</span>` : ''}</span></td>
+                    <td><span class="item-cell">${itemIconSlot(shownId)}${name}${shownId === id && isContainerItem(data.items[id]) ? ` <span class="text-dim">(${t('items.derivedNote')})</span>` : ''}</span></td>
                     <td>${priorityHtml(id)}</td>
                     <td class="text-right">${worthHtml(shownId)}${level ? ` <span class="text-dim">(${level})</span>` : ''}${uncertainHtml(id)}</td>
                 </tr>`,
@@ -174,12 +161,9 @@ function render() {
                 )
                 .join('')}</tbody>`
         : '';
-    itemsTable.querySelectorAll('[data-item-id]').forEach((placeholder) => {
-        const itemId = placeholder.getAttribute('data-item-id');
-        placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
-    });
+    hydrateItemIcons(itemsTable);
     enableInfoTooltips(itemsTable);
-    const changed = Object.keys(panel.getSettings().priorities).length;
+    const changed = Object.keys(getSettings().priorities).length;
     itemsSummary.textContent = `${t('items.summary', { count: changed })} ${modelSummaryText(valuation)}`;
 }
 
@@ -215,38 +199,24 @@ async function recompute(settings) {
     startSensitivity();
 }
 
-async function init() {
-    data = await loadPackData();
-    currencies = currencyItemIds(data.exchange_shops);
-    chainTops = itemChainTops(data.items);
-    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
-        // No controls here: the worth column uses the weekly spend set on the Ranking page.
-        fields: [],
-        onChange: (settings) => recompute(settings),
-    });
-    // One listener for every priority radio in the table.
-    itemsTable.addEventListener('change', (event) => {
-        const id = event.target.getAttribute?.('data-priority');
-        if (id) {
-            setPriority(id, event.target.value);
-        }
-    });
-    searchInput.addEventListener('input', render);
-    changedOnly.addEventListener('change', render);
-    resetButton.addEventListener('click', () => panel.update({ priorities: { ...DEFAULT_SETTINGS.priorities } }));
-    window.addEventListener('localechange', () => {
-        applyStaticTranslations();
-        render();
-    });
-    await recompute(panel.getSettings());
-}
-
-init().catch((error) => {
-    console.error(error);
-    document
-        .querySelector('main')
-        .insertAdjacentHTML(
-            'afterbegin',
-            `<div class="card"><p class="text-bad">${t('common.loadError', { message: error.message })}</p></div>`,
-        );
+startPage('items', {
+    async init(loaded) {
+        data = loaded;
+        currencies = currencyItemIds(data.exchange_shops);
+        chainTops = itemChainTops(data.items);
+        // No setup bar here: the worth column uses the weekly spend set on the other pages.
+        onSettingsChange((settings) => recompute(settings));
+        // One listener for every priority radio in the table.
+        itemsTable.addEventListener('change', (event) => {
+            const id = event.target.getAttribute?.('data-priority');
+            if (id) {
+                setPriority(id, event.target.value);
+            }
+        });
+        searchInput.addEventListener('input', render);
+        changedOnly.addEventListener('change', render);
+        resetButton.addEventListener('click', () => updateSettings({ priorities: { ...DEFAULT_SETTINGS.priorities } }));
+        await recompute(getSettings());
+    },
+    onLocaleChange: render,
 });

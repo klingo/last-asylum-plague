@@ -9,10 +9,10 @@
  */
 import { fitItemPoints } from '../core/point-fit.js';
 import { solveWeeklyPlan } from '../core/planner.js';
-import { loadBrowserHighs } from './highs-browser';
-import { priorityWeights } from './settings';
-import { t } from './i18n';
-import { formatThousands } from './format';
+import { loadBrowserHighs } from './highs-browser.js';
+import { priorityWeights } from './settings.js';
+import { t } from './i18n.js';
+import { formatThousands } from './format.js';
 
 let fitCache = { data: null, fit: null };
 

@@ -1,12 +1,10 @@
-import './style.css';
-import { renderNav } from './nav';
-import { applyStaticTranslations, formatDays, getLocale, localizedName, t } from './lib/i18n';
-import { loadPackData } from './lib/data';
-import { escapeHtml } from './lib/labels';
-import { enableInfoTooltips } from './lib/tooltip';
-import { createItemImage } from './lib/images';
-import { DEFAULT_NONE_ITEMS } from './lib/settings';
-import { packageFamilyId } from './core/pack-data.js';
+import { startPage } from '../ui/page.js';
+import { formatDays, getLocale, localizedName, t } from '../ui/i18n.js';
+import { escapeHtml } from '../ui/html.js';
+import { enableInfoTooltips } from '../ui/tooltip.js';
+import { createItemImage } from '../ui/images.js';
+import { DEFAULT_NONE_ITEMS } from '../ui/settings.js';
+import { packageFamilyId } from '../core/pack-data.js';
 import {
     dayDate,
     forecastRuns,
@@ -15,10 +13,7 @@ import {
     scheduleRuns,
     weekdayIndex,
     weekdayRuns,
-} from './core/schedule.js';
-
-renderNav('calendar');
-applyStaticTranslations();
+} from '../core/schedule.js';
 
 // The schedule timeline: last week, the current week and 4 weeks ahead (Monday to Sunday).
 const WEEKS_BACK = 1;
@@ -263,17 +258,15 @@ function renderRotation() {
     enableInfoTooltips(section);
 }
 
-window.addEventListener('localechange', () => {
-    applyStaticTranslations();
+function render() {
     renderSchedule();
     renderRotation();
-});
+}
 
-// The schedule needs the data; the rest of the page works without it.
-loadPackData()
-    .then((data) => {
+startPage('calendar', {
+    init(data) {
         packData = data;
-        renderSchedule();
-        renderRotation();
-    })
-    .catch(() => {});
+        render();
+    },
+    onLocaleChange: render,
+});

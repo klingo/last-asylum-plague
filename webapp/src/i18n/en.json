@@ -33,7 +33,8 @@
         "tierSuffix": "(Tier {tier})",
         "loadError": "Failed to load data: {message}",
         "reset": "Reset",
-        "howItWorks": "How it works"
+        "howItWorks": "How it works",
+        "requiresTooltip": "Requires: {name}"
     },
     "picker": {
         "placeholder": "Select an item…",
@@ -154,12 +155,6 @@
             "today": "Today",
             "tomorrow": "Tomorrow",
             "every": "every {days}"
-        }
-    },
-    "analyze": {
-        "heading": "Analyze Item Value",
-        "table": {
-            "requiresTooltip": "Requires: {name}"
         }
     },
     "rankings": {

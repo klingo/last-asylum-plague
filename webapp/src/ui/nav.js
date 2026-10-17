@@ -1,6 +1,4 @@
-import { t, getLocale, setLocale, SUPPORTED_LOCALES } from './lib/i18n';
-
-const LOCALE_LABELS = { en: 'EN', de: 'DE' };
+import { t, getLocale, setLocale, LOCALES } from './i18n.js';
 
 // Date the pack data was last updated (`metadata.last_updated`), shown in the footer.
 let dataDate = null;
@@ -91,10 +89,9 @@ function renderNav(activePage) {
     }
     const base = import.meta.env.BASE_URL;
     const locale = getLocale();
-    const langOptions = SUPPORTED_LOCALES.map(
-        (code) =>
-            `<option value="${code}" ${code === locale ? 'selected' : ''}>${LOCALE_LABELS[code] || code}</option>`,
-    ).join('');
+    const langOptions = Object.entries(LOCALES)
+        .map(([code, { label }]) => `<option value="${code}" ${code === locale ? 'selected' : ''}>${label}</option>`)
+        .join('');
     const link = (href, label, active) =>
         `<a href="${base}${href}" class="${active ? 'active' : ''}" ${active ? 'aria-current="page"' : ''}>${t(label)}</a>`;
     const groups = NAV_GROUPS.map((group) => {

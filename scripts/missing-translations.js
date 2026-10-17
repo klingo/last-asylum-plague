@@ -1,14 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { missingCodeLabels } from './code-labels.js';
 
 const I18N_DIR = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n');
 const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
 const SOURCE_LANG = 'en';
 
 /**
- * Lists missing translations: UI texts (webapp/src/i18n/<lang>.json, compared with en.json) and the
- * localized names in data/pack_data.json (`{ "en": "...", "<lang>": "..." }`). A text is missing when
- * English has it and the language's value is absent or empty.
+ * Lists missing translations: UI texts (webapp/src/i18n/<lang>.json, compared with en.json), the
+ * localized names in data/pack_data.json (`{ "en": "...", "<lang>": "..." }`), and the labels of the
+ * data's codes (categories, hero classes, ...: scripts/code-labels.js), also those English lacks. A text
+ * is missing when English has it and the language's value is absent or empty.
  *
  * Usage: npm run i18n:missing -- [lang] [--keys-only] [--data-only]
  *        (or node scripts/missing-translations.js [lang] [--keys-only] [--data-only])
@@ -34,13 +36,30 @@ function main() {
 
     const source = readJson(path.join(I18N_DIR, `${SOURCE_LANG}.json`));
     const data = readJson(DATA_PATH);
+    if (!dataOnly) {
+        // Labels English lacks too: the page would show the raw code in every language.
+        const english = missingCodeLabels(data, source).map((key) => ({ key, english: '' }));
+        if (english.length > 0) {
+            console.log(`\n=== ${SOURCE_LANG}: ${english.length} missing ===`);
+            printSection(`Code labels (webapp/src/i18n/${SOURCE_LANG}.json)`, english, true);
+        }
+    }
     for (const lang of languages) {
         const target = readJson(path.join(I18N_DIR, `${lang}.json`));
         const ui = dataOnly ? [] : missingUiTexts(source, target);
+        const uiKeys = new Set(ui.map(({ key }) => key));
+        const labels = dataOnly
+            ? []
+            : missingCodeLabels(data, target)
+                  .filter((key) => !uiKeys.has(key))
+                  .map((key) => ({ key, english: '' }));
         const names = missingDataNames(data, lang);
-        console.log(`\n=== ${lang}: ${ui.length + names.length} missing ===`);
+        console.log(`\n=== ${lang}: ${ui.length + labels.length + names.length} missing ===`);
         if (!dataOnly) {
             printSection(`UI texts (webapp/src/i18n/${lang}.json)`, ui, keysOnly);
+            if (labels.length > 0) {
+                printSection(`Code labels (webapp/src/i18n/${lang}.json, not in en.json either)`, labels, true);
+            }
         }
         printSection('Data names (data/pack_data.json)', names, keysOnly);
     }

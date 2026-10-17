@@ -1,23 +1,20 @@
-import './style.css';
-import { renderNav } from './nav';
-import { loadPackData } from './lib/data';
-import { buildValuation, modelSummaryText, planOptions } from './lib/valuation';
-import { solveWeeklyPlan } from './core/planner.js';
-import { mountValuationPanel } from './lib/valuation-panel';
-import { withLoading } from './lib/loading';
-import { packageWeeklyCapacity, offerWeeklyCapacity, isOnSale } from './core/catalog.js';
-import { createUnitCounter } from './core/item-sources.js';
-import { createItemPicker } from './lib/item-picker';
-import { packageDisplayName, itemDisplayName, bundleLabel } from './lib/labels';
-import { createItemImage, banknoteIconHtml } from './lib/images';
-import { enableInfoTooltips } from './lib/tooltip';
-import { infoIconHtml } from './lib/requires-tooltip';
-import { t, getLocale, localizedName, applyStaticTranslations } from './lib/i18n';
-import { formatThousands, formatSignificant } from './lib/format';
-import { ratioBarHtml } from './lib/ratio-bar';
-
-renderNav('events');
-applyStaticTranslations();
+import { startPage } from '../ui/page.js';
+import { buildValuation, modelSummaryText, planOptions } from '../ui/valuation.js';
+import { solveWeeklyPlan } from '../core/planner.js';
+import { mountValuationPanel } from '../ui/valuation-panel.js';
+import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
+import { withLoading } from '../ui/loading.js';
+import { packageWeeklyCapacity, offerWeeklyCapacity, isOnSale } from '../core/catalog.js';
+import { createUnitCounter } from '../core/item-sources.js';
+import { createItemPicker } from '../ui/item-picker.js';
+import { packageDisplayName, itemDisplayName, bundleLabel } from '../ui/labels.js';
+import { banknotesHtml, escapeAttr, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { gridCell, gridNum, gridHeader, gridRow, gridSection } from '../ui/grid.js';
+import { enableInfoTooltips } from '../ui/tooltip.js';
+import { infoIconHtml } from '../ui/info-icon.js';
+import { t, tHtml, getLocale, localizedName } from '../ui/i18n.js';
+import { formatThousands, formatSignificant } from '../ui/format.js';
+import { ratioBarHtml } from '../ui/ratio-bar.js';
 
 // The app's own picker (not a native <select>, whose open list the browser draws itself).
 const eventPicker = createItemPicker({
@@ -53,26 +50,16 @@ const STEP_LEVELS = [1000, 2000, 5000, 10000, 20000, 50000];
 let data = null;
 let settings = null;
 let valuation = null;
-let panel = null;
 let stepCache = { key: null, steps: null };
 let lockCostCache = { key: null, cost: null };
 // itemId -> whether any pack or another shop gives it (for the "Only here" badge), per shop.
 const otherSourceCache = new Map();
 
-const gold = (text) => `<span class="text-gold">${text}</span> ${banknoteIconHtml()}`;
-// Item image placeholder, swapped for the real <img> by hydrateIcons() after rendering.
-const iconHtml = (itemId) => `<span class="breakdown-icon" data-item-id="${itemId}"></span>`;
-const cell = (html, extraClass = '') => `<div class="ranking-grid__cell ${extraClass}" role="cell">${html}</div>`;
-const numCell = (html) => cell(html, 'ranking-grid__cell--num');
-const headerCell = (key, num = false) =>
-    `<div class="ranking-grid__cell ranking-grid__cell--header${num ? ' ranking-grid__cell--num' : ''}" role="columnheader">${t(`events.table.${key}`)}</div>`;
-
-function hydrateIcons(root) {
-    root.querySelectorAll('[data-item-id]').forEach((placeholder) => {
-        const itemId = placeholder.getAttribute('data-item-id');
-        placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
-    });
-}
+const gold = banknotesHtml;
+const iconHtml = itemIconSlot;
+const cell = (html, className = '') => gridCell(html, { className });
+const numCell = gridNum;
+const headerCell = (key, num = false) => gridHeader(t(`events.table.${key}`), { num });
 
 /** The selection: an event (`event:<id>`, with its shop if any) or a shop without event (`shop:<id>`). */
 function selection() {
@@ -271,10 +258,7 @@ function renderSummary({ eventId, shopId, shop }) {
                     `<div class="chip-row">${thresholds
                         .map((x) => {
                             // Tooltip: what the tier gives (names are already HTML-escaped).
-                            const tip = bundleLabel(shop.bonus_tiers[String(x)], data.items, locale).replace(
-                                /"/g,
-                                '&quot;',
-                            );
+                            const tip = escapeAttr(bundleLabel(shop.bonus_tiers[String(x)], data.items, locale));
                             return `<span class="chip${reached.has(x) ? ' chip--on' : ''}" tabindex="0" data-tooltip="${tip}" aria-label="${tip}">${reached.has(x) ? '✓ ' : ''}${formatThousands(x)}</span>`;
                         })
                         .join('')}</div>`,
@@ -301,7 +285,7 @@ function renderSummary({ eventId, shopId, shop }) {
         );
     }
     eventSummary.innerHTML = tiles.join('');
-    hydrateIcons(eventSummary);
+    hydrateItemIcons(eventSummary);
     enableInfoTooltips(eventSummary);
 }
 
@@ -374,7 +358,6 @@ function renderShop({ shopId, shop }) {
     const stages = [...new Set(offers.map((o) => o.offer.unlock_points || 0))].sort((a, b) => a - b);
     const coinIcon = iconHtml(shop.currency_item_id);
     const buyBadge = (text) => `<span class="buy-badge">${text}</span>`;
-    const rowClass = (buy) => `ranking-grid__row${buy ? ' ranking-grid__row--buy' : ''}`;
     // Random offers (Recluse Merchant): no weekly count, just whether an offer is worth its coins when it shows up.
     const worthBuying = (o) => (shop.random_offers ? o.ratio >= 1 : o.count > 0);
     const buyCell = (o) => {
@@ -417,28 +400,30 @@ function renderShop({ shopId, shop }) {
     const groups = stages.map((stage) => {
         const heading =
             stages.length > 1
-                ? `<div class="ranking-grid__section">${stage > 0 ? t('events.unlockAt', { points: formatThousands(stage) }) : t('events.unlockStart')}</div>`
+                ? gridSection(
+                      stage > 0 ? t('events.unlockAt', { points: formatThousands(stage) }) : t('events.unlockStart'),
+                  )
                 : '';
         const rows = offers
             .filter((o) => (o.offer.unlock_points || 0) === stage)
             .sort((a, b) => (b.ratio ?? 0) - (a.ratio ?? 0))
-            .map(
-                ({
-                    offerKey,
-                    offer,
-                    count,
-                    worth,
-                    ratio,
-                }) => `<div class="${rowClass(worthBuying({ count, ratio }))}" role="row">
-                    ${cell(`${iconHtml(offer.item_id)}${itemDisplayName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}${onlyHereBadge(offer)}`, 'item-cell')}
-                    ${numCell(limitHtml(offer))}
-                    ${numCell(`${formatThousands(offer.currency_cost)} ${coinIcon}`)}
-                    ${numCell(coinWorth > 0 ? bn(offer.currency_cost * coinWorth) : t('common.dash'))}
-                    ${numCell(bn(worth))}
-                    ${numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 }))}
-                    ${lockable ? lockCell(offerKey, offer) : ''}
-                    ${numCell(buyCell({ count, ratio }))}
-                </div>`,
+            .map(({ offerKey, offer, count, worth, ratio }) =>
+                gridRow(
+                    [
+                        cell(
+                            `${iconHtml(offer.item_id)}${itemDisplayName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}${onlyHereBadge(offer)}`,
+                            'item-cell',
+                        ),
+                        numCell(limitHtml(offer)),
+                        numCell(`${formatThousands(offer.currency_cost)} ${coinIcon}`),
+                        numCell(coinWorth > 0 ? bn(offer.currency_cost * coinWorth) : t('common.dash')),
+                        numCell(bn(worth)),
+                        numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
+                        lockable ? lockCell(offerKey, offer) : '',
+                        numCell(buyCell({ count, ratio })),
+                    ],
+                    { buy: worthBuying({ count, ratio }) },
+                ),
             );
         return heading + rows.join('');
     });
@@ -451,26 +436,39 @@ function renderShop({ shopId, shop }) {
             const reward = shop.bonus_tiers[String(threshold)];
             const b = valuation.bundle({ contains: reward }, 0);
             const firstItem = Object.keys(reward)[0];
-            return `<div class="${rowClass(reached.has(threshold))}" role="row">
-                ${cell(`${iconHtml(firstItem)}${t('events.bonusTier', { threshold: formatThousands(threshold) })}: ${bundleLabel(reward, data.items, locale)}`, 'item-cell')}
-                ${numCell(t('common.dash'))}
-                ${numCell(t('common.dash'))}
-                ${numCell(t('common.dash'))}
-                ${numCell(bn(b.worth))}
-                ${numCell('')}
-                ${lockable ? numCell('') : ''}
-                ${numCell(reached.has(threshold) ? buyBadge(`✓ ${t('events.reached')}`) : '')}
-            </div>`;
+            return gridRow(
+                [
+                    cell(
+                        `${iconHtml(firstItem)}${t('events.bonusTier', { threshold: formatThousands(threshold) })}: ${bundleLabel(reward, data.items, locale)}`,
+                        'item-cell',
+                    ),
+                    numCell(t('common.dash')),
+                    numCell(t('common.dash')),
+                    numCell(t('common.dash')),
+                    numCell(bn(b.worth)),
+                    numCell(''),
+                    lockable ? numCell('') : '',
+                    numCell(reached.has(threshold) ? buyBadge(`✓ ${t('events.reached')}`) : ''),
+                ],
+                { buy: reached.has(threshold) },
+            );
         });
 
-    shopTable.innerHTML = `
-        <div class="ranking-grid__row" role="row">
-            ${headerCell('offer')}${headerCell('limit', true)}${headerCell('cost', true)}${headerCell('costBanknotes', true)}${headerCell('worth', true)}${headerCell('ratio', true)}${lockable ? headerCell('mustBuy', true) : ''}${headerCell(shop.random_offers ? 'buyIfOffered' : 'buy', true)}
-        </div>
-        ${groups.join('')}
-        ${tierRows.length > 0 ? `<div class="ranking-grid__section">${t('events.bonusSection')}</div>${tierRows.join('')}` : ''}`;
+    const header = gridRow([
+        headerCell('offer'),
+        headerCell('limit', true),
+        headerCell('cost', true),
+        headerCell('costBanknotes', true),
+        headerCell('worth', true),
+        headerCell('ratio', true),
+        lockable ? headerCell('mustBuy', true) : '',
+        headerCell(shop.random_offers ? 'buyIfOffered' : 'buy', true),
+    ]);
+    shopTable.innerHTML = `${header}${groups.join('')}${
+        tierRows.length > 0 ? `${gridSection(t('events.bonusSection'))}${tierRows.join('')}` : ''
+    }`;
     shopTable.classList.toggle('events-shop-grid--locks', lockable);
-    hydrateIcons(shopTable);
+    hydrateItemIcons(shopTable);
     enableInfoTooltips(shopTable);
     wireLocks(shopId, shop);
 }
@@ -485,7 +483,7 @@ function wireLocks(shopId, shop) {
         } else {
             lockedOffers[`${shopId}:${offerKey}`] = count;
         }
-        panel.update({ lockedOffers });
+        updateSettings({ lockedOffers });
     };
     shopTable.querySelectorAll('[data-lock]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -556,13 +554,13 @@ function renderLockNote() {
         const items = shortfalls.map(({ key, wanted, got }) => {
             const [shopId, offerKey] = key.split(':');
             const offer = shops[shopId]?.offers?.[offerKey];
-            return t('events.lockShortfallItem', {
+            return tHtml('events.lockShortfallItem', {
                 item: offer ? itemDisplayName(data.items, offer.item_id, getLocale()) : offerKey,
                 got: formatThousands(got),
                 wanted: formatThousands(wanted),
             });
         });
-        parts.push(`<span class="text-warn">${t('events.lockShortfall', { items: items.join(', ') })}</span>`);
+        parts.push(`<span class="text-warn">${tHtml('events.lockShortfall', { items: items.join(', ') })}</span>`);
     }
     lockNote.className = '';
     lockNote.innerHTML = parts.join(' ');
@@ -585,20 +583,28 @@ function renderSteps({ eventId }) {
         packs.length > 0
             ? `<ul class="cell-list">${packs.map((p) => `<li>${packageDisplayName(p.pkg, locale)} ×${formatThousands(p.count)}</li>`).join('')}</ul>`
             : t('common.dash');
-    const rows = steps.map(
-        (step) => `<div class="ranking-grid__row${step.isPlan ? ' ranking-grid__row--buy' : ''}" role="row">
-            ${numCell(`${step.isPlan ? `<span class="text-dim">${t('events.yourPlan')}</span>&nbsp;` : ''}${gold(formatThousands(step.eventSpend, 0))}`)}
-            ${numCell(step.stepCost === null ? t('common.dash') : gold(formatThousands(step.stepCost, 0)))}
-            ${numCell(step.stepWorth === null ? t('common.dash') : gold(formatThousands(step.stepWorth, 0)))}
-            ${numCell(step.ratio === null ? t('common.dash') : ratioBarHtml(step.ratio, maxRatio, { digits: 3 }))}
-            ${cell(packsHtml(step.packs))}
-        </div>`,
+    const rows = steps.map((step) =>
+        gridRow(
+            [
+                numCell(
+                    `${step.isPlan ? `<span class="text-dim">${t('events.yourPlan')}</span>&nbsp;` : ''}${gold(formatThousands(step.eventSpend, 0))}`,
+                ),
+                numCell(step.stepCost === null ? t('common.dash') : gold(formatThousands(step.stepCost, 0))),
+                numCell(step.stepWorth === null ? t('common.dash') : gold(formatThousands(step.stepWorth, 0))),
+                numCell(step.ratio === null ? t('common.dash') : ratioBarHtml(step.ratio, maxRatio, { digits: 3 })),
+                cell(packsHtml(step.packs)),
+            ],
+            { buy: step.isPlan },
+        ),
     );
-    stepsTable.innerHTML = `
-        <div class="ranking-grid__row" role="row">
-            ${headerCell('eventSpend', true)}${headerCell('stepCost', true)}${headerCell('stepWorth', true)}${headerCell('stepRatio', true)}${headerCell('packs')}
-        </div>
-        ${rows.join('')}`;
+    const header = gridRow([
+        headerCell('eventSpend', true),
+        headerCell('stepCost', true),
+        headerCell('stepWorth', true),
+        headerCell('stepRatio', true),
+        headerCell('packs'),
+    ]);
+    stepsTable.innerHTML = header + rows.join('');
     stepsNote.textContent = `${t('events.stepsNote')} ${modelSummaryText(valuation)}`;
 }
 
@@ -670,56 +676,47 @@ async function recompute() {
     });
 }
 
-async function init() {
-    data = await loadPackData();
-    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
-        fields: ['budget', 'events', 'passes'],
-        onChange: (next) => {
+startPage('events', {
+    async init(loaded) {
+        data = loaded;
+        settings = getSettings();
+        mountValuationPanel(document.getElementById('valuation-panel'), data, {
+            fields: ['budget', 'events', 'passes'],
+        });
+        onSettingsChange((next) => {
             settings = next;
             recompute();
-        },
-    });
-    settings = panel.getSettings();
-    renderExceedInfo();
-    extraDiamondsInput.value = String(settings.extraDiamonds || 0);
-    extraDiamondsInput.addEventListener('change', () =>
-        panel.update({ extraDiamonds: Math.max(0, Number(extraDiamondsInput.value) || 0) }),
-    );
-    extraBanknotesInput.addEventListener('change', () => {
-        const eventId = selection()?.eventId;
-        if (!eventId) {
-            return;
-        }
-        const amount = Math.max(0, Number(extraBanknotesInput.value) || 0);
-        const extraEventBanknotes = { ...settings.extraEventBanknotes, [eventId]: amount };
-        if (amount === 0) {
-            delete extraEventBanknotes[eventId];
-        }
-        panel.update({ extraEventBanknotes });
-    });
-    exceedLimits.addEventListener('change', () => {
-        const eventId = selection()?.eventId;
-        if (!eventId) {
-            return;
-        }
-        const others = (settings.exceedEventLimits || []).filter((id) => id !== eventId);
-        panel.update({ exceedEventLimits: exceedLimits.checked ? [...others, eventId] : others });
-    });
-    window.addEventListener('localechange', () => {
-        applyStaticTranslations();
+        });
+        renderExceedInfo();
+        extraDiamondsInput.value = String(settings.extraDiamonds || 0);
+        extraDiamondsInput.addEventListener('change', () =>
+            updateSettings({ extraDiamonds: Math.max(0, Number(extraDiamondsInput.value) || 0) }),
+        );
+        extraBanknotesInput.addEventListener('change', () => {
+            const eventId = selection()?.eventId;
+            if (!eventId) {
+                return;
+            }
+            const amount = Math.max(0, Number(extraBanknotesInput.value) || 0);
+            const extraEventBanknotes = { ...settings.extraEventBanknotes, [eventId]: amount };
+            if (amount === 0) {
+                delete extraEventBanknotes[eventId];
+            }
+            updateSettings({ extraEventBanknotes });
+        });
+        exceedLimits.addEventListener('change', () => {
+            const eventId = selection()?.eventId;
+            if (!eventId) {
+                return;
+            }
+            const others = (settings.exceedEventLimits || []).filter((id) => id !== eventId);
+            updateSettings({ exceedEventLimits: exceedLimits.checked ? [...others, eventId] : others });
+        });
+        await recompute();
+    },
+    onLocaleChange() {
         renderExceedInfo();
         populateSelect();
         render();
-    });
-    await recompute();
-}
-
-init().catch((error) => {
-    console.error(error);
-    document
-        .querySelector('main')
-        .insertAdjacentHTML(
-            'afterbegin',
-            `<div class="card"><p class="text-bad">${t('common.loadError', { message: error.message })}</p></div>`,
-        );
+    },
 });

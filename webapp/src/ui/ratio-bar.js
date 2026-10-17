@@ -4,7 +4,7 @@
  * 0.85 and below, amber at 1.0 (barely worth it: you gain next to nothing), green from 1.15 up,
  * blended in between. The bar's length shows the ratio relative to the best one in the table.
  */
-import { formatThousands } from './format';
+import { formatThousands } from './format.js';
 
 // --bad, --warn, --good (see style.css).
 const RATIO_BAD_RGB = [242, 104, 92];

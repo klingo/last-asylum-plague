@@ -7,8 +7,8 @@
  * picking closes the panel, Esc / clicking outside closes it without changing anything. On phones
  * (narrow screens) the panel is a full-screen sheet with a back button and large rows.
  */
-import { setItemImageSrc, rarityClass } from './images';
-import { localizedName, categoryLabel, t } from './i18n';
+import { setItemImageSrc, rarityClass } from './images.js';
+import { localizedName, enumLabel, t } from './i18n.js';
 
 let pickerCount = 0;
 
@@ -373,7 +373,7 @@ function createItemPicker({
             items = Object.entries(source).map(([itemId, item]) => {
                 const name = localizedName(item.name) || itemId;
                 const category = item.category || 'other';
-                const categoryName = categoryLabel(category);
+                const categoryName = enumLabel('category', category);
                 return {
                     id: itemId,
                     name,

@@ -2,22 +2,19 @@
  * The shared settings (weekly Banknote spend, events running this week, seasonal passes on sale), rendered
  * into a page's container as a compact setup bar: a one-line summary of the current setup and an "Edit"
  * button that opens the controls below it (spend | events | passes; toggle chips for events and passes).
- * Changes are persisted via settings.js and reported through `onChange(settings)`. Settings without a
- * control here (item priorities, ...) are changed through the returned `update(patch)`, so everything is
- * persisted in one place.
+ * Changes go to the settings store (settings.js `updateSettings`); pages listen with `onSettingsChange`.
  *
- * `fields`: which controls to show, any of 'budget', 'events', 'passes' (none = no bar at all).
+ * `fields`: which controls to show, any of 'budget', 'events', 'passes'.
  */
-import { localizedName, applyStaticTranslations, t } from './i18n';
-import { loadSettings, saveSettings } from './settings';
+import { localizedName, applyStaticTranslations, t, tHtml } from './i18n.js';
+import { getSettings, updateSettings, onSettingsChange, SETTINGS_KEY } from './settings.js';
 import { packageFamilyId } from '../core/pack-data.js';
-import { escapeHtml } from './labels';
-import { banknoteIconHtml } from './images';
-import { formatThousands } from './format';
+import { escapeHtml } from './html.js';
+import { banknoteIconHtml } from './images.js';
+import { formatThousands } from './format.js';
 
 // Whether the setup panel is open: a UI preference (not a setting, so toggling doesn't recompute).
 const OPEN_KEY = 'lasps_setup_open';
-const SETTINGS_KEY = 'lasps_valuation';
 
 /** Seasonal package families (one entry per tier ladder): [familyId, { name }]. */
 function passFamilies(packages) {
@@ -68,8 +65,7 @@ function chipGroupHtml(key, labelKey, entries) {
         </div>`;
 }
 
-function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } = {}) {
-    let settings = loadSettings();
+function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
     let open = loadOpen();
     const show = new Set(fields);
     const sorted = (object) =>
@@ -83,6 +79,7 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
 
     /** "🪙 20,000 / week · Events: … · Passes: …" for the page's fields. */
     function renderSummary() {
+        const settings = getSettings();
         const summary = container.querySelector('.setup-bar__summary');
         if (!summary) {
             return;
@@ -94,19 +91,19 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
         const parts = [];
         if (show.has('budget')) {
             parts.push(
-                `${banknoteIconHtml()} ${t('valuation.summaryBudget', { amount: `<strong>${formatThousands(settings.budget, 0)}</strong>` })}`,
+                `${banknoteIconHtml()} ${tHtml('valuation.summaryBudget', { amount: `<strong>${formatThousands(settings.budget, 0)}</strong>` })}`,
             );
         }
         if (show.has('events')) {
             const eventName = (id) => (data.events?.[id] ? localizedName(data.events[id].name) : null);
-            parts.push(t('valuation.summaryEvents', { list: names(settings.activeEvents, eventName) }));
+            parts.push(tHtml('valuation.summaryEvents', { list: names(settings.activeEvents, eventName) }));
         }
         if (show.has('passes')) {
             const passName = (id) => {
                 const entry = passes.find(([familyId]) => familyId === id);
                 return entry ? localizedName(entry[1].name) : null;
             };
-            parts.push(t('valuation.summaryPasses', { list: names(settings.seasonalPasses, passName) }));
+            parts.push(tHtml('valuation.summaryPasses', { list: names(settings.seasonalPasses, passName) }));
         }
         summary.innerHTML = parts.map((part) => `<span class="setup-chip">${part}</span>`).join('');
     }
@@ -123,10 +120,6 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
     }
 
     function renderControls() {
-        if (show.size === 0) {
-            container.innerHTML = '';
-            return;
-        }
         container.innerHTML = `
             <div class="setup-bar">
                 <div class="setup-bar__summary"></div>
@@ -154,36 +147,39 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS, onChange } 
         });
         const budgetInput = container.querySelector('#vp-budget');
         if (budgetInput) {
-            budgetInput.value = String(settings.budget);
             budgetInput.addEventListener('change', () =>
-                update({ budget: Math.max(0, Number(budgetInput.value) || 0) }),
+                updateSettings({ budget: Math.max(0, Number(budgetInput.value) || 0) }),
             );
         }
         for (const chip of container.querySelectorAll('.toggle-chip')) {
             const { key, value } = chip.dataset;
-            chip.setAttribute('aria-pressed', String(settings[key].includes(value)));
             chip.addEventListener('click', () => {
-                const on = !settings[key].includes(value);
-                chip.setAttribute('aria-pressed', String(on));
-                update({ [key]: on ? [...settings[key], value] : settings[key].filter((id) => id !== value) });
+                const list = getSettings()[key];
+                updateSettings({ [key]: list.includes(value) ? list.filter((id) => id !== value) : [...list, value] });
             });
         }
+        renderValues();
     }
 
-    function update(patch) {
-        settings = { ...settings, ...patch };
-        saveSettings(settings);
-        renderSummary();
-        onChange?.(settings);
+    /** The controls' values from the settings (also after a change made elsewhere). */
+    function renderValues() {
+        const settings = getSettings();
+        const budgetInput = container.querySelector('#vp-budget');
+        if (budgetInput) {
+            budgetInput.value = String(settings.budget);
+        }
+        for (const chip of container.querySelectorAll('.toggle-chip')) {
+            const { key, value } = chip.dataset;
+            chip.setAttribute('aria-pressed', String(settings[key].includes(value)));
+        }
     }
 
     renderControls();
     window.addEventListener('localechange', renderControls);
-
-    return {
-        getSettings: () => settings,
-        update,
-    };
+    onSettingsChange(() => {
+        renderSummary();
+        renderValues();
+    });
 }
 
 export { mountValuationPanel };

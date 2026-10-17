@@ -27,6 +27,33 @@ function isPass(pkg) {
     return Boolean(pkg.delivery_days) && !pkg.event_id;
 }
 
+// Every value purchaseType returns (each has a `sourceType.<type>` label in the UI texts).
+const PURCHASE_TYPES = ['top_up', 'event', 'unlock', 'limited', 'seasonal_pass', 'pass', 'package'];
+
+/**
+ * What kind of purchase a (flattened) package is, for its Type pill. The first matching rule wins:
+ * diamond top-up, event pack (only while its event runs), once-only unlock, lifetime-limited pack,
+ * seasonal pass, pass, plain package. Derived from the data, so nothing extra has to be maintained.
+ */
+function purchaseType(pkg) {
+    if (pkg.category === 'diamond') {
+        return 'top_up';
+    }
+    if (pkg.event_id) {
+        return 'event';
+    }
+    if (pkg.category === 'unlock_exclusive') {
+        return 'unlock';
+    }
+    if (pkg.limit_type === 'lifetime') {
+        return 'limited';
+    }
+    if (isPass(pkg)) {
+        return pkg.seasonal ? 'seasonal_pass' : 'pass';
+    }
+    return 'package';
+}
+
 /** A package that can only be bought `purchase_limit` times ever (the limit never resets). */
 function isLifetimeLimited(pkg) {
     return pkg.limit_type === 'lifetime';
@@ -201,6 +228,8 @@ function packageCapacityForDays(pkg, days, { activeEventIds = null, includeExclu
 export {
     DAYS_PER_WEEK,
     isPass,
+    purchaseType,
+    PURCHASE_TYPES,
     isLifetimeLimited,
     bundledPairs,
     isSeasonalOff,

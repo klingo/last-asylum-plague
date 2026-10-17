@@ -7,7 +7,7 @@ import { fitItemPoints, fitSensitivity } from '../webapp/src/core/point-fit.js';
 import { solveWeeklyPlan } from '../webapp/src/core/planner.js';
 import { solveNeeds } from '../webapp/src/core/acquire.js';
 import { loadHighs } from '../webapp/src/core/lp.js';
-import { DEFAULT_SETTINGS, priorityWeights } from '../webapp/src/lib/settings.js';
+import { DEFAULT_SETTINGS, priorityWeights } from '../webapp/src/ui/settings.js';
 import { loadFixture, expectGolden } from './helpers.js';
 
 const data = loadFixture();

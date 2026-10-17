@@ -1,24 +1,20 @@
-import './style.css';
-import { renderNav } from './nav';
-import { loadPackData } from './lib/data';
-import { buildValuation, modelSummaryText } from './lib/valuation';
-import { mountValuationPanel } from './lib/valuation-panel';
-import { withLoading } from './lib/loading';
-import { solveNeeds } from './core/acquire.js';
+import { startPage } from '../ui/page.js';
+import { buildValuation, modelSummaryText } from '../ui/valuation.js';
+import { mountValuationPanel } from '../ui/valuation-panel.js';
+import { getSettings, onSettingsChange } from '../ui/settings.js';
+import { withLoading } from '../ui/loading.js';
+import { solveNeeds } from '../core/acquire.js';
 import {
     packageDisplayName,
     itemDisplayName,
     offerDisplayName,
     todayWeekdayIndex,
     conversionLabel,
-} from './lib/labels';
-import { createItemPicker } from './lib/item-picker';
-import { banknoteIconHtml } from './lib/images';
-import { formatThousands, formatSignificant } from './lib/format';
-import { t, getLocale, applyStaticTranslations } from './lib/i18n';
-
-renderNav('compare');
-applyStaticTranslations();
+} from '../ui/labels.js';
+import { createItemPicker } from '../ui/item-picker.js';
+import { banknotesHtml } from '../ui/html.js';
+import { formatThousands, formatSignificant } from '../ui/format.js';
+import { t, tHtml, getLocale } from '../ui/i18n.js';
 
 const sides = ['a', 'b'].map((key) => ({
     key,
@@ -43,9 +39,7 @@ let valuation = null;
 let runId = 0;
 
 const gold = (value, digits = 0) =>
-    Number.isFinite(value)
-        ? `<span class="text-gold">${formatThousands(value, digits)}</span> ${banknoteIconHtml()}`
-        : t('common.notAvailable');
+    Number.isFinite(value) ? banknotesHtml(formatThousands(value, digits)) : t('common.notAvailable');
 
 /** Worth of the side and the cheapest guaranteed way to get it within the chosen days. */
 function evaluate(side) {
@@ -162,7 +156,7 @@ function render(results) {
     if (a && b && a.worth > 0 && b.worth > 0) {
         const [more, less] = a.worth >= b.worth ? [a, b] : [b, a];
         parts.push(
-            t('compare.verdictWorth', {
+            tHtml('compare.verdictWorth', {
                 more: name(more),
                 less: name(less),
                 factor: formatThousands(more.worth / less.worth, 2),
@@ -171,7 +165,7 @@ function render(results) {
     }
     if (a?.plan.reachable && b?.plan.reachable) {
         const [cheaper, dearer] = net(a) <= net(b) ? [a, b] : [b, a];
-        parts.push(t('compare.verdictCost', { cheaper: name(cheaper), dearer: name(dearer) }));
+        parts.push(tHtml('compare.verdictCost', { cheaper: name(cheaper), dearer: name(dearer) }));
     }
     verdict.innerHTML = parts.join(' ');
     compareNote.textContent = `${t('compare.note')} ${modelSummaryText(valuation)}`;
@@ -196,37 +190,28 @@ async function revalue() {
     await recompute();
 }
 
-async function init() {
-    data = await loadPackData();
-    const panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
-        fields: ['budget', 'events', 'passes'],
-        onChange: (next) => {
-            settings = next;
-            revalue();
-        },
+async function init(loaded) {
+    data = loaded;
+    settings = getSettings();
+    mountValuationPanel(document.getElementById('valuation-panel'), data, { fields: ['budget', 'events', 'passes'] });
+    onSettingsChange((next) => {
+        settings = next;
+        revalue();
     });
-    settings = panel.getSettings();
     for (const side of sides) {
         side.picker.setItems(data.items);
         side.amount.addEventListener('change', () => recompute());
     }
     daysInput.addEventListener('change', () => recompute());
-    window.addEventListener('localechange', () => {
-        applyStaticTranslations();
+    await revalue();
+}
+
+startPage('compare', {
+    init,
+    onLocaleChange() {
         for (const side of sides) {
             side.picker.setItems(data.items);
         }
         recompute();
-    });
-    await revalue();
-}
-
-init().catch((error) => {
-    console.error(error);
-    document
-        .querySelector('main')
-        .insertAdjacentHTML(
-            'afterbegin',
-            `<div class="card"><p class="text-bad">${t('common.loadError', { message: error.message })}</p></div>`,
-        );
+    },
 });

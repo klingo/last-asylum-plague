@@ -1,18 +1,15 @@
-import './style.css';
-import { renderNav } from './nav';
-import { loadPackData } from './lib/data';
-import { buildValuation, modelSummaryText } from './lib/valuation';
-import { mountValuationPanel } from './lib/valuation-panel';
-import { withLoading } from './lib/loading';
-import { packageDisplayName, packageDisplayText, itemDisplayName } from './lib/labels';
-import { createItemPicker } from './lib/item-picker';
-import { createItemImage, banknoteIconHtml } from './lib/images';
-import { formatThousands, formatSignificant, computeTieFlags } from './lib/format';
-import { ratioBarHtml } from './lib/ratio-bar';
-import { t, getLocale, categoryLabel, applyStaticTranslations } from './lib/i18n';
-
-renderNav('choices');
-applyStaticTranslations();
+import { startPage } from '../ui/page.js';
+import { buildValuation, modelSummaryText } from '../ui/valuation.js';
+import { mountValuationPanel } from '../ui/valuation-panel.js';
+import { getSettings, onSettingsChange } from '../ui/settings.js';
+import { withLoading } from '../ui/loading.js';
+import { packageDisplayName, packageDisplayText, bundleLabel } from '../ui/labels.js';
+import { createItemPicker } from '../ui/item-picker.js';
+import { banknotesHtml, escapeHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { detailsToggleHtml, wireDetailsToggles, breakdownParts } from '../ui/grid.js';
+import { formatThousands, formatSignificant, computeTieFlags } from '../ui/format.js';
+import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { t, getLocale, enumLabel } from '../ui/i18n.js';
 
 const itemPicker = createItemPicker({
     trigger: document.getElementById('item-search'),
@@ -103,9 +100,7 @@ function render() {
     const rows = source.choice.choices
         .map((option) => {
             const b = valuation.bundle({ contains: option }, 0);
-            const label = Object.entries(option)
-                .map(([id, qty]) => `${itemDisplayName(data.items, id, locale)} &times;${formatThousands(qty)}`)
-                .join(' + ');
+            const label = bundleLabel(option, data.items, locale);
             return {
                 firstId: Object.keys(option)[0],
                 label,
@@ -136,32 +131,29 @@ function render() {
                 (row, index) => `
                 <tr>
                     <td class="text-right table-col-rank">${tieFlags[index] ? '' : index + 1}</td>
-                    <td><span class="item-cell"><span data-item-id="${row.firstId}"></span>${row.label}${row.incomplete ? ` <span class="text-bad">${t('choices.incomplete')}</span>` : ''}</span></td>
-                    <td>${categoryLabel(data.items[row.firstId]?.category)}</td>
+                    <td><span class="item-cell">${itemIconSlot(row.firstId)}${row.label}${row.incomplete ? ` <span class="text-bad">${t('choices.incomplete')}</span>` : ''}</span></td>
+                    <td>${enumLabel('category', data.items[row.firstId]?.category)}</td>
                     <td class="text-right">${formatSignificant(row.points)}</td>
-                    <td class="text-right"><span class="text-gold">${formatSignificant(row.worth)}</span> ${banknoteIconHtml()}</td>
+                    <td class="text-right">${banknotesHtml(formatSignificant(row.worth))}</td>
                     <td class="text-right">${best > 0 ? ratioBarHtml(row.worth / best, 1, { label: `${formatThousands((100 * row.worth) / best, 1)}%` }) : t('common.notAvailable')}</td>
                 </tr>`,
             )
             .join('')}</tbody>`;
-    optionsTable.querySelectorAll('[data-item-id]').forEach((placeholder) => {
-        const itemId = placeholder.getAttribute('data-item-id');
-        placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
-    });
+    hydrateItemIcons(optionsTable);
 }
 
 /** A package's contents for its "Details": item × amount, points each and worth, most valuable first. */
-function detailRowsHtml(row, locale, gold) {
-    const parts = row.parts
-        .map((part) => ({ ...part, worth: part.qty * (valuation.worth(part.id) ?? 0) }))
-        .sort((a, b) => b.worth - a.worth)
+function detailRowsHtml(row) {
+    const key = escapeHtml(row.key);
+    const hidden = expandedKeys.has(row.key) ? '' : 'hidden';
+    const parts = breakdownParts(row.parts, data, valuation)
         .map(
             (part) => `
-                <tr class="choice-details" data-details-key="${row.key}" ${expandedKeys.has(row.key) ? '' : 'hidden'}>
+                <tr class="choice-details" data-details-key="${key}" ${hidden}>
                     <td></td>
-                    <td><span class="item-cell"><span data-item-id="${part.id}"></span>${itemDisplayName(data.items, part.id, locale)} &times;${Number.isInteger(part.qty) ? formatThousands(part.qty) : formatSignificant(part.qty)}</span></td>
-                    <td class="text-right table-col-fit">${formatSignificant(valuation.points(part.id)) ?? t('common.unknown')}</td>
-                    <td class="text-right table-col-fit">${valuation.worth(part.id) === null ? `<span class="text-bad">${t('choices.incomplete')}</span>` : gold(part.worth)}</td>
+                    <td><span class="item-cell">${part.item}</span></td>
+                    <td class="text-right table-col-fit">${part.points}</td>
+                    <td class="text-right table-col-fit">${part.unknown ? `<span class="text-bad">${t('choices.incomplete')}</span>` : banknotesHtml(formatThousands(part.worth, 0))}</td>
                     <td></td>
                     <td></td>
                     <td class="table-col-fit"></td>
@@ -169,7 +161,7 @@ function detailRowsHtml(row, locale, gold) {
         )
         .join('');
     return `
-        <tr class="choice-details choice-details--header" data-details-key="${row.key}" ${expandedKeys.has(row.key) ? '' : 'hidden'}>
+        <tr class="choice-details choice-details--header" data-details-key="${key}" ${hidden}>
             <th></th>
             <th>${t('choices.table.item')}</th>
             <th class="text-right table-col-fit">${t('choices.table.pointsEach')}</th>
@@ -202,7 +194,7 @@ function renderGroup(packages, locale) {
     optionsSelectHint.textContent = t('choices.groupHint');
     const tieFlags = computeTieFlags(rows.map((row) => row.gain.toFixed(2)));
     const maxRatio = Math.max(1, ...rows.map((row) => row.ratio).filter(Number.isFinite));
-    const gold = (value) => `<span class="text-gold">${formatThousands(value, 0)}</span> ${banknoteIconHtml()}`;
+    const gold = (value) => banknotesHtml(formatThousands(value, 0));
     optionsTable.innerHTML = `
         <thead>
             <tr>
@@ -225,30 +217,13 @@ function renderGroup(packages, locale) {
                     <td class="text-right table-col-fit">${gold(row.worth)}</td>
                     <td class="text-right table-col-fit">${ratioBarHtml(row.ratio, maxRatio)}</td>
                     <td class="text-right table-col-fit ${row.gain >= 0 ? 'text-good' : 'text-bad'}">${gold(row.gain)}</td>
-                    <td class="text-right table-col-fit"><button type="button" class="expand-toggle" data-key="${row.key}">${expandedKeys.has(row.key) ? t('common.hide') : t('common.details')}</button></td>
+                    <td class="text-right table-col-fit">${detailsToggleHtml(row.key, expandedKeys)}</td>
                 </tr>
-                ${detailRowsHtml(row, locale, gold)}`,
+                ${detailRowsHtml(row)}`,
             )
             .join('')}</tbody>`;
-    optionsTable.querySelectorAll('[data-item-id]').forEach((placeholder) => {
-        const itemId = placeholder.getAttribute('data-item-id');
-        placeholder.replaceWith(createItemImage(itemId, itemId, 'item-icon item-icon--sm'));
-    });
-    optionsTable.querySelectorAll('.expand-toggle').forEach((button) => {
-        button.addEventListener('click', () => {
-            const key = button.dataset.key;
-            const open = !expandedKeys.has(key);
-            if (open) {
-                expandedKeys.add(key);
-            } else {
-                expandedKeys.delete(key);
-            }
-            optionsTable
-                .querySelectorAll(`[data-details-key="${CSS.escape(key)}"]`)
-                .forEach((detail) => (detail.hidden = !open));
-            button.textContent = open ? t('common.hide') : t('common.details');
-        });
-    });
+    hydrateItemIcons(optionsTable);
+    wireDetailsToggles(optionsTable, expandedKeys);
 }
 
 function syncUrl() {
@@ -271,16 +246,14 @@ async function recompute() {
     });
 }
 
-async function init() {
-    data = await loadPackData();
-    const panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
-        fields: ['budget'],
-        onChange: (next) => {
-            settings = next;
-            recompute();
-        },
+async function init(loaded) {
+    data = loaded;
+    settings = getSettings();
+    mountValuationPanel(document.getElementById('valuation-panel'), data, { fields: ['budget'] });
+    onSettingsChange((next) => {
+        settings = next;
+        recompute();
     });
-    settings = panel.getSettings();
     choiceSources = collectChoiceSources(getLocale());
     itemPicker.setItems(choiceSources);
     const itemParam = new URLSearchParams(window.location.search).get('item');
@@ -294,21 +267,14 @@ async function init() {
         render();
         syncUrl();
     });
-    window.addEventListener('localechange', () => {
-        applyStaticTranslations();
-        choiceSources = collectChoiceSources(getLocale());
-        itemPicker.setItems(choiceSources);
-        render();
-    });
     await recompute();
 }
 
-init().catch((error) => {
-    console.error(error);
-    document
-        .querySelector('main')
-        .insertAdjacentHTML(
-            'afterbegin',
-            `<div class="card"><p class="text-bad">${t('common.loadError', { message: error.message })}</p></div>`,
-        );
+startPage('choices', {
+    init,
+    onLocaleChange() {
+        choiceSources = collectChoiceSources(getLocale());
+        itemPicker.setItems(choiceSources);
+        render();
+    },
 });

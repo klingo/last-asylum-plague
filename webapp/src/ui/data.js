@@ -5,8 +5,8 @@
  */
 import rawData from '../../../data/pack_data.json';
 import { normalizePackData } from '../core/pack-data.js';
-import { setItemImageAliases } from './images';
-import { showDataDate } from '../nav';
+import { setItemImageAliases } from './images.js';
+import { showDataDate } from './nav.js';
 
 async function loadPackData() {
     const data = normalizePackData(rawData);

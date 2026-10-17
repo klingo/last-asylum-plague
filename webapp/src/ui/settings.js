@@ -1,6 +1,9 @@
 /**
  * Settings shared by every page (persisted in localStorage): weekly Banknote spend, events running
  * this week, seasonal passes on sale, and the user's item priorities.
+ *
+ * The page's one copy: `getSettings()` reads it, `updateSettings(patch)` changes and saves it and tells
+ * every `onSettingsChange` listener (the setup panel, the page's recalculation).
  */
 const STORAGE_KEY = 'lasps_valuation';
 // Bumped when the stored shape changes (see loadSettings for the migrations).
@@ -114,6 +117,29 @@ function saveSettings(settings) {
     }
 }
 
+let current = null;
+const listeners = new Set();
+
+/** The current settings (loaded once per page). */
+function getSettings() {
+    current ??= loadSettings();
+    return current;
+}
+
+/** Changes the settings by `patch`, saves them and notifies the listeners. */
+function updateSettings(patch) {
+    current = { ...getSettings(), ...patch };
+    saveSettings(current);
+    for (const listener of listeners) {
+        listener(current);
+    }
+}
+
+/** Calls `listener(settings)` after every change. */
+function onSettingsChange(listener) {
+    listeners.add(listener);
+}
+
 /** `{ itemId: factor }` for the valuation (items at "normal" are left out). */
 function priorityWeights(settings) {
     return Object.fromEntries(
@@ -122,8 +148,10 @@ function priorityWeights(settings) {
 }
 
 export {
-    loadSettings,
-    saveSettings,
+    STORAGE_KEY as SETTINGS_KEY,
+    getSettings,
+    updateSettings,
+    onSettingsChange,
     priorityWeights,
     DEFAULT_SETTINGS,
     DEFAULT_NONE_ITEMS,

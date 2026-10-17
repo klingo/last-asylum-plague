@@ -3,13 +3,9 @@
  * HTML-escaped (pages insert them as markup; data names like "<Hero> Shard" contain brackets),
  * except the `...Text` variants for plain-text use (e.g. the item picker).
  */
-import { localizedName, t } from './i18n';
-import { isPass } from '../core/catalog.js';
-import { formatThousands } from './format';
-
-function escapeHtml(text) {
-    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
+import { localizedName, t } from './i18n.js';
+import { formatThousands } from './format.js';
+import { escapeHtml } from './html.js';
 
 /** A package's plain-text name, with a localized "(Tier N)" suffix when it belongs to a tier ladder. */
 function packageDisplayText(pkg, locale) {
@@ -30,30 +26,6 @@ function itemDisplayName(items, itemId, locale) {
 function offerDisplayName(shop, offer, items, locale) {
     const item = itemDisplayName(items, offer.item_id, locale);
     return `${escapeHtml(localizedName(shop.name, locale))} - ${item} ×${formatThousands(offer.quantity)}`;
-}
-
-/**
- * What kind of purchase a (flattened) package is, for its Type pill. The first matching rule wins:
- * diamond top-up, event pack (only while its event runs), once-only unlock, lifetime-limited pack,
- * seasonal pass, pass, plain package. Derived from the data, so nothing extra has to be maintained.
- */
-function purchaseType(pkg) {
-    if (pkg.category === 'diamond') {
-        return 'top_up';
-    }
-    if (pkg.event_id) {
-        return 'event';
-    }
-    if (pkg.category === 'unlock_exclusive') {
-        return 'unlock';
-    }
-    if (pkg.limit_type === 'lifetime') {
-        return 'limited';
-    }
-    if (isPass(pkg)) {
-        return pkg.seasonal ? 'seasonal_pass' : 'pass';
-    }
-    return 'package';
 }
 
 /** "Item ×qty + Item ×qty" label of a choice option / ingredient list. */
@@ -90,13 +62,11 @@ function todayWeekdayIndex() {
 }
 
 export {
-    escapeHtml,
     packageDisplayText,
     packageDisplayName,
     itemDisplayName,
     offerDisplayName,
     bundleLabel,
-    purchaseType,
     todayWeekdayIndex,
     conversionLabel,
 };

@@ -6,10 +6,12 @@ import { fitItemPoints, fitSensitivity, isDependent } from '../webapp/src/core/p
 import { resolveItemValues } from '../webapp/src/core/item-values.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
 import { normalizePackData } from '../webapp/src/core/pack-data.js';
+import { missingCodeLabels } from './code-labels.js';
 
 const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
 const SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.schema.json');
 const ITEM_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'items');
+const EN_TEXTS_PATH = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n', 'en.json');
 
 /**
  * Validates data integrity of pack_data.json
@@ -516,6 +518,15 @@ async function verifyData() {
                     `Item "${itemId}" (${items[itemId].name.en}) is defined but never referenced anywhere.`,
                 );
             }
+        }
+    });
+
+    // 8a. Every code the pages show (categories, hero classes and factions, ...) has its English label;
+    // without one the page shows the raw code (`npm run i18n:missing` also lists the other languages).
+    checkCategory('Code Labels', ({ reportWarning }) => {
+        const english = JSON.parse(fs.readFileSync(EN_TEXTS_PATH, 'utf8'));
+        for (const key of missingCodeLabels(data, english)) {
+            reportWarning('Code Label', `"${key}" has no text in webapp/src/i18n/en.json (the page shows the code).`);
         }
     });
 

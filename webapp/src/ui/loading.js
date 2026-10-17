@@ -1,13 +1,24 @@
 /**
- * The full-page loading overlay (`#loading-overlay`) around a recalculation. The recalculations
+ * The full-page loading overlay (`#loading-overlay`, created on first use) around a recalculation. The recalculations
  * (weekly plan, acquisition plans) run synchronously, so the overlay is first given a chance to
  * paint; otherwise the page would just freeze without feedback. Overlapping calls keep it visible
  * until the last one finishes.
  */
 let active = 0;
 
+/** The overlay element, added to the page on first use. */
 function overlay() {
-    return document.getElementById('loading-overlay');
+    let element = document.getElementById('loading-overlay');
+    if (!element) {
+        element = document.createElement('div');
+        element.id = 'loading-overlay';
+        element.className = 'loading-overlay';
+        element.hidden = true;
+        element.setAttribute('aria-hidden', 'true');
+        element.innerHTML = '<div class="spinner"></div>';
+        document.body.appendChild(element);
+    }
+    return element;
 }
 
 /**

@@ -33,7 +33,8 @@
         "tierSuffix": "(Stufe {tier})",
         "loadError": "Daten konnten nicht geladen werden: {message}",
         "reset": "Zurücksetzen",
-        "howItWorks": "So funktioniert's"
+        "howItWorks": "So funktioniert's",
+        "requiresTooltip": "Benötigt: {name}"
     },
     "picker": {
         "placeholder": "Gegenstand auswählen…",
@@ -154,12 +155,6 @@
             "today": "Heute",
             "tomorrow": "Morgen",
             "every": "jeweils {days}"
-        }
-    },
-    "analyze": {
-        "heading": "Gegenstandswert analysieren",
-        "table": {
-            "requiresTooltip": "Benötigt: {name}"
         }
     },
     "rankings": {

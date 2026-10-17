@@ -3,7 +3,7 @@
  * not sorted into its folder yet is found directly in assets/items/; a missing one falls back to a
  * placeholder icon, so images can be dropped in later without touching any rendering code.
  */
-import { t, localizedName } from './i18n';
+import { t, localizedName } from './i18n.js';
 
 const PLACEHOLDER_ICON = `${import.meta.env.BASE_URL}icons/placeholder-item.svg`;
 const BANKNOTE_ICON_URL = `${import.meta.env.BASE_URL}assets/currencies/banknote.png`;

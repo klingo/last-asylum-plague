@@ -8,12 +8,24 @@
  * Locale resolution order: `?lang=` URL param > localStorage > browser language > default.
  * Switching locale persists the choice and dispatches a `localechange` event on `window` so
  * each page can re-render without a full reload.
+ *
+ * Markup: translations are plain text. `t()` results go into the page as they are (our own files, no
+ * markup in them); a text with markup in its placeholders uses `tHtml()`, which escapes the text itself.
+ * Labels of the data's codes (categories, purchase types, weekdays, hero classes, ...) are `<group>.<code>`
+ * keys, looked up with `enumLabel()`.
  */
 import en from '../i18n/en.json';
 import de from '../i18n/de.json';
+import { escapeHtml } from './html.js';
 
-const DICTIONARIES = { en, de };
-const SUPPORTED_LOCALES = Object.keys(DICTIONARIES);
+// The languages: dictionary and the short name on the language switch. A new language needs its
+// i18n/<code>.json here (and its `name.<code>` in pack_data.schema.json's localizedString).
+const LOCALES = {
+    en: { dictionary: en, label: 'EN' },
+    de: { dictionary: de, label: 'DE' },
+};
+const DICTIONARIES = Object.fromEntries(Object.entries(LOCALES).map(([code, { dictionary }]) => [code, dictionary]));
+const SUPPORTED_LOCALES = Object.keys(LOCALES);
 const DEFAULT_LOCALE = 'en';
 const STORAGE_KEY = 'lasps_locale';
 
@@ -88,13 +100,41 @@ function interpolate(template, vars) {
 }
 
 /**
- * Looks up a UI copy string by dot-separated key (e.g. "analyze.heading"). Falls back to the
+ * Looks up a UI copy string by dot-separated key (e.g. "rankings.heading"). Falls back to the
  * English dictionary if the current locale's entry is missing or an empty string, and to the
  * raw key itself if English has no value either.
  */
 function t(key, vars) {
     const value = resolve(currentLocale, key) ?? key;
     return interpolate(value, vars);
+}
+
+/**
+ * A text with markup in some placeholders: the translation is escaped, `vars` are inserted as given (so
+ * they must be markup-safe already: escaped names, numbers, tags), e.g. "Reached at {amount}" with
+ * `{ amount: '<strong>20'000</strong>' }`.
+ */
+function tHtml(key, vars = {}) {
+    const names = Object.keys(vars);
+    // Placeholders stand in for the vars while the text is escaped (control characters never occur in it).
+    const tokens = Object.fromEntries(names.map((name, i) => [name, `${i}`]));
+    let text = escapeHtml(t(key, tokens));
+    names.forEach((name) => {
+        text = text.split(tokens[name]).join(String(vars[name]));
+    });
+    return text;
+}
+
+/**
+ * Label of a code from the data: `<group>.<code>` (e.g. `enumLabel('category', 'chest')`,
+ * `enumLabel('gear.class', 'tank')`). No code or "-" gives a dash; a code without a label shows as is
+ * (`npm run i18n:missing` lists those).
+ */
+function enumLabel(group, code, locale = currentLocale) {
+    if (!code || code === '-') {
+        return t('common.dash');
+    }
+    return resolve(locale, `${group}.${code}`) ?? code;
 }
 
 /**
@@ -112,24 +152,9 @@ function localizedName(nameField, locale = currentLocale) {
     return nameField[locale] || nameField[DEFAULT_LOCALE] || Object.values(nameField).find(Boolean) || '';
 }
 
-function categoryLabel(category, locale = currentLocale) {
-    if (!category || category === '-') {
-        return t('common.dash');
-    }
-    return resolve(locale, `category.${category}`) || category;
-}
-
-function sourceTypeLabel(type, locale = currentLocale) {
-    return resolve(locale, `sourceType.${type}`) || type;
-}
-
-function weekdayLabel(weekday, locale = currentLocale) {
-    return resolve(locale, `weekday.${weekday}`) || weekday;
-}
-
 function formatDays(availableDays, locale = currentLocale) {
     return availableDays && availableDays.length > 0
-        ? availableDays.map((day) => weekdayLabel(day, locale)).join(', ')
+        ? availableDays.map((day) => enumLabel('weekday', day, locale)).join(', ')
         : t('common.anyDay');
 }
 
@@ -169,15 +194,15 @@ function applyStaticTranslations(root = document) {
 }
 
 export {
+    LOCALES,
     SUPPORTED_LOCALES,
     DEFAULT_LOCALE,
     getLocale,
     setLocale,
     t,
+    tHtml,
+    enumLabel,
     localizedName,
-    categoryLabel,
-    sourceTypeLabel,
-    weekdayLabel,
     formatDays,
     applyStaticTranslations,
 };
