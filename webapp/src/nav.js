@@ -63,6 +63,7 @@ function renderNav(activePage) {
             <a href="${base}choices.html" class="${activePage === 'choices' ? 'active' : ''}">${t('nav.choices')}</a>
             <a href="${base}compare.html" class="${activePage === 'compare' ? 'active' : ''}">${t('nav.compare')}</a>
             <a href="${base}spend-rewards.html" class="${activePage === 'spend-rewards' ? 'active' : ''}">${t('nav.spendRewards')}</a>
+            <a href="${base}gear.html" class="${activePage === 'gear' ? 'active' : ''}">${t('nav.gear')}</a>
         </nav>
         <label class="lang-switch">
             <span class="sr-only">${t('nav.language')}</span>

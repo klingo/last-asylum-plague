@@ -49,6 +49,13 @@ if (fs.existsSync(DATA_PATH)) {
         }
     }
 
+    // Heroes, gear sets and squad guides by id (a guide's path keeps its order: the order is its meaning).
+    for (const key of ['heroes', 'gear_upgrades', 'squad_guides']) {
+        if (isObject(data[key])) {
+            data[key] = sortByKey(data[key]);
+        }
+    }
+
     // Schedule: ids alphabetical, each id's runs oldest first.
     if (isObject(data.schedule)) {
         data.schedule = sortByKey(data.schedule);

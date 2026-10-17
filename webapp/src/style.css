@@ -15,6 +15,9 @@
     --gold: #d4af37;
     --purple: #b389f9;
     --teal: #4fd6c4;
+    --faction-warrior: oklch(59% 0.24 29);
+    --faction-ranger: oklch(56% 0.14 247);
+    --faction-warlock: oklch(71% 0.16 158);
     --radius: 8px;
     --series-a: #3987e5;
     --series-b: #d95926;
@@ -1763,4 +1766,921 @@ tbody tr.choice-details:hover {
     .schedule__chart {
         --label-width: 130px;
     }
+}
+
+/* Gear Path: the squad board (formation rows, each hero with a 2×2 gear square) next to the step list. */
+.gear-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 460px);
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 1150px) {
+    .gear-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.gear-board {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.gear-row__label {
+    margin-bottom: 8px;
+    color: var(--text-dim);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.gear-row__slots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* One hero: portrait + its gear square, kept together when the row wraps. */
+.gear-slot {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.gear-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 88px;
+    margin: 0;
+    text-align: center;
+}
+
+.gear-hero > img {
+    width: 82px;
+    height: 82px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--panel);
+}
+
+.gear-hero figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font-size: 0.8rem;
+    line-height: 1.25;
+}
+
+.gear-hero figcaption strong {
+    font-size: 0.92rem;
+}
+
+.gear-class {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--text-dim);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* Sword | Armor over Gauntlets | Boots (the gear set's layout). */
+.gear-square {
+    display: grid;
+    grid-template-columns: repeat(2, 80px);
+    gap: 5px;
+}
+
+.gear-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 2px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+}
+
+.gear-tile .item-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.gear-tile__level {
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.gear-tile__stars {
+    display: flex;
+    gap: 1px;
+}
+
+.gear-tile__stars img {
+    width: 11px;
+    height: 11px;
+}
+
+/* Not crafted yet: a faint outline of the piece. */
+.gear-tile--empty .item-icon,
+.gear-tile--empty .gear-tile__stars {
+    opacity: 0.3;
+}
+
+/* The piece's quality behind it, as in the game: a gradient in its colour, darker at the top, lighter at the bottom
+   (UR orange; MR red once it has 5 stars). */
+.gear-tile .item-icon {
+    background: linear-gradient(
+        to bottom,
+        color-mix(in srgb, #f5a524 18%, var(--panel)),
+        color-mix(in srgb, #f5a524 45%, var(--panel))
+    );
+}
+
+.gear-tile--mr .item-icon {
+    border-color: #ff5a4f;
+    background: linear-gradient(
+        to bottom,
+        color-mix(in srgb, #ff5a4f 22%, var(--panel)),
+        color-mix(in srgb, #ff5a4f 55%, var(--panel))
+    );
+}
+
+/* Up next: the pieces the next step of a queue will change (before Done is clicked), in the queue's colour, with
+   the target under the stars. A piece in both upgrade queues gets both. */
+.gear-tile--next-craft,
+.gear-tile--next-level,
+.gear-tile--next-stars {
+    border-style: dashed;
+}
+
+.gear-tile--next-craft {
+    border-color: var(--gold);
+    background: color-mix(in srgb, var(--gold) 10%, transparent);
+}
+
+.gear-tile--next-level {
+    border-color: var(--teal);
+    background: color-mix(in srgb, var(--teal) 10%, transparent);
+}
+
+.gear-tile--next-stars {
+    border-color: var(--purple);
+    background: color-mix(in srgb, var(--purple) 10%, transparent);
+}
+
+.gear-tile--next-level.gear-tile--next-stars {
+    box-shadow: inset 0 0 0 1px var(--purple);
+}
+
+.gear-tile__next {
+    height: 1.2em;
+    font-size: 0.64rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.gear-tile__next--craft {
+    color: var(--gold);
+}
+
+.gear-tile__next--level {
+    color: var(--teal);
+}
+
+.gear-tile__next--stars {
+    color: var(--purple);
+}
+
+/* An up-next piece that isn't crafted yet: the preview stays readable on the faded tile. */
+.gear-tile--empty.gear-tile--next-craft .item-icon {
+    opacity: 0.6;
+}
+
+.gear-path {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.gear-path__step {
+    border-bottom: 1px solid var(--border);
+}
+
+/* In the full lists: what a step needs from the other queue: ○ still ahead (dim), ✓ done (green). */
+.gear-gate {
+    align-self: flex-start;
+    padding: 1px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-dim);
+    font-size: 0.74rem;
+}
+
+.gear-gate--done {
+    color: var(--good);
+    border-color: color-mix(in srgb, var(--good) 45%, transparent);
+}
+
+.gear-gate--never {
+    color: var(--bad);
+    border-color: color-mix(in srgb, var(--bad) 45%, transparent);
+}
+
+/* Done steps: a ✓ before the text, slightly dimmed. */
+.gear-path__check {
+    width: 1.2ch;
+    color: var(--good);
+}
+
+.gear-path__step.is-done .gear-path__check::before {
+    content: '✓';
+}
+
+.gear-path__step.is-done:not(.is-selected) .gear-path__text {
+    color: var(--text-dim);
+}
+
+.gear-path__button {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 0;
+    background: none;
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.gear-path__button:hover {
+    background: var(--panel-alt);
+}
+
+.gear-path__number {
+    min-width: 2ch;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.gear-path__body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.85rem;
+}
+
+.gear-lane {
+    align-self: flex-start;
+    padding: 0 6px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.gear-lane--craft {
+    color: var(--gold);
+}
+
+.gear-lane--level {
+    color: var(--teal);
+}
+
+.gear-lane--stars {
+    color: var(--purple);
+}
+
+.gear-cost {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+}
+
+.gear-cost__part {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.item-icon--xs {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+}
+
+.gear-path__problem {
+    font-size: 0.78rem;
+}
+
+/* Gear Path: the "How it works" panel. */
+.gear-help {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin-top: 12px;
+    color: var(--text);
+}
+
+.gear-help h3 {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+}
+
+.gear-help p {
+    margin: 6px 0 0;
+    color: var(--text-dim);
+}
+
+.gear-help__squad {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 16px 32px;
+}
+
+.gear-help__formation {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.gear-help__row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.gear-help__row-label {
+    width: 8.5em;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.gear-help__slot {
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--panel-alt);
+    font-size: 0.82rem;
+}
+
+.gear-help__square {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 6px 14px;
+    margin-top: 6px;
+    width: fit-content;
+}
+
+.gear-help__piece {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+}
+
+.gear-help__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.gear-help__card {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+}
+
+.gear-help__card--craft {
+    border-top-color: var(--gold);
+}
+
+.gear-help__card--level {
+    border-top-color: var(--teal);
+}
+
+.gear-help__card--stars {
+    border-top-color: var(--purple);
+}
+
+.gear-help__card h4 {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.gear-help__star-example {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    color: var(--text-dim);
+}
+
+.gear-help__stars {
+    display: inline-flex;
+    gap: 1px;
+    vertical-align: middle;
+}
+
+.gear-help__stars img {
+    width: 13px;
+    height: 13px;
+}
+
+.gear-help__rules {
+    width: auto;
+    min-width: 320px;
+}
+
+.gear-help__steps {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-dim);
+}
+
+.gear-help__steps li + li {
+    margin-top: 4px;
+}
+
+/* Gear Path: the guide next to the board. Phase 1 (crafting) and phase 2 (upgrades: two queues side by side). */
+.gear-guide {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.gear-guide__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.gear-guide__head h3 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Start over: a quiet secondary button (it resets everything). */
+.gear-guide__reset {
+    padding: 2px 10px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+.gear-guide__reset:hover:not(:disabled) {
+    color: var(--text);
+    border-color: var(--text-dim);
+}
+
+.gear-phase {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* The upgrades set off from the crafting by a line. */
+.gear-phase + .gear-phase {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.gear-phase__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.gear-phase__number {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    font-size: 0.75rem;
+}
+
+.gear-phase.is-complete .gear-phase__number {
+    border-color: var(--good);
+    color: var(--good);
+}
+
+.gear-phase__hint {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+}
+
+/* Locked until everything is crafted. */
+.gear-phase.is-locked .gear-choices {
+    opacity: 0.45;
+}
+
+.gear-choices {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+}
+
+/* A queue's next step: title, progress, what to do, what it uses / needs first, Done and Undo. */
+.gear-next {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+    font-size: 0.85rem;
+}
+
+.gear-next--craft {
+    border-top-color: var(--gold);
+}
+
+.gear-next--level {
+    border-top-color: var(--teal);
+}
+
+.gear-next--stars {
+    border-top-color: var(--purple);
+}
+
+.gear-next__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.gear-next__head h4 {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.gear-next__count {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.gear-next p {
+    margin: 0;
+}
+
+.gear-next__uses {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+}
+
+.gear-next__blocked {
+    padding: 6px 8px;
+    border-left: 2px solid var(--warn);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--warn) 8%, transparent);
+    color: var(--warn);
+    font-size: 0.8rem;
+}
+
+.gear-next__done {
+    color: var(--good);
+}
+
+.gear-next__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.gear-next__done-button {
+    flex: 1;
+}
+
+/* Undo and "All crafted": quiet secondary buttons next to Done. */
+.gear-next__secondary {
+    padding-left: 10px;
+    padding-right: 10px;
+    background: var(--panel);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.gear-next__secondary:hover:not(:disabled) {
+    background: var(--panel-alt);
+    border-color: var(--text-dim);
+}
+
+.gear-progress {
+    height: 5px;
+    border-radius: 3px;
+    background: var(--panel);
+    overflow: hidden;
+}
+
+.gear-progress span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--good);
+}
+
+/* The full list of a queue, behind its summary. */
+.gear-list summary {
+    width: fit-content;
+    color: var(--accent);
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.gear-list .gear-path {
+    max-height: 420px;
+    margin-top: 8px;
+    overflow-y: auto;
+}
+
+.gear-path__step.is-next .gear-path__button {
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.gear-help__decision {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text);
+}
+
+.gear-help__card--upgrades {
+    border-top-color: var(--purple);
+}
+
+/* "No Gear Blueprint (MR) yet": the switch on the star card, the note while steps wait, the ⏸ marks. */
+.gear-hold {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+.gear-hold input {
+    margin: 2px 0 0;
+    accent-color: var(--purple);
+}
+
+.gear-hold .item-icon {
+    flex: none;
+}
+
+.gear-held-note,
+.gear-next__held {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+.gear-path__held {
+    color: var(--purple);
+    font-size: 0.74rem;
+}
+
+.gear-path__step.is-held .gear-path__text {
+    color: var(--text-dim);
+}
+
+/* Gear Path: the icons next to texts (lanes, actions, classes). */
+.gear-icon {
+    display: inline-block;
+    min-width: 1em;
+    text-align: center;
+}
+
+/* The hero faction switch at the top of the board card: Warriors | Rangers | Warlocks, each in its colour. */
+.gear-factions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.gear-factions[hidden] {
+    display: none;
+}
+
+.gear-faction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--faction-color);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--faction-color);
+    font-weight: 600;
+}
+
+.gear-faction:hover {
+    border-color: var(--faction-color);
+    background: color-mix(in srgb, var(--faction-color) 18%, transparent);
+}
+
+.gear-faction.is-active {
+    background: var(--faction-color);
+    color: #fff;
+}
+
+/* The same look inside "How it works" (not a button there). */
+.gear-faction--chip {
+    padding: 3px 10px;
+    font-size: 0.82rem;
+}
+
+/* The board shows the faction: the portraits framed in its colour. */
+.gear-hero > img {
+    border: 2px solid var(--faction-color, var(--border));
+}
+
+/* A step in pictures: the heroes' portraits, the pieces' icons, the text, the star target. */
+.gear-step {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+}
+
+.gear-step__faces,
+.gear-step__pieces {
+    display: inline-flex;
+    align-items: center;
+}
+
+.gear-face {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--panel-alt);
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--panel);
+}
+
+.gear-step__faces .gear-face + .gear-face {
+    margin-left: -6px;
+}
+
+.gear-step__pieces {
+    gap: 2px;
+}
+
+.gear-stars {
+    display: inline-flex;
+    gap: 1px;
+}
+
+.gear-stars img {
+    width: 11px;
+    height: 11px;
+}
+
+/* A button named in a help sentence, looking like the real one. */
+.gear-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    border-radius: 6px;
+    background: var(--accent-dark);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.gear-chip.is-disabled {
+    opacity: 0.5;
+}
+
+/* "How it works": the classes, the formation with the heroes, sample tiles, the blocked example. */
+.gear-help__classes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.gear-help__slot {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gear-help__samples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.gear-help__sample {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 96px;
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+.gear-help__sample .gear-tile {
+    width: 80px;
+}
+
+.gear-help__sample .gear-tile .item-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.gear-help__example {
+    max-width: 460px;
+    margin-top: 8px;
+}
+
+/* The game's faction and class images (assets/factions, assets/classes), next to their names. */
+.gear-badge {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.gear-class .gear-badge {
+    width: 20px;
+    height: 20px;
+}
+
+.gear-faction .gear-badge {
+    width: 22px;
+    height: 22px;
+    margin-left: -6px;
+}
+
+.gear-faction--chip .gear-badge {
+    width: 18px;
+    height: 18px;
+    margin-left: -4px;
+}
+
+.gear-help > section + section {
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+/* An item (icon + name) inside a help sentence: centred on the text line. */
+.gear-help p .gear-help__piece {
+    vertical-align: middle;
+    font-size: inherit;
+}
+
+.gear-help p .gear-help__piece .item-icon {
+    margin: -4px 0;
 }

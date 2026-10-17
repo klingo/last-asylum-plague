@@ -41,6 +41,15 @@ its contents without a common value scale. The tool uses one:
   it within N days (crafting, choices and shops included; weekly limits reset on Monday).
 - **Spend Rewards** (`spend-rewards.html`) — per tier of a spend track, what the extra Banknotes buy (the best packs
   still available at that total spend) plus the tier reward, as a step ratio: spend more while it's 1.0 or more.
+- **Gear Path** (`gear.html`) — a squad (2 tanks in front, carries and support behind, each hero with its sword,
+  armor, gauntlets and boots) and the guide to its UR gear in two phases: first crafting every piece, then two
+  queues, one card each: the next level step and the next star step (star steps use Gear Blueprints, so you pick the
+  one that fits what you have). A step that needs the other queue first says which one. A switch picks the hero
+  faction (Warriors, Rangers, Warlocks: same path, other heroes); progress is saved in the browser, per faction. Data:
+  `heroes` (rarity, faction, class, image), `gear_upgrades` (level caps by stars, minimum levels for stars,
+  blueprints, optional cost tables) and `squad_guides` (formation, slots with a hero class and a hero per faction,
+  `craft_path` / `level_path` /
+  `star_path`) in `pack_data.json`; `verify-data` checks that the paths can be completed without a deadlock.
 
 Weekly spend, events, seasonal passes on sale (e.g. the Gear Pass) and item priorities are shared by all pages
 (saved in the browser). Item images:

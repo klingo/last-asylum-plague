@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-15"
+        "last_updated": "2026-10-17"
     },
     "items": {
         "antitoxin": {
@@ -2895,7 +2895,7 @@
         "exclusive_weapon_pass": {
             "name": {
                 "en": "Exclusive Weapon",
-                "de": ""
+                "de": "Exklusive Waffe"
             },
             "category": "value_event",
             "price": 1999,
@@ -4510,7 +4510,7 @@
         "ur_blueprint_offer": {
             "name": {
                 "en": "UR Blueprint Offer",
-                "de": ""
+                "de": "UR Plan-Angebot"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -6319,5 +6319,941 @@
                 "end": "2026-10-20"
             }
         ]
+    },
+    "heroes": {
+        "annie": {
+            "name": {
+                "en": "Annie",
+                "de": "Annie"
+            },
+            "rarity": "ur",
+            "faction": "warlock",
+            "class": "carry",
+            "image": "ur_annie"
+        },
+        "arthur": {
+            "name": {
+                "en": "Arthur",
+                "de": "Arthur"
+            },
+            "rarity": "ur",
+            "faction": "warrior",
+            "class": "tank",
+            "image": "ur_arthur"
+        },
+        "bell": {
+            "name": {
+                "en": "Bell",
+                "de": "Bell"
+            },
+            "rarity": "ur",
+            "faction": "ranger",
+            "class": "support",
+            "image": "ur_bell"
+        },
+        "billy": {
+            "name": {
+                "en": "Billy",
+                "de": "Billy"
+            },
+            "rarity": "ur",
+            "faction": "warlock",
+            "class": "tank",
+            "image": "ur_billy"
+        },
+        "cynthia": {
+            "name": {
+                "en": "Cynthia",
+                "de": "Cynthia"
+            },
+            "rarity": "ur",
+            "faction": "ranger",
+            "class": "carry",
+            "image": "ur_cynthia"
+        },
+        "daskal": {
+            "name": {
+                "en": "Daskal",
+                "de": "Daskal"
+            },
+            "rarity": "ur",
+            "faction": "warrior",
+            "class": "tank",
+            "image": "ur_daskal"
+        },
+        "harper": {
+            "name": {
+                "en": "Harper",
+                "de": "Harper"
+            },
+            "rarity": "ur",
+            "faction": "warrior",
+            "class": "support",
+            "image": "ur_harper"
+        },
+        "joker": {
+            "name": {
+                "en": "Joker",
+                "de": "Joker"
+            },
+            "rarity": "ur",
+            "faction": "warlock",
+            "class": "carry",
+            "image": "ur_joker"
+        },
+        "louis": {
+            "name": {
+                "en": "Louis",
+                "de": "Louis"
+            },
+            "rarity": "ur",
+            "faction": "ranger",
+            "class": "tank",
+            "image": "ur_louis"
+        },
+        "marlena": {
+            "name": {
+                "en": "Marlena",
+                "de": "Marlena"
+            },
+            "rarity": "ur",
+            "faction": "warrior",
+            "class": "carry",
+            "image": "ur_marlena"
+        },
+        "nicole": {
+            "name": {
+                "en": "Nicole",
+                "de": "Nicole"
+            },
+            "rarity": "ur",
+            "faction": "warlock",
+            "class": "support",
+            "image": "ur_nicole"
+        },
+        "redlady": {
+            "name": {
+                "en": "Red Lady",
+                "de": "Rote Dame"
+            },
+            "rarity": "ur",
+            "faction": "ranger",
+            "class": "carry",
+            "image": "ur_redlady"
+        },
+        "shadow": {
+            "name": {
+                "en": "Shadow",
+                "de": "Shadow"
+            },
+            "rarity": "ur",
+            "faction": "ranger",
+            "class": "tank",
+            "image": "ur_shadow"
+        },
+        "ulfrid": {
+            "name": {
+                "en": "Ulfrid",
+                "de": "Ulfrid"
+            },
+            "rarity": "ur",
+            "faction": "warlock",
+            "class": "tank",
+            "image": "ur_ulfrid"
+        },
+        "zoya": {
+            "name": {
+                "en": "Zoya",
+                "de": "Zoya"
+            },
+            "rarity": "ur",
+            "faction": "warrior",
+            "class": "carry",
+            "image": "ur_zoya"
+        }
+    },
+    "gear_upgrades": {
+        "ur_gear": {
+            "items": ["ur_sword", "ur_armor", "ur_boots", "ur_gauntlets"],
+            "layout": [
+                ["ur_sword", "ur_armor"],
+                ["ur_gauntlets", "ur_boots"]
+            ],
+            "max_level": 60,
+            "level_cap_by_stars": {
+                "0": 44,
+                "1": 48,
+                "2": 52,
+                "3": 56,
+                "4": 60
+            },
+            "min_level_for_star": {
+                "1": 10,
+                "2": 20,
+                "3": 30,
+                "4": 40,
+                "5": 60
+            },
+            "blueprints": {
+                "ur": "gear_blueprint_ur",
+                "mr": "gear_blueprint_mr"
+            }
+        }
+    },
+    "squad_guides": {
+        "default": {
+            "name": {
+                "en": "Standard squad",
+                "de": "Standard Truppe"
+            },
+            "formation": {
+                "front": ["tank_1", "tank_2"],
+                "back": ["carry_1", "support", "carry_2"]
+            },
+            "slots": {
+                "tank_1": {
+                    "class": "tank",
+                    "heroes": {
+                        "warrior": "daskal",
+                        "ranger": "louis",
+                        "warlock": "ulfrid"
+                    }
+                },
+                "tank_2": {
+                    "class": "tank",
+                    "heroes": {
+                        "warrior": "arthur",
+                        "ranger": "shadow",
+                        "warlock": "billy"
+                    }
+                },
+                "carry_1": {
+                    "class": "carry",
+                    "heroes": {
+                        "warrior": "marlena",
+                        "ranger": "cynthia",
+                        "warlock": "annie"
+                    }
+                },
+                "support": {
+                    "class": "support",
+                    "heroes": {
+                        "warrior": "harper",
+                        "ranger": "bell",
+                        "warlock": "nicole"
+                    }
+                },
+                "carry_2": {
+                    "class": "carry",
+                    "heroes": {
+                        "warrior": "zoya",
+                        "ranger": "redlady",
+                        "warlock": "joker"
+                    }
+                }
+            },
+            "gear": "ur_gear",
+            "craft_path": [
+                {
+                    "item": "ur_sword",
+                    "slot": "carry_1"
+                },
+                {
+                    "item": "ur_sword",
+                    "slot": "carry_2"
+                },
+                {
+                    "item": "ur_gauntlets",
+                    "slot": "carry_1"
+                },
+                {
+                    "item": "ur_gauntlets",
+                    "slot": "carry_2"
+                },
+                {
+                    "item": "ur_armor",
+                    "slot": "carry_1"
+                },
+                {
+                    "item": "ur_armor",
+                    "slot": "carry_2"
+                },
+                {
+                    "item": "ur_armor",
+                    "slot": "tank_1"
+                },
+                {
+                    "item": "ur_armor",
+                    "slot": "tank_2"
+                },
+                {
+                    "item": "ur_boots",
+                    "slot": "carry_1"
+                },
+                {
+                    "item": "ur_boots",
+                    "slot": "carry_2"
+                },
+                {
+                    "item": "ur_boots",
+                    "slot": "tank_1"
+                },
+                {
+                    "item": "ur_boots",
+                    "slot": "tank_2"
+                },
+                {
+                    "item": "ur_gauntlets",
+                    "slot": "tank_1"
+                },
+                {
+                    "item": "ur_gauntlets",
+                    "slot": "tank_2"
+                },
+                {
+                    "item": "ur_sword",
+                    "slot": "tank_1"
+                },
+                {
+                    "item": "ur_sword",
+                    "slot": "tank_2"
+                },
+                {
+                    "item": "ur_armor",
+                    "slot": "support"
+                },
+                {
+                    "item": "ur_boots",
+                    "slot": "support"
+                },
+                {
+                    "item": "ur_gauntlets",
+                    "slot": "support"
+                },
+                {
+                    "item": "ur_sword",
+                    "slot": "support"
+                }
+            ],
+            "level_path": [
+                {
+                    "level": 20,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 10,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 10,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_boots"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_armor"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 20,
+                    "items": ["ur_sword"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 30,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 30,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_boots"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_armor"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 40,
+                    "items": ["ur_sword"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_boots"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_armor"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["support"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "level": 60,
+                    "items": ["ur_sword"],
+                    "slots": ["support"]
+                }
+            ],
+            "star_path": [
+                {
+                    "stars": 2,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 1,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 1,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_boots"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_boots"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 1,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 1,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_armor"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_armor"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_boots"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_armor"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_boots"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_armor"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_1"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_sword"],
+                    "slots": ["tank_2"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_sword"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_boots"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_armor"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 5,
+                    "items": ["ur_sword"],
+                    "slots": ["support"]
+                }
+            ]
+        }
     }
 }

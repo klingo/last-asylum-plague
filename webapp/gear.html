@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.gear"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="gear.heading"></h2>
+                <p class="page-lead" data-i18n="gear.description"></p>
+                <details class="page-details">
+                    <summary data-i18n="common.howItWorks"></summary>
+                    <div id="gear-help" class="gear-help"></div>
+                </details>
+            </section>
+
+            <section class="card">
+                <div id="gear-empty" class="empty-state" hidden data-i18n="gear.empty"></div>
+                <div id="gear-factions" class="gear-factions" role="group" hidden></div>
+                <div id="gear-layout" class="gear-layout" hidden>
+                    <div id="gear-board" class="gear-board"></div>
+                    <div id="gear-guide" class="gear-guide" aria-live="polite"></div>
+                </div>
+            </section>
+        </main>
+        <footer class="app-footer"><span data-i18n="footer.gear"></span></footer>
+        <script type="module" src="/src/gear.js"></script>
+    </body>
+</html>

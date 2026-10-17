@@ -41,6 +41,20 @@ forecast (`lib/schedule.js`: ids with at least two runs repeat their median gap 
 Below it, "Weekday Offers" charts the `weekly_rotation` packs for today and the next 6 days from their
 `available_days` (not recorded, not forecast).
 
+The Gear Path page (`gear.html`) reads `heroes`, `gear_upgrades` and `squad_guides`: a squad's formation by
+slot (not by hero; each slot has a hero class, tank / carry / support, and lists its hero per hero faction,
+`heroes: { warrior, ranger, warlock }`; a switch on the page picks the faction, the factions share the paths) and
+three paths, each in its own order: `craft_path` (one piece per step), `level_path` and
+`star_path` (target states, "carries' swords → Lv 40"). The page is a guide in two phases: all crafting first, then
+the next level step and the next star step, one card each (the user picks; star steps use the gear set's
+`blueprints`). Levels and stars constrain each other (level cap by whole stars, minimum level per star):
+`mergePaths` in `lib/gear-path.js` orders the three (crafting, then levels first, stars when a level step needs
+them) and derives what each step needs from the other queue; a blocked step names it, and `verify-data` reports
+paths that deadlock. Progress is saved in localStorage (`lasps_gear_progress`: per guide the faction
+shown last and per faction: per queue the done steps in the order they were done, plus `mrOnHold`: "no Gear Blueprint (MR)
+yet" holds the 5 ★ steps, the others go on). Stars are written 0, 0.2, …, 4,
+5 (MR) and counted as steps 0–21.
+
 No test suite exists in this repo.
 
 ## Valuation Model
@@ -88,6 +102,7 @@ webapp/src/lib/acquire.js         # cheapest plan for a set of needs (Compare)
 webapp/src/lib/spend-tracks.js    # spend reward tracks (tier costs, track points per purchase)
 webapp/src/lib/item-sources.js    # units of one item a purchase gives, nested (Item Sources page)
 webapp/src/lib/schedule.js        # recorded schedule as runs per id + simple forecast (Home timeline)
+webapp/src/lib/gear-path.js       # squad gear paths: state per step, caps/requirements, merge, step costs (Gear Path)
 webapp/src/lib/lp.js              # HiGHS wrapper (LP text builder, duals); highs-browser.js locates the .wasm
 webapp/src/lib/valuation.js       # the one worth interface for the pages
 webapp/src/lib/valuation-panel.js # shared controls (weekly spend, events, tracks)
@@ -96,7 +111,7 @@ webapp/src/i18n/{en,de}.json      # UI texts; de.json is translated and kept in 
 ```
 
 The pure modules (`catalog`, `point-fit`, `item-values`, `planner`, `acquire`, `lp`, `spend-tracks`,
-`item-sources`, `schedule`) have no DOM/i18n dependency and use explicit `.js` import extensions, so Node scripts
+`item-sources`, `schedule`, `gear-path`) have no DOM/i18n dependency and use explicit `.js` import extensions, so Node scripts
 (`scripts/verify-data.js`) can import them. Keep it that way.
 
 ## Conventions

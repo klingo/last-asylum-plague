@@ -83,6 +83,36 @@
                     }
                 }
             }
+        },
+        "heroes": {
+            "type": "object",
+            "description": "Heroes, e.g. for squad guides.",
+            "propertyNames": {
+                "$ref": "#/definitions/id"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/hero"
+            }
+        },
+        "gear_upgrades": {
+            "type": "object",
+            "description": "Gear sets and how they are upgraded.",
+            "propertyNames": {
+                "$ref": "#/definitions/id"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/gearSet"
+            }
+        },
+        "squad_guides": {
+            "type": "object",
+            "description": "Squads and the ideal order to upgrade their gear (Gear Path page).",
+            "propertyNames": {
+                "$ref": "#/definitions/id"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/squadGuide"
+            }
         }
     },
     "definitions": {
@@ -694,6 +724,309 @@
                     "minProperties": 1
                 }
             }
+        },
+        "heroClass": {
+            "type": "string",
+            "description": "A hero's class: its part in the squad.",
+            "enum": ["tank", "carry", "support"]
+        },
+        "hero": {
+            "type": "object",
+            "description": "A hero.",
+            "required": ["name", "rarity", "faction", "class", "image"],
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/localizedString"
+                },
+                "rarity": {
+                    "type": "string",
+                    "enum": ["sr", "ssr", "ur"]
+                },
+                "faction": {
+                    "$ref": "#/definitions/heroFaction"
+                },
+                "class": {
+                    "$ref": "#/definitions/heroClass"
+                },
+                "image": {
+                    "$ref": "#/definitions/id",
+                    "description": "Image name in webapp/public/assets/heroes (e.g. \"ur_daskal\" for ur_daskal.png)."
+                }
+            }
+        },
+        "gearSet": {
+            "type": "object",
+            "description": "A set of gear pieces upgraded the same way: levels (capped by the whole stars) and stars (written 0, 0.2, …, 4, then 5 = MR; working toward a star needs a minimum level).",
+            "required": ["items", "layout", "max_level", "level_cap_by_stars", "min_level_for_star"],
+            "additionalProperties": false,
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "$ref": "#/definitions/id"
+                    }
+                },
+                "layout": {
+                    "type": "array",
+                    "description": "Rows of the square the pieces are shown in next to a hero (top row first).",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                },
+                "max_level": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "level_cap_by_stars": {
+                    "type": "object",
+                    "description": "Highest level per whole stars (0–4).",
+                    "propertyNames": {
+                        "pattern": "^[0-5]$"
+                    },
+                    "additionalProperties": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                },
+                "min_level_for_star": {
+                    "type": "object",
+                    "description": "Minimum level to work toward a star (1–5).",
+                    "propertyNames": {
+                        "pattern": "^[0-5]$"
+                    },
+                    "additionalProperties": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                },
+                "blueprints": {
+                    "type": "object",
+                    "description": "The blueprint item a star upgrade uses: \"ur\" for the UR stars, \"mr\" for the step to 5 stars (MR).",
+                    "additionalProperties": false,
+                    "properties": {
+                        "ur": {
+                            "$ref": "#/definitions/id"
+                        },
+                        "mr": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                },
+                "level_costs": {
+                    "type": "object",
+                    "description": "Cost of reaching a level (key), as item quantities. Optional, can be partial.",
+                    "propertyNames": {
+                        "pattern": "^[1-9]\\d*$"
+                    },
+                    "additionalProperties": {
+                        "$ref": "#/definitions/itemQuantities"
+                    }
+                },
+                "star_costs": {
+                    "type": "object",
+                    "description": "Cost of reaching a star step (key: \"0.2\", …, \"4\", \"5\"), as item quantities. Optional.",
+                    "propertyNames": {
+                        "pattern": "^(0\\.[2468]|[1-3](\\.[02468])?|4|5)$"
+                    },
+                    "additionalProperties": {
+                        "$ref": "#/definitions/itemQuantities"
+                    }
+                }
+            }
+        },
+        "squadGuide": {
+            "type": "object",
+            "description": "A squad's formation and three upgrade paths, each in its own order: crafting (piece by piece), levels and stars. The page merges them into one order that keeps their dependencies.",
+            "required": ["name", "formation", "slots", "gear", "craft_path", "level_path", "star_path"],
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/localizedString"
+                },
+                "formation": {
+                    "type": "object",
+                    "required": ["front", "back"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "front": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "$ref": "#/definitions/id"
+                            }
+                        },
+                        "back": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "$ref": "#/definitions/id"
+                            }
+                        }
+                    }
+                },
+                "slots": {
+                    "type": "object",
+                    "propertyNames": {
+                        "$ref": "#/definitions/id"
+                    },
+                    "additionalProperties": {
+                        "type": "object",
+                        "required": ["class", "heroes"],
+                        "additionalProperties": false,
+                        "properties": {
+                            "class": {
+                                "$ref": "#/definitions/heroClass"
+                            },
+                            "heroes": {
+                                "type": "object",
+                                "description": "The slot's hero per hero faction (the Gear Path page switches between the factions; they share the paths).",
+                                "minProperties": 1,
+                                "propertyNames": {
+                                    "$ref": "#/definitions/heroFaction"
+                                },
+                                "additionalProperties": {
+                                    "$ref": "#/definitions/id"
+                                }
+                            }
+                        }
+                    }
+                },
+                "gear": {
+                    "$ref": "#/definitions/id",
+                    "description": "The gear set (`gear_upgrades`) the path upgrades."
+                },
+                "craft_path": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/craftStep"
+                    }
+                },
+                "level_path": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/levelStep"
+                    }
+                },
+                "star_path": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/starStep"
+                    }
+                }
+            }
+        },
+        "craftStep": {
+            "type": "object",
+            "description": "Craft one gear piece for one squad slot.",
+            "required": ["item", "slot"],
+            "additionalProperties": false,
+            "properties": {
+                "item": {
+                    "$ref": "#/definitions/id"
+                },
+                "slot": {
+                    "$ref": "#/definitions/id"
+                }
+            }
+        },
+        "levelStep": {
+            "type": "object",
+            "description": "Bring gear pieces to at least this level (a target state). `items` / `slots` may be \"all\".",
+            "required": ["level", "items", "slots"],
+            "additionalProperties": false,
+            "properties": {
+                "level": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "items": {
+                    "oneOf": [
+                        {
+                            "const": "all"
+                        },
+                        {
+                            "type": "array",
+                            "minItems": 1,
+                            "uniqueItems": true,
+                            "items": {
+                                "$ref": "#/definitions/id"
+                            }
+                        }
+                    ]
+                },
+                "slots": {
+                    "oneOf": [
+                        {
+                            "const": "all"
+                        },
+                        {
+                            "type": "array",
+                            "minItems": 1,
+                            "uniqueItems": true,
+                            "items": {
+                                "$ref": "#/definitions/id"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "starStep": {
+            "type": "object",
+            "description": "Bring gear pieces to at least these stars: 0.2, 0.4, …, 4 (UR, in fifths), 5 = MR. `items` / `slots` may be \"all\".",
+            "required": ["stars", "items", "slots"],
+            "additionalProperties": false,
+            "properties": {
+                "stars": {
+                    "type": "number",
+                    "minimum": 0.2,
+                    "maximum": 5
+                },
+                "items": {
+                    "oneOf": [
+                        {
+                            "const": "all"
+                        },
+                        {
+                            "type": "array",
+                            "minItems": 1,
+                            "uniqueItems": true,
+                            "items": {
+                                "$ref": "#/definitions/id"
+                            }
+                        }
+                    ]
+                },
+                "slots": {
+                    "oneOf": [
+                        {
+                            "const": "all"
+                        },
+                        {
+                            "type": "array",
+                            "minItems": 1,
+                            "uniqueItems": true,
+                            "items": {
+                                "$ref": "#/definitions/id"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "heroFaction": {
+            "type": "string",
+            "description": "A hero's faction.",
+            "enum": ["warrior", "ranger", "warlock"]
         }
     }
 }

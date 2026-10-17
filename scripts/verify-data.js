@@ -515,6 +515,127 @@ async function verifyData() {
         }
     });
 
+    // 8b. Squad guides (Gear Path page): heroes, slots and gear exist, and every path step is possible at its
+    // point (webapp/src/lib/gear-path.js: crafted first, level caps by stars, minimum levels for stars).
+    const gearPath = await import(
+        pathToFileURL(path.join(__dirname, '..', 'webapp', 'src', 'lib', 'gear-path.js')).href
+    );
+    checkCategory('Squad Guides', ({ reportError, reportWarning }) => {
+        const heroes = data.heroes || {};
+        for (const [heroId, hero] of Object.entries(heroes)) {
+            const image = path.join(__dirname, '..', 'webapp', 'public', 'assets', 'heroes', `${hero.image}.png`);
+            if (!fs.existsSync(image)) {
+                reportError(
+                    'Hero Image',
+                    `Hero "${heroId}" has no image "${hero.image}" (webapp/public/assets/heroes/${hero.image}.png).`,
+                );
+            }
+        }
+        for (const [setId, gearSet] of Object.entries(data.gear_upgrades || {})) {
+            const costItems = [
+                ...Object.values(gearSet.level_costs || {}),
+                ...Object.values(gearSet.star_costs || {}),
+            ].flatMap((costs) => Object.keys(costs));
+            const blueprintItems = Object.values(gearSet.blueprints || {});
+            for (const itemId of new Set([
+                ...gearSet.items,
+                ...gearSet.layout.flat(),
+                ...costItems,
+                ...blueprintItems,
+            ])) {
+                if (!items[itemId]) {
+                    reportError('Gear Reference', `Gear set "${setId}" references unknown item "${itemId}".`);
+                }
+            }
+            const laidOut = gearSet.layout.flat();
+            if (laidOut.length !== gearSet.items.length || gearSet.items.some((itemId) => !laidOut.includes(itemId))) {
+                reportError('Gear Layout', `Gear set "${setId}": its layout must show each of its items exactly once.`);
+            }
+        }
+        // A problem without its piece, so the same problem of many pieces of one step is reported once.
+        const describe = (p) => {
+            switch (p.code) {
+                case 'levelCap':
+                    return `can only reach Lv ${p.cap} at ${p.stars} stars`;
+                case 'starNeedsLevel':
+                    return `needs Lv ${p.level} to work toward star ${p.star}`;
+                case 'notCrafted':
+                    return 'not crafted (missing in the crafting path)';
+                case 'alreadyCrafted':
+                    return 'crafted twice';
+                case 'noEffect':
+                    return 'changes nothing (every piece is already there)';
+                default:
+                    return p.code;
+            }
+        };
+        const PATH_NAMES = { craft: 'crafting', level: 'level', stars: 'star' };
+        const piecesText = (pieces) =>
+            pieces.length > 3 ? `${pieces.slice(0, 3).join(', ')} and ${pieces.length - 3} more` : pieces.join(', ');
+        for (const [guideId, guide] of Object.entries(data.squad_guides || {})) {
+            const gearSet = data.gear_upgrades?.[guide.gear];
+            if (!gearSet) {
+                reportError('Squad Guide', `Squad guide "${guideId}" uses unknown gear set "${guide.gear}".`);
+                continue;
+            }
+            const formation = [...guide.formation.front, ...guide.formation.back];
+            const slots = Object.keys(guide.slots);
+            if (
+                formation.length !== slots.length ||
+                slots.some((slot) => formation.filter((s) => s === slot).length !== 1)
+            ) {
+                reportError(
+                    'Squad Guide',
+                    `Squad guide "${guideId}": the formation must place each slot exactly once.`,
+                );
+            }
+            // Each slot's hero per faction: known, of the slot's class and of that faction. A faction the page offers
+            // needs a hero in every slot.
+            const factions = new Set(Object.values(guide.slots).flatMap((s) => Object.keys(s.heroes || {})));
+            for (const [slot, { heroes: byFaction = {}, class: heroClass }] of Object.entries(guide.slots)) {
+                for (const faction of factions) {
+                    const hero = byFaction[faction];
+                    if (!hero) {
+                        reportWarning(
+                            'Squad Guide',
+                            `Squad guide "${guideId}", slot "${slot}": no ${faction} hero (the page leaves out the ${faction}s).`,
+                        );
+                    } else if (!heroes[hero]) {
+                        reportError('Squad Guide', `Squad guide "${guideId}", slot "${slot}": unknown hero "${hero}".`);
+                    } else if (heroes[hero].class !== heroClass) {
+                        reportWarning(
+                            'Squad Guide',
+                            `Squad guide "${guideId}", slot "${slot}" (${heroClass}): ${hero} is a ${heroes[hero].class}.`,
+                        );
+                    } else if (heroes[hero].faction !== faction) {
+                        reportError(
+                            'Squad Guide',
+                            `Squad guide "${guideId}", slot "${slot}": ${hero} is listed as ${faction} but is a ${heroes[hero].faction}.`,
+                        );
+                    }
+                }
+            }
+            // The three paths merged as on the page: a step that's never possible (e.g. Lv 60 while the star path
+            // never reaches 4 stars, or a piece the crafting path never crafts) keeps its problems.
+            for (const entry of gearPath.mergePaths(guide, gearSet)) {
+                const byProblem = new Map();
+                for (const problem of entry.problems) {
+                    const text = describe(problem);
+                    byProblem.set(text, [
+                        ...(byProblem.get(text) || []),
+                        ...(problem.slot ? [`${problem.slot} ${problem.item ?? ''}`.trim()] : []),
+                    ]);
+                }
+                for (const [text, pieces] of byProblem) {
+                    reportError(
+                        'Gear Path',
+                        `Squad guide "${guideId}", ${PATH_NAMES[entry.path]} path step ${entry.n + 1}: ${text}${pieces.length ? ` (${piecesText(pieces)})` : ''}.`,
+                    );
+                }
+            }
+        }
+    });
+
     // 9. Points fitted from the deal % (webapp/src/lib/point-fit.js), and items whose worth can't
     // be resolved from them (not in any pack with a deal %, and nothing to derive one from).
     // Currencies are valued by what they buy, so they're skipped here.
