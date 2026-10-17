@@ -5955,6 +5955,13 @@
             },
             "category": "special_event"
         },
+        "gear_upgrade": {
+            "name": {
+                "en": "Gear Upgrade",
+                "de": "Ausrüstungs-Upgrade"
+            },
+            "category": "ingame_event"
+        },
         "mystic_cabinet": {
             "name": {
                 "en": "Mystic Cabinet",
@@ -6298,6 +6305,12 @@
         "exclusive_weapon_pass": [
             {
                 "start": "2026-10-12",
+                "end": "2026-10-18"
+            }
+        ],
+        "gear_upgrade": [
+            {
+                "start": "2026-10-17",
                 "end": "2026-10-18"
             }
         ],

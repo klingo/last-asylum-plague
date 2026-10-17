@@ -664,7 +664,8 @@
                 "full_moon_night",
                 "recluse_merchant",
                 "claires_inner_demon",
-                "pandemic_experience"
+                "pandemic_experience",
+                "gear_upgrade"
             ]
         },
         "event": {
