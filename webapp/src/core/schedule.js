@@ -37,14 +37,20 @@ function isoWeekNumber(day) {
 
 /**
  * id -> { kind, runs: [{ start, end }] } (inclusive day numbers, oldest first). kind: 'event', 'ingame' (events
- * with category "ingame_event"), 'pass' (seasonal pass families) or 'track' (spend reward tracks).
+ * with category "ingame_event"), 'pass' (seasonal pass families) or 'track' (spend reward tracks, and events with
+ * `calendar_group: "spend_rewards"`).
  */
 function scheduleRuns(data) {
     const result = new Map();
     for (const [id, runs] of Object.entries(data.schedule || {})) {
         let kind = 'pass';
         if (data.events?.[id]) {
-            kind = data.events[id].category === 'ingame_event' ? 'ingame' : 'event';
+            const event = data.events[id];
+            if (event.calendar_group === 'spend_rewards') {
+                kind = 'track';
+            } else {
+                kind = event.category === 'ingame_event' ? 'ingame' : 'event';
+            }
         } else if (data.spend_reward_tracks?.[id]) {
             kind = 'track';
         }

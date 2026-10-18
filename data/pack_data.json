@@ -5960,7 +5960,8 @@
                 "en": "Gear Upgrade",
                 "de": "Ausrüstungs-Upgrade"
             },
-            "category": "ingame_event"
+            "category": "ingame_event",
+            "calendar_group": "spend_rewards"
         },
         "mystic_cabinet": {
             "name": {

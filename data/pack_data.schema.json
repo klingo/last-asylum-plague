@@ -683,6 +683,11 @@
                 "exceedable_pack_limits": {
                     "type": "boolean",
                     "description": "The event's packs can be bought beyond their purchase limit (Events page: \"Exceed event pack limits\")."
+                },
+                "calendar_group": {
+                    "type": "string",
+                    "enum": ["spend_rewards"],
+                    "description": "Show the event in this group of the Calendar's schedule instead of the one its category gives. For reward ladders that count something other than Banknotes (e.g. materials used on gear) and so aren't `spend_reward_tracks`."
                 }
             }
         },
