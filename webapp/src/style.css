@@ -1863,19 +1863,28 @@ tbody tr.choice-details:hover {
     opacity: 0.85;
 }
 
-/* Cut by the window's edge: square, fading end (it continues outside the shown weeks). */
+/* Cut by the window's edge: square, fading end (it continues outside the shown weeks). The mask reaches 4px past
+   the bar (not clipped to it), so the hover outline around the bar stays visible and fades with it. */
+.schedule__bar--cut-start,
+.schedule__bar--cut-end {
+    mask-size: calc(100% + 8px) calc(100% + 8px);
+    mask-position: -4px -4px;
+    mask-repeat: no-repeat;
+    mask-clip: no-clip;
+}
+
 .schedule__bar--cut-start {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 14px);
-    mask-image: linear-gradient(to right, transparent, #000 14px);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 18px);
+    mask-image: linear-gradient(to right, transparent, #000 18px);
 }
 
 .schedule__bar--cut-end {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    -webkit-mask-image: linear-gradient(to left, transparent, #000 14px);
-    mask-image: linear-gradient(to left, transparent, #000 14px);
+    -webkit-mask-image: linear-gradient(to left, transparent, #000 18px);
+    mask-image: linear-gradient(to left, transparent, #000 18px);
 }
 
 .schedule__bar:hover,
