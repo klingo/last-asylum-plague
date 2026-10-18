@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { scheduleRuns, forecastRuns, weekdayRuns, weekdayIndex } from '../webapp/src/core/schedule.js';
+import { scheduleRuns, forecastRuns, weekdayRuns, weekdayIndex, gameDay } from '../webapp/src/core/schedule.js';
 import { createModel, addTerm, toLpText, varName, solveModel, loadHighs } from '../webapp/src/core/lp.js';
 import { cheapestCostForPoints, trackTiers, trackPointsForPrice } from '../webapp/src/core/spend-tracks.js';
 
@@ -54,6 +54,16 @@ test('schedule: weekday runs merge consecutive days', () => {
         { start: 4, end: 4 },
         { start: 7, end: 7 },
     ]);
+});
+
+test('schedule: the game day starts at 02:00 UTC', () => {
+    const oct17 = Date.UTC(2026, 9, 17) / 86400000;
+    // 01:00 UTC on Oct 18 (03:00 CEST): still Oct 17, 23 of its 24 hours gone.
+    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 1))), { day: oct17, fraction: 23 / 24 });
+    // 02:00 UTC on Oct 18: Oct 18 just started.
+    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 2))), { day: oct17 + 1, fraction: 0 });
+    // 14:00 UTC: half through.
+    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 14))), { day: oct17 + 1, fraction: 0.5 });
 });
 
 test('lp: text format and a tiny solve', async () => {

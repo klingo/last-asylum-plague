@@ -154,7 +154,8 @@
             "lead": "Packs on sale on fixed weekdays, from today through the next 6 days.",
             "today": "Today",
             "tomorrow": "Tomorrow",
-            "every": "every {days}"
+            "every": "every {days}",
+            "now": "Now (a new game day starts at {time})"
         }
     },
     "rankings": {

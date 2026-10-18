@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
+import { dayDate, gameDay } from '../webapp/src/core/schedule.js';
 
 const ROOT = path.join(import.meta.dirname, '..');
 const DATA_PATH = path.join(ROOT, 'data', 'pack_data.json');
@@ -15,7 +16,7 @@ const DAYS_PATTERN = /^\d+$/;
  * Usage: npm run record-run -- <ids...> [START] <DAYS> | --show [ids...] | --help
  *   (no ids / --help: prints the usage with examples and the valid ids)
  *   ids    event ids, seasonal pass family ids and/or spend reward track ids (classified automatically)
- *   START  first day, YYYY-MM-DD (default: today)
+ *   START  first day, YYYY-MM-DD (default: today, the game day: it starts at 02:00 UTC)
  *   DAYS   how many days it runs, the start day included (end = START + DAYS - 1)
  *   --show print the recorded runs (of the given ids, or all; nothing is written)
  * A run with the same start as a recorded one replaces it (to correct its length); other overlaps are refused.
@@ -63,7 +64,7 @@ function main() {
     if (counts.length !== 1 || Number(counts[0]) < 1) {
         fail('Give the number of days it runs (1 or more), e.g. npm run record-run -- strange_bazaar 2026-10-12 7');
     }
-    const start = dates[0] || formatDate(new Date());
+    const start = dates[0] || gameToday();
     if (formatDate(toDate(start)) !== start) {
         fail(`Invalid date "${start}". Use YYYY-MM-DD.`);
     }
@@ -98,6 +99,11 @@ function main() {
 
     console.log(`Recorded (${daysText(start, end)}):`);
     console.log(changes.join('\n'));
+}
+
+/** Today's game day (it starts at 02:00 UTC, so before 04:00 CEST it's still yesterday) as YYYY-MM-DD. */
+function gameToday() {
+    return dayDate(gameDay(new Date()).day).toISOString().slice(0, 10);
 }
 
 function toDate(text) {
@@ -142,7 +148,7 @@ function printUsage(kinds, events) {
         '  npm run record-run -- strange_bazaar 2026-10-12 9                 # same start again: corrects the length',
         '  npm run record-run -- --show strange_bazaar                       # list recorded runs',
         '',
-        `Today: ${daysText(formatDate(new Date()), formatDate(new Date()))}.`,
+        `Today (game day): ${daysText(gameToday(), gameToday())}.`,
         '',
         'Ids you can record:',
         `  Events:               ${shoppable.join(', ')}`,

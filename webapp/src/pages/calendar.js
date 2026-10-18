@@ -6,10 +6,11 @@ import { createItemImage } from '../ui/images.js';
 import { DEFAULT_NONE_ITEMS } from '../ui/settings.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import {
+    GAME_DAY_START_MS,
     dayDate,
     forecastRuns,
+    gameDay,
     isoWeekNumber,
-    localDayNumber,
     scheduleRuns,
     weekdayIndex,
     weekdayRuns,
@@ -25,10 +26,12 @@ const GROUPS = [
     ['track', 'calendar.schedule.groupTracks'],
 ];
 
-// Weekday offers: today and the next 6 days.
+// Weekday offers: today and the next 6 days (game days: they start at 02:00 UTC).
 const ROTATION_DAYS = 7;
 
 let packData = null;
+// The game day both charts start from (the "Now" line moves within it; a new one redraws them).
+let rotationDay = null;
 
 function scheduleName(data, id, kind) {
     if (kind === 'pass') {
@@ -96,7 +99,8 @@ function renderSchedule() {
     if (!section || !packData) {
         return;
     }
-    const today = localDayNumber(new Date());
+    // Today is the game day (it starts at 02:00 UTC), as in the weekday offers.
+    const today = gameDay(new Date()).day;
     const from = today - weekdayIndex(today) - WEEKS_BACK * 7;
     const to = from + WEEKS * 7 - 1;
     const total = to - from + 1;
@@ -184,14 +188,19 @@ function packageIcon(pkg) {
     return pkg.icon || Object.keys(pkg.contains || {}).find((itemId) => !FILLER_ITEMS.has(itemId)) || null;
 }
 
-/** Weekday offers (`weekly_rotation` packs): today and the next 6 days, one row per pack family. */
+/**
+ * Weekday offers (`weekly_rotation` packs): today and the next 6 game days, one row per pack family, with a line
+ * for now.
+ */
 function renderRotation() {
     const section = document.getElementById('rotation');
     if (!section || !packData) {
         return;
     }
-    const from = localDayNumber(new Date());
+    const now = gameDay(new Date());
+    const from = now.day;
     const to = from + ROTATION_DAYS - 1;
+    rotationDay = from;
     const families = new Map();
     for (const [id, pkg] of Object.entries(packData.packages || {})) {
         const familyId = packageFamilyId(id, pkg);
@@ -234,10 +243,18 @@ function renderRotation() {
                 </div>`,
         )
         .join('');
+    // When the game day starts, in local time ("04:00" in CEST).
+    const dayStart = new Date(dayDate(from).getTime() + GAME_DAY_START_MS).toLocaleTimeString(getLocale(), {
+        hour: '2-digit',
+        minute: '2-digit',
+    });
     section.hidden = false;
     section.querySelector('.schedule__body').innerHTML = `
+        <div class="schedule__legend">
+            <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(t('calendar.rotation.now', { time: dayStart }))}</span>
+        </div>
         <div class="schedule__scroll">
-            <div class="schedule__chart schedule__chart--days" style="--columns: ${ROTATION_DAYS}; --week-start: 0; --week-width: ${1 / ROTATION_DAYS}">
+            <div class="schedule__chart schedule__chart--days" style="--columns: ${ROTATION_DAYS}; --week-start: 0; --week-width: ${1 / ROTATION_DAYS}; --today: ${now.fraction / ROTATION_DAYS}">
                 <div class="schedule__row schedule__row--axis">
                     <div class="schedule__label"></div>
                     <div class="schedule__track schedule__weeks">${days}</div>
@@ -245,6 +262,7 @@ function renderRotation() {
                 ${rowsHtml}
                 ${gridHtml(ROTATION_DAYS, 1)}
                 <div class="schedule__current-week" aria-hidden="true"></div>
+                <div class="schedule__today" aria-hidden="true"></div>
             </div>
         </div>`;
     // Icons via createItemImage (placeholder if the image is missing, item name as mouse-over).
@@ -264,10 +282,23 @@ function render() {
     renderRotation();
 }
 
+/** Every minute: the "Now" line moves on; when a new game day starts, both charts move on to it. */
+function tickRotation() {
+    const now = gameDay(new Date());
+    if (now.day !== rotationDay) {
+        render();
+        return;
+    }
+    document
+        .querySelector('#rotation .schedule__chart')
+        ?.style.setProperty('--today', String(now.fraction / ROTATION_DAYS));
+}
+
 startPage('calendar', {
     init(data) {
         packData = data;
         render();
+        window.setInterval(tickRotation, 60000);
     },
     onLocaleChange: render,
 });

@@ -8,6 +8,7 @@ import { formatThousands } from './format.js';
 import { escapeHtml } from './html.js';
 import { itemSourcesHref } from './url.js';
 import { sourcesListing } from '../core/item-sources.js';
+import { gameDay, weekdayIndex } from '../core/schedule.js';
 
 /** A package's plain-text name, with a localized "(Tier N)" suffix when it belongs to a tier ladder. */
 function packageDisplayText(pkg, locale) {
@@ -78,9 +79,9 @@ function conversionLabel(conversion, items, locale) {
     return t(`conversion.${conversion.kind}`, { item: name });
 }
 
-/** Today's weekday index, Monday = 0 (weekly limits reset on Monday). */
+/** Today's weekday index (of the game day), Monday = 0 (weekly limits reset on Monday). */
 function todayWeekdayIndex() {
-    return (new Date().getDay() + 6) % 7;
+    return weekdayIndex(gameDay(new Date()).day);
 }
 
 export {

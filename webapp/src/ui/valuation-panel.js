@@ -13,7 +13,7 @@
 import { localizedName, applyStaticTranslations, t, tHtml } from './i18n.js';
 import { getSettings, updateSettings, onSettingsChange, SETTINGS_KEY } from './settings.js';
 import { packageFamilyId } from '../core/pack-data.js';
-import { localDayNumber, scheduleRuns } from '../core/schedule.js';
+import { gameDay, scheduleRuns } from '../core/schedule.js';
 import { escapeHtml, escapeAttr } from './html.js';
 import { banknoteIconHtml } from './images.js';
 import { formatThousands } from './format.js';
@@ -34,9 +34,9 @@ function passFamilies(packages) {
     return [...families];
 }
 
-/** Ids (events, pass families, tracks) the recorded calendar shows running today. */
+/** Ids (events, pass families, tracks) the recorded calendar shows running today (the game day). */
 function runningToday(data) {
-    const today = localDayNumber(new Date());
+    const today = gameDay(new Date()).day;
     return new Set(
         [...scheduleRuns(data)]
             .filter(([, { runs }]) => runs.some((run) => run.start <= today && today <= run.end))

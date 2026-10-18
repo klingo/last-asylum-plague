@@ -42,7 +42,9 @@ inclusive `{ start, end }` dates (`record-run` computes the end from the start a
 week"). The Calendar page (`calendar.html`, Events menu) shows it as the "Event Schedule" timeline (last week, this
 week, 4 ahead) with a simple forecast (`core/schedule.js`: ids with at least two runs repeat their median gap between
 starts and median length). Below it, "Weekday Offers" charts the `weekly_rotation` packs for today and the next 6 days from their
-`available_days` (not recorded, not forecast).
+`available_days` (not recorded, not forecast), with a "Now" line that moves every minute. "Today" is always the
+game day, which starts at 02:00 UTC (`gameDay` in `core/schedule.js`): both charts, the events / passes / tracks
+running today, Compare's start weekday and `record-run`'s default start.
 
 The Gear Path page (`gear.html`) reads `heroes`, `gear_upgrades` and `squad_guides`: a squad's formation by
 slot (not by hero; each slot has a hero class, tank / carry / support, and lists its hero per hero faction,

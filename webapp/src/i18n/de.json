@@ -154,7 +154,8 @@
             "lead": "Pakete, die an festen Wochentagen im Angebot sind, von heute bis in 6 Tagen.",
             "today": "Heute",
             "tomorrow": "Morgen",
-            "every": "jeweils {days}"
+            "every": "jeweils {days}",
+            "now": "Jetzt (ein neuer Spieltag beginnt um {time})"
         }
     },
     "rankings": {

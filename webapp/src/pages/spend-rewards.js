@@ -6,7 +6,7 @@ import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { trackTiers, trackPointsForPrice } from '../core/spend-tracks.js';
-import { localDayNumber, scheduleRuns } from '../core/schedule.js';
+import { gameDay, scheduleRuns } from '../core/schedule.js';
 import { banknotesHtml, hydrateItemIcons } from '../ui/html.js';
 import {
     gridCell,
@@ -277,8 +277,9 @@ startPage('spend-rewards', {
             recompute();
         });
         populateTrackSelect();
-        // Pre-select the track running today according to the recorded schedule (the first, should there be several).
-        const today = localDayNumber(new Date());
+        // Pre-select the track running today (the game day) according to the recorded schedule (the first, should
+        // there be several).
+        const today = gameDay(new Date()).day;
         const running = [...scheduleRuns(data)].find(
             ([id, { kind, runs }]) =>
                 kind === 'track' &&

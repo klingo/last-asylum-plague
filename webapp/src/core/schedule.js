@@ -18,9 +18,17 @@ function dayDate(day) {
     return new Date(day * DAY_MS);
 }
 
-/** Day number of a local date (e.g. today). */
-function localDayNumber(date) {
-    return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / DAY_MS;
+// The game's day starts (and ends) at 02:00 UTC, whatever the local time zone or daylight saving.
+const GAME_DAY_START_MS = 2 * 3600000;
+
+/**
+ * The game day a moment falls in: its day number (the date it started on) and how far into it the moment is
+ * (0 ≤ fraction < 1). 01:00 UTC on Oct 18 is still the game day Oct 17, 23/24 through.
+ */
+function gameDay(date) {
+    const shifted = date.getTime() - GAME_DAY_START_MS;
+    const day = Math.floor(shifted / DAY_MS);
+    return { day, fraction: (shifted - day * DAY_MS) / DAY_MS };
 }
 
 /** Monday = 0 ... Sunday = 6. */
@@ -107,4 +115,4 @@ function forecastRuns(runs, { from, to, today }) {
     return forecast;
 }
 
-export { dayDate, localDayNumber, weekdayIndex, isoWeekNumber, scheduleRuns, forecastRuns, weekdayRuns };
+export { dayDate, gameDay, GAME_DAY_START_MS, weekdayIndex, isoWeekNumber, scheduleRuns, forecastRuns, weekdayRuns };
