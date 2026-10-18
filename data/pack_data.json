@@ -3596,6 +3596,19 @@
                         "vip_points": 500,
                         "lv2_alliance_chest": 1
                     }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 3700,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "herb_level_supply_ur": 16,
+                        "top_up_exp": 10,
+                        "resource_supply_general": 8,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
                 }
             }
         },
