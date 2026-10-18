@@ -35,8 +35,9 @@ function scheduleName(data, id, kind) {
         const entry = Object.entries(data.packages || {}).find(([pkgId, pkg]) => packageFamilyId(pkgId, pkg) === id);
         return entry ? localizedName(entry[1].name) : id;
     }
-    const lookup = kind === 'track' ? data.spend_reward_tracks : data.events;
-    return lookup?.[id] ? localizedName(lookup[id].name) : id;
+    // The "track" group also holds events with `calendar_group: "spend_rewards"`.
+    const entry = data.events?.[id] || (kind === 'track' ? data.spend_reward_tracks?.[id] : null);
+    return entry ? localizedName(entry.name) : id;
 }
 
 function formatDay(day, options) {
