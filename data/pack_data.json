@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-17"
+        "last_updated": "2026-10-18"
     },
     "items": {
         "antitoxin": {
@@ -5983,6 +5983,13 @@
             },
             "category": "special_event"
         },
+        "shadow_blight": {
+            "name": {
+                "en": "Shadow Blight",
+                "de": "Schatten-Seuche"
+            },
+            "category": "ingame_event"
+        },
         "strange_bazaar": {
             "name": {
                 "en": "Strange Bazaar",
@@ -6318,6 +6325,12 @@
             {
                 "start": "2026-10-14",
                 "end": "2026-10-16"
+            }
+        ],
+        "shadow_blight": [
+            {
+                "start": "2026-10-18",
+                "end": "2026-10-18"
             }
         ],
         "strange_bazaar": [
