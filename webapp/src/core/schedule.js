@@ -133,6 +133,17 @@ function runStatus(runs, today) {
     return ended ? { state: 'ended', run: ended, days: today - ended.end } : null;
 }
 
+/**
+ * The exact moments (ms timestamps) a run starts and ends: runs start and end at the game day's reset, so it starts
+ * at 02:00 UTC on its first day and ends at 02:00 UTC after its last one.
+ */
+function runMoments(run) {
+    return {
+        start: dayDate(run.start).getTime() + GAME_DAY_START_MS,
+        end: dayDate(run.end + 1).getTime() + GAME_DAY_START_MS,
+    };
+}
+
 export {
     dayDate,
     gameDay,
@@ -143,4 +154,5 @@ export {
     forecastRuns,
     weekdayRuns,
     runStatus,
+    runMoments,
 };

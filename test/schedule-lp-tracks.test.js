@@ -7,6 +7,7 @@ import {
     weekdayIndex,
     gameDay,
     runStatus,
+    runMoments,
 } from '../webapp/src/core/schedule.js';
 import { createModel, addTerm, toLpText, varName, solveModel, loadHighs } from '../webapp/src/core/lp.js';
 import { cheapestCostForPoints, trackTiers, trackPointsForPrice } from '../webapp/src/core/spend-tracks.js';
@@ -73,6 +74,15 @@ test('schedule: run status (running, upcoming, ended)', () => {
     assert.deepEqual(runStatus(runs, 20), { state: 'upcoming', run: runs[1], days: 10 });
     assert.deepEqual(runStatus(runs, 40), { state: 'ended', run: runs[1], days: 4 });
     assert.equal(runStatus([], 12), null);
+});
+
+test('schedule: a run starts and ends at the game day reset', () => {
+    const oct12 = Date.UTC(2026, 9, 12) / 86400000;
+    // Mon Oct 12 .. Sun Oct 18: from 02:00 UTC on Oct 12 to 02:00 UTC on Oct 19.
+    assert.deepEqual(runMoments({ start: oct12, end: oct12 + 6 }), {
+        start: Date.UTC(2026, 9, 12, 2),
+        end: Date.UTC(2026, 9, 19, 2),
+    });
 });
 
 test('schedule: the game day starts at 02:00 UTC', () => {

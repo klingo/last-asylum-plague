@@ -82,7 +82,7 @@
         "pack_shop": "Paketshop",
         "clinic_development_pack": "Klinik-Entwicklungspaket",
         "shop": "Shops",
-        "spend_track": "Belohnungsleisten"
+        "spend_track": "Ausgabenbelohnungen"
     },
     "sourceType": {
         "package": "Paket",
@@ -126,7 +126,7 @@
         "eventsDescription": "Wähle ein Event: welche seiner Pakete du bei deinen wöchentlichen Ausgaben kaufen solltest, was du mit seinen Münzen kaufst (in Freischaltreihenfolge) und ob sich mehr Ausgaben dafür noch lohnen.",
         "sourcesDescription": "Wähle einen Gegenstand und sieh alle Pakete und Shop-Angebote, die ihn geben – auch verschachtelt in Truhen und Vorräten –, geordnet nach den Kosten pro Einheit.",
         "choicesDescription": "Wähle eine Wahltruhe, ein Paket mit Optionen oder eine Gruppe, von der du nur eines kaufen kannst (z. B. Kalenderpakete), und sieh, was am meisten wert ist.",
-        "spendRewardsDescription": "Wähle eine kumulative Ausgabenbelohnungs-Leiste und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
+        "spendRewardsDescription": "Wähle eine kumulative Ausgabenbelohnung und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
         "gearDescription": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Stufen und Sterne erhöhst, Schritt für Schritt.",
         "itemsDescription": "Sag dem Tool, welche Gegenstände dir egal sind und welche dir besonders wichtig sind. Jede Seite nutzt das.",
         "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen."
@@ -158,11 +158,11 @@
             "now": "Jetzt (ein neuer Spieltag beginnt um {time})"
         },
         "status": {
-            "endsToday": "Endet heute",
-            "endsTomorrow": "Endet morgen",
-            "endsIn": "Endet in {count} Tagen",
-            "startsTomorrow": "Beginnt morgen",
-            "startsIn": "Beginnt in {count} Tagen",
+            "endsIn": "Endet in {time}",
+            "startsIn": "Beginnt in {time}",
+            "daysHours": "{days} T. {hours} Std.",
+            "endsAt": "Endet am {date}",
+            "startsAt": "Beginnt am {date}",
             "endedYesterday": "Gestern beendet",
             "endedAgo": "Vor {count} Tagen beendet",
             "expected": "nächstes Mal voraussichtlich um den {date} (Prognose)",
@@ -329,13 +329,13 @@
     },
     "spendRewards": {
         "heading": "Ausgabenbelohnungen",
-        "description": "Wähle eine kumulative Ausgabenbelohnungs-Leiste, um zu sehen, ob es sich lohnt, für ihre nächsten Stufen über deine wöchentlichen Ausgaben hinauszugehen.",
+        "description": "Wähle eine kumulative Ausgabenbelohnung, um zu sehen, ob es sich lohnt, für ihre nächsten Stufen über deine wöchentlichen Ausgaben hinauszugehen.",
         "details": "Stufen, die deine wöchentlichen Ausgaben bereits erreichen, sind markiert. Für jede weitere Stufe: die zusätzlichen Banknoten zu deinen wöchentlichen Ausgaben (oder zur vorherigen Stufe), was diese Banknoten kaufen (die besten noch verfügbaren Pakete) und die Belohnung der Stufe. Stufen-Ratio 1,0 oder mehr = die Stufe ist mindestens so gut wie deine letzte Banknote bei deinen wöchentlichen Ausgaben.",
-        "trackLabel": "Belohnungsleiste",
-        "trackPlaceholder": "Leiste auswählen…",
-        "trackSearch": "Leisten durchsuchen…",
-        "empty": "Noch keine Ausgabenbelohnungs-Leisten definiert.",
-        "selectPrompt": "Wähle oben eine Belohnungsleiste, um ihre Stufen zu sehen.",
+        "trackLabel": "Ausgabenbelohnung",
+        "trackPlaceholder": "Ausgabenbelohnung auswählen…",
+        "trackSearch": "Ausgabenbelohnungen durchsuchen…",
+        "empty": "Noch keine Ausgabenbelohnungen definiert.",
+        "selectPrompt": "Wähle oben eine Ausgabenbelohnung, um ihre Stufen zu sehen.",
         "pointsSuffix": "Pkt.",
         "tierLabel": "Stufe {tier}",
         "note": "Werte in Banknoten bei deinen wöchentlichen Ausgaben.",
@@ -353,7 +353,7 @@
         "verdict": "Mehr auszugeben lohnt sich bis Stufe {tier} ({total} Banknoten insgesamt); darüber hinaus bringt jede Stufe weniger als deine letzte Banknote bei deinen wöchentlichen Ausgaben.",
         "verdictNone": "Keine Stufe über deine wöchentlichen Ausgaben hinaus bringt so viel wie deine letzte Banknote.",
         "reachedSummary": "Deine wöchentlichen Ausgaben von {budget} Banknoten erreichen bereits Stufe {tier}.",
-        "verdictAll": "Deine wöchentlichen Ausgaben erreichen bereits jede Stufe dieser Leiste."
+        "verdictAll": "Deine wöchentlichen Ausgaben erreichen bereits jede Stufe dieser Ausgabenbelohnung."
     },
     "gear": {
         "heading": "Ausrüstungs-Upgradepfad",

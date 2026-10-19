@@ -473,8 +473,9 @@ button:disabled {
     display: none;
 }
 
+/* As wide as the name (a "running now" dot follows it), the chevron pushed to the right. */
 .item-picker__value {
-    flex: 1;
+    flex: 0 1 auto;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -486,7 +487,13 @@ button:disabled {
 }
 
 .item-picker__chevron {
+    margin-left: auto;
     color: var(--text-dim);
+}
+
+.item-picker__trigger .toggle-chip__now {
+    flex: none;
+    margin-left: -2px;
 }
 
 .item-picker__panel {
@@ -3069,6 +3076,15 @@ a.schedule__label--link:hover {
 
 .event-banner__timing--upcoming {
     color: var(--accent);
+}
+
+/* The live countdown: same-width digits, so the text doesn't jitter every second; hover: the exact moment. */
+.event-banner__timing[title] {
+    cursor: help;
+}
+
+.event-banner__countdown {
+    font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 640px) {

@@ -15,7 +15,7 @@ import { infoIconHtml } from '../ui/info-icon.js';
 import { t, tHtml, getLocale, localizedName } from '../ui/i18n.js';
 import { formatThousands, formatSignificant } from '../ui/format.js';
 import { ratioBarHtml } from '../ui/ratio-bar.js';
-import { eventBannerHtml, eventImageUrl, scheduleTiming } from '../ui/event-banner.js';
+import { eventBannerHtml, eventImageUrl, scheduleTiming, startCountdowns } from '../ui/event-banner.js';
 
 // One tab per ticked event and per shop without event (VIP Shop): usually only a few, so one click each.
 const eventTabs = document.getElementById('event-tabs');
@@ -636,6 +636,8 @@ function render() {
               timing: scheduleTiming(data, selected.eventId),
           })
         : '';
+    // The countdown ticks; once it runs out (the event ended or started) the banner shows the new state.
+    startCountdowns(eventBanner, render);
     renderLockNote();
     renderSummary(selected);
     renderShop(selected);

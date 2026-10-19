@@ -23,7 +23,7 @@ import { localizedName, t } from '../ui/i18n.js';
 import { formatThousands } from '../ui/format.js';
 import { ratioBarHtml } from '../ui/ratio-bar.js';
 import { createItemPicker } from '../ui/item-picker.js';
-import { eventBannerHtml, scheduleTiming } from '../ui/event-banner.js';
+import { eventBannerHtml, scheduleTiming, startCountdowns } from '../ui/event-banner.js';
 
 // The app's own picker (as on the other pages), not a native <select>.
 const trackPicker = createItemPicker({
@@ -168,6 +168,8 @@ function render() {
               timing: scheduleTiming(data, trackId),
           })
         : '';
+    // The countdown ticks; once it runs out (the track ended or started) the banner shows the new state.
+    startCountdowns(trackBanner, render);
     if (!track) {
         tiersWrap.hidden = true;
         tiersNote.hidden = true;
@@ -256,13 +258,27 @@ function render() {
     wireDetailsToggles(tiersTable, expandedKeys);
 }
 
-/** The spend reward tracks (one group); keeps the current selection. */
+/** The spend reward tracks the recorded schedule shows running today (the game day). */
+function runningTrackIds() {
+    const today = gameDay(new Date()).day;
+    return [...scheduleRuns(data)]
+        .filter(
+            ([id, { kind, runs }]) =>
+                kind === 'track' &&
+                data.spend_reward_tracks?.[id] &&
+                runs.some((run) => run.start <= today && today <= run.end),
+        )
+        .map(([id]) => id);
+}
+
+/** The spend reward tracks (one group), the ones running today with a green dot; keeps the current selection. */
 function populateTrackSelect() {
+    const running = new Set(runningTrackIds());
     trackPicker.setItems(
         Object.fromEntries(
             Object.entries(data.spend_reward_tracks || {}).map(([id, track]) => [
                 id,
-                { name: track.name, category: 'spend_track' },
+                { name: track.name, category: 'spend_track', now: running.has(id) },
             ]),
         ),
     );
@@ -288,21 +304,14 @@ startPage('spend-rewards', {
             recompute();
         });
         populateTrackSelect();
-        // Pre-select the track running today (the game day) according to the recorded schedule (the first, should
-        // there be several).
-        const today = gameDay(new Date()).day;
-        const running = [...scheduleRuns(data)].find(
-            ([id, { kind, runs }]) =>
-                kind === 'track' &&
-                data.spend_reward_tracks?.[id] &&
-                runs.some((run) => run.start <= today && today <= run.end),
-        );
-        // A track in the URL (a shared link, a reload) wins over today's.
+        // Pre-select the track running today (the first, should there be several); a track in the URL (a shared
+        // link, a reload) wins over today's.
+        const [running] = runningTrackIds();
         const fromUrl = urlParam('track');
         if (fromUrl && data.spend_reward_tracks?.[fromUrl]) {
             trackPicker.setValue(fromUrl);
         } else if (running) {
-            trackPicker.setValue(running[0]);
+            trackPicker.setValue(running);
         }
         await recompute();
     },

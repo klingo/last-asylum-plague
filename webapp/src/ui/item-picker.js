@@ -35,6 +35,18 @@ function words(text) {
  * @param {boolean} [icons=true] - show item images (off for lists that aren't items, e.g. events).
  * @param {string} [searchPlaceholderKey] - i18n key of the search box's placeholder.
  */
+/** The green "running now" dot (as on the setup bar's chips), with its text for hover and screen readers. */
+function nowDot() {
+    const dot = document.createElement('span');
+    dot.className = 'toggle-chip__now';
+    dot.title = t('valuation.nowRunning');
+    const label = document.createElement('span');
+    label.className = 'sr-only';
+    label.textContent = t('valuation.nowRunning');
+    dot.appendChild(label);
+    return dot;
+}
+
 function createItemPicker({
     trigger,
     onChange,
@@ -70,11 +82,12 @@ function createItemPicker({
     });
     const triggerText = document.createElement('span');
     triggerText.className = 'item-picker__value';
+    const triggerNow = nowDot();
     const chevron = document.createElement('span');
     chevron.className = 'item-picker__chevron';
     chevron.setAttribute('aria-hidden', 'true');
     chevron.textContent = '▾';
-    trigger.replaceChildren(triggerIcon, triggerText, chevron);
+    trigger.replaceChildren(triggerIcon, triggerText, triggerNow, chevron);
 
     // ---- Panel: (back button +) search box, list ----
     const panel = document.createElement('div');
@@ -110,6 +123,7 @@ function createItemPicker({
         const item = selected();
         triggerText.textContent = item ? item.name : t(placeholderKey);
         triggerText.classList.toggle('is-placeholder', !item);
+        triggerNow.hidden = !item?.now;
         triggerIcon.hidden = true;
         if (item && icons) {
             // Shown by the 'load' listener once one of its locations has it (stays hidden otherwise).
@@ -197,6 +211,9 @@ function createItemPicker({
         const label = document.createElement('span');
         label.className = 'item-picker__name';
         label.append(query ? nameWithHighlights(item.name, query) : item.name);
+        if (item.now) {
+            label.append(nowDot());
+        }
         option.appendChild(label);
         if (showCategory) {
             const category = document.createElement('span');
@@ -368,7 +385,7 @@ function createItemPicker({
     renderTrigger();
 
     return {
-        /** `{ id: { name, category } }` (name: a data `name` object or plain text). */
+        /** `{ id: { name, category, now } }` (name: a data `name` object or plain text; `now`: running now, a green dot). */
         setItems(source) {
             items = Object.entries(source).map(([itemId, item]) => {
                 const name = localizedName(item.name) || itemId;
@@ -377,6 +394,8 @@ function createItemPicker({
                 return {
                     id: itemId,
                     name,
+                    // Running now (e.g. per the calendar): a green dot after the name.
+                    now: Boolean(item.now),
                     category,
                     categoryName,
                     key: compact(name),

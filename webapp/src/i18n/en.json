@@ -82,7 +82,7 @@
         "pack_shop": "Pack Shop",
         "clinic_development_pack": "Clinic Development Pack",
         "shop": "Shops",
-        "spend_track": "Reward tracks"
+        "spend_track": "Spend reward tracks"
     },
     "sourceType": {
         "package": "Package",
@@ -158,11 +158,11 @@
             "now": "Now (a new game day starts at {time})"
         },
         "status": {
-            "endsToday": "Ends today",
-            "endsTomorrow": "Ends tomorrow",
-            "endsIn": "Ends in {count} days",
-            "startsTomorrow": "Starts tomorrow",
-            "startsIn": "Starts in {count} days",
+            "endsIn": "Ends in {time}",
+            "startsIn": "Starts in {time}",
+            "daysHours": "{days}d {hours}h",
+            "endsAt": "Ends {date}",
+            "startsAt": "Starts {date}",
             "endedYesterday": "Ended yesterday",
             "endedAgo": "Ended {count} days ago",
             "expected": "next expected around {date} (forecast)",
@@ -331,7 +331,7 @@
         "heading": "Spend Rewards",
         "description": "Pick a cumulative spend-reward track to see whether pushing past your weekly spend for its next tiers pays off.",
         "details": "Tiers your weekly spend already reaches are marked. For each further tier: the extra Banknotes on top of your weekly spend (or the previous tier), what those Banknotes buy (the best packs still available) and the tier's reward. Step ratio 1.0 or more = the step is at least as good as your last Banknote at your weekly spend.",
-        "trackLabel": "Reward Track",
+        "trackLabel": "Spend reward track",
         "trackPlaceholder": "Select a track…",
         "trackSearch": "Search tracks…",
         "empty": "No spend reward tracks defined yet.",
