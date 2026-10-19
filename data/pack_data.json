@@ -5976,6 +5976,13 @@
             "category": "ingame_event",
             "calendar_group": "spend_rewards"
         },
+        "hunt_battle": {
+            "name": {
+                "en": "Hunt Battle",
+                "de": "Jagd-Kampf"
+            },
+            "category": "ingame_event"
+        },
         "mystic_cabinet": {
             "name": {
                 "en": "Mystic Cabinet",
@@ -6435,6 +6442,12 @@
             {
                 "start": "2026-10-17",
                 "end": "2026-10-18"
+            }
+        ],
+        "hunt_battle": [
+            {
+                "start": "2026-10-19",
+                "end": "2026-10-20"
             }
         ],
         "pandemic_experience": [
