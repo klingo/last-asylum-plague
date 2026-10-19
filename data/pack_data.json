@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-18"
+        "last_updated": "2026-10-19"
     },
     "items": {
         "antitoxin": {
@@ -6219,10 +6219,10 @@
                 }
             }
         },
-        "artisans_request": {
+        "artisans_request_gearstone": {
             "name": {
-                "en": "Artisan's Request",
-                "de": "Auftrag des Handwerkers"
+                "en": "Artisan's Request (Gearstones)",
+                "de": "Auftrag des Handwerkers (Ausrüstungssteine)"
             },
             "conversions": [
                 {
@@ -6306,6 +6306,96 @@
                     "gearstone": 12000,
                     "herb_level_supply_ssr": 60,
                     "resource_supply_sr": 60
+                }
+            }
+        },
+        "artisans_request_tempered_steel": {
+            "name": {
+                "en": "Artisan's Request (Tempered Steel)",
+                "de": "Auftrag des Handwerkers (Gehärteter Stahl)"
+            },
+            "conversions": [
+                {
+                    "price": 99,
+                    "points": 100
+                },
+                {
+                    "price": 199,
+                    "points": 200
+                },
+                {
+                    "price": 399,
+                    "points": 400
+                },
+                {
+                    "price": 499,
+                    "points": 500
+                },
+                {
+                    "price": 1999,
+                    "points": 2000
+                },
+                {
+                    "price": 2499,
+                    "points": 2500
+                },
+                {
+                    "price": 4999,
+                    "points": 5000
+                },
+                {
+                    "price": 9999,
+                    "points": 10000
+                }
+            ],
+            "tiers": {
+                "1000": {
+                    "tempered_steel": 50,
+                    "speedup": 50,
+                    "resource_supply_ssr": 5,
+                    "speedup_supply": 5
+                },
+                "3000": {
+                    "tempered_steel": 100,
+                    "speedup": 50,
+                    "resource_supply_ssr": 5,
+                    "speedup_supply": 5
+                },
+                "5000": {
+                    "tempered_steel": 100,
+                    "speedup": 50,
+                    "resource_supply_ssr": 5,
+                    "speedup_supply": 5
+                },
+                "10000": {
+                    "tempered_steel": 200,
+                    "speedup": 150,
+                    "resource_supply_ssr": 15,
+                    "speedup_supply": 15
+                },
+                "20000": {
+                    "tempered_steel": 450,
+                    "speedup": 300,
+                    "resource_supply_ssr": 30,
+                    "speedup_supply": 30
+                },
+                "30000": {
+                    "tempered_steel": 550,
+                    "speedup": 325,
+                    "resource_supply_ssr": 32,
+                    "speedup_supply": 32
+                },
+                "50000": {
+                    "tempered_steel": 800,
+                    "speedup": 575,
+                    "resource_supply_ssr": 58,
+                    "speedup_supply": 58
+                },
+                "70000": {
+                    "tempered_steel": 900,
+                    "speedup": 600,
+                    "resource_supply_ssr": 60,
+                    "speedup_supply": 60
                 }
             }
         }
