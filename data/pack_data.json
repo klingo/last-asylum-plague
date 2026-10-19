@@ -4697,8 +4697,8 @@
         },
         "weekly_special": {
             "name": {
-                "en": "Jokers Weekly Special",
-                "de": "Jokers Wöchentliches Spezial"
+                "en": "Weekly Special",
+                "de": "Wöchentliches Spezial"
             },
             "category": "special_event",
             "limit_type": "event",
@@ -6043,8 +6043,8 @@
         },
         "weekly_special": {
             "name": {
-                "en": "Jokers Weekly Special",
-                "de": "Jokers Wöchentliches Spezial"
+                "en": "Weekly Special",
+                "de": "Wöchentliches Spezial"
             },
             "category": "special_event",
             "image": "weekly_special"

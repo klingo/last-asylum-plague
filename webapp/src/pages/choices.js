@@ -36,7 +36,7 @@ let choiceSources = {};
 const expandedKeys = new Set();
 
 // Every selectable choice pool: choice items (chests), packages with their own `choice` block
-// (e.g. Jokers Weekly Special) and groups of packages you can only buy one of (`exclusive_group`,
+// (e.g. Weekly Special) and groups of packages you can only buy one of (`exclusive_group`,
 // e.g. calendar packs). Packages are keyed `package:<id>`, groups `group:<id>`, so they can't
 // collide with an item id of the same name.
 function collectChoiceSources(locale) {
