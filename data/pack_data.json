@@ -6407,10 +6407,22 @@
                 "end": "2026-10-18"
             }
         ],
+        "artisans_request_tempered_steel": [
+            {
+                "start": "2026-10-19",
+                "end": "2026-10-25"
+            }
+        ],
         "claires_inner_demon": [
             {
                 "start": "2026-10-12",
                 "end": "2026-10-13"
+            }
+        ],
+        "epigraph_pass": [
+            {
+                "start": "2026-10-19",
+                "end": "2026-10-25"
             }
         ],
         "exclusive_weapon_pass": [
@@ -6453,6 +6465,12 @@
             {
                 "start": "2026-10-12",
                 "end": "2026-10-20"
+            }
+        ],
+        "weekly_special": [
+            {
+                "start": "2026-10-19",
+                "end": "2026-10-25"
             }
         ]
     },
