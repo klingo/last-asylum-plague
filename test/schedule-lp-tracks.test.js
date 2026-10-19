@@ -1,6 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { scheduleRuns, forecastRuns, weekdayRuns, weekdayIndex, gameDay } from '../webapp/src/core/schedule.js';
+import {
+    scheduleRuns,
+    forecastRuns,
+    weekdayRuns,
+    weekdayIndex,
+    gameDay,
+    runStatus,
+} from '../webapp/src/core/schedule.js';
 import { createModel, addTerm, toLpText, varName, solveModel, loadHighs } from '../webapp/src/core/lp.js';
 import { cheapestCostForPoints, trackTiers, trackPointsForPrice } from '../webapp/src/core/spend-tracks.js';
 
@@ -54,6 +61,18 @@ test('schedule: weekday runs merge consecutive days', () => {
         { start: 4, end: 4 },
         { start: 7, end: 7 },
     ]);
+});
+
+test('schedule: run status (running, upcoming, ended)', () => {
+    const runs = [
+        { start: 10, end: 16 },
+        { start: 30, end: 36 },
+    ];
+    assert.deepEqual(runStatus(runs, 12), { state: 'running', run: runs[0], days: 4 });
+    assert.equal(runStatus(runs, 16).days, 0, 'ends today');
+    assert.deepEqual(runStatus(runs, 20), { state: 'upcoming', run: runs[1], days: 10 });
+    assert.deepEqual(runStatus(runs, 40), { state: 'ended', run: runs[1], days: 4 });
+    assert.equal(runStatus([], 12), null);
 });
 
 test('schedule: the game day starts at 02:00 UTC', () => {

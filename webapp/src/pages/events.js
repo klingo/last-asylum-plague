@@ -15,6 +15,7 @@ import { infoIconHtml } from '../ui/info-icon.js';
 import { t, tHtml, getLocale, localizedName } from '../ui/i18n.js';
 import { formatThousands, formatSignificant } from '../ui/format.js';
 import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { eventBannerHtml, eventImageUrl, scheduleTiming } from '../ui/event-banner.js';
 
 // One tab per ticked event and per shop without event (VIP Shop): usually only a few, so one click each.
 const eventTabs = document.getElementById('event-tabs');
@@ -28,6 +29,7 @@ const extraBanknotesField = document.getElementById('extra-banknotes-field');
 const extraBanknotesInput = document.getElementById('extra-banknotes');
 const promptCard = document.getElementById('event-prompt-card');
 const planCard = document.getElementById('plan-card');
+const eventBanner = document.getElementById('event-banner');
 const exceedNote = document.getElementById('exceed-note');
 const lockNote = document.getElementById('lock-note');
 const eventSummary = document.getElementById('event-summary');
@@ -624,6 +626,16 @@ function render() {
         stepsCard.hidden = true;
         return;
     }
+    // The event's art and when it runs, as of today: is it on, and how long is left? (The VIP Shop has no event.)
+    const event = selected.eventId ? data.events?.[selected.eventId] : null;
+    eventBanner.hidden = !event;
+    eventBanner.innerHTML = event
+        ? eventBannerHtml({
+              image: event.image,
+              name: localizedName(event.name),
+              timing: scheduleTiming(data, selected.eventId),
+          })
+        : '';
     renderLockNote();
     renderSummary(selected);
     renderShop(selected);
@@ -637,11 +649,11 @@ function render() {
 function populateSelect() {
     const entries = [];
     for (const id of settings.activeEvents.filter((eventId) => data.events?.[eventId])) {
-        entries.push([`event:${id}`, data.events[id].name]);
+        entries.push([`event:${id}`, data.events[id].name, eventImageUrl(data.events[id].image)]);
     }
     for (const [id, shop] of Object.entries(data.exchange_shops || {})) {
         if (!shop.event_id) {
-            entries.push([`shop:${id}`, shop.name]);
+            entries.push([`shop:${id}`, shop.name, null]);
         }
     }
     if (!entries.some(([key]) => key === selectedKey)) {
@@ -649,8 +661,12 @@ function populateSelect() {
     }
     eventTabs.innerHTML = entries
         .map(
-            ([key, name]) =>
-                `<button type="button" class="toggle-chip" data-tab="${escapeHtml(key)}" aria-pressed="${key === selectedKey}">${escapeHtml(localizedName(name))}</button>`,
+            ([key, name, image]) =>
+                `<button type="button" class="toggle-chip" data-tab="${escapeHtml(key)}" aria-pressed="${key === selectedKey}">${
+                    image
+                        ? `<img class="toggle-chip__thumb" src="${escapeHtml(image)}" alt="" loading="lazy" decoding="async" />`
+                        : ''
+                }${escapeHtml(localizedName(name))}</button>`,
         )
         .join('');
 }

@@ -44,7 +44,12 @@ week, 4 ahead) with a simple forecast (`core/schedule.js`: ids with at least two
 starts and median length). Below it, "Weekday Offers" charts the `weekly_rotation` packs for today and the next 6 days from their
 `available_days` (not recorded, not forecast), with a "Now" line that moves every minute. "Today" is always the
 game day, which starts at 02:00 UTC (`gameDay` in `core/schedule.js`): both charts, the events / passes / tracks
-running today, Compare's start weekday and `record-run`'s default start.
+running today, Compare's start weekday and `record-run`'s default start. Events, spend reward tracks and seasonal
+passes may name the game's banner for them (`image`: `webapp/public/assets/events/<image>.webp`, 720×360; several may
+share one; `verify-data` checks the file). The schedule shows it as a thumbnail before the name and in the bars'
+hover cards (with "Ends in 3 days" from `runStatus`); a bar or name opens its plan (ticked events: Events page,
+tracks: Spend Rewards), and pointing at either highlights the row. The Events page and Spend Rewards show it as a
+banner with when the event / track runs (`ui/event-banner.js`).
 
 The Gear Path page (`gear.html`) reads `heroes`, `gear_upgrades` and `squad_guides`: a squad's formation by
 slot (not by hero; each slot has a hero class, tank / carry / support, and lists its hero per hero faction,

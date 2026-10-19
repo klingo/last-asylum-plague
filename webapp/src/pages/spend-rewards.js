@@ -19,10 +19,11 @@ import {
     wireDetailsToggles,
     breakdownParts,
 } from '../ui/grid.js';
-import { t } from '../ui/i18n.js';
+import { localizedName, t } from '../ui/i18n.js';
 import { formatThousands } from '../ui/format.js';
 import { ratioBarHtml } from '../ui/ratio-bar.js';
 import { createItemPicker } from '../ui/item-picker.js';
+import { eventBannerHtml, scheduleTiming } from '../ui/event-banner.js';
 
 // The app's own picker (as on the other pages), not a native <select>.
 const trackPicker = createItemPicker({
@@ -36,6 +37,7 @@ const trackPicker = createItemPicker({
         withLoading(render);
     },
 });
+const trackBanner = document.getElementById('track-banner');
 const tiersPrompt = document.getElementById('tiers-prompt');
 const tiersEmpty = document.getElementById('tiers-empty');
 const tiersWrap = document.getElementById('tiers-wrap');
@@ -157,6 +159,15 @@ function render() {
     const trackId = trackPicker.getValue();
     const track = data.spend_reward_tracks?.[trackId];
     tiersPrompt.hidden = Boolean(track);
+    // The track's art and when it runs: its tiers only count while it does.
+    trackBanner.hidden = !track;
+    trackBanner.innerHTML = track
+        ? eventBannerHtml({
+              image: track.image,
+              name: localizedName(track.name),
+              timing: scheduleTiming(data, trackId),
+          })
+        : '';
     if (!track) {
         tiersWrap.hidden = true;
         tiersNote.hidden = true;

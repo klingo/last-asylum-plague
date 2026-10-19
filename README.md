@@ -33,9 +33,11 @@ Compare) and **Heroes** (Gear Path).
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
   "other pick" when a bundle or another member of its group is bought instead). "Plan only" shows just the weekly
   shopping list, the Type pills filter by kind; entries of unknown worth are listed unranked.
-- **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below) and the Weekday
-  Offers of the next 7 days.
-- **Events** (`events.html`) — one tab per ticked event (and the VIP Shop): its part of the same weekly plan: which event packs
+- **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below; each entry with the
+  game's art, a hover card with how long is left, and a click opens its plan) and the Weekday Offers of the next 7
+  days.
+- **Events** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
+  its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
   and a step table of how much spending more on the event still pays off.
 - **Item Sources** (`sources.html`) — pick one item: every pack and shop offer on sale this week that gives it,
@@ -46,7 +48,8 @@ Compare) and **Heroes** (Gear Path).
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.
 - **Compare** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get
   it within N days (crafting, choices and shops included; weekly limits reset on Monday).
-- **Spend Rewards** (`spend-rewards.html`) — per tier of a spend track, what the extra Banknotes buy (the best packs
+- **Spend Rewards** (`spend-rewards.html`) — the track's banner and when it runs, and per tier of a spend track, what
+  the extra Banknotes buy (the best packs
   still available at that total spend) plus the tier reward, as a step ratio: spend more while it's 1.0 or more.
 - **Gear Path** (`gear.html`) — a squad (2 tanks in front, carries and support behind, each hero with its sword,
   armor, gauntlets and boots) and the guide to its UR gear in two phases: first crafting every piece, then two

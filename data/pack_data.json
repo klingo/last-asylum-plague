@@ -2801,6 +2801,7 @@
                 "en": "Epigraph Pass",
                 "de": ""
             },
+            "image": "epigraph_pass",
             "category": "value_event",
             "limit_type": "weekly",
             "tiers": {
@@ -2897,6 +2898,7 @@
                 "en": "Exclusive Weapon",
                 "de": "Exklusive Waffe"
             },
+            "image": "exclusive_weapon",
             "category": "value_event",
             "price": 1999,
             "deal_percentage": 8159,
@@ -2941,6 +2943,7 @@
                 "en": "Falcon Tower Pass",
                 "de": "Falkenturm-Pass"
             },
+            "image": "falcon_tower_pass",
             "category": "value_event",
             "limit_type": "weekly",
             "tiers": {
@@ -2987,6 +2990,7 @@
                 "en": "Gear Pass",
                 "de": ""
             },
+            "image": "gear_pass",
             "category": "value_event",
             "limit_type": "weekly",
             "tiers": {
@@ -3896,6 +3900,7 @@
                 "en": "Raven's Might",
                 "de": ""
             },
+            "image": "ravens_might",
             "category": "value_event",
             "limit_type": "weekly",
             "tiers": {
@@ -4428,6 +4433,7 @@
                 "en": "Tempered Arms",
                 "de": "Gehärtete Waffen"
             },
+            "image": "tempered_arms",
             "category": "value_event",
             "limit_type": "biweekly",
             "tiers": {
@@ -5952,7 +5958,8 @@
                 "en": "Blades Out",
                 "de": ""
             },
-            "category": "special_event"
+            "category": "special_event",
+            "image": "blades_out"
         },
         "claires_inner_demon": {
             "name": {
@@ -5974,14 +5981,16 @@
                 "de": "Ausrüstungs-Upgrade"
             },
             "category": "ingame_event",
-            "calendar_group": "spend_rewards"
+            "calendar_group": "spend_rewards",
+            "image": "gear_upgrade"
         },
         "hunt_battle": {
             "name": {
                 "en": "Hunt Battle",
                 "de": "Jagd-Kampf"
             },
-            "category": "ingame_event"
+            "category": "ingame_event",
+            "image": "hunt_battle"
         },
         "mystic_cabinet": {
             "name": {
@@ -5995,21 +6004,24 @@
                 "en": "Pandemic Experience",
                 "de": "Pandemieerfahrung"
             },
-            "category": "ingame_event"
+            "category": "ingame_event",
+            "image": "pandemic_experience"
         },
         "recluse_merchant": {
             "name": {
                 "en": "Recluse Merchant",
                 "de": "Einsiedler-Händler"
             },
-            "category": "special_event"
+            "category": "special_event",
+            "image": "recluse_merchant"
         },
         "shadow_blight": {
             "name": {
                 "en": "Shadow Blight",
                 "de": "Schatten-Seuche"
             },
-            "category": "ingame_event"
+            "category": "ingame_event",
+            "image": "shadow_blight"
         },
         "strange_bazaar": {
             "name": {
@@ -6017,7 +6029,8 @@
                 "de": "Seltsamer Basar"
             },
             "category": "special_event",
-            "exceedable_pack_limits": true
+            "exceedable_pack_limits": true,
+            "image": "strange_bazaar"
         },
         "surprise_encounter": {
             "name": {
@@ -6025,14 +6038,16 @@
                 "de": "Überraschende Begegnung"
             },
             "category": "special_event",
-            "exceedable_pack_limits": true
+            "exceedable_pack_limits": true,
+            "image": "surprise_encounter"
         },
         "weekly_special": {
             "name": {
                 "en": "Jokers Weekly Special",
                 "de": "Jokers Wöchentliches Spezial"
             },
-            "category": "special_event"
+            "category": "special_event",
+            "image": "weekly_special"
         }
     },
     "spend_reward_tracks": {
@@ -6041,6 +6056,7 @@
                 "en": "Ancient Recipe (Antitoxin)",
                 "de": "Uraltes Rezept (Gegengift)"
             },
+            "image": "ancient_recipe",
             "conversions": [
                 {
                     "price": 99,
@@ -6119,6 +6135,7 @@
                 "en": "Ancient Recipe (Gearstones)",
                 "de": "Uraltes Rezept (Ausrüstungssteine)"
             },
+            "image": "ancient_recipe",
             "conversions": [
                 {
                     "price": 99,
@@ -6231,6 +6248,7 @@
                 "en": "Artisan's Request (Gearstones)",
                 "de": "Auftrag des Handwerkers (Ausrüstungssteine)"
             },
+            "image": "artisans_request",
             "conversions": [
                 {
                     "price": 99,
@@ -6321,6 +6339,7 @@
                 "en": "Artisan's Request (Tempered Steel)",
                 "de": "Auftrag des Handwerkers (Gehärteter Stahl)"
             },
+            "image": "artisans_request",
             "conversions": [
                 {
                     "price": 99,

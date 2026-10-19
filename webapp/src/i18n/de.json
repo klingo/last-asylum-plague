@@ -134,7 +134,7 @@
     "calendar": {
         "schedule": {
             "heading": "Event-Zeitplan",
-            "lead": "Was letzte und diese Woche lief und was in den nächsten vier wahrscheinlich kommt. Prognosen wiederholen den üblichen Rhythmus eines Eintrags, sobald er mindestens zweimal erfasst wurde; fahre über einen Balken für seine Daten.",
+            "lead": "Was letzte und diese Woche lief und was in den nächsten vier wahrscheinlich kommt. Prognosen wiederholen den üblichen Rhythmus eines Eintrags, sobald er mindestens zweimal erfasst wurde; fahre über einen Balken für seine Daten und die verbleibende Zeit, klicke ihn (oder seinen Namen) an, um seinen Plan zu öffnen.",
             "recorded": "Erfasst",
             "forecast": "Prognose",
             "past": "Beendet",
@@ -156,6 +156,18 @@
             "tomorrow": "Morgen",
             "every": "jeweils {days}",
             "now": "Jetzt (ein neuer Spieltag beginnt um {time})"
+        },
+        "status": {
+            "endsToday": "Endet heute",
+            "endsTomorrow": "Endet morgen",
+            "endsIn": "Endet in {count} Tagen",
+            "startsTomorrow": "Beginnt morgen",
+            "startsIn": "Beginnt in {count} Tagen",
+            "endedYesterday": "Gestern beendet",
+            "endedAgo": "Vor {count} Tagen beendet",
+            "expected": "nächstes Mal voraussichtlich um den {date} (Prognose)",
+            "none": "Noch keine Daten erfasst",
+            "openPlan": "Klicken, um den Plan zu öffnen"
         }
     },
     "rankings": {

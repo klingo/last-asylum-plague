@@ -530,6 +530,34 @@ async function verifyData() {
         }
     });
 
+    // 8a. Event art (`image` on events, spend reward tracks and seasonal passes): the banner file exists.
+    checkCategory('Event Images', ({ reportError }) => {
+        const owners = [
+            ['event', data.events],
+            ['spend reward track', data.spend_reward_tracks],
+            ['package', data.packages],
+        ];
+        for (const [kind, entries] of owners) {
+            for (const [id, entry] of Object.entries(entries || {})) {
+                const file = path.join(
+                    import.meta.dirname,
+                    '..',
+                    'webapp',
+                    'public',
+                    'assets',
+                    'events',
+                    `${entry.image}.webp`,
+                );
+                if (entry.image && !fs.existsSync(file)) {
+                    reportError(
+                        'Event Image',
+                        `The ${kind} "${id}" has no image "${entry.image}" (webapp/public/assets/events/${entry.image}.webp).`,
+                    );
+                }
+            }
+        }
+    });
+
     // 8b. Squad guides (Gear Path page): heroes, slots and gear exist, and every path step is possible at its
     // point (webapp/src/core/gear-path.js: crafted first, level caps by stars, minimum levels for stars).
     checkCategory('Squad Guides', ({ reportError, reportWarning }) => {

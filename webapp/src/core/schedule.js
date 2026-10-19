@@ -115,4 +115,32 @@ function forecastRuns(runs, { from, to, today }) {
     return forecast;
 }
 
-export { dayDate, gameDay, GAME_DAY_START_MS, weekdayIndex, isoWeekNumber, scheduleRuns, forecastRuns, weekdayRuns };
+/**
+ * Where an id's runs stand on `today`: the run on now (`running`, `days` left after today: 0 = ends today), else the
+ * next one (`upcoming`, `days` until it starts), else the last one (`ended`, `days` since it ended). Null without
+ * runs. Forecasts aren't runs: pass them in to count them too.
+ */
+function runStatus(runs, today) {
+    const running = runs.find((run) => run.start <= today && today <= run.end);
+    if (running) {
+        return { state: 'running', run: running, days: running.end - today };
+    }
+    const upcoming = runs.filter((run) => run.start > today).sort((a, b) => a.start - b.start)[0];
+    if (upcoming) {
+        return { state: 'upcoming', run: upcoming, days: upcoming.start - today };
+    }
+    const ended = runs.filter((run) => run.end < today).sort((a, b) => b.end - a.end)[0];
+    return ended ? { state: 'ended', run: ended, days: today - ended.end } : null;
+}
+
+export {
+    dayDate,
+    gameDay,
+    GAME_DAY_START_MS,
+    weekdayIndex,
+    isoWeekNumber,
+    scheduleRuns,
+    forecastRuns,
+    weekdayRuns,
+    runStatus,
+};

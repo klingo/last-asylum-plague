@@ -3,7 +3,8 @@ import { formatDays, getLocale, localizedName, t } from '../ui/i18n.js';
 import { escapeHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { createItemImage } from '../ui/images.js';
-import { DEFAULT_NONE_ITEMS } from '../ui/settings.js';
+import { DEFAULT_NONE_ITEMS, getSettings } from '../ui/settings.js';
+import { eventImageUrl, runStatusText, scheduleImage } from '../ui/event-banner.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import {
     GAME_DAY_START_MS,
@@ -11,6 +12,7 @@ import {
     forecastRuns,
     gameDay,
     isoWeekNumber,
+    runStatus,
     scheduleRuns,
     weekdayIndex,
     weekdayRuns,
@@ -56,17 +58,39 @@ function rangeText(start, end) {
     return `${range} (${days === 1 ? t('calendar.schedule.oneDay') : t('calendar.schedule.days', { count: days })})`;
 }
 
-/** "Strange Bazaar · Mon, 12 Oct – Sun, 18 Oct (7 days)", forecasts with their basis. */
-function scheduleTooltip(bar, name) {
-    return bar.forecast
-        ? `${name}\n${rangeText(bar.start, bar.end)} · ${t('calendar.schedule.forecastBasis', {
-              interval: bar.intervalDays,
-              last: rangeText(bar.last.start, bar.last.end),
-          })}`
-        : `${name}\n${rangeText(bar.start, bar.end)}`;
+/**
+ * A bar's hover card: "Strange Bazaar", "Mon, 12 Oct – Sun, 18 Oct (7 days)", "Ends in 3 days" (forecasts with
+ * their basis), and "Click to open its plan" when it links to one.
+ */
+function scheduleTooltip(bar, name, today, linked) {
+    const lines = [name, rangeText(bar.start, bar.end), runStatusText(runStatus([bar], today))];
+    if (bar.forecast) {
+        lines.push(
+            t('calendar.schedule.forecastBasis', {
+                interval: bar.intervalDays,
+                last: rangeText(bar.last.start, bar.last.end),
+            }),
+        );
+    }
+    if (linked) {
+        lines.push(t('calendar.status.openPlan'));
+    }
+    return lines.join('\n');
 }
 
-function barHtml(bar, from, to, tooltip) {
+/**
+ * Where a schedule entry is planned: a ticked event on the Events page, a spend reward track on Spend Rewards
+ * (passes and in-game events have no page of their own); null otherwise.
+ */
+function planHref(id) {
+    if (packData.events?.[id]?.category !== 'ingame_event' && getSettings().activeEvents?.includes(id)) {
+        return `events.html?event=${encodeURIComponent(`event:${id}`)}`;
+    }
+    return packData.spend_reward_tracks?.[id] ? `spend-rewards.html?track=${encodeURIComponent(id)}` : null;
+}
+
+/** A bar; with `href` a link (opens its plan), with `image` the hover card shows the art. */
+function barHtml(bar, from, to, tooltip, { href = null, image = null } = {}) {
     const start = Math.max(bar.start, from);
     const end = Math.min(bar.end, to);
     const total = to - from + 1;
@@ -81,7 +105,17 @@ function barHtml(bar, from, to, tooltip) {
     const insetStart = bar.start < from ? 0 : 1;
     const insetEnd = bar.end > to ? 0 : 1;
     const style = `left: calc(${((start - from) / total) * 100}% + ${insetStart}px); width: calc(${((end - start + 1) / total) * 100}% - ${insetStart + insetEnd}px)`;
-    return `<span class="${classes.join(' ')}" style="${style}" tabindex="0" role="img" aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"></span>`;
+    const tag = href ? 'a' : 'span';
+    const linkAttrs = href ? ` href="${escapeHtml(href)}"` : ' tabindex="0" role="img"';
+    const imageAttr = image ? ` data-tooltip-image="${escapeHtml(image)}"` : '';
+    return `<${tag} class="${classes.join(' ')}" style="${style}"${linkAttrs} aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"${imageAttr}></${tag}>`;
+}
+
+/** The entry's art as a small thumbnail before its name (a placeholder in its group's colour without art). */
+function thumbHtml(image) {
+    return image
+        ? `<img class="schedule__thumb" src="${escapeHtml(image)}" alt="" loading="lazy" decoding="async" />`
+        : '<span class="schedule__thumb schedule__thumb--none" aria-hidden="true"></span>';
 }
 
 /** One line per day (every `perColumn`-th one stronger: the week / day columns of the header). */
@@ -113,7 +147,14 @@ function renderSchedule() {
             ...forecastRuns(runs, { from, to, today }).map((run) => ({ ...run, forecast: true })),
         ].filter((bar) => bar.end >= from && bar.start <= to);
         if (bars.length > 0) {
-            rows.push({ kind, name: scheduleName(packData, id, kind), bars, first: bars[0].start });
+            rows.push({
+                kind,
+                name: scheduleName(packData, id, kind),
+                bars,
+                first: bars[0].start,
+                image: eventImageUrl(scheduleImage(packData, id)),
+                href: planHref(id),
+            });
         }
     }
 
@@ -140,14 +181,28 @@ function renderSchedule() {
         if (groupRows.length === 0) {
             return '';
         }
+        // The name (with its art) links to the plan, as the bars do; pointing at either highlights the row.
         const rowsHtml = groupRows
-            .map(
-                (row) => `
+            .map((row) => {
+                const label = `${thumbHtml(row.image)}${escapeHtml(row.name)}`;
+                const bars = row.bars
+                    .map((bar) =>
+                        barHtml(bar, from, to, scheduleTooltip(bar, row.name, today, Boolean(row.href)), {
+                            href: row.href,
+                            image: row.image,
+                        }),
+                    )
+                    .join('');
+                return `
                     <div class="schedule__row schedule__row--${kind}">
-                        <div class="schedule__label" title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</div>
-                        <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, scheduleTooltip(bar, row.name))).join('')}</div>
-                    </div>`,
-            )
+                        ${
+                            row.href
+                                ? `<a class="schedule__label schedule__label--link" href="${escapeHtml(row.href)}" title="${escapeHtml(row.name)}">${label}</a>`
+                                : `<div class="schedule__label" title="${escapeHtml(row.name)}">${label}</div>`
+                        }
+                        <div class="schedule__track">${bars}</div>
+                    </div>`;
+            })
             .join('');
         return `
             <div class="schedule__row schedule__row--group schedule__row--${kind}">

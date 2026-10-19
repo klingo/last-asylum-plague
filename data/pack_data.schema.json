@@ -394,6 +394,9 @@
                     "$ref": "#/definitions/id",
                     "description": "Item whose image stands for this package (e.g. on the Home page's Weekday Offers). Default: its first item other than diamonds and the items that are Don't care by default (VIP points, alliance chests, ...)."
                 },
+                "image": {
+                    "$ref": "#/definitions/eventImage"
+                },
                 "category": {
                     "$ref": "#/definitions/packageCategory"
                 },
@@ -488,6 +491,9 @@
                 "icon": {
                     "$ref": "#/definitions/id",
                     "description": "Item whose image stands for this package (e.g. on the Home page's Weekday Offers). Default: its first item other than diamonds and the items that are Don't care by default (VIP points, alliance chests, ...)."
+                },
+                "image": {
+                    "$ref": "#/definitions/eventImage"
                 },
                 "category": {
                     "$ref": "#/definitions/packageCategory"
@@ -678,6 +684,9 @@
                 "name": {
                     "$ref": "#/definitions/localizedString"
                 },
+                "image": {
+                    "$ref": "#/definitions/eventImage"
+                },
                 "category": {
                     "$ref": "#/definitions/packageCategory"
                 },
@@ -700,6 +709,9 @@
             "properties": {
                 "name": {
                     "$ref": "#/definitions/localizedString"
+                },
+                "image": {
+                    "$ref": "#/definitions/eventImage"
                 },
                 "conversions": {
                     "type": "array",
@@ -732,6 +744,10 @@
                     "minProperties": 1
                 }
             }
+        },
+        "eventImage": {
+            "$ref": "#/definitions/id",
+            "description": "The game's banner for an event, spend reward track or seasonal pass: webapp/public/assets/events/<image>.webp (720×360). Shown on the Calendar, the Events page and Spend Rewards. Several entries may share one."
         },
         "heroClass": {
             "type": "string",

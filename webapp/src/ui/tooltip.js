@@ -52,6 +52,17 @@ function positionTooltip(trigger) {
 function showTooltip(trigger) {
     const el = ensureTooltipEl();
     el.textContent = trigger.dataset.tooltip || '';
+    // Optional picture above the text (`data-tooltip-image`: an event's art on the Calendar).
+    el.classList.toggle('app-tooltip--image', Boolean(trigger.dataset.tooltipImage));
+    if (trigger.dataset.tooltipImage) {
+        const image = document.createElement('img');
+        image.className = 'app-tooltip__image';
+        image.alt = '';
+        image.src = trigger.dataset.tooltipImage;
+        // Placed again once the picture has its size (it may not be loaded yet).
+        image.addEventListener('load', () => !el.hidden && positionTooltip(trigger));
+        el.prepend(image);
+    }
     el.hidden = false;
     positionTooltip(trigger);
 }

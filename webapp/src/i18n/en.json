@@ -134,7 +134,7 @@
     "calendar": {
         "schedule": {
             "heading": "Event Schedule",
-            "lead": "What ran last week and this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; hover a bar for its dates.",
+            "lead": "What ran last week and this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice. Hover a bar for its dates and how long is left; click it (or its name) to open its plan.",
             "recorded": "Recorded",
             "forecast": "Forecast",
             "past": "Ended",
@@ -156,6 +156,18 @@
             "tomorrow": "Tomorrow",
             "every": "every {days}",
             "now": "Now (a new game day starts at {time})"
+        },
+        "status": {
+            "endsToday": "Ends today",
+            "endsTomorrow": "Ends tomorrow",
+            "endsIn": "Ends in {count} days",
+            "startsTomorrow": "Starts tomorrow",
+            "startsIn": "Starts in {count} days",
+            "endedYesterday": "Ended yesterday",
+            "endedAgo": "Ended {count} days ago",
+            "expected": "next expected around {date} (forecast)",
+            "none": "No dates recorded yet",
+            "openPlan": "Click to open its plan"
         }
     },
     "rankings": {
