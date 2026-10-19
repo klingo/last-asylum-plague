@@ -107,7 +107,10 @@ function barHtml(bar, from, to, tooltip, { href = null, image = null } = {}) {
     const style = `left: calc(${((start - from) / total) * 100}% + ${insetStart}px); width: calc(${((end - start + 1) / total) * 100}% - ${insetStart + insetEnd}px)`;
     const tag = href ? 'a' : 'span';
     const linkAttrs = href ? ` href="${escapeHtml(href)}"` : ' tabindex="0" role="img"';
-    const imageAttr = image ? ` data-tooltip-image="${escapeHtml(image)}"` : '';
+    // An ended run's art greyed in its hover card, as its bar.
+    const imageAttr = image
+        ? ` data-tooltip-image="${escapeHtml(image)}"${bar.past ? ' data-tooltip-image-muted' : ''}`
+        : '';
     return `<${tag} class="${classes.join(' ')}" style="${style}"${linkAttrs} aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"${imageAttr}></${tag}>`;
 }
 

@@ -794,6 +794,12 @@ tbody tr.choice-details:hover {
     object-fit: cover;
 }
 
+/* An ended run (grey bar): mostly grey, slightly dimmed, still recognizable. */
+.app-tooltip__image--muted {
+    filter: grayscale(0.8);
+    opacity: 0.75;
+}
+
 .item-cell {
     display: flex;
     align-items: center;
