@@ -1778,9 +1778,11 @@ tbody tr.choice-details:hover {
     padding: 2px;
 }
 
+/* Name | 4px gap | timeline. The gap leaves room for a hovered bar's outline on the first day (the name column is
+   sticky and opaque, and would cover it); the timeline still starts at --label-width, where the lines are drawn. */
 .schedule__row {
     display: grid;
-    grid-template-columns: var(--label-width) 1fr;
+    grid-template-columns: calc(var(--label-width) - 4px) 4px 1fr;
     min-height: 28px;
 }
 
@@ -1798,6 +1800,7 @@ tbody tr.choice-details:hover {
 }
 
 .schedule__track {
+    grid-column: 3;
     position: relative;
     z-index: 1;
 }
@@ -1894,7 +1897,8 @@ a.schedule__bar {
 }
 
 /* Cut by the window's edge: square, fading end (it continues outside the shown weeks). The mask reaches 4px past
-   the bar (not clipped to it), so the hover outline around the bar stays visible and fades with it. */
+   the bar (not clipped to it), so the hover outline around the bar stays visible and fades with it; on the cut side
+   those 4px stay transparent (no outline there: the run goes on beyond the window). */
 .schedule__bar--cut-start,
 .schedule__bar--cut-end {
     mask-size: calc(100% + 8px) calc(100% + 8px);
@@ -1906,15 +1910,15 @@ a.schedule__bar {
 .schedule__bar--cut-start {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 18px);
-    mask-image: linear-gradient(to right, transparent, #000 18px);
+    -webkit-mask-image: linear-gradient(to right, transparent 4px, #000 22px);
+    mask-image: linear-gradient(to right, transparent 4px, #000 22px);
 }
 
 .schedule__bar--cut-end {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    -webkit-mask-image: linear-gradient(to left, transparent, #000 18px);
-    mask-image: linear-gradient(to left, transparent, #000 18px);
+    -webkit-mask-image: linear-gradient(to left, transparent 4px, #000 22px);
+    mask-image: linear-gradient(to left, transparent 4px, #000 22px);
 }
 
 .schedule__bar:hover,
@@ -3007,8 +3011,7 @@ a.schedule__label--link:hover {
         .schedule__bar:focus-visible,
         .schedule__label:hover,
         .schedule__label:focus-visible
-    )
-    .schedule__track {
+    ) {
     background: color-mix(in srgb, var(--bar-color) 10%, transparent);
 }
 
