@@ -4,13 +4,13 @@
     },
     "nav": {
         "home": "Home",
-        "rankings": "Ranking",
+        "rankings": "Pack Ranking",
         "calendar": "Calendar",
-        "eventPlan": "Event Plan",
+        "eventPlan": "Shopping Plan",
         "sources": "Item Sources",
         "choices": "Best Choice Pick",
         "spendRewards": "Spend Rewards",
-        "gear": "Gear Path",
+        "gear": "Gear Upgrade Path",
         "language": "Language",
         "items": "Item Priorities",
         "compare": "Compare",
@@ -95,21 +95,21 @@
     },
     "docTitle": {
         "welcome": "Last Asylum Pack Solver",
-        "rankings": "Ranking - Last Asylum Pack Solver",
+        "rankings": "Pack Ranking - Last Asylum Pack Solver",
         "calendar": "Calendar - Last Asylum Pack Solver",
-        "events": "Events - Last Asylum Pack Solver",
+        "events": "Shopping Plan - Last Asylum Pack Solver",
         "sources": "Item Sources - Last Asylum Pack Solver",
         "choices": "Best Choice Pick - Last Asylum Pack Solver",
         "spendRewards": "Spend Rewards - Last Asylum Pack Solver",
-        "gear": "Gear Path - Last Asylum Pack Solver",
+        "gear": "Gear Upgrade Path - Last Asylum Pack Solver",
         "items": "Item Priorities - Last Asylum Pack Solver",
         "compare": "Compare - Last Asylum Pack Solver"
     },
     "footer": {
         "welcome": "Last Asylum Pack Solver — computed live from pack_data.json",
-        "rankings": "Last Asylum Pack Solver — ranking computed live from pack_data.json",
+        "rankings": "Last Asylum Pack Solver — pack ranking computed live from pack_data.json",
         "calendar": "Last Asylum Pack Solver — schedule recorded in pack_data.json",
-        "events": "Last Asylum Pack Solver — event plans computed live from pack_data.json",
+        "events": "Last Asylum Pack Solver — shopping plans computed live from pack_data.json",
         "sources": "Last Asylum Pack Solver — item sources computed live from pack_data.json",
         "choices": "Last Asylum Pack Solver — choice options valued live from pack_data.json",
         "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json",
@@ -171,10 +171,10 @@
         }
     },
     "rankings": {
-        "heading": "Ranking",
+        "heading": "Pack Ranking",
         "description": "Every package and pass on sale this week, ranked by worth relative to price.",
         "planShort": "Plan: {purchases} packs for {spent} of {budget} Banknotes · {count} entries.",
-        "details": "Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). Ratio = how a pack compares with the last Banknote of the best plan for your weekly spend: 1.0 or more = a good deal at your spend, below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Buy / week\" = how many that plan buys out of what's on sale this week (\"doesn't fit\" = good, but whole purchases didn't fit your exact spend; with a little more it would be in). Packs of events you haven't selected are hidden. What to buy with event coins and diamonds: see Events. Entries containing items of unknown worth are listed below the ranking, unranked. Monthly and two-week purchases (Calendar Gifts, Premium Monthly Pass) count at their weekly share of the price (7/30, 7/14); the info icon at their price shows it. \"in …\" = already part of a bundle the plan buys (the Weekly Pass includes the single weekly passes); \"other pick\" = only one of a group can be bought (one Calendar Gift per month).",
+        "details": "Worth uses the game's own deal % values, your weekly spend and your item priorities (Item Priorities). Ratio = how a pack compares with the last Banknote of the best plan for your weekly spend: 1.0 or more = a good deal at your spend, below 1.0 = your spend has better uses (not worthless, just not among your best buys; spending more lowers that bar). \"Buy / week\" = how many that plan buys out of what's on sale this week (\"doesn't fit\" = good, but whole purchases didn't fit your exact spend; with a little more it would be in). Packs of events you haven't selected are hidden. What to buy with event coins and diamonds: see Shopping Plan. Entries containing items of unknown worth are listed below the ranking, unranked. Monthly and two-week purchases (Calendar Gifts, Premium Monthly Pass) count at their weekly share of the price (7/30, 7/14); the info icon at their price shows it. \"in …\" = already part of a bundle the plan buys (the Weekly Pass includes the single weekly passes); \"other pick\" = only one of a group can be bought (one Calendar Gift per month).",
         "searchLabel": "Search",
         "searchPlaceholder": "Filter by name or category",
         "show": "Show",
@@ -211,9 +211,9 @@
         "perWeekShare": "{amount} Banknotes / week"
     },
     "events": {
-        "heading": "Events",
+        "heading": "Shopping Plan",
         "description": "Pick a selected event (or the VIP Shop) to see its part of the best plan for your weekly spend: the event packs to buy, the coins they give, which shop offers to buy with them (in unlock order) and whether spending more on the event still pays off.",
-        "details": "It's the same plan as on the Ranking page, so both pages agree.",
+        "details": "It's the same plan as on the Pack Ranking page, so both pages agree.",
         "eventLabel": "Event or shop",
         "tickHint": "Only events selected under \"Events this week\" are listed.",
         "chooseEvents": "Choose events",
@@ -229,7 +229,7 @@
         "optionsLabel": "Options",
         "exceedLimits": "Exceed event pack limits",
         "exceedLimitsHint": "Lets the plan buy the selected event's packs as often as it likes instead of their daily limit (usually once per day), e.g. to see how far the best currency pack is worth repeating. Only possible for events whose packs can be bought beyond their limit in the game: {events}.",
-        "exceedNote": "Event pack limits exceeded: this plan differs from the Ranking (which keeps the limits).",
+        "exceedNote": "Event pack limits exceeded: this plan differs from the Pack Ranking (which keeps the limits).",
         "tiles": {
             "packs": "Buy these packs",
             "encounters": "Encounters",
@@ -278,7 +278,7 @@
     "sources": {
         "heading": "Item Sources",
         "description": "Pick an item to see every pack and shop offer on sale this week that gives it, including packs where it only comes nested (e.g. SR Resource Supplies → Herbs).",
-        "details": "Pick-one chests count as picking this item, random chests at their expected amount (~), generic items where they can be used. Per unit = Banknotes per unit, shown per 1,000 or 1,000,000 units for bulk items (shop offers at what their coins cost: bought from the cheapest packs on sale that give them, each as often as it can be bought per week, the whole pack price counted for the coins; coins no pack sells at what they are worth in your plan). Ratio = the whole source's worth ÷ price, as on the Ranking (1.0 or more = a good deal at your weekly spend). Item share = how much of that worth is this item. Item ratio = worth of just this item ÷ price (≈ ratio × item share). Sources are ranked by item ratio, which is the same as cheapest per unit first. Rows highlighted green are in the best plan for your weekly spend.",
+        "details": "Pick-one chests count as picking this item, random chests at their expected amount (~), generic items where they can be used. Per unit = Banknotes per unit, shown per 1,000 or 1,000,000 units for bulk items (shop offers at what their coins cost: bought from the cheapest packs on sale that give them, each as often as it can be bought per week, the whole pack price counted for the coins; coins no pack sells at what they are worth in your plan). Ratio = the whole source's worth ÷ price, as on the Pack Ranking (1.0 or more = a good deal at your weekly spend). Item share = how much of that worth is this item. Item ratio = worth of just this item ÷ price (≈ ratio × item share). Sources are ranked by item ratio, which is the same as cheapest per unit first. Rows highlighted green are in the best plan for your weekly spend.",
         "itemLabel": "Item",
         "selectPrompt": "Select an item above to see where to get it.",
         "empty": "Nothing on sale this week gives this item.",
@@ -356,7 +356,7 @@
         "verdictAll": "Your weekly spend already reaches every tier of this track."
     },
     "gear": {
-        "heading": "Gear Path",
+        "heading": "Gear Upgrade Path",
         "description": "The order to craft and upgrade a squad's UR gear (sword, armor, gauntlets, boots), one squad at a time.",
         "help": {
             "aboutTitle": "What this page does",
@@ -493,7 +493,7 @@
         "changedOnly": "Only items I changed",
         "reset": "Reset to defaults",
         "empty": "No items match your search.",
-        "footnote": "Worth = Banknotes per unit at the weekly spend set on the Ranking page. Uncertain = the game's deal % values barely determine the item (hover the info icon for why).",
+        "footnote": "Worth = Banknotes per unit at the weekly spend set on the Pack Ranking page. Uncertain = the game's deal % values barely determine the item (hover the info icon for why).",
         "summary": "{count} items changed.",
         "uncertain": "uncertain",
         "uncertainTitle": "The packs barely determine this value (e.g. it only appears in one pack next to other unknown items).",

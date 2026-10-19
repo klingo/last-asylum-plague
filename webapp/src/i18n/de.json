@@ -4,13 +4,13 @@
     },
     "nav": {
         "home": "Start",
-        "rankings": "Rangliste",
+        "rankings": "Paket-Rangliste",
         "calendar": "Kalender",
-        "eventPlan": "Eventplan",
+        "eventPlan": "Einkaufsplan",
         "sources": "Gegenstandsquellen",
         "choices": "Beste Wahl",
         "spendRewards": "Ausgabenbelohnungen",
-        "gear": "Ausrüstungspfad",
+        "gear": "Ausrüstungs-Upgradepfad",
         "language": "Sprache",
         "items": "Gegenstandsprioritäten",
         "compare": "Vergleich",
@@ -95,21 +95,21 @@
     },
     "docTitle": {
         "welcome": "Last Asylum Pack Solver",
-        "rankings": "Rangliste - Last Asylum Pack Solver",
+        "rankings": "Paket-Rangliste - Last Asylum Pack Solver",
         "calendar": "Kalender - Last Asylum Pack Solver",
-        "events": "Events - Last Asylum Pack Solver",
+        "events": "Einkaufsplan - Last Asylum Pack Solver",
         "sources": "Gegenstandsquellen - Last Asylum Pack Solver",
         "choices": "Beste Wahl - Last Asylum Pack Solver",
         "spendRewards": "Ausgabenbelohnungen - Last Asylum Pack Solver",
-        "gear": "Ausrüstungspfad - Last Asylum Pack Solver",
+        "gear": "Ausrüstungs-Upgradepfad - Last Asylum Pack Solver",
         "items": "Gegenstandsprioritäten - Last Asylum Pack Solver",
         "compare": "Vergleich - Last Asylum Pack Solver"
     },
     "footer": {
         "welcome": "Last Asylum Pack Solver — live aus pack_data.json berechnet",
-        "rankings": "Last Asylum Pack Solver — Rangliste live aus pack_data.json berechnet",
+        "rankings": "Last Asylum Pack Solver — Paket-Rangliste live aus pack_data.json berechnet",
         "calendar": "Last Asylum Pack Solver — Zeitplan aus pack_data.json",
-        "events": "Last Asylum Pack Solver — Event-Pläne live aus pack_data.json berechnet",
+        "events": "Last Asylum Pack Solver — Einkaufspläne live aus pack_data.json berechnet",
         "sources": "Last Asylum Pack Solver — Gegenstandsquellen live aus pack_data.json berechnet",
         "choices": "Last Asylum Pack Solver — Wahloptionen live aus pack_data.json bewertet",
         "spendRewards": "Last Asylum Pack Solver — Ausgabenbelohnungs-Stufen live aus pack_data.json berechnet",
@@ -171,10 +171,10 @@
         }
     },
     "rankings": {
-        "heading": "Rangliste",
+        "heading": "Paket-Rangliste",
         "description": "Alle diese Woche angebotenen Pakete und Pässe, nach Wert im Verhältnis zum Preis geordnet.",
         "planShort": "Plan: {purchases} Pakete für {spent} von {budget} Banknoten · {count} Einträge.",
-        "details": "Der Wert basiert auf den Deal-%-Werten des Spiels, deinen wöchentlichen Ausgaben und deinen Gegenstandsprioritäten (Seite Gegenstandsprioritäten). Ratio = wie ein Paket im Vergleich zur letzten Banknote des besten Plans für deine wöchentlichen Ausgaben abschneidet: 1,0 oder mehr = ein gutes Geschäft bei deinen Ausgaben, unter 1,0 = deine Ausgaben haben bessere Verwendungen (nicht wertlos, aber nicht unter deinen besten Käufen; mehr auszugeben senkt diese Messlatte). „Kauf / Woche“ = wie viele davon dieser Plan aus dem diese Woche Angebotenen kauft („passt nicht“ = gut, aber ganze Käufe passten nicht in deine genauen Ausgaben; mit etwas mehr wäre es dabei). Pakete nicht ausgewählter Events sind ausgeblendet. Was du mit Event-Münzen und Diamanten kaufen solltest: siehe Events. Einträge mit Gegenständen unbekannten Werts stehen unter der Rangliste, ohne Rang. Monats- und Zwei-Wochen-Käufe (Kalendergeschenke, Premium Monatspass) zählen mit ihrem Wochenanteil am Preis (7/30, 7/14); das Info-Symbol beim Preis zeigt ihn. „in …“ = schon Teil eines Bündels, das der Plan kauft (der Wochenpass enthält die einzelnen Wochenpässe); „andere Wahl“ = von einer Gruppe kann nur eines gekauft werden (ein Kalendergeschenk pro Monat).",
+        "details": "Der Wert basiert auf den Deal-%-Werten des Spiels, deinen wöchentlichen Ausgaben und deinen Gegenstandsprioritäten (Seite Gegenstandsprioritäten). Ratio = wie ein Paket im Vergleich zur letzten Banknote des besten Plans für deine wöchentlichen Ausgaben abschneidet: 1,0 oder mehr = ein gutes Geschäft bei deinen Ausgaben, unter 1,0 = deine Ausgaben haben bessere Verwendungen (nicht wertlos, aber nicht unter deinen besten Käufen; mehr auszugeben senkt diese Messlatte). „Kauf / Woche“ = wie viele davon dieser Plan aus dem diese Woche Angebotenen kauft („passt nicht“ = gut, aber ganze Käufe passten nicht in deine genauen Ausgaben; mit etwas mehr wäre es dabei). Pakete nicht ausgewählter Events sind ausgeblendet. Was du mit Event-Münzen und Diamanten kaufen solltest: siehe Einkaufsplan. Einträge mit Gegenständen unbekannten Werts stehen unter der Rangliste, ohne Rang. Monats- und Zwei-Wochen-Käufe (Kalendergeschenke, Premium Monatspass) zählen mit ihrem Wochenanteil am Preis (7/30, 7/14); das Info-Symbol beim Preis zeigt ihn. „in …“ = schon Teil eines Bündels, das der Plan kauft (der Wochenpass enthält die einzelnen Wochenpässe); „andere Wahl“ = von einer Gruppe kann nur eines gekauft werden (ein Kalendergeschenk pro Monat).",
         "searchLabel": "Suche",
         "searchPlaceholder": "Nach Name oder Kategorie filtern",
         "show": "Anzeigen",
@@ -211,9 +211,9 @@
         "perWeekShare": "{amount} Banknoten / Woche"
     },
     "events": {
-        "heading": "Events",
+        "heading": "Einkaufsplan",
         "description": "Wähle ein ausgewähltes Event (oder den VIP-Shop), um seinen Anteil am besten Plan für deine wöchentlichen Ausgaben zu sehen: die zu kaufenden Event-Pakete, die Münzen, die sie geben, welche Shop-Angebote du damit kaufen solltest (in Freischaltreihenfolge) und ob sich mehr Ausgaben für das Event noch lohnen.",
-        "details": "Es ist derselbe Plan wie auf der Seite Rangliste, beide Seiten stimmen also überein.",
+        "details": "Es ist derselbe Plan wie auf der Seite Paket-Rangliste, beide Seiten stimmen also überein.",
         "eventLabel": "Event oder Shop",
         "tickHint": "Nur Events, die unter „Events diese Woche“ ausgewählt sind, werden aufgelistet.",
         "chooseEvents": "Events wählen",
@@ -229,7 +229,7 @@
         "optionsLabel": "Optionen",
         "exceedLimits": "Event-Paketlimits überschreiten",
         "exceedLimitsHint": "Lässt den Plan die Pakete des gewählten Events so oft kaufen, wie er möchte, statt nur bis zu ihrem Tageslimit (meist einmal pro Tag), z. B. um zu sehen, wie oft sich das beste Währungspaket zu wiederholen lohnt. Nur möglich für Events, deren Pakete im Spiel über ihr Limit hinaus gekauft werden können: {events}.",
-        "exceedNote": "Event-Paketlimits überschritten: Dieser Plan weicht von der Rangliste ab (die die Limits einhält).",
+        "exceedNote": "Event-Paketlimits überschritten: Dieser Plan weicht von der Paket-Rangliste ab (die die Limits einhält).",
         "tiles": {
             "packs": "Diese Pakete kaufen",
             "encounters": "Begegnungen",
@@ -278,7 +278,7 @@
     "sources": {
         "heading": "Gegenstandsquellen",
         "description": "Wähle einen Gegenstand, um alle diese Woche angebotenen Pakete und Shop-Angebote zu sehen, die ihn geben – auch Pakete, in denen er nur verschachtelt vorkommt (z. B. Ressourcenvorrat (SR) → Kräuter).",
-        "details": "Wahltruhen zählen als Wahl dieses Gegenstands, Zufallstruhen mit ihrer erwarteten Menge (~), generische Gegenstände dort, wo sie verwendbar sind. Pro Einheit = Banknoten pro Einheit, bei Massengütern pro 1.000 oder 1.000.000 Einheiten angegeben (Shop-Angebote mit dem, was ihre Münzen kosten: gekauft aus den günstigsten angebotenen Paketen, die sie geben, jedes so oft, wie es pro Woche kaufbar ist, der ganze Paketpreis für die Münzen gerechnet; Münzen, die kein Paket verkauft, mit ihrem Wert in deinem Plan). Ratio = Wert der gesamten Quelle ÷ Preis, wie in der Rangliste (1,0 oder mehr = ein gutes Geschäft bei deinen wöchentlichen Ausgaben). Gegenstands-Anteil = wie viel dieses Werts auf diesen Gegenstand entfällt. Gegenstands-Ratio = Wert nur dieses Gegenstands ÷ Preis (≈ Ratio × Gegenstands-Anteil). Die Quellen sind nach Gegenstands-Ratio geordnet, was dasselbe ist wie die günstigste pro Einheit zuerst. Grün hinterlegte Zeilen gehören zum besten Plan für deine wöchentlichen Ausgaben.",
+        "details": "Wahltruhen zählen als Wahl dieses Gegenstands, Zufallstruhen mit ihrer erwarteten Menge (~), generische Gegenstände dort, wo sie verwendbar sind. Pro Einheit = Banknoten pro Einheit, bei Massengütern pro 1.000 oder 1.000.000 Einheiten angegeben (Shop-Angebote mit dem, was ihre Münzen kosten: gekauft aus den günstigsten angebotenen Paketen, die sie geben, jedes so oft, wie es pro Woche kaufbar ist, der ganze Paketpreis für die Münzen gerechnet; Münzen, die kein Paket verkauft, mit ihrem Wert in deinem Plan). Ratio = Wert der gesamten Quelle ÷ Preis, wie in der Paket-Rangliste (1,0 oder mehr = ein gutes Geschäft bei deinen wöchentlichen Ausgaben). Gegenstands-Anteil = wie viel dieses Werts auf diesen Gegenstand entfällt. Gegenstands-Ratio = Wert nur dieses Gegenstands ÷ Preis (≈ Ratio × Gegenstands-Anteil). Die Quellen sind nach Gegenstands-Ratio geordnet, was dasselbe ist wie die günstigste pro Einheit zuerst. Grün hinterlegte Zeilen gehören zum besten Plan für deine wöchentlichen Ausgaben.",
         "itemLabel": "Gegenstand",
         "selectPrompt": "Wähle oben einen Gegenstand, um zu sehen, wo du ihn bekommst.",
         "empty": "Nichts im Angebot dieser Woche gibt diesen Gegenstand.",
@@ -356,7 +356,7 @@
         "verdictAll": "Deine wöchentlichen Ausgaben erreichen bereits jede Stufe dieser Leiste."
     },
     "gear": {
-        "heading": "Ausrüstungspfad",
+        "heading": "Ausrüstungs-Upgradepfad",
         "description": "Die Reihenfolge, in der du die UR-Ausrüstung eines Trupps (Schwert, Rüstung, Handschuhe, Stiefel) herstellst und verbesserst, ein Trupp nach dem anderen.",
         "help": {
             "aboutTitle": "Was diese Seite macht",
@@ -493,7 +493,7 @@
         "changedOnly": "Nur von mir geänderte Gegenstände",
         "reset": "Auf Standard zurücksetzen",
         "empty": "Keine Gegenstände entsprechen deiner Suche.",
-        "footnote": "Wert = Banknoten pro Einheit bei den wöchentlichen Ausgaben, die auf der Seite Rangliste eingestellt sind. Unsicher = die Deal-%-Werte des Spiels bestimmen den Gegenstand kaum (fahre über das Info-Symbol für den Grund).",
+        "footnote": "Wert = Banknoten pro Einheit bei den wöchentlichen Ausgaben, die auf der Seite Paket-Rangliste eingestellt sind. Unsicher = die Deal-%-Werte des Spiels bestimmen den Gegenstand kaum (fahre über das Info-Symbol für den Grund).",
         "summary": "{count} Gegenstände geändert.",
         "uncertain": "unsicher",
         "uncertainTitle": "Die Pakete bestimmen diesen Wert kaum (z. B. kommt er nur in einem Paket neben anderen unbekannten Gegenständen vor).",

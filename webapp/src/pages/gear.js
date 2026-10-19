@@ -1,5 +1,5 @@
 /**
- * Gear Path: a squad's formation (front row of tanks, back row of carries and the support) with each hero's
+ * Gear Upgrade Path: a squad's formation (front row of tanks, back row of carries and the support) with each hero's
  * gear in a 2×2 square, and the guide to its UR gear (`squad_guides` in pack_data.json) in two phases:
  * 1. Crafting: every hero gets all their UR pieces first, step by step.
  * 2. Upgrades, unlocked after crafting: two queues, one card each (the next level step and the next star step). Which

@@ -47,11 +47,11 @@ game day, which starts at 02:00 UTC (`gameDay` in `core/schedule.js`): both char
 running today, Compare's start weekday and `record-run`'s default start. Events, spend reward tracks and seasonal
 passes may name the game's banner for them (`image`: `webapp/public/assets/events/<image>.webp`, 720×360; several may
 share one; `verify-data` checks the file). The schedule shows it as a thumbnail before the name and in the bars'
-hover cards (with "Ends in 3 days" from `runStatus`); a bar or name opens its plan (ticked events: Events page,
-tracks: Spend Rewards), and pointing at either highlights the row. The Events page and Spend Rewards show it as a
+hover cards (with "Ends in 3 days" from `runStatus`); a bar or name opens its plan (ticked events: Shopping Plan,
+tracks: Spend Rewards), and pointing at either highlights the row. The Shopping Plan and Spend Rewards show it as a
 banner with when the event / track runs (`ui/event-banner.js`).
 
-The Gear Path page (`gear.html`) reads `heroes`, `gear_upgrades` and `squad_guides`: a squad's formation by
+The Gear Upgrade Path page (`gear.html`) reads `heroes`, `gear_upgrades` and `squad_guides`: a squad's formation by
 slot (not by hero; each slot has a hero class, tank / carry / support, and lists its hero per hero faction,
 `heroes: { warrior, ranger, warlock }`; a switch on the page picks the faction, the factions share the paths) and
 three paths, each in its own order: `craft_path` (one piece per step), `level_path` and
@@ -100,10 +100,10 @@ Monday, `delivery_days`), with `exclusive_group`s and random chests counting onl
 with `bundles` (the Weekly Pass, which includes the single weekly passes) is never bought together with the packages
 it bundles, in both models. Shop progress points (`points_per_currency` per coin spent + `point_purchase`, e.g. the
 Surprise Encounter's Encounter Points) gate `bonus_tiers` and offer `unlock_points` in the weekly plan only (not in
-Compare). The Ranking shows only Banknote purchases; the Events page shows an event's slice of the same plan (packs,
+Compare). The Pack Ranking shows only Banknote purchases; the Shopping Plan (`events.html`) shows an event's slice of the same plan (packs,
 coins, shop offers) plus what-if steps (`eventSpend` option of the planner); optional extra Banknotes only for the
 selected event (`eventBudget`) and extra VIP Shop diamonds (`extraCurrency`) change only that page's plan. Locks
-on shop offers (`lockedOffers` in the settings, set on the Events page) fix an exact count per week (0 = never) in
+on shop offers (`lockedOffers` in the settings, set on the Shopping Plan) fix an exact count per week (0 = never) in
 the ONE plan on every page; if the spend can't cover them, the plan first buys as many as possible (reported in
 `lockShortfalls`) and then plans the rest around them.
 

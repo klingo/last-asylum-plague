@@ -25,18 +25,19 @@ its contents without a common value scale. The tool uses one:
 
 ## Pages
 
-The top nav groups the pages into menus (`NAV_GROUPS` in `webapp/src/nav.js`, the Home cards follow it): **Shop**
-(Ranking, Spend Rewards, Best Choice Pick), **Events** (Calendar, Event Plan), **Items** (Item Priorities, Item Sources,
-Compare) and **Heroes** (Gear Path).
+The top nav groups the pages into menus (`NAV_GROUPS` in `webapp/src/ui/nav.js`, the Home cards follow it): **Shop**
+(Pack Ranking, Spend Rewards), **Events** (Calendar, Shopping Plan), **Items** (Item Priorities, Item Sources, Best
+Choice Pick, Compare) and **Heroes** (Gear Upgrade Path). The page files keep their names (`rankings.html`,
+`events.html`, `gear.html`, ...), so saved links still work.
 
-- **Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
+- **Pack Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
   "other pick" when a bundle or another member of its group is bought instead). "Plan only" shows just the weekly
   shopping list, the Type pills filter by kind; entries of unknown worth are listed unranked.
 - **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below; each entry with the
   game's art, a hover card with how long is left, and a click opens its plan) and the Weekday Offers of the next 7
   days.
-- **Events** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
+- **Shopping Plan** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
   and a step table of how much spending more on the event still pays off.
@@ -51,7 +52,7 @@ Compare) and **Heroes** (Gear Path).
 - **Spend Rewards** (`spend-rewards.html`) — the track's banner and when it runs, and per tier of a spend track, what
   the extra Banknotes buy (the best packs
   still available at that total spend) plus the tier reward, as a step ratio: spend more while it's 1.0 or more.
-- **Gear Path** (`gear.html`) — a squad (2 tanks in front, carries and support behind, each hero with its sword,
+- **Gear Upgrade Path** (`gear.html`) — a squad (2 tanks in front, carries and support behind, each hero with its sword,
   armor, gauntlets and boots) and the guide to its UR gear in two phases: first crafting every piece, then two
   queues, one card each: the next level step and the next star step (star steps use Gear Blueprints, so you pick the
   one that fits what you have). A step that needs the other queue first says which one. A switch picks the hero

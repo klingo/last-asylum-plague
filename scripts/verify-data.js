@@ -558,7 +558,7 @@ async function verifyData() {
         }
     });
 
-    // 8b. Squad guides (Gear Path page): heroes, slots and gear exist, and every path step is possible at its
+    // 8b. Squad guides (Gear Upgrade Path page): heroes, slots and gear exist, and every path step is possible at its
     // point (webapp/src/core/gear-path.js: crafted first, level caps by stars, minimum levels for stars).
     checkCategory('Squad Guides', ({ reportError, reportWarning }) => {
         const heroes = data.heroes || {};
@@ -676,7 +676,7 @@ async function verifyData() {
                 }
                 for (const [text, pieces] of byProblem) {
                     reportError(
-                        'Gear Path',
+                        'Gear Upgrade Path',
                         `Squad guide "${guideId}", ${PATH_NAMES[entry.path]} path step ${entry.n + 1}: ${text}${pieces.length ? ` (${piecesText(pieces)})` : ''}.`,
                     );
                 }

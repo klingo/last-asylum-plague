@@ -37,7 +37,6 @@ const NAV_GROUPS = [
         items: [
             { page: 'rankings', href: 'rankings.html', label: 'nav.rankings' },
             { page: 'spend-rewards', href: 'spend-rewards.html', label: 'nav.spendRewards' },
-            { page: 'choices', href: 'choices.html', label: 'nav.choices' },
         ],
     },
     {
@@ -52,6 +51,7 @@ const NAV_GROUPS = [
         items: [
             { page: 'items', href: 'items.html', label: 'nav.items' },
             { page: 'sources', href: 'sources.html', label: 'nav.sources' },
+            { page: 'choices', href: 'choices.html', label: 'nav.choices' },
             { page: 'compare', href: 'compare.html', label: 'nav.compare' },
         ],
     },
