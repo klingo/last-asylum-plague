@@ -674,7 +674,8 @@
                 "gear_upgrade",
                 "shadow_blight",
                 "hunt_battle",
-                "dwarven_mine"
+                "dwarven_mine",
+                "demon_king_ranger_blight"
             ]
         },
         "event": {

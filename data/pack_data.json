@@ -5968,6 +5968,14 @@
             },
             "category": "ingame_event"
         },
+        "demon_king_ranger_blight": {
+            "name": {
+                "en": "Demon King: Ranger Blight",
+                "de": ""
+            },
+            "category": "ingame_event",
+            "image": "demon_king_ranger_blight"
+        },
         "dwarven_mine": {
             "name": {
                 "en": "Dwarven Mine",
@@ -6451,6 +6459,12 @@
             {
                 "start": "2026-10-12",
                 "end": "2026-10-13"
+            }
+        ],
+        "demon_king_ranger_blight": [
+            {
+                "start": "2026-10-20",
+                "end": "2026-10-20"
             }
         ],
         "dwarven_mine": [
