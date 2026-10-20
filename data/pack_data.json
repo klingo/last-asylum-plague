@@ -5971,7 +5971,11 @@
         "demon_king_ranger_blight": {
             "name": {
                 "en": "Demon King: Ranger Blight",
-                "de": ""
+                "de": "Dämonenkönig: Ranger-Seuche"
+            },
+            "description": {
+                "en": "Warlock Hero DMG +50%",
+                "de": "Hexenmeister-Held SCH +50%"
             },
             "category": "ingame_event",
             "image": "demon_king_ranger_blight"

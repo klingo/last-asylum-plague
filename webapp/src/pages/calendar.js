@@ -59,11 +59,17 @@ function rangeText(start, end) {
 }
 
 /**
- * A bar's hover card: "Strange Bazaar", "Mon, 12 Oct – Sun, 18 Oct (7 days)", "Ends in 3 days" (forecasts with
- * their basis), and "Click to open its plan" when it links to one.
+ * A bar's hover card: "Strange Bazaar", the event's own line if it has one (`description`, e.g. its bonus),
+ * "Mon, 12 Oct – Sun, 18 Oct (7 days)", "Ends in 3 days" (forecasts with their basis), and "Click to open its plan"
+ * when it links to one.
  */
-function scheduleTooltip(bar, name, today, linked) {
-    const lines = [name, rangeText(bar.start, bar.end), runStatusText(runStatus([bar], today))];
+function scheduleTooltip(bar, row, today) {
+    const lines = [
+        row.name,
+        ...(row.description ? [row.description] : []),
+        rangeText(bar.start, bar.end),
+        runStatusText(runStatus([bar], today)),
+    ];
     if (bar.forecast) {
         const last = rangeText(bar.last.start, bar.last.end);
         // A weekday pattern ("every 7 days (Tue, Thu)"), else the usual gap ("about every 28 days").
@@ -77,7 +83,7 @@ function scheduleTooltip(bar, name, today, linked) {
                 : t('calendar.schedule.forecastBasis', { interval: bar.intervalDays, last }),
         );
     }
-    if (linked) {
+    if (row.href) {
         lines.push(t('calendar.status.openPlan'));
     }
     return lines.join('\n');
@@ -158,6 +164,7 @@ function renderSchedule() {
             rows.push({
                 kind,
                 name: scheduleName(packData, id, kind),
+                description: localizedName(packData.events?.[id]?.description) || null,
                 bars,
                 first: bars[0].start,
                 image: eventImageUrl(scheduleImage(packData, id)),
@@ -195,7 +202,7 @@ function renderSchedule() {
                 const label = `${thumbHtml(row.image)}${escapeHtml(row.name)}`;
                 const bars = row.bars
                     .map((bar) =>
-                        barHtml(bar, from, to, scheduleTooltip(bar, row.name, today, Boolean(row.href)), {
+                        barHtml(bar, from, to, scheduleTooltip(bar, row, today), {
                             href: row.href,
                             image: row.image,
                         }),

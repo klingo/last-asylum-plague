@@ -155,7 +155,8 @@ take the normalized data (`normalizePackData`), not the raw file. Pages pick the
 - Never translate `name.de` in `data/pack_data.json` yourself: those are taken manually from the game, not guessed.
   Leave them blank (`npm run i18n:missing` lists them).
 - Where texts live: names of the data's entities (items, packages, events, shops, tracks, heroes) in
-  `pack_data.json` as `name: { en, de }` (`en` required); UI texts and the labels of the data's codes (`category.*`,
+  `pack_data.json` as `name: { en, de }` (`en` required), and an event's optional short `description: { en, de }`
+  (shown below its name in the Calendar's hover card); UI texts and the labels of the data's codes (`category.*`,
   `sourceType.*`, `weekday.*`, `gear.class.*`, `gear.faction.*`, looked up with `enumLabel(group, code)`) in
   `en.json` / `de.json`. A new category or other code needs its label in both (`i18n:missing` and `verify-data`
   list missing ones). A translation is plain text; when a placeholder holds markup or an escaped name, use

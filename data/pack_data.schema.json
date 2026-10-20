@@ -686,6 +686,10 @@
                 "name": {
                     "$ref": "#/definitions/localizedString"
                 },
+                "description": {
+                    "$ref": "#/definitions/localizedString",
+                    "description": "A short line about the event (e.g. its bonus: \"Warlock Hero DMG +50%\"), shown below its name in the Calendar's hover card."
+                },
                 "image": {
                     "$ref": "#/definitions/eventImage"
                 },
