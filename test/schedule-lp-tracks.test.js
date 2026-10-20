@@ -55,6 +55,59 @@ test('schedule: forecast repeats the median gap and length', () => {
     assert.deepEqual(forecastRuns(runs.slice(0, 1), { from: 0, to: 70, today: 0 }), [], 'one run: no forecast');
 });
 
+test('schedule: forecast continues a weekday pattern (Tuesdays and Thursdays)', () => {
+    const tue = Date.UTC(2026, 9, 20) / 86400000; // a Tuesday
+    // Tuesdays 1 day, Thursdays 2 days (Thu–Fri): gaps 2, 5, 2.
+    const runs = [
+        { start: tue, end: tue },
+        { start: tue + 2, end: tue + 3 },
+        { start: tue + 7, end: tue + 7 },
+        { start: tue + 9, end: tue + 10 },
+    ];
+    const forecast = forecastRuns(runs, { from: tue, to: tue + 23, today: tue + 10 });
+    assert.deepEqual(
+        forecast.map(({ start, end }) => [start - tue, end - tue]),
+        [
+            [14, 14],
+            [16, 17],
+            [21, 21],
+            [23, 24],
+        ],
+        'Tue, Thu, Tue, Thu, each as long as before',
+    );
+    assert.deepEqual(forecast[0].pattern, { days: 7, weekdays: ['tuesday', 'thursday'] });
+    assert.ok(
+        forecast.every((run, i) => i === 0 || forecast[i - 1].end < run.start),
+        'no forecast run overlaps the next',
+    );
+
+    // Three runs (gaps 2, 5): not proven yet, the median gap (3.5 → 4) as before.
+    const early = forecastRuns(runs.slice(0, 3), { from: tue, to: tue + 30, today: tue + 7 });
+    assert.equal(early[0].start - tue, 11);
+    assert.equal(early[0].pattern, undefined);
+});
+
+test('schedule: forecast finds longer cycles, and falls back on irregular gaps', () => {
+    const mon = Date.UTC(2026, 9, 19) / 86400000; // a Monday
+    // Mondays, Wednesdays and Fridays: gaps 2, 2, 3, 2, 2.
+    const runs = [0, 2, 4, 7, 9, 11].map((offset) => ({ start: mon + offset, end: mon + offset }));
+    const forecast = forecastRuns(runs, { from: mon, to: mon + 18, today: mon + 11 });
+    assert.deepEqual(
+        forecast.map(({ start }) => start - mon),
+        [14, 16, 18],
+    );
+    assert.deepEqual(forecast[0].pattern.weekdays, ['monday', 'wednesday', 'friday']);
+
+    // Gaps 5, 9, 4: no cycle, the median gap (5).
+    const irregular = [0, 5, 14, 18].map((start) => ({ start, end: start }));
+    const fallback = forecastRuns(irregular, { from: 0, to: 30, today: 18 });
+    assert.deepEqual(
+        fallback.map(({ start }) => start),
+        [23, 28],
+    );
+    assert.equal(fallback[0].pattern, undefined);
+});
+
 test('schedule: weekday runs merge consecutive days', () => {
     // Day 0 (1970-01-01) is a Thursday.
     assert.deepEqual(weekdayRuns(['thursday', 'friday', 'monday'], 0, 7), [

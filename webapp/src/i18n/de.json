@@ -147,6 +147,7 @@
             "oneDay": "1 Tag",
             "days": "{count} Tage",
             "forecastBasis": "Prognose: etwa alle {interval} Tage, zuletzt {last}",
+            "forecastPattern": "Prognose: wiederholt sich alle {days} Tage ({weekdays}), zuletzt {last}",
             "empty": "Für diese Wochen ist noch nichts erfasst."
         },
         "rotation": {

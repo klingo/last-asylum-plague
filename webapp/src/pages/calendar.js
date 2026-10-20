@@ -65,11 +65,16 @@ function rangeText(start, end) {
 function scheduleTooltip(bar, name, today, linked) {
     const lines = [name, rangeText(bar.start, bar.end), runStatusText(runStatus([bar], today))];
     if (bar.forecast) {
+        const last = rangeText(bar.last.start, bar.last.end);
+        // A weekday pattern ("every 7 days (Tue, Thu)"), else the usual gap ("about every 28 days").
         lines.push(
-            t('calendar.schedule.forecastBasis', {
-                interval: bar.intervalDays,
-                last: rangeText(bar.last.start, bar.last.end),
-            }),
+            bar.pattern
+                ? t('calendar.schedule.forecastPattern', {
+                      days: bar.pattern.days,
+                      weekdays: formatDays(bar.pattern.weekdays),
+                      last,
+                  })
+                : t('calendar.schedule.forecastBasis', { interval: bar.intervalDays, last }),
         );
     }
     if (linked) {

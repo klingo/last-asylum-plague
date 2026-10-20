@@ -147,6 +147,7 @@
             "oneDay": "1 day",
             "days": "{count} days",
             "forecastBasis": "Forecast: about every {interval} days, last {last}",
+            "forecastPattern": "Forecast: repeats every {days} days ({weekdays}), last {last}",
             "empty": "Nothing recorded for these weeks yet."
         },
         "rotation": {

@@ -40,8 +40,10 @@ npm run record-run -- <ids...> [START] <DAYS> | --show [ids]  # record when even
 inclusive `{ start, end }` dates (`record-run` computes the end from the start and the number of days). Events with
 `"category": "ingame_event"` have no packs or shop and are only tracked there (not offered under "Events this
 week"). The Calendar page (`calendar.html`, Events menu) shows it as the "Event Schedule" timeline (last week, this
-week, 4 ahead) with a simple forecast (`core/schedule.js`: ids with at least two runs repeat their median gap between
-starts and median length). Below it, "Weekday Offers" charts the `weekly_rotation` packs for today and the next 6 days from their
+week, 4 ahead) with a simple forecast (`forecastRuns` in `core/schedule.js`, from at least two runs): a repeating
+cycle of gaps between run starts is continued (every 28 days, or Tuesdays + Thursdays: gaps 2, 5), once it has
+proven itself (seen twice, or whole weeks long with one gap repeated; `gapCycle`), each run as long as its place in
+the cycle usually is; without one, the median gap and median length. Nothing about rhythms is stored in the data. Below it, "Weekday Offers" charts the `weekly_rotation` packs for today and the next 6 days from their
 `available_days` (not recorded, not forecast), with a "Now" line that moves every minute. "Today" is always the
 game day, which starts at 02:00 UTC (`gameDay` in `core/schedule.js`): both charts, the events / passes / tracks
 running today, Compare's start weekday and `record-run`'s default start. Events, spend reward tracks and seasonal

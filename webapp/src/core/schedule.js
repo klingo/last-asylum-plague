@@ -94,22 +94,79 @@ function median(values) {
 }
 
 /**
- * The next runs of an id that ran at least twice, repeating its usual rhythm (median days between run starts,
- * median run length) after its last run, within [from, to] and not ended before `today`:
- * [{ start, end, intervalDays, last: { start, end } }].
+ * The shortest cycle of gaps (days between run starts) that explains every recorded gap (gaps[i] = gaps[i - k]),
+ * once it has proven itself: seen twice (n ≥ 2k), or whole weeks long with at least one gap repeated (n ≥ k + 1;
+ * game events follow the week, e.g. Tuesdays and Thursdays: 2, 5, 2). Returned in the order it continues after the
+ * last run; null if there's none (yet).
+ */
+function gapCycle(gaps) {
+    const n = gaps.length;
+    for (let k = 1; k < n; k += 1) {
+        if (!gaps.every((gap, i) => i < k || gap === gaps[i - k])) {
+            continue;
+        }
+        const days = gaps.slice(0, k).reduce((sum, gap) => sum + gap, 0);
+        if (days > 0 && (n >= 2 * k || days % 7 === 0)) {
+            return gaps.slice(n - k);
+        }
+    }
+    return null;
+}
+
+/**
+ * The next runs of an id that ran at least twice, within [from, to] and not ended before `today`:
+ * [{ start, end, intervalDays, last: { start, end }, pattern? }].
+ * - A repeating cycle of gaps (gapCycle: every 28 days, or Tuesdays and Thursdays) is continued after the last run,
+ *   each run as long as the runs at the same place in the cycle usually are (median). A cycle of several gaps
+ *   comes with `pattern: { days, weekdays }` (its length, the weekdays it starts on).
+ * - Without one (yet): its usual rhythm, the median days between run starts and the median run length.
+ * A forecast run never overlaps the next one.
  */
 function forecastRuns(runs, { from, to, today }) {
     if (runs.length < 2) {
         return [];
     }
-    const interval = Math.round(median(runs.slice(1).map((run, index) => run.start - runs[index].start)));
-    const length = Math.min(Math.round(median(runs.map((run) => run.end - run.start + 1))), interval);
+    const gaps = runs.slice(1).map((run, index) => run.start - runs[index].start);
+    const lengths = runs.map((run) => run.end - run.start + 1);
     const last = runs[runs.length - 1];
+    const cycle = gapCycle(gaps);
+    let gapAt;
+    let lengthAt;
+    let intervalDays;
+    let pattern = null;
+    if (cycle) {
+        const k = cycle.length;
+        gapAt = (i) => cycle[i % k];
+        // Per place in the cycle (counted so that the next run is place 0) the median length of the runs there.
+        const slotLengths = Array.from({ length: k }, (_, slot) =>
+            Math.round(median(lengths.filter((_, j) => (((j - (runs.length - k)) % k) + k) % k === slot))),
+        );
+        lengthAt = (i) => slotLengths[i % k];
+        intervalDays = cycle.reduce((sum, gap) => sum + gap, 0);
+        if (k > 1) {
+            const weekdays = [...new Set(runs.slice(-k).map((run) => weekdayIndex(run.start)))].sort((a, b) => a - b);
+            pattern = { days: intervalDays, weekdays: weekdays.map((index) => WEEKDAYS[index]) };
+        }
+    } else {
+        const interval = Math.round(median(gaps));
+        if (interval < 1) {
+            return [];
+        }
+        const length = Math.round(median(lengths));
+        gapAt = () => interval;
+        lengthAt = () => length;
+        intervalDays = interval;
+    }
     const forecast = [];
-    for (let start = last.start + interval; start <= to; start += interval) {
-        const end = start + length - 1;
+    let start = last.start;
+    for (let i = 0; ; i += 1) {
+        start += gapAt(i);
+        if (start > to) {
+            break;
+        }
+        const end = start + Math.min(lengthAt(i), gapAt(i + 1)) - 1;
         if (start > last.end && end >= from && end >= today) {
-            forecast.push({ start, end, intervalDays: interval, last });
+            forecast.push({ start, end, intervalDays, last, ...(pattern ? { pattern } : {}) });
         }
     }
     return forecast;
