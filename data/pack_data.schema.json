@@ -673,7 +673,8 @@
                 "pandemic_experience",
                 "gear_upgrade",
                 "shadow_blight",
-                "hunt_battle"
+                "hunt_battle",
+                "dwarven_mine"
             ]
         },
         "event": {

@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-19"
+        "last_updated": "2026-10-20"
     },
     "items": {
         "antitoxin": {
@@ -5968,6 +5968,14 @@
             },
             "category": "ingame_event"
         },
+        "dwarven_mine": {
+            "name": {
+                "en": "Dwarven Mine",
+                "de": "Zwergenmine"
+            },
+            "category": "special_event",
+            "image": "dwarven_mine"
+        },
         "full_moon_night": {
             "name": {
                 "en": "Full Moon Night",
@@ -6443,6 +6451,12 @@
             {
                 "start": "2026-10-12",
                 "end": "2026-10-13"
+            }
+        ],
+        "dwarven_mine": [
+            {
+                "start": "2026-10-20",
+                "end": "2026-10-25"
             }
         ],
         "epigraph_pass": [
