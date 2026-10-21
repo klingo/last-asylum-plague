@@ -6099,6 +6099,14 @@
             "exceedable_pack_limits": true,
             "image": "surprise_encounter"
         },
+        "thief_hunt": {
+            "name": {
+                "en": "Thief Hunt",
+                "de": "Diebesjagd"
+            },
+            "category": "special_event",
+            "image": "thief_hunt"
+        },
         "weekly_special": {
             "name": {
                 "en": "Weekly Special",
@@ -6579,6 +6587,12 @@
             {
                 "start": "2026-10-12",
                 "end": "2026-10-20"
+            }
+        ],
+        "thief_hunt": [
+            {
+                "start": "2026-10-21",
+                "end": "2026-10-23"
             }
         ],
         "weekly_special": [
