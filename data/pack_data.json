@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-20"
+        "last_updated": "2026-10-21"
     },
     "items": {
         "antitoxin": {
@@ -5980,6 +5980,18 @@
             "category": "ingame_event",
             "image": "demon_king_ranger_blight"
         },
+        "demon_king_warrior_blight": {
+            "name": {
+                "en": "Demon King: Warrior Blight",
+                "de": "Dämonenkönig: Krieger-Seuche"
+            },
+            "description": {
+                "en": "Ranger Hero DMG +50%",
+                "de": "Ranger-Held SCH +50%"
+            },
+            "category": "ingame_event",
+            "image": "demon_king_warrior_blight"
+        },
         "dwarven_mine": {
             "name": {
                 "en": "Dwarven Mine",
@@ -6469,6 +6481,12 @@
             {
                 "start": "2026-10-20",
                 "end": "2026-10-20"
+            }
+        ],
+        "demon_king_warrior_blight": [
+            {
+                "start": "2026-10-21",
+                "end": "2026-10-21"
             }
         ],
         "dwarven_mine": [
