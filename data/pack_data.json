@@ -3292,6 +3292,32 @@
                 }
             }
         },
+        "heroes_assemble": {
+            "name": {
+                "en": "Heroes Assemble",
+                "de": "Helden versammeln sich"
+            },
+            "image": "heroes_assemble",
+            "category": "value_event",
+            "limit_type": "weekly",
+            "tiers": {
+                "1": {
+                    "price": 999,
+                    "deal_percentage": 8159,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "lv2_alliance_chest": 1,
+                        "ur_hero_omni_shard": 25,
+                        "survivor_recruit_ticket": 24,
+                        "resource_supply_ssr": 18,
+                        "antitoxin_level_supply_sr": 35,
+                        "skill_badge": 5400
+                    }
+                }
+            },
+            "seasonal": true,
+            "delivery_days": 7
+        },
         "login_rewards": {
             "name": {
                 "en": "Login Rewards",
@@ -6511,6 +6537,12 @@
             {
                 "start": "2026-10-17",
                 "end": "2026-10-18"
+            }
+        ],
+        "heroes_assemble": [
+            {
+                "start": "2026-10-21",
+                "end": "2026-11-03"
             }
         ],
         "hunt_battle": [
