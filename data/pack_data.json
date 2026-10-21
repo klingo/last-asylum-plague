@@ -268,6 +268,14 @@
             "category": "skin_decor",
             "rarity": "ur"
         },
+        "dwarven_pickaxe": {
+            "name": {
+                "en": "Dwarven Pickaxe",
+                "de": "Zwergen-Spitzhacke"
+            },
+            "category": "event_item",
+            "rarity": "ur"
+        },
         "excl_weapon_shard_choice_chest": {
             "name": {
                 "en": "Excl Weapon Shard Choice Chest",
@@ -2731,6 +2739,96 @@
                         "lv3_alliance_chest": 1
                     }
                 }
+            }
+        },
+        "dwarven_mine_exquisite_pack": {
+            "name": {
+                "en": "Dwarven Mine Exquisite Pack",
+                "de": "Zwergenmine Exquisites Paket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 999,
+            "deal_percentage": 3410,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 1000,
+                "dwarven_pickaxe": 12,
+                "vip_points": 1000,
+                "resource_supply_general": 10
+            }
+        },
+        "dwarven_mine_premium_pack": {
+            "name": {
+                "en": "Dwarven Mine Premium Pack",
+                "de": "Zwergenmine Premium Paket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 4999,
+            "deal_percentage": 3410,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 5000,
+                "dwarven_pickaxe": 60,
+                "vip_points": 5000,
+                "resource_supply_general": 50
+            }
+        },
+        "dwarven_mine_rare_pack": {
+            "name": {
+                "en": "Dwarven Mine Rare Pack",
+                "de": "Zwergenmine Seltenes Paket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 1999,
+            "deal_percentage": 3410,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 2000,
+                "dwarven_pickaxe": 24,
+                "vip_points": 2000,
+                "resource_supply_general": 20
+            }
+        },
+        "dwarven_mine_select_pack": {
+            "name": {
+                "en": "Dwarven Mine Select Pack",
+                "de": "Zwergenmine Auswahlpaket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 499,
+            "deal_percentage": 5610,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "dwarven_pickaxe": 10,
+                "vip_points": 500,
+                "resource_supply_general": 5
+            }
+        },
+        "dwarven_mine_ultimate_pack": {
+            "name": {
+                "en": "Dwarven Mine Ultimate Pack",
+                "de": "Zwergenmine Ultimatives Paket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 9999,
+            "deal_percentage": 3410,
+            "purchase_limit": 5,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 10000,
+                "dwarven_pickaxe": 120,
+                "vip_points": 10000,
+                "resource_supply_general": 100
             }
         },
         "enhance_heroes": {
