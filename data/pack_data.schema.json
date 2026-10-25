@@ -590,6 +590,11 @@
                 "currency_item_id": {
                     "$ref": "#/definitions/id"
                 },
+                "income_per_hour": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "Units of the shop's currency you get for free per hour (e.g. offline earnings), so a week brings 168 times this. The weekly plan counts them as received from outside the packs: the currency is worth what it still buys beyond them."
+                },
                 "random_offers": {
                     "type": "boolean",
                     "description": "Only a random selection of the offers is on sale (e.g. the Recluse Merchant): the Events page says per offer whether it is worth buying when it shows up, instead of how many to buy."

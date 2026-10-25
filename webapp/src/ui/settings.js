@@ -38,7 +38,7 @@ const DEFAULT_SETTINGS = {
     // Events and passes follow the calendar on every page load (setup bar switch; a change by hand turns it off).
     // Stored under this name since the default became on, so a `followCalendar: false` saved before doesn't stick.
     followsCalendar: true,
-    extraCurrency: {}, // currencyId -> units per week from outside the packs, for shops without event (Events page)
+    extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
     exceedEventLimits: [], // event ids whose pack limits the Events page lifts ("Exceed event pack limits")
     lockedOffers: {}, // "<shopId>:<offerKey>" -> exact count the plan buys per week, 0 = never (Events page)

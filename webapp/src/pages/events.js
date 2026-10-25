@@ -160,18 +160,14 @@ function mineProgressFor(mineId, run) {
 
 /**
  * Planner options of this page: the selected event's pack limits lifted when exceeding, its extra
- * Banknotes on top of the weekly spend; for a shop without event, the extra currency per week on top of what
- * the packs give; for a mine, the days left of its run (daily pack limits, free pickaxes), the pickaxes
- * owned, the floor reached and how sure the planned pickaxes should be.
+ * Banknotes on top of the weekly spend; for a mine, the days left of its run (daily pack limits, free
+ * pickaxes), the pickaxes owned, the floor reached and how sure the planned pickaxes should be.
  */
 function pageOverrides() {
     const selected = selection();
     const overrides = exceeding() ? { exceedEventPackLimits: new Set([selected.eventId]) } : {};
     if (extraFor(selected?.eventId) > 0) {
         overrides.eventBudget = { eventId: selected.eventId, extra: extraFor(selected.eventId) };
-    }
-    if (extraCurrencyOf(selected) > 0) {
-        overrides.extraCurrency = { [selected.shop.currency_item_id]: extraCurrencyOf(selected) };
     }
     if (selected?.mine) {
         const run = mineRun(selected.eventId);

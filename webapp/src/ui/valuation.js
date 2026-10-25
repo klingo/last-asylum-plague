@@ -34,6 +34,8 @@ function planOptions(data, settings, overrides = {}) {
         seasonalPasses: settings.seasonalPasses,
         // "Must buy" shop offers shape the one plan on every page.
         lockedOffers: settings.lockedOffers,
+        // Currency from outside the packs ("Extra ... per week" of a shop without event, Events page).
+        extraCurrency: settings.extraCurrency,
         includePasses: true,
         includeExclusives: false,
         weights: priorityWeights(settings),

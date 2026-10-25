@@ -341,7 +341,7 @@
         "extraBanknotesNote": "{used} of your {amount} extra Banknotes for this event used (only where they're worth it)",
         "minePickaxes": "Pickaxes owned",
         "mineFloor": "Floor reached this run",
-        "extra": "from elsewhere (your input)",
+        "extra": "from elsewhere (free income, your input)",
         "lock": "Fix how many of this offer the plan buys per week (0 = never)",
         "lockCount": "Count per week (0 = never)",
         "onlyHere": "Only here",

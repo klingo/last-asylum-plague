@@ -5662,6 +5662,90 @@
             },
             "random_offers": true
         },
+        "sanctuary_shop": {
+            "name": {
+                "en": "Sanctuary Shop",
+                "de": ""
+            },
+            "currency_item_id": "copper_coin",
+            "income_per_hour": 236300,
+            "offers": {
+                "antitoxin_level_supply_sr": {
+                    "item_id": "antitoxin_level_supply_sr",
+                    "currency_cost": 500000,
+                    "quantity": 1,
+                    "purchase_limit": 10,
+                    "limit_type": "weekly"
+                },
+                "brass": {
+                    "item_id": "brass",
+                    "currency_cost": 30000,
+                    "quantity": 1,
+                    "purchase_limit": 100,
+                    "limit_type": "weekly"
+                },
+                "exclusive_weapon_omni_shard": {
+                    "item_id": "exclusive_weapon_omni_shard",
+                    "limit_type": "weekly"
+                },
+                "gearstone": {
+                    "item_id": "gearstone",
+                    "currency_cost": 500,
+                    "quantity": 1,
+                    "purchase_limit": 10000,
+                    "limit_type": "weekly"
+                },
+                "raven_essence": {
+                    "item_id": "raven_essence",
+                    "currency_cost": 100000,
+                    "quantity": 1,
+                    "purchase_limit": 10,
+                    "limit_type": "weekly"
+                },
+                "resource_supply_ssr": {
+                    "item_id": "resource_supply_ssr",
+                    "currency_cost": 2000000,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                },
+                "skill_badge": {
+                    "item_id": "skill_badge",
+                    "currency_cost": 10000,
+                    "quantity": 1,
+                    "purchase_limit": 1000,
+                    "limit_type": "weekly"
+                },
+                "sr_hero_omni_shard": {
+                    "item_id": "sr_hero_omni_shard",
+                    "currency_cost": 100000,
+                    "quantity": 1,
+                    "purchase_limit": 30,
+                    "limit_type": "weekly"
+                },
+                "ssr_hero_omni_shard": {
+                    "item_id": "ssr_hero_omni_shard",
+                    "currency_cost": 150000,
+                    "quantity": 1,
+                    "purchase_limit": 30,
+                    "limit_type": "weekly"
+                },
+                "survivor_recruit_ticket": {
+                    "item_id": "survivor_recruit_ticket",
+                    "currency_cost": 300000,
+                    "quantity": 1,
+                    "purchase_limit": 30,
+                    "limit_type": "weekly"
+                },
+                "ur_hero_omni_shard": {
+                    "item_id": "ur_hero_omni_shard",
+                    "currency_cost": 500000,
+                    "quantity": 1,
+                    "purchase_limit": 10,
+                    "limit_type": "weekly"
+                }
+            }
+        },
         "starry_bazaar": {
             "name": {
                 "en": "Starry Bazaar",

@@ -35,6 +35,7 @@ import { trackPointsForPrice } from './spend-tracks.js';
 import { targetFloor, freeCurrency, pickaxeOdds, mineSegments, normalRewardBundle } from './mine.js';
 
 const EPS = 1e-9;
+const HOURS_PER_WEEK = 7 * 24;
 // Variable of the extra Banknotes for one event the plan uses (see addEventRows).
 const EXTRA_USED = 'extra_used';
 
@@ -483,7 +484,7 @@ function marginalRates(highs, model, plan, balanceRows) {
  * (`{ eventId, min, max }`: Banknotes spent on that event's packages, for the Events page's what-if steps),
  * `exceedEventPackLimits` (Set of event ids whose packages may be bought without their purchase limit),
  * `extraCurrency` (`{ currencyId: qty }` obtained outside the packs this week, e.g. diamonds for the VIP
- * Shop), `eventBudget` (`{ eventId, extra }`: up to `extra` Banknotes on top of `budget` that only that event's
+ * Shop; on top of the free income of the shops' currencies, `income_per_hour` in the data), `eventBudget` (`{ eventId, extra }`: up to `extra` Banknotes on top of `budget` that only that event's
  * packages may use, spent only where worth it; see `eventExtraUsed` in the result), `lockedOffers` (`{ "<shopId>:<offerKey>": count }`: shop offers the user fixed to
  * `count` per week, 0 = never; if the spend can't afford them all, as many as possible are bought — see
  * `lockShortfalls` in the result), `eventDaysLeft` (`{ eventId: days }`: days left of the event's run, for its
@@ -530,8 +531,13 @@ function solveWeeklyPlan(highs, data, options = {}) {
     const { offerVars, tierVars, pointPurchaseVars, fixedVars } = addShops(ctx, opts);
     const trackTierVars = addTracks(ctx, packageVars, opts);
     const mineVars = addMines(ctx, opts);
-    // Currency from outside the packs: spent may exceed received by that much.
-    for (const [currencyId, qty] of Object.entries(opts.extraCurrency || {})) {
+    // Currency from outside the packs (the page's extra amount, a shop's free income): spent may exceed received
+    // by that much.
+    const outside = Object.entries(opts.extraCurrency || {});
+    for (const shop of Object.values(data.exchange_shops || {})) {
+        outside.push([shop.currency_item_id, (shop.income_per_hour || 0) * HOURS_PER_WEEK]);
+    }
+    for (const [currencyId, qty] of outside) {
         if (qty > 0) {
             ctx.balance(currencyId);
             balanceRows.get(currencyId).rhs += qty;

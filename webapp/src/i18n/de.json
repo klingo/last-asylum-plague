@@ -341,7 +341,7 @@
         "extraBanknotesNote": "{used} von deinen {amount} zusätzlichen Banknoten für dieses Event genutzt (nur wo sie es wert sind)",
         "minePickaxes": "Spitzhacken im Besitz",
         "mineFloor": "Erreichte Etage in diesem Lauf",
-        "extra": "von anderswo (deine Eingabe)",
+        "extra": "von anderswo (freies Einkommen, deine Eingabe)",
         "lock": "Festlegen, wie oft der Plan dieses Angebot pro Woche kauft (0 = nie)",
         "lockCount": "Anzahl pro Woche (0 = nie)",
         "onlyHere": "Nur hier",
