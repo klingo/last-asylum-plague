@@ -6247,6 +6247,18 @@
             "category": "ingame_event",
             "image": "demon_king_ranger_blight"
         },
+        "demon_king_warlock_blight": {
+            "name": {
+                "en": "Demon King: Warlock Blight",
+                "de": "Dämonenkönig: Hexenmeister-Seuche"
+            },
+            "description": {
+                "en": "Warrior Hero DMG +50%",
+                "de": "Kreger-Held SCH +50%"
+            },
+            "category": "ingame_event",
+            "image": "demon_king_warlock_blight"
+        },
         "demon_king_warrior_blight": {
             "name": {
                 "en": "Demon King: Warrior Blight",
@@ -6757,12 +6769,26 @@
             {
                 "start": "2026-10-20",
                 "end": "2026-10-20"
+            },
+            {
+                "start": "2026-10-23",
+                "end": "2026-10-23"
+            }
+        ],
+        "demon_king_warlock_blight": [
+            {
+                "start": "2026-10-22",
+                "end": "2026-10-22"
             }
         ],
         "demon_king_warrior_blight": [
             {
                 "start": "2026-10-21",
                 "end": "2026-10-21"
+            },
+            {
+                "start": "2026-10-24",
+                "end": "2026-10-24"
             }
         ],
         "dwarven_mine": [

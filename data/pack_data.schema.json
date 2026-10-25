@@ -687,7 +687,8 @@
                 "dwarven_mine",
                 "thief_hunt",
                 "demon_king_ranger_blight",
-                "demon_king_warrior_blight"
+                "demon_king_warrior_blight",
+                "demon_king_warlock_blight"
             ]
         },
         "event": {
