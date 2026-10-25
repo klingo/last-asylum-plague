@@ -6361,6 +6361,14 @@
             "category": "special_event",
             "image": "thief_hunt"
         },
+        "wandering_phantom": {
+            "name": {
+                "en": "Wandering Phantom",
+                "de": "Wanderndes Phantom"
+            },
+            "category": "ingame_event",
+            "image": "wandering_phantom"
+        },
         "weekly_special": {
             "name": {
                 "en": "Weekly Special",
@@ -6861,6 +6869,12 @@
             {
                 "start": "2026-10-21",
                 "end": "2026-10-23"
+            }
+        ],
+        "wandering_phantom": [
+            {
+                "start": "2026-10-25",
+                "end": "2026-10-25"
             }
         ],
         "weekly_special": [
