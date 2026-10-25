@@ -176,7 +176,8 @@
             "today": "Today",
             "tomorrow": "Tomorrow",
             "every": "every {days}",
-            "now": "Now (a new game day starts at {time})"
+            "now": "Now (a new game day starts at {time})",
+            "colour": "Colour = ratio on the Pack Ranking, relative to these offers (green best, red worst)"
         },
         "status": {
             "endsIn": "Ends in {time}",

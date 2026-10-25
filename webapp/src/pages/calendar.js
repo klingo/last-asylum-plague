@@ -1,5 +1,9 @@
 import { startPage } from '../ui/page.js';
 import { formatDays, getLocale, localizedName, t } from '../ui/i18n.js';
+import { formatThousands } from '../ui/format.js';
+import { buildValuation } from '../ui/valuation.js';
+import { withLoading } from '../ui/loading.js';
+import { shareColor } from '../ui/ratio-bar.js';
 import { escapeHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { createItemImage } from '../ui/images.js';
@@ -32,6 +36,8 @@ const GROUPS = [
 const ROTATION_DAYS = 7;
 
 let packData = null;
+// The worth model (valuation.js): the weekday offers' bars are coloured by their ratio, as on the Pack Ranking.
+let valuation = null;
 // The game day both charts start from (the "Now" line moves within it; a new one redraws them).
 let rotationDay = null;
 
@@ -101,7 +107,7 @@ function planHref(id) {
 }
 
 /** A bar; with `href` a link (opens its plan), with `image` the hover card shows the art. */
-function barHtml(bar, from, to, tooltip, { href = null, image = null } = {}) {
+function barHtml(bar, from, to, tooltip, { href = null, image = null, color = null } = {}) {
     const start = Math.max(bar.start, from);
     const end = Math.min(bar.end, to);
     const total = to - from + 1;
@@ -115,7 +121,7 @@ function barHtml(bar, from, to, tooltip, { href = null, image = null } = {}) {
     // A 1px inset on both ends (2px gap between bars on neighbouring days), none where the window cuts the bar.
     const insetStart = bar.start < from ? 0 : 1;
     const insetEnd = bar.end > to ? 0 : 1;
-    const style = `left: calc(${((start - from) / total) * 100}% + ${insetStart}px); width: calc(${((end - start + 1) / total) * 100}% - ${insetStart + insetEnd}px)`;
+    const style = `left: calc(${((start - from) / total) * 100}% + ${insetStart}px); width: calc(${((end - start + 1) / total) * 100}% - ${insetStart + insetEnd}px)${color ? `; --bar-color: ${color}` : ''}`;
     const tag = href ? 'a' : 'span';
     const linkAttrs = href ? ` href="${escapeHtml(href)}"` : ' tabindex="0" role="img"';
     // An ended run's art greyed in its hover card, as its bar.
@@ -273,22 +279,43 @@ function renderRotation() {
     rotationDay = from;
     const families = new Map();
     for (const [id, pkg] of Object.entries(packData.packages || {})) {
-        const familyId = packageFamilyId(id, pkg);
-        if (pkg.category === 'weekly_rotation' && !families.has(familyId)) {
-            families.set(familyId, pkg);
+        if (pkg.category !== 'weekly_rotation') {
+            continue;
         }
+        const familyId = packageFamilyId(id, pkg);
+        // The family's best ratio over its tiers (the Pack Ranking's number), if all its contents have a worth.
+        const ratio = valuation.bundle(pkg, pkg.price).ratio;
+        const entry = families.get(familyId) || { pkg, ratio: null };
+        if (Number.isFinite(ratio) && !(entry.ratio >= ratio)) {
+            entry.ratio = ratio;
+        }
+        families.set(familyId, entry);
     }
     const rows = [...families.values()]
-        .map((pkg) => {
+        .map(({ pkg, ratio }) => {
             const name = localizedName(pkg.name);
-            const tooltip = `${name}\n${t('calendar.rotation.every', { days: formatDays(pkg.available_days) })}`;
-            return { name, tooltip, icon: packageIcon(pkg), bars: weekdayRuns(pkg.available_days, from, to) };
+            const tooltip = [
+                name,
+                t('calendar.rotation.every', { days: formatDays(pkg.available_days) }),
+                ratio === null ? '' : `${t('rankings.table.ratio')}: ${formatThousands(ratio, 2)}`,
+            ]
+                .filter(Boolean)
+                .join('\n');
+            return { name, tooltip, ratio, icon: packageIcon(pkg), bars: weekdayRuns(pkg.available_days, from, to) };
         })
         .filter((row) => row.bars.length > 0)
         .sort((a, b) => a.bars[0].start - b.bars[0].start || a.name.localeCompare(b.name));
     if (rows.length === 0) {
         section.hidden = true;
         return;
+    }
+    // Relative colours: the offer with the best ratio of those shown is green, the worst red, the rest linear
+    // in between (a lone or all-equal ratio is green).
+    const ratios = rows.map((row) => row.ratio).filter((ratio) => ratio !== null);
+    const worst = Math.min(...ratios);
+    const best = Math.max(...ratios);
+    for (const row of rows) {
+        row.color = row.ratio === null ? null : shareColor(best > worst ? (row.ratio - worst) / (best - worst) : 1);
     }
 
     const days = Array.from({ length: ROTATION_DAYS }, (_, index) => from + index)
@@ -309,7 +336,7 @@ function renderRotation() {
             (row) => `
                 <div class="schedule__row schedule__row--rotation">
                     <div class="schedule__label" title="${escapeHtml(row.name)}" data-icon="${escapeHtml(row.icon || '')}">${escapeHtml(row.name)}</div>
-                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, row.tooltip)).join('')}</div>
+                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, row.tooltip, { color: row.color })).join('')}</div>
                 </div>`,
         )
         .join('');
@@ -322,6 +349,7 @@ function renderRotation() {
     section.querySelector('.schedule__body').innerHTML = `
         <div class="schedule__legend">
             <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(t('calendar.rotation.now', { time: dayStart }))}</span>
+            <span>${escapeHtml(t('calendar.rotation.colour'))}</span>
         </div>
         <div class="schedule__scroll">
             <div class="schedule__chart schedule__chart--days" style="--columns: ${ROTATION_DAYS}; --week-start: 0; --week-width: ${1 / ROTATION_DAYS}; --today: ${now.fraction / ROTATION_DAYS}">
@@ -365,8 +393,11 @@ function tickRotation() {
 }
 
 startPage('calendar', {
-    init(data) {
+    async init(data) {
         packData = data;
+        await withLoading(async () => {
+            valuation = await buildValuation(data, getSettings());
+        });
         render();
         window.setInterval(tickRotation, 60000);
     },

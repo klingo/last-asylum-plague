@@ -176,7 +176,8 @@
             "today": "Heute",
             "tomorrow": "Morgen",
             "every": "jeweils {days}",
-            "now": "Jetzt (ein neuer Spieltag beginnt um {time})"
+            "now": "Jetzt (ein neuer Spieltag beginnt um {time})",
+            "colour": "Farbe = Ratio in der Paket-Rangliste, relativ zu diesen Angeboten (grün am besten, rot am schlechtesten)"
         },
         "status": {
             "endsIn": "Endet in {time}",

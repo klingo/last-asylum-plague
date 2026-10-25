@@ -37,7 +37,7 @@ function ratioColor(ratio) {
     return mixColor(RATIO_GOOD_RGB, RATIO_GOOD_RGB, 0);
 }
 
-/** Colour of a share of the best (0..1, "vs. best"), red -> green. */
+/** Colour of a position between the worst (0) and the best (1), red -> green ("vs. best", the Calendar's weekday offers). */
 function shareColor(fraction) {
     return mixColor(RATIO_BAD_RGB, RATIO_GOOD_RGB, fraction);
 }
@@ -61,4 +61,4 @@ function ratioBarHtml(ratio, maxRatio, { digits = 2, label = null } = {}) {
         </div>`;
 }
 
-export { ratioBarHtml };
+export { ratioBarHtml, ratioColor, shareColor };
