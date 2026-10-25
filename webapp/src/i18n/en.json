@@ -136,6 +136,19 @@
             "impact": "Affects every value on every page",
             "vipOn": "On: values follow the game's deal %, where VIP points are part of a pack's price.",
             "vipOff": "Off (default): VIP points are worth nothing; each pack's other contents carry its price (coins, pickaxes and what they buy rise)."
+        },
+        "quality": {
+            "heading": "Model quality",
+            "median": "Median pack error",
+            "within": "Packs within {limit}",
+            "holdOut": "Predicted from the other packs",
+            "uncertain": "Barely determined items",
+            "medianInfo": "How far off a typical pack is from its deal % (0 % = exact). Higher with VIP points off, since the game's deal % counts them.",
+            "withinInfo": "How many packs the fitted worths reproduce to within {limit} of what their deal % says.",
+            "holdOutInfo": "The honest figure: the fit has {parameters} values for {packages} packs, so it matches them closely. Here the fit is redone without each pack in turn and measures how far off that pack then is, with nothing of it seen. The typical pack is this far off; the higher it is above the first figure, the less the worths can be trusted.",
+            "uncertainInfo": "Items the packs hardly pin down (they appear in few packs, or only alongside the same items). Their worths are the least reliable; the Items page marks them as uncertain.",
+            "ofTotal": "{count} of {total}",
+            "worstHeading": "Furthest off"
         }
     },
     "calendar": {
@@ -323,7 +336,7 @@
         "buy": "Buy",
         "skip": "Skip",
         "randomOffersNote": "This shop only shows a random selection of its offers. Buy an offer when it shows up if it's marked \"Buy\" (ratio 1.0 or more: worth at least what its coins are worth to you); skip the others.",
-        "extraDiamonds": "Extra diamonds per week",
+        "extraCurrency": "Extra {currency} per week",
         "extraBanknotes": "Extra Banknotes for this event per week",
         "extraBanknotesNote": "{used} of your {amount} extra Banknotes for this event used (only where they're worth it)",
         "minePickaxes": "Pickaxes owned",

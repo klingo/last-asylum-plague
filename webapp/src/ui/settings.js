@@ -38,7 +38,7 @@ const DEFAULT_SETTINGS = {
     // Events and passes follow the calendar on every page load (setup bar switch; a change by hand turns it off).
     // Stored under this name since the default became on, so a `followCalendar: false` saved before doesn't stick.
     followsCalendar: true,
-    extraDiamonds: 0, // diamonds per week from outside the packs, for the VIP Shop (Events page)
+    extraCurrency: {}, // currencyId -> units per week from outside the packs, for shops without event (Events page)
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
     exceedEventLimits: [], // event ids whose pack limits the Events page lifts ("Exceed event pack limits")
     lockedOffers: {}, // "<shopId>:<offerKey>" -> exact count the plan buys per week, 0 = never (Events page)
@@ -86,8 +86,13 @@ function loadSettings() {
     if (typeof stored.followsCalendar === 'boolean') {
         settings.followsCalendar = stored.followsCalendar;
     }
-    if (Number.isFinite(stored.extraDiamonds) && stored.extraDiamonds >= 0) {
-        settings.extraDiamonds = stored.extraDiamonds;
+    if (stored.extraCurrency && typeof stored.extraCurrency === 'object') {
+        settings.extraCurrency = Object.fromEntries(
+            Object.entries(stored.extraCurrency).filter(([, amount]) => Number.isFinite(amount) && amount > 0),
+        );
+    } else if (Number.isFinite(stored.extraDiamonds) && stored.extraDiamonds > 0) {
+        // Older settings: the extra diamonds of the VIP Shop.
+        settings.extraCurrency = { diamonds: stored.extraDiamonds };
     }
     if (stored.lockedOffers && typeof stored.lockedOffers === 'object') {
         settings.lockedOffers = Object.fromEntries(

@@ -461,7 +461,8 @@ function solveLogFit(params, equations, prior, initial = null) {
  * - `points`: Map itemId -> `{ value, source: 'fit'|'reversible', uncertainty?, support? }`
  *   (pass it to item-values.js as `basePoints`); currencies are not included.
  * - `diagnostics`: `{ packages: [{ id, ratio }], medianError, p90Error, parameters, equations }`
- *   where ratio = fitted contents / what the deal % says (1 = exact).
+ *   where ratio = fitted contents / what the deal % says (1 = exact). With `excludeFamilies` also `heldOut`:
+ *   the same ratio for those packages, predicted by the fit without them (see fitHoldOut).
  */
 function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zeroItems = null } = {}) {
     const items = data.items || {};
@@ -558,6 +559,19 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
             packageRatios.push({ id: eq.id, ratio: Math.exp(fit.state.residuals[j].residual) });
         }
     });
+    // The packages left out of the fit: what the rest predicts for them. A package with an item no other
+    // package contains can't be predicted.
+    const heldOut = [];
+    for (const [id, pkg] of Object.entries(packages)) {
+        if (!excludeFamilies?.has(packageFamilyId(id, pkg)) || pkg.deal_percentage == null || !(pkg.price > 0)) {
+            continue;
+        }
+        const side = expand(pkg, `package:${id}`);
+        if (side.skip || side.terms.size === 0 || [...side.terms.keys()].some((param) => !values.has(param))) {
+            continue;
+        }
+        heldOut.push({ id, ratio: sideValue(side, values) / ((pkg.price * pkg.deal_percentage) / 100) });
+    }
     const errors = packageRatios.map((p) => Math.abs(p.ratio - 1));
     return {
         points,
@@ -568,6 +582,7 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
             p90Error: quantile(errors, 0.9),
             parameters: params.length,
             equations: equations.length,
+            ...(excludeFamilies ? { heldOut } : {}),
         },
     };
 }
@@ -606,8 +621,26 @@ function fitSensitivity(data, base, { families = sensitivityFamilies(data), into
     return into;
 }
 
+/**
+ * How well the other packs predict each pack (leave-one-out): refits without each package family in `families`
+ * and collects the `{ id, ratio }` of its packages (`diagnostics.heldOut`) into the array `into`, so callers can
+ * run it in chunks. `base` = fitItemPoints' result for the same data; `zeroItems` as given to it. The honest
+ * counterpart of the in-sample errors: the fit has seen nothing of the pack it is judged on.
+ */
+function fitHoldOut(data, base, { zeroItems = null, families = sensitivityFamilies(data), into = [] } = {}) {
+    for (const family of families) {
+        const refit = fitItemPoints(data, {
+            excludeFamilies: new Set([family]),
+            initialValues: base.paramValues,
+            zeroItems,
+        });
+        into.push(...refit.diagnostics.heldOut);
+    }
+    return into;
+}
+
 function isDependent(sensitivity) {
     return Boolean(sensitivity) && sensitivity.factor > DEPENDENCE_ABOVE;
 }
 
-export { fitItemPoints, fitSensitivity, sensitivityFamilies, isDependent, UNMODELLED_ITEMS };
+export { fitItemPoints, fitSensitivity, fitHoldOut, sensitivityFamilies, isDependent, UNMODELLED_ITEMS };

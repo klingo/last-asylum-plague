@@ -44,11 +44,11 @@
                 <h3 data-i18n="events.planHeading"></h3>
                 <!-- Options of this plan. Each sits in a plain wrapper, so [hidden] isn't overridden by .field. -->
                 <div class="form-row form-row--top">
-                    <!-- VIP Shop only: diamonds from outside the packs. -->
-                    <div id="extra-diamonds-field" hidden>
+                    <!-- Shops without event (VIP, Alliance): their currency from outside the packs. -->
+                    <div id="extra-currency-field" hidden>
                         <div class="field field--narrow">
-                            <label for="extra-diamonds" data-i18n="events.extraDiamonds"></label>
-                            <input id="extra-diamonds" type="number" min="0" step="1000" />
+                            <label for="extra-currency" id="extra-currency-label"></label>
+                            <input id="extra-currency" type="number" min="0" step="1000" />
                         </div>
                     </div>
                     <!-- Events with packs: extra Banknotes only for this event, and exceeding its pack limits. -->

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fitItemPoints } from '../webapp/src/core/point-fit.js';
+import { fitItemPoints, fitHoldOut } from '../webapp/src/core/point-fit.js';
 
 // Two packs that pin down VIP points and gems exactly: 1'000 = 100 + 100 vip + 10 gem, 500 = 100 + 200 vip.
 const data = {
@@ -24,4 +24,18 @@ test('fit: VIP points take their share of the deal %, unless left out ("Count VI
     const zero = fitItemPoints(data, { zeroItems: new Set(['vip_points']) }).points;
     assert.deepEqual(zero.get('vip_points'), { value: 0, source: 'excluded' });
     near(zero.get('gem').value, 90);
+});
+
+test('hold-out: a pack the others explain is predicted, one with an item nobody else has is skipped', () => {
+    const three = {
+        ...data,
+        packages: {
+            ...data.packages,
+            vip_pack_2: { price: 100, deal_percentage: 400, contains: { diamonds: 100, vip_points: 150 } },
+        },
+    };
+    const heldOut = fitHoldOut(three, fitItemPoints(three));
+    const ids = heldOut.map((p) => p.id);
+    assert.ok(!ids.includes('gem_pack'), 'the gem is in no other pack');
+    near(heldOut.find((p) => p.id === 'vip_pack_2').ratio, 1);
 });

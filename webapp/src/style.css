@@ -1579,6 +1579,11 @@ tbody tr.choice-details:hover {
     font-weight: 700;
 }
 
+/* Home: the packs the fit is furthest off. */
+.fit-worst {
+    font-size: 0.85rem;
+}
+
 /* How sure the planned pickaxes should be: one card per choice, with its pickaxes. */
 .mine-safety {
     margin: 14px 0 0;

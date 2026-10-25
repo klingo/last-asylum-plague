@@ -136,6 +136,19 @@
             "impact": "Ändert jeden Wert auf jeder Seite",
             "vipOn": "An: Die Werte folgen dem Deal-% des Spiels, in dem VIP-Punkte Teil des Paketpreises sind.",
             "vipOff": "Aus (Standard): VIP-Punkte sind nichts wert; der übrige Inhalt jedes Pakets trägt seinen Preis (Münzen, Spitzhacken und was sie kaufen, steigen)."
+        },
+        "quality": {
+            "heading": "Modellqualität",
+            "median": "Mittlerer Paketfehler (Median)",
+            "within": "Pakete innerhalb von {limit}",
+            "holdOut": "Aus den anderen Paketen vorhergesagt",
+            "uncertain": "Kaum bestimmte Gegenstände",
+            "medianInfo": "Wie weit ein typisches Paket von seinem Deal-% abweicht (0 % = exakt). Höher ohne VIP-Punkte, da das Deal-% des Spiels sie mitzählt.",
+            "withinInfo": "Bei wie vielen Paketen die berechneten Werte bis auf {limit} an dem liegen, was ihr Deal-% angibt.",
+            "holdOutInfo": "Die ehrliche Zahl: Die Berechnung hat {parameters} Werte für {packages} Pakete und trifft sie daher gut. Hier wird sie ohne jedes Paket der Reihe nach neu gemacht und misst, wie weit dieses Paket dann daneben liegt, ohne etwas von ihm gesehen zu haben. So weit liegt das typische Paket daneben; je höher als die erste Zahl, desto weniger kann man den Werten trauen.",
+            "uncertainInfo": "Gegenstände, die die Pakete kaum festlegen (sie kommen in wenigen Paketen vor oder nur zusammen mit denselben Gegenständen). Ihre Werte sind am unsichersten; die Seite Gegenstandsprioritäten markiert sie als unsicher.",
+            "ofTotal": "{count} von {total}",
+            "worstHeading": "Am weitesten daneben"
         }
     },
     "calendar": {
@@ -323,7 +336,7 @@
         "buy": "Kaufen",
         "skip": "Überspringen",
         "randomOffersNote": "Dieser Shop zeigt nur eine zufällige Auswahl seiner Angebote. Kaufe ein Angebot, wenn es auftaucht und mit „Kaufen“ markiert ist (Ratio 1,0 oder mehr: mindestens so viel wert wie seine Münzen für dich); überspringe die anderen.",
-        "extraDiamonds": "Zusätzliche Diamanten pro Woche",
+        "extraCurrency": "Zusätzliche {currency} pro Woche",
         "extraBanknotes": "Zusätzliche Banknoten pro Woche für dieses Event",
         "extraBanknotesNote": "{used} von deinen {amount} zusätzlichen Banknoten für dieses Event genutzt (nur wo sie es wert sind)",
         "minePickaxes": "Spitzhacken im Besitz",

@@ -76,4 +76,4 @@ function modelSummaryText(valuation) {
     return plan.budgetBinding ? t('valuation.summary', vars) : t('valuation.summaryUnbound', vars);
 }
 
-export { buildValuation, modelSummaryText, planOptions };
+export { buildValuation, modelSummaryText, planOptions, pointFit };

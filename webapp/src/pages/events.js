@@ -36,8 +36,9 @@ const chooseEvents = document.getElementById('choose-events');
 const exceedLimits = document.getElementById('exceed-limits');
 const exceedLimitsInfo = document.getElementById('exceed-limits-info');
 const exceedField = document.getElementById('exceed-field');
-const extraDiamondsField = document.getElementById('extra-diamonds-field');
-const extraDiamondsInput = document.getElementById('extra-diamonds');
+const extraCurrencyField = document.getElementById('extra-currency-field');
+const extraCurrencyLabel = document.getElementById('extra-currency-label');
+const extraCurrencyInput = document.getElementById('extra-currency');
 const extraBanknotesField = document.getElementById('extra-banknotes-field');
 const extraBanknotesInput = document.getElementById('extra-banknotes');
 const minePickaxesField = document.getElementById('mine-pickaxes-field');
@@ -122,8 +123,12 @@ function exceeding() {
     return exceedTicked(eventId) && isExceedable(eventId);
 }
 
-/** The VIP Shop (a shop without event) is selected: diamonds can also come from outside the packs. */
-const isVipShop = (selected) => Boolean(selected?.shop && !selected.shop.event_id);
+/** A shop without event (VIP Shop, Alliance Shop) is selected: its currency can also come from outside the packs. */
+const isStandingShop = (selected) => Boolean(selected?.shop && !selected.shop.event_id);
+
+/** Units per week of the selected standing shop's currency from outside the packs. */
+const extraCurrencyOf = (selected) =>
+    (isStandingShop(selected) && settings.extraCurrency?.[selected.shop.currency_item_id]) || 0;
 
 /** Extra Banknotes per week the user puts only into this event's packs (remembered per event). */
 const extraFor = (eventId) => (eventId && settings.extraEventBanknotes?.[eventId]) || 0;
@@ -155,7 +160,7 @@ function mineProgressFor(mineId, run) {
 
 /**
  * Planner options of this page: the selected event's pack limits lifted when exceeding, its extra
- * Banknotes on top of the weekly spend; for the VIP Shop, the extra diamonds per week on top of what
+ * Banknotes on top of the weekly spend; for a shop without event, the extra currency per week on top of what
  * the packs give; for a mine, the days left of its run (daily pack limits, free pickaxes), the pickaxes
  * owned, the floor reached and how sure the planned pickaxes should be.
  */
@@ -165,8 +170,8 @@ function pageOverrides() {
     if (extraFor(selected?.eventId) > 0) {
         overrides.eventBudget = { eventId: selected.eventId, extra: extraFor(selected.eventId) };
     }
-    if (isVipShop(selected) && settings.extraDiamonds > 0) {
-        overrides.extraCurrency = { [selected.shop.currency_item_id]: settings.extraDiamonds };
+    if (extraCurrencyOf(selected) > 0) {
+        overrides.extraCurrency = { [selected.shop.currency_item_id]: extraCurrencyOf(selected) };
     }
     if (selected?.mine) {
         const run = mineRun(selected.eventId);
@@ -1296,7 +1301,14 @@ function render() {
     planCard.hidden = !selected;
     exceedLimits.disabled = !isExceedable(selected?.eventId);
     exceedLimits.checked = exceedTicked(selected?.eventId);
-    extraDiamondsField.hidden = !isVipShop(selected);
+    extraCurrencyField.hidden = !isStandingShop(selected);
+    if (isStandingShop(selected)) {
+        const currencyId = selected.shop.currency_item_id;
+        extraCurrencyLabel.textContent = t('events.extraCurrency', {
+            currency: localizedName(data.items[currencyId]?.name) || currencyId,
+        });
+        extraCurrencyInput.value = String(extraCurrencyOf(selected));
+    }
     extraBanknotesField.hidden = !(selected?.eventId && eventMaxSpend(selected.eventId) > 0);
     exceedField.hidden = extraBanknotesField.hidden;
     extraBanknotesInput.value = String(extraFor(selected?.eventId));
@@ -1361,12 +1373,12 @@ function populateSelect() {
         .join('');
 }
 
-/** With exceeded limits, locks or extra diamonds / Banknotes the plan depends on the selection. */
+/** With exceeded limits, locks or extra currency / Banknotes the plan depends on the selection. */
 function onEventChange() {
     if (
         settings.exceedEventLimits?.length > 0 ||
         Object.keys(settings.lockedOffers || {}).length > 0 ||
-        settings.extraDiamonds > 0 ||
+        Object.keys(settings.extraCurrency || {}).length > 0 ||
         Object.keys(settings.extraEventBanknotes || {}).length > 0 ||
         overridesKey() !== valuationKey
     ) {
@@ -1421,10 +1433,18 @@ startPage('events', {
             recompute();
         });
         renderExceedInfo();
-        extraDiamondsInput.value = String(settings.extraDiamonds || 0);
-        extraDiamondsInput.addEventListener('change', () =>
-            updateSettings({ extraDiamonds: Math.max(0, Number(extraDiamondsInput.value) || 0) }),
-        );
+        extraCurrencyInput.addEventListener('change', () => {
+            const selected = selection();
+            if (!isStandingShop(selected)) {
+                return;
+            }
+            const amount = Math.max(0, Number(extraCurrencyInput.value) || 0);
+            const extra = { ...settings.extraCurrency, [selected.shop.currency_item_id]: amount };
+            if (amount === 0) {
+                delete extra[selected.shop.currency_item_id];
+            }
+            updateSettings({ extraCurrency: extra });
+        });
         extraBanknotesInput.addEventListener('change', () => {
             const eventId = selection()?.eventId;
             if (!eventId) {
