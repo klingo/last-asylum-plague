@@ -519,8 +519,10 @@ async function verifyData() {
     // 7. Events Relational Checks
     checkCategory('Events', ({ reportWarning }) => {
         for (const eventId of eventKeys) {
-            // In-game events (category "ingame_event") have no packs or shop on purpose.
-            if (!referencedEventKeys.has(eventId) && events[eventId].category !== 'ingame_event') {
+            // In-game events (category "ingame_event") have no packs or shop on purpose, and neither does an
+            // event with at least one scheduled run.
+            const scheduled = (data.schedule?.[eventId] || []).length > 0;
+            if (!referencedEventKeys.has(eventId) && !scheduled && events[eventId].category !== 'ingame_event') {
                 reportWarning(
                     'Unreferenced Event',
                     `Event "${eventId}" (${events[eventId].name.en}) is defined but never referenced by any package or exchange shop.`,
