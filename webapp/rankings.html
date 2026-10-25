@@ -14,7 +14,53 @@
                 <p class="page-lead" data-i18n="rankings.description"></p>
                 <details class="page-details">
                     <summary data-i18n="common.howItWorks"></summary>
-                    <p data-i18n="rankings.details"></p>
+                    <ul class="page-details__list">
+                        <li>
+                            <strong data-i18n="rankings.table.worth"></strong>:
+                            <span data-i18n="rankings.how.worth"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="rankings.table.ratio"></strong>:
+                            <span data-i18n="rankings.how.ratio"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="rankings.table.buy"></strong>: <span data-i18n="rankings.how.buy"></span>
+                            <table class="page-details__table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="rankings.how.shown"></th>
+                                        <th data-i18n="rankings.how.meaning"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-i18n="rankings.buyNoFit"></td>
+                                        <td data-i18n="rankings.how.noFit"></td>
+                                    </tr>
+                                    <tr>
+                                        <td data-i18n="rankings.how.inBundle"></td>
+                                        <td data-i18n="rankings.how.inBundleMeaning"></td>
+                                    </tr>
+                                    <tr>
+                                        <td data-i18n="rankings.buyOtherInGroup"></td>
+                                        <td data-i18n="rankings.how.otherPickMeaning"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                        <li>
+                            <strong data-i18n="rankings.how.monthlyTerm"></strong>:
+                            <span data-i18n="rankings.how.monthly"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="rankings.how.hiddenTerm"></strong>:
+                            <span data-i18n="rankings.how.hidden"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="rankings.how.coinsTerm"></strong>:
+                            <span data-i18n="rankings.how.coins"></span>
+                        </li>
+                    </ul>
                 </details>
                 <div id="valuation-panel"></div>
                 <div class="form-row">
@@ -37,7 +83,9 @@
             </section>
 
             <section class="card">
-                <div class="table-wrap"><div id="ranking-table" class="ranking-grid ranking-grid--rankings" role="table"></div></div>
+                <div class="table-wrap">
+                    <div id="ranking-table" class="ranking-grid ranking-grid--rankings" role="table"></div>
+                </div>
                 <div id="ranking-empty" class="empty-state" hidden data-i18n="rankings.empty"></div>
             </section>
         </main>
