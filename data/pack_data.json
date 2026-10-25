@@ -4691,7 +4691,7 @@
                 "de": "UR Plan-Angebot"
             },
             "category": "weekly_rotation",
-            "limit_type": "daily",
+            "limit_type": "weekly",
             "available_days": ["saturday", "sunday"],
             "tiers": {
                 "1": {
