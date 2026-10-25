@@ -36,6 +36,16 @@
                 "$ref": "#/definitions/exchangeShop"
             }
         },
+        "mines": {
+            "type": "object",
+            "description": "Dig events (Dwarven Mine): an event currency spent one per tile on floors of random tiles; the weekly plan clears floors in order with the expected number of digs, and digs a run only if it reaches the last progress reward (core/mine.js).",
+            "propertyNames": {
+                "$ref": "#/definitions/id"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/mine"
+            }
+        },
         "events": {
             "type": "object",
             "description": "Registry of every toggleable \"event\" a package or exchange shop can be tied to via its `event_id` (whether or not it has its own exchange shop), giving it a display name.",
@@ -750,6 +760,108 @@
                         "$ref": "#/definitions/itemQuantities"
                     },
                     "minProperties": 1
+                }
+            }
+        },
+        "mine": {
+            "type": "object",
+            "description": "A dig event. Every floor has `tiles_per_floor` tiles: one special tile (the wish reward picked for the floor; finding it clears the floor) and normal tiles. Each dig costs 1 `currency_item_id` and uncovers one random hidden tile, chosen by weight. Unused currency carries over to the next run, the floors start again at 1.",
+            "required": [
+                "name",
+                "event_id",
+                "currency_item_id",
+                "floors",
+                "tiles_per_floor",
+                "normal_weight",
+                "special_weights",
+                "pity",
+                "normal_rewards",
+                "wish_rewards"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/localizedString"
+                },
+                "event_id": {
+                    "$ref": "#/definitions/eventId"
+                },
+                "currency_item_id": {
+                    "$ref": "#/definitions/id"
+                },
+                "free_currency_per_day": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Currency given for free every day of the run (logins, tasks); omitted = 0."
+                },
+                "purchase_bonus_per_day": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "More free currency on every day with a pack bought; counted when the weekly spend covers the event's cheapest pack every day. Omitted = 0."
+                },
+                "floors": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Floors that can be dug per run."
+                },
+                "tiles_per_floor": {
+                    "type": "integer",
+                    "minimum": 2
+                },
+                "normal_weight": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "Weight of every hidden normal tile."
+                },
+                "special_weights": {
+                    "type": "object",
+                    "description": "Weight of the special tile once that many digs are done on the floor (the largest key not above the digs done applies); must include \"0\".",
+                    "required": ["0"],
+                    "propertyNames": {
+                        "pattern": "^(0|[1-9][0-9]*)$"
+                    },
+                    "additionalProperties": {
+                        "type": "number",
+                        "exclusiveMinimum": 0
+                    }
+                },
+                "pity": {
+                    "type": "object",
+                    "description": "By the floor number's last digit: after this many digs on the floor, the next dig surely finds the special tile.",
+                    "required": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+                    "additionalProperties": false,
+                    "patternProperties": {
+                        "^[0-9]$": {
+                            "type": "integer",
+                            "minimum": 0
+                        }
+                    }
+                },
+                "normal_rewards": {
+                    "type": "array",
+                    "description": "The normal tiles of every floor (at most `tiles_per_floor` - 1), each its reward.",
+                    "items": {
+                        "$ref": "#/definitions/itemQuantities"
+                    },
+                    "minItems": 1
+                },
+                "wish_rewards": {
+                    "type": "array",
+                    "description": "The wish rewards to pick from for each floor (the special tile).",
+                    "items": {
+                        "$ref": "#/definitions/itemQuantities"
+                    },
+                    "minItems": 1
+                },
+                "progress_rewards": {
+                    "type": "object",
+                    "description": "Extra rewards on clearing these floors, keyed by floor number.",
+                    "propertyNames": {
+                        "$ref": "#/definitions/tierNumber"
+                    },
+                    "additionalProperties": {
+                        "$ref": "#/definitions/itemQuantities"
+                    }
                 }
             }
         },

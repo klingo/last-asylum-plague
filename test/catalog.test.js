@@ -7,6 +7,7 @@ import {
     packageWeeklyCapacity,
     offerWeeklyCapacity,
     capacityInWindow,
+    currencyCost,
 } from '../webapp/src/core/catalog.js';
 
 test('tier ladders expand into one package per tier, each requiring the one below', () => {
@@ -81,4 +82,33 @@ test('capacity in a window of days (Compare)', () => {
     assert.equal(capacityInWindow(1, 'monthly', { days: 31 }), 2);
     assert.equal(capacityInWindow(3, 'lifetime', { days: 100 }), 3);
     assert.equal(capacityInWindow(null, 'weekly', { days: 7 }), Infinity);
+});
+
+test('currency cost: cheapest pack per coin first, within its weekly limit', () => {
+    const packages = {
+        cheap: { price: 500, event_id: 'mine', contains: { pick: 10 }, purchase_limit: 1, limit_type: 'daily' },
+        dear: { price: 1000, event_id: 'mine', contains: { pick: 12 }, purchase_limit: 1, limit_type: 'daily' },
+        other: { price: 100, event_id: 'other', contains: { pick: 100 }, purchase_limit: 1, limit_type: 'daily' },
+    };
+    const rules = { activeEventIds: new Set(['mine']) };
+    assert.deepEqual(currencyCost(packages, 'pick', 30, rules), {
+        banknotes: 1500,
+        packIds: ['cheap'],
+        available: 154,
+    });
+    // 70 from the cheap pack (7 days), the other 14 at 1000 / 12.
+    const more = currencyCost(packages, 'pick', 84, rules);
+    assert.ok(Math.abs(more.banknotes - (3500 + (14 * 1000) / 12)) < 1e-9);
+    assert.deepEqual(more.packIds, ['cheap', 'dear']);
+    assert.equal(currencyCost(packages, 'coin', 10, rules), null, 'no pack gives it');
+    const unlimited = currencyCost(packages, 'pick', 84, { ...rules, exceedEventPackLimits: new Set(['mine']) });
+    assert.deepEqual(
+        unlimited,
+        { banknotes: 84 * 50, packIds: ['cheap'], available: Infinity },
+        'limits lifted: all from the cheap pack',
+    );
+    // 2 days of the run left: 20 + 24 pickaxes within the limits, the other 40 at the dearest rate.
+    const late = currencyCost(packages, 'pick', 84, { ...rules, eventDaysLeft: { mine: 2 } });
+    assert.equal(late.available, 44);
+    assert.ok(Math.abs(late.banknotes - (1000 + 2000 + (40 * 1000) / 12)) < 1e-9);
 });

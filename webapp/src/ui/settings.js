@@ -12,6 +12,8 @@ const SETTINGS_VERSION = 3;
 // How much an item matters to the user, as a factor on its worth (after the deal % fit).
 const PRIORITY_WEIGHTS = { none: 0, low: 0.5, normal: 1, high: 1.5 };
 const PRIORITY_LEVELS = ['none', 'low', 'normal', 'high'];
+// How sure the pickaxes planned for a mine's target floor are: the share of runs they suffice in.
+const MINE_SAFETY_LEVELS = [0.5, 0.9, 0.99, 1];
 
 // Worth nothing to a typical player, so "Don't care" unless changed. They still count in the
 // deal % fit (the game counts them), see point-fit.js.
@@ -34,6 +36,8 @@ const DEFAULT_SETTINGS = {
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
     exceedEventLimits: [], // event ids whose pack limits the Events page lifts ("Exceed event pack limits")
     lockedOffers: {}, // "<shopId>:<offerKey>" -> exact count the plan buys per week, 0 = never (Events page)
+    mineProgress: {}, // mineId -> { pickaxes owned, floor reached, run: start day of the run the floor is from } (Events page)
+    minePlanSafety: 1, // share of runs the planned pickaxes suffice in: 0.5 (average), 0.9, 0.99, 1 (worst case) (Events page)
     activeEvents: [], // event ids running this week
     seasonalPasses: [], // family ids of the seasonal passes on sale right now; other passes are always on sale
     priorities: Object.fromEntries(DEFAULT_NONE_ITEMS.map((id) => [id, 'none'])), // itemId -> level ('normal' omitted)
@@ -76,6 +80,23 @@ function loadSettings() {
     if (stored.extraEventBanknotes && typeof stored.extraEventBanknotes === 'object') {
         settings.extraEventBanknotes = Object.fromEntries(
             Object.entries(stored.extraEventBanknotes).filter(([, amount]) => Number.isFinite(amount) && amount > 0),
+        );
+    }
+    if (MINE_SAFETY_LEVELS.includes(stored.minePlanSafety)) {
+        settings.minePlanSafety = stored.minePlanSafety;
+    }
+    if (stored.mineProgress && typeof stored.mineProgress === 'object') {
+        settings.mineProgress = Object.fromEntries(
+            Object.entries(stored.mineProgress)
+                .filter(([, progress]) => progress && typeof progress === 'object')
+                .map(([mineId, { pickaxes, floor, run }]) => [
+                    mineId,
+                    {
+                        pickaxes: Number.isFinite(pickaxes) && pickaxes > 0 ? pickaxes : 0,
+                        floor: Number.isFinite(floor) && floor > 0 ? floor : 0,
+                        run: Number.isFinite(run) ? run : null,
+                    },
+                ]),
         );
     }
     for (const key of ['activeEvents', 'seasonalPasses', 'exceedEventLimits']) {
@@ -157,4 +178,5 @@ export {
     DEFAULT_NONE_ITEMS,
     PRIORITY_LEVELS,
     PRIORITY_WEIGHTS,
+    MINE_SAFETY_LEVELS,
 };

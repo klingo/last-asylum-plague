@@ -333,6 +333,26 @@
                 "units": 1735440,
                 "random": false
             },
+            "package:dwarven_mine_exquisite_pack": {
+                "units": 60000,
+                "random": false
+            },
+            "package:dwarven_mine_premium_pack": {
+                "units": 300000,
+                "random": false
+            },
+            "package:dwarven_mine_rare_pack": {
+                "units": 120000,
+                "random": false
+            },
+            "package:dwarven_mine_select_pack": {
+                "units": 30000,
+                "random": false
+            },
+            "package:dwarven_mine_ultimate_pack": {
+                "units": 600000,
+                "random": false
+            },
             "package:enhance_heroes": {
                 "units": 12000,
                 "random": false
@@ -849,6 +869,26 @@
                 "units": 1000,
                 "random": false
             },
+            "package:dwarven_mine_exquisite_pack": {
+                "units": 1000,
+                "random": false
+            },
+            "package:dwarven_mine_premium_pack": {
+                "units": 5000,
+                "random": false
+            },
+            "package:dwarven_mine_rare_pack": {
+                "units": 2000,
+                "random": false
+            },
+            "package:dwarven_mine_select_pack": {
+                "units": 500,
+                "random": false
+            },
+            "package:dwarven_mine_ultimate_pack": {
+                "units": 10000,
+                "random": false
+            },
             "package:enhance_heroes": {
                 "units": 500,
                 "random": false
@@ -1261,6 +1301,7 @@
         "frenzied_flock_iv_ranger",
         "frenzied_flock_iv_warlock",
         "frenzied_flock_iv_warrior",
+        "gear_choice_supply",
         "grain_level_supply_sr",
         "grain_level_supply_ssr",
         "grain_level_supply_ur",

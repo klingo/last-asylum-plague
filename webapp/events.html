@@ -25,7 +25,12 @@
                 </div>
                 <p class="footnote">
                     <span data-i18n="events.tickHint"></span>
-                    <button type="button" class="btn-secondary btn-small" id="choose-events" data-i18n="events.chooseEvents"></button>
+                    <button
+                        type="button"
+                        class="btn-secondary btn-small"
+                        id="choose-events"
+                        data-i18n="events.chooseEvents"
+                    ></button>
                 </p>
             </section>
 
@@ -53,6 +58,19 @@
                             <input id="extra-banknotes" type="number" min="0" step="1000" />
                         </div>
                     </div>
+                    <!-- Events with a mine: the pickaxes owned and the floor reached this run. -->
+                    <div id="mine-pickaxes-field" hidden>
+                        <div class="field field--narrow">
+                            <label for="mine-pickaxes" data-i18n="events.minePickaxes"></label>
+                            <input id="mine-pickaxes" type="number" min="0" step="10" />
+                        </div>
+                    </div>
+                    <div id="mine-floor-field" hidden>
+                        <div class="field field--narrow">
+                            <label for="mine-floor" data-i18n="events.mineFloor"></label>
+                            <input id="mine-floor" type="number" min="0" step="1" />
+                        </div>
+                    </div>
                     <div id="exceed-field" hidden>
                         <div class="field">
                             <span class="field-label" data-i18n="events.optionsLabel"></span>
@@ -74,6 +92,14 @@
                     <p class="text-dim" id="shop-note" hidden data-i18n="events.randomOffersNote"></p>
                     <div class="table-wrap">
                         <div id="shop-table" class="ranking-grid events-shop-grid" role="table"></div>
+                    </div>
+                </div>
+                <div id="mine-section" hidden>
+                    <h3 id="mine-heading"></h3>
+                    <p class="text-dim" data-i18n="events.mineNote"></p>
+                    <details class="page-details mine-rules" id="mine-rules"></details>
+                    <div class="table-wrap">
+                        <div id="mine-table" class="ranking-grid events-mine-grid" role="table"></div>
                     </div>
                 </div>
             </section>

@@ -104,9 +104,11 @@ function bundledPairs(packages) {
     return pairs;
 }
 
-/** Every item used as an exchange-shop currency (diamonds, event coins, ...). */
-function currencyItemIds(exchangeShops) {
-    return new Set(Object.values(exchangeShops || {}).map((shop) => shop.currency_item_id));
+/** Every item used as an exchange-shop or mine currency (diamonds, event coins, pickaxes, ...). */
+function currencyItemIds(exchangeShops, mines) {
+    return new Set(
+        [...Object.values(exchangeShops || {}), ...Object.values(mines || {})].map((owner) => owner.currency_item_id),
+    );
 }
 
 /** How many times per week a limit allows buying, before any availability toggles. */
@@ -132,8 +134,25 @@ function perWeek(purchaseLimit, limitType, availableDays) {
  * - Event-tied packages need their event in `activeEventIds` (null = every event active).
  * - Lifetime-limited packages without an event need `includeExclusives`.
  * - Passes need `includePasses`.
+ * - `eventDaysLeft` (`{ eventId: days }`): only that many days of the event's run are left, so its daily
+ *   limits count those days only.
  */
-function packageWeeklyCapacity(pkg, { activeEventIds = null, includePasses = true, includeExclusives = false } = {}) {
+function packageWeeklyCapacity(
+    pkg,
+    { activeEventIds = null, includePasses = true, includeExclusives = false, eventDaysLeft = null } = {},
+) {
+    const daysLeft = pkg.event_id ? eventDaysLeft?.[pkg.event_id] : null;
+    if (daysLeft != null) {
+        const weekly = packageWeeklyCapacity(pkg, { activeEventIds, includePasses, includeExclusives });
+        return Math.min(
+            weekly,
+            capacityInWindow(pkg.purchase_limit, pkg.limit_type, {
+                days: daysLeft,
+                availableDays: pkg.available_days,
+                eventTied: true,
+            }),
+        );
+    }
     if (pkg.event_id) {
         if (activeEventIds && !activeEventIds.has(pkg.event_id)) {
             return 0;
@@ -145,6 +164,50 @@ function packageWeeklyCapacity(pkg, { activeEventIds = null, includePasses = tru
         return 0;
     }
     return perWeek(pkg.purchase_limit, pkg.limit_type, pkg.available_days);
+}
+
+/**
+ * Banknotes that `amount` coins (or diamonds, pickaxes) cost: bought from the (flattened) packages on sale that
+ * give them, the cheapest per coin first, each only as often as it can be bought per week (its whole price
+ * counted for the coins); more than all of them give per week at the dearest pack's rate. Packs of the events in
+ * `exceedEventPackLimits` (Set) have no limit; `eventDaysLeft` as in packageWeeklyCapacity. `{ banknotes, packIds,
+ * available }` (available = the most coins the packs give within their limits), or null if no pack on sale gives them.
+ */
+function currencyCost(
+    packages,
+    currencyId,
+    amount,
+    { activeEventIds = null, seasonalPasses, exceedEventPackLimits = null, eventDaysLeft = null } = {},
+) {
+    const packs = Object.entries(packages)
+        .filter(([id, pkg]) => pkg.contains?.[currencyId] > 0 && isOnSale(id, pkg, { activeEventIds, seasonalPasses }))
+        .map(([id, pkg]) => ({
+            id,
+            rate: pkg.price / pkg.contains[currencyId],
+            coinsPerWeek:
+                (pkg.event_id && exceedEventPackLimits?.has(pkg.event_id)
+                    ? Infinity
+                    : packageWeeklyCapacity(pkg, { activeEventIds, eventDaysLeft })) * pkg.contains[currencyId],
+        }))
+        .filter((pack) => pack.coinsPerWeek > 0)
+        .sort((a, b) => a.rate - b.rate);
+    if (packs.length === 0) {
+        return null;
+    }
+    let banknotes = 0;
+    let remaining = amount;
+    const packIds = [];
+    for (const pack of packs) {
+        const coins = Math.min(remaining, pack.coinsPerWeek);
+        banknotes += coins * pack.rate;
+        remaining -= coins;
+        packIds.push(pack.id);
+        if (remaining <= 0) {
+            break;
+        }
+    }
+    banknotes += Math.max(0, remaining) * packs[packs.length - 1].rate;
+    return { banknotes, packIds, available: packs.reduce((sum, pack) => sum + pack.coinsPerWeek, 0) };
 }
 
 /** Purchases per week of an exchange-shop offer; 0 if the shop's event isn't active. */
@@ -237,6 +300,7 @@ export {
     currencyItemIds,
     packageWeeklyCapacity,
     offerWeeklyCapacity,
+    currencyCost,
     WEEKDAYS,
     deliveryPeriod,
     capacityInWindow,

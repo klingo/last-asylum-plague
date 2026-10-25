@@ -446,6 +446,56 @@ async function verifyData() {
         }
     });
 
+    // 5b. Mine (dig event) Relational Checks
+    checkCategory('Mines', ({ reportError }) => {
+        for (const [mineId, mine] of Object.entries(data.mines || {})) {
+            referencedEventKeys.add(mine.event_id);
+            if (!eventKeys.has(mine.event_id)) {
+                reportError('Mine Reference', `Mine "${mineId}" specifies unresolvable event: "${mine.event_id}"`);
+            }
+            referencedItemKeys.add(mine.currency_item_id);
+            if (!itemKeys.has(mine.currency_item_id)) {
+                reportError(
+                    'Mine Reference',
+                    `Mine "${mineId}" specifies unresolvable currency item: "${mine.currency_item_id}"`,
+                );
+            }
+            const bundles = [
+                ...(mine.normal_rewards || []).map((contents, i) => [`normal reward #${i + 1}`, contents]),
+                ...(mine.wish_rewards || []).map((contents, i) => [`wish reward #${i + 1}`, contents]),
+                ...Object.entries(mine.progress_rewards || {}).map(([floor, contents]) => [
+                    `progress reward at floor ${floor}`,
+                    contents,
+                ]),
+            ];
+            for (const [label, contents] of bundles) {
+                for (const itemId of Object.keys(contents || {})) {
+                    referencedItemKeys.add(itemId);
+                    if (!itemKeys.has(itemId)) {
+                        reportError(
+                            'Mine Reference',
+                            `Mine "${mineId}" ${label} contains unresolvable item: "${itemId}"`,
+                        );
+                    }
+                }
+            }
+            if ((mine.normal_rewards || []).length > mine.tiles_per_floor - 1) {
+                reportError(
+                    'Mine Tiles',
+                    `Mine "${mineId}" has ${mine.normal_rewards.length} normal rewards but only ${mine.tiles_per_floor - 1} normal tiles per floor.`,
+                );
+            }
+            for (const floor of Object.keys(mine.progress_rewards || {})) {
+                if (Number(floor) > mine.floors) {
+                    reportError(
+                        'Mine Floors',
+                        `Mine "${mineId}" has a progress reward at floor ${floor}, above its ${mine.floors} floors.`,
+                    );
+                }
+            }
+        }
+    });
+
     // 6. Spend Reward Track Relational Checks
     checkCategory('Spend Reward Tracks', ({ reportError }) => {
         for (const [trackId, track] of Object.entries(spendRewardTracks)) {
@@ -710,7 +760,7 @@ async function verifyData() {
         );
     console.log(`  - Depends on a single pack: ${dependent.join(', ') || 'none'}\n`);
 
-    const currencyIds = currencyItemIds(exchangeShops);
+    const currencyIds = currencyItemIds(exchangeShops, data.mines);
     const zeroCurrencies = Object.fromEntries([...currencyIds].map((id) => [id, 0]));
     const resolved = resolveItemValues(items, { basePoints: fit.points, currencyIds, currencyValues: zeroCurrencies });
     checkCategory('Item Worth', ({ reportWarning }) => {

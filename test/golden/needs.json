@@ -2,7 +2,7 @@
     "raven_essence": {
         "reachable": true,
         "totalCost": 499,
-        "byproductWorth": 68.90053,
+        "byproductWorth": 68.8431679,
         "packages": {
             "era_of_revival_raven_essence_weekly_pass": 1
         },
@@ -12,7 +12,7 @@
     "lv5_sharp_beak": {
         "reachable": true,
         "totalCost": 4999,
-        "byproductWorth": 1351.01241,
+        "byproductWorth": 1350.49631,
         "packages": {
             "raven_gear": 1
         },
@@ -24,7 +24,7 @@
     "speedup": {
         "reachable": true,
         "totalCost": 3493,
-        "byproductWorth": 152.477778,
+        "byproductWorth": 152.359736,
         "packages": {
             "speedup_special_pack_t1": 2,
             "universal_speedup_pack_t1": 5
@@ -40,7 +40,7 @@
     "ur_hero_omni_shard": {
         "reachable": true,
         "totalCost": 9999,
-        "byproductWorth": 2544.58354,
+        "byproductWorth": 2543.54178,
         "packages": {
             "hero_promotion": 1
         },

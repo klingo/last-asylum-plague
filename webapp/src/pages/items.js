@@ -206,7 +206,7 @@ async function recompute(settings) {
 startPage('items', {
     async init(loaded) {
         data = loaded;
-        currencies = currencyItemIds(data.exchange_shops);
+        currencies = currencyItemIds(data.exchange_shops, data.mines);
         chainTops = itemChainTops(data.items);
         // No setup bar here: the worth column uses the weekly spend set on the other pages.
         onSettingsChange((settings) => recompute(settings));

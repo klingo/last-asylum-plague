@@ -43,8 +43,21 @@ function planSummary(plan) {
         trackTiersReached: plan.trackTiersReached.map((tier) => `${tier.trackId}:${tier.threshold}`).sort(),
         pointPurchases: new Map(plan.pointPurchases.map((p) => [p.shopId, p.count])),
         lockShortfalls: plan.lockShortfalls,
+        eventExtraUsed: plan.eventExtraUsed,
         mu: plan.mu,
         currencies: plan.currencies,
+        // Events page: the mine's floors, wishes and free pickaxes.
+        mines: plan.mines.map((mine) => ({
+            mineId: mine.mineId,
+            digs: mine.digs,
+            startFloor: mine.startFloor,
+            floorReached: mine.floorReached,
+            pickaxes: mine.pickaxes,
+            free: mine.free,
+            progressReached: mine.progressReached,
+            wishes: mine.wishes.map((wish) => wish.count),
+            normalRewards: mine.normalRewards,
+        })),
         // Worth of every item and every package (the Ranking's numbers).
         itemWorth: new Map(Object.keys(data.items).map((id) => [id, plan.worth(id)])),
         packagePoints: new Map(Object.entries(data.packages).map(([id, pkg]) => [id, plan.bundlePoints(pkg).value])),
@@ -87,6 +100,20 @@ const scenarios = {
         lockedOffers: {
             [`surprise_encounter_shop:${Object.keys(data.exchange_shops.surprise_encounter_shop.offers).sort()[0]}`]: 1,
         },
+    },
+    // The Dwarven Mine at the default spend, 3 days of the run left: floor 100 out of reach, so no digging.
+    'plan-mine': {
+        activeEventIds: new Set(['dwarven_mine']),
+        eventDaysLeft: { dwarven_mine: 3 },
+        mineProgress: { dwarven_mine: { owned: 150, floor: 0 } },
+    },
+    // The mine from floor 12 with exceeded pack limits and extra Banknotes: dug to floor 100 and on.
+    'plan-mine-dig': {
+        activeEventIds: new Set(['dwarven_mine']),
+        exceedEventPackLimits: new Set(['dwarven_mine']),
+        eventBudget: { eventId: 'dwarven_mine', extra: 30000 },
+        eventDaysLeft: { dwarven_mine: 3 },
+        mineProgress: { dwarven_mine: { owned: 150, floor: 12 } },
     },
     // The Events page's step table: a minimum spend on one event.
     'plan-event-spend': {

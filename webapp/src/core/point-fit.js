@@ -464,7 +464,7 @@ function solveLogFit(params, equations, prior, initial = null) {
 function fitItemPoints(data, { excludeFamilies = null, initialValues = null } = {}) {
     const items = data.items || {};
     const packages = data.packages || {};
-    const currencyIds = currencyItemIds(data.exchange_shops);
+    const currencyIds = currencyItemIds(data.exchange_shops, data.mines);
 
     const pinned = new Map([[ANCHOR_ID, { value: 1, source: 'anchor' }]]);
     lendReversible(items, pinned);

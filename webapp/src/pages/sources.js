@@ -4,7 +4,7 @@ import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
-import { isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
+import { isOnSale, currencyCost } from '../core/catalog.js';
 import { createUnitCounter, sourcesListing } from '../core/item-sources.js';
 import { createItemPicker } from '../ui/item-picker.js';
 import { packageDisplayName, itemDisplayName } from '../ui/labels.js';
@@ -41,49 +41,10 @@ const iconHtml = itemIconSlot;
 const amount = (value) => (Number.isInteger(value) ? formatThousands(value) : formatSignificant(value));
 
 /**
- * Banknotes that `amount` coins (or diamonds) cost: bought from the packs on sale that give them, the
- * cheapest per coin first, each only as often as it can be bought per week (its whole price counted for the
- * coins). { banknotes, packIds } or null if no pack on sale gives them.
- */
-function coinCost(currencyId, amount, activeEventIds) {
-    const packs = Object.entries(data.packages)
-        .filter(
-            ([id, pkg]) =>
-                pkg.contains?.[currencyId] > 0 &&
-                isOnSale(id, pkg, { activeEventIds, seasonalPasses: settings.seasonalPasses }),
-        )
-        .map(([id, pkg]) => ({
-            id,
-            rate: pkg.price / pkg.contains[currencyId],
-            coinsPerWeek: packageWeeklyCapacity(pkg, { activeEventIds }) * pkg.contains[currencyId],
-        }))
-        .filter((pack) => pack.coinsPerWeek > 0)
-        .sort((a, b) => a.rate - b.rate);
-    if (packs.length === 0) {
-        return null;
-    }
-    let banknotes = 0;
-    let remaining = amount;
-    const packIds = [];
-    for (const pack of packs) {
-        const coins = Math.min(remaining, pack.coinsPerWeek);
-        banknotes += coins * pack.rate;
-        remaining -= coins;
-        packIds.push(pack.id);
-        if (remaining <= 0) {
-            break;
-        }
-    }
-    // More than every pack gives per week: the rest at the dearest pack's rate.
-    banknotes += Math.max(0, remaining) * packs[packs.length - 1].rate;
-    return { banknotes, packIds };
-}
-
-/**
  * Every purchase on sale this week that gives the target item, at any depth: packages (packs of
  * ticked events and seasonal passes on sale) and exchange-shop offers (VIP Shop, shops of ticked
  * events). Per source: units per purchase, its price in Banknotes (shop offers at what their coins cost, see
- * coinCost; coins no pack sells at their worth in the plan),
+ * currencyCost in catalog.js; coins no pack sells at their worth in the plan),
  * Banknotes per unit, the item's share of the source's worth and the source's ratio (its whole worth
  * ÷ price, as on the Ranking).
  */
@@ -152,7 +113,10 @@ function buildSources(targetId) {
                 continue;
             }
             const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
-            const cost = coinCost(shop.currency_item_id, offer.currency_cost, activeEventIds);
+            const cost = currencyCost(data.packages, shop.currency_item_id, offer.currency_cost, {
+                activeEventIds,
+                seasonalPasses: settings.seasonalPasses,
+            });
             const price = cost ? cost.banknotes : coinWorth > 0 ? offer.currency_cost * coinWorth : 0;
             // How the Banknote price came about, as an info icon next to the coin price.
             const priceInfo =

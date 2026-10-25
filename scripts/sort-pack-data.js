@@ -18,7 +18,7 @@ function sortByNumericKey(object) {
 if (fs.existsSync(DATA_PATH)) {
     const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
 
-    for (const sectionName of ['items', 'packages', 'exchange_shops', 'events', 'spend_reward_tracks']) {
+    for (const sectionName of ['items', 'packages', 'exchange_shops', 'mines', 'events', 'spend_reward_tracks']) {
         if (isObject(data[sectionName])) {
             data[sectionName] = sortByKey(data[sectionName]);
         }
@@ -31,6 +31,12 @@ if (fs.existsSync(DATA_PATH)) {
 
         if (isObject(shop.bonus_tiers)) {
             shop.bonus_tiers = sortByNumericKey(shop.bonus_tiers);
+        }
+    }
+
+    for (const mine of Object.values(data.mines ?? {})) {
+        if (isObject(mine.progress_rewards)) {
+            mine.progress_rewards = sortByNumericKey(mine.progress_rewards);
         }
     }
 

@@ -268,6 +268,14 @@
             "category": "skin_decor",
             "rarity": "ur"
         },
+        "dwarven_pickaxe": {
+            "name": {
+                "en": "Dwarven Pickaxe",
+                "de": "Zwergen-Spitzhacke"
+            },
+            "category": "event_item",
+            "rarity": "ur"
+        },
         "excl_weapon_shard_choice_chest": {
             "name": {
                 "en": "Excl Weapon Shard Choice Chest",
@@ -355,6 +363,29 @@
             },
             "category": "material",
             "rarity": "ur"
+        },
+        "gear_choice_supply": {
+            "name": {
+                "en": "Gear Choice Supply",
+                "de": ""
+            },
+            "category": "chest",
+            "rarity": "ur",
+            "type": "choice",
+            "choice": {
+                "select_count": 1,
+                "choices": [
+                    {
+                        "gear_blueprint_ur": 1
+                    },
+                    {
+                        "tempered_steel": 100
+                    },
+                    {
+                        "gearstone": 3000
+                    }
+                ]
+            }
         },
         "gearstone": {
             "name": {
@@ -2731,6 +2762,96 @@
                         "lv3_alliance_chest": 1
                     }
                 }
+            }
+        },
+        "dwarven_mine_exquisite_pack": {
+            "name": {
+                "en": "Dwarven Mine Exquisite Pack",
+                "de": "Zwergenmine Exquisites Paket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 999,
+            "deal_percentage": 3410,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 1000,
+                "dwarven_pickaxe": 12,
+                "vip_points": 1000,
+                "resource_supply_general": 10
+            }
+        },
+        "dwarven_mine_premium_pack": {
+            "name": {
+                "en": "Dwarven Mine Premium Pack",
+                "de": "Zwergenmine Premium Paket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 4999,
+            "deal_percentage": 3410,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 5000,
+                "dwarven_pickaxe": 60,
+                "vip_points": 5000,
+                "resource_supply_general": 50
+            }
+        },
+        "dwarven_mine_rare_pack": {
+            "name": {
+                "en": "Dwarven Mine Rare Pack",
+                "de": "Zwergenmine Seltenes Paket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 1999,
+            "deal_percentage": 3410,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 2000,
+                "dwarven_pickaxe": 24,
+                "vip_points": 2000,
+                "resource_supply_general": 20
+            }
+        },
+        "dwarven_mine_select_pack": {
+            "name": {
+                "en": "Dwarven Mine Select Pack",
+                "de": "Zwergenmine Auswahlpaket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 499,
+            "deal_percentage": 5610,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 500,
+                "dwarven_pickaxe": 10,
+                "vip_points": 500,
+                "resource_supply_general": 5
+            }
+        },
+        "dwarven_mine_ultimate_pack": {
+            "name": {
+                "en": "Dwarven Mine Ultimate Pack",
+                "de": "Zwergenmine Ultimatives Paket"
+            },
+            "category": "special_event",
+            "event_id": "dwarven_mine",
+            "price": 9999,
+            "deal_percentage": 3410,
+            "purchase_limit": 5,
+            "limit_type": "daily",
+            "contains": {
+                "diamonds": 10000,
+                "dwarven_pickaxe": 120,
+                "vip_points": 10000,
+                "resource_supply_general": 100
             }
         },
         "enhance_heroes": {
@@ -5933,6 +6054,114 @@
             }
         }
     },
+    "mines": {
+        "dwarven_mine": {
+            "name": {
+                "en": "Dwarven Mine",
+                "de": "Zwergenmine"
+            },
+            "event_id": "dwarven_mine",
+            "currency_item_id": "dwarven_pickaxe",
+            "free_currency_per_day": 14,
+            "purchase_bonus_per_day": 6,
+            "floors": 200,
+            "tiles_per_floor": 12,
+            "normal_weight": 10,
+            "special_weights": {
+                "0": 1,
+                "3": 5,
+                "6": 10,
+                "9": 30
+            },
+            "pity": {
+                "0": 10,
+                "1": 5,
+                "2": 6,
+                "3": 8,
+                "4": 5,
+                "5": 10,
+                "6": 5,
+                "7": 6,
+                "8": 8,
+                "9": 5
+            },
+            "normal_rewards": [
+                {
+                    "speedup": 5
+                },
+                {
+                    "speedup": 10
+                },
+                {
+                    "gearstone": 10
+                },
+                {
+                    "gearstone": 20
+                },
+                {
+                    "gearstone": 50
+                },
+                {
+                    "herb_level_supply_sr": 1
+                },
+                {
+                    "herb_level_supply_sr": 2
+                },
+                {
+                    "herb_level_supply_sr": 5
+                },
+                {
+                    "refined_iron": 1
+                },
+                {
+                    "refined_iron": 2
+                },
+                {
+                    "tempered_steel": 1
+                }
+            ],
+            "wish_rewards": [
+                {
+                    "gearstone": 2500
+                },
+                {
+                    "tempered_steel": 80
+                },
+                {
+                    "herb_level_supply_ssr": 10
+                },
+                {
+                    "raven_fruit": 20000
+                }
+            ],
+            "progress_rewards": {
+                "5": {
+                    "gearstone": 2000
+                },
+                "10": {
+                    "gearstone": 4000
+                },
+                "20": {
+                    "random_gearstone_supply": 8
+                },
+                "30": {
+                    "gear_choice_supply": 5
+                },
+                "40": {
+                    "gear_choice_supply": 5
+                },
+                "60": {
+                    "gear_choice_supply": 10
+                },
+                "80": {
+                    "gear_choice_supply": 10
+                },
+                "100": {
+                    "gear_blueprint_mr": 10
+                }
+            }
+        }
+    },
     "events": {
         "blades_out": {
             "name": {
@@ -5947,6 +6176,15 @@
                 "de": "Claires innerer Dämon"
             },
             "category": "ingame_event"
+        },
+        "dwarven_mine": {
+            "name": {
+                "en": "Dwarven Mine",
+                "de": "Zwergenmine"
+            },
+            "category": "special_event",
+            "exceedable_pack_limits": true,
+            "image": "dwarven_mine"
         },
         "full_moon_night": {
             "name": {
@@ -6300,6 +6538,12 @@
             {
                 "start": "2026-10-12",
                 "end": "2026-10-13"
+            }
+        ],
+        "dwarven_mine": [
+            {
+                "start": "2026-10-20",
+                "end": "2026-10-25"
             }
         ],
         "exclusive_weapon_pass": [

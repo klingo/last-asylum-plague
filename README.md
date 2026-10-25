@@ -13,8 +13,9 @@ its contents without a common value scale. The tool uses one:
   exchange-shop prices are used as weak extra hints), everything else is derived from what it contains (chests:
   expected contents, choice chests: best option, omni shards: the shard they replace, crafting chains: 4:1).
   Recipes (`crafted_from`, e.g. 800 UR Epigraph Shards → any UR Epigraph IV, 9 Lv.1 → 1 Lv.3 raven gear) cap an
-  item at its crafting cost. Moon Coins and Star Moon Sigils are not modelled. Diamonds and event
-  coins have no points of their own: they are worth what their shop offers buy (diamonds: the VIP shop).
+  item at its crafting cost. Moon Coins and Star Moon Sigils are not modelled. Diamonds, event
+  coins and dig-event pickaxes have no points of their own: they are worth what their shop offers buy (diamonds: the
+  VIP shop) or what the floors they dig give.
 - **Your priorities** — on the Item Priorities page each item is Don't care (0%), Low (50%), Normal (100%) or High
   (150%) of its worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and
   Direct Relocate start at Don't care.
@@ -40,7 +41,22 @@ Choice Pick, Compare) and **Heroes** (Gear Upgrade Path). The page files keep th
 - **Shopping Plan** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
-  and a step table of how much spending more on the event still pays off.
+  and a step table of how much spending more on the event still pays off. Dig events (Dwarven Mine, `mines` in
+  `pack_data.json`) take the pickaxes you own and the floor you've reached; the plan counts the days left of the
+  run (daily pack limits, 14 free pickaxes a day, +6 on days with a pack bought) and digs the floors in order at the
+  expected digs per floor (`core/mine.js`). Unused pickaxes carry over to the next run but the floors don't, so it
+  only digs a run that reaches the last progress reward (floor 100), and never past it (once there, the rest is saved
+  for the next run). A verdict card on top says dig or not, with a floor track (floors cleared before, this run's
+  floors or how far your pickaxes would reach) and the key numbers: the pickaxes still missing, what they'd cost and
+  give, or that the packs can't give them in the days left. The digs are random, so you choose how sure to be (the
+  exact distribution of a run's digs): the average ≈ 676 for floor 100 (enough in about 1 of 2 runs), 695 (9 in 10),
+  710 (99 in 100) or the worst case 780 (the default, saved in the browser); the plan counts with your choice, and the
+  card shows the chance your pickaxes suffice. The floor table also lists the floors above 100 (worth and ratio, never
+  dug); Details lists a stretch's progress reward, the wish rewards and
+  the expected tile loot; "How the mine works" lists the rules from the data. The
+  pickaxe tile shows where they come from as a bar (owned, free, purchase bonus, each pack) and what's left for the
+  next run. Extra Banknotes for an event are a cap: the plan only spends them where they buy at least what your last
+  normal Banknote does.
 - **Item Sources** (`sources.html`) — pick one item: every pack and shop offer on sale this week that gives it,
   nested at any depth (e.g. SR Resource Supplies → Herbs), ranked by Banknotes per unit, with how much each gives and
   an item ratio (worth of the item alone ÷ price).
