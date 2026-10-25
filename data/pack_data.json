@@ -5684,10 +5684,6 @@
                     "purchase_limit": 100,
                     "limit_type": "weekly"
                 },
-                "exclusive_weapon_omni_shard": {
-                    "item_id": "exclusive_weapon_omni_shard",
-                    "limit_type": "weekly"
-                },
                 "gearstone": {
                     "item_id": "gearstone",
                     "currency_cost": 500,

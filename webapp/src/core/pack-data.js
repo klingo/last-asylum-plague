@@ -36,9 +36,33 @@ function packageFamilyId(id, pkg) {
     return pkg.tier != null ? id.replace(/_t\d+$/, '') : id;
 }
 
-/** The raw pack data with its packages expanded (the shape every core module expects). */
+/**
+ * The shops with only their complete offers. An offer without a positive cost and quantity is still being
+ * entered (verify-data reports it); left in, its NaN spoils the whole fit and the plan would get it for free.
+ */
+function completeShops(shops) {
+    return Object.fromEntries(
+        Object.entries(shops).map(([id, shop]) => [
+            id,
+            {
+                ...shop,
+                offers: Object.fromEntries(
+                    Object.entries(shop.offers || {}).filter(
+                        ([, offer]) => offer.currency_cost > 0 && offer.quantity > 0,
+                    ),
+                ),
+            },
+        ]),
+    );
+}
+
+/** The raw pack data with its packages expanded and its shops complete (the shape every core module expects). */
 function normalizePackData(raw) {
-    return { ...raw, packages: expandPackageFamilies(raw.packages || {}) };
+    return {
+        ...raw,
+        packages: expandPackageFamilies(raw.packages || {}),
+        ...(raw.exchange_shops ? { exchange_shops: completeShops(raw.exchange_shops) } : {}),
+    };
 }
 
 export { normalizePackData, expandPackageFamilies, packageFamilyId };
