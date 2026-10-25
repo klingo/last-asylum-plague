@@ -24,7 +24,8 @@
  *   worth more than crafting it) and weakly ties it to them (the ratio fills in where the packs say
  *   little, e.g. Lv.1 raven gear; where they're clear, the packs win).
  * - Items the user doesn't care about are NOT pinned to 0 here (the deal % counts them); their
- *   priority weighs them later (item-values.js `weights`).
+ *   priority weighs them later (item-values.js `weights`). Only the items passed as `zeroItems` (the
+ *   "Count VIP points" setting) are fixed at 0 points: the deal % is then carried by the rest of a pack.
  *
  * Solved with Levenberg-Marquardt on log values (deterministic, a few milliseconds).
  * Pure module (no DOM/i18n), shared with Node scripts.
@@ -455,18 +456,24 @@ function solveLogFit(params, equations, prior, initial = null) {
  * Fits the base points of all leaf items (`data`: normalized, see pack-data.js).
  * - `excludeFamilies`: Set of package family ids left out (fitSensitivity).
  * - `initialValues`: Map parameter -> value to start from (a previous fit's `paramValues`).
+ * - `zeroItems`: Set of item ids worth 0 points (left out of what a pack's deal % pays for).
  * Returns `{ points, diagnostics, paramValues }`:
  * - `points`: Map itemId -> `{ value, source: 'fit'|'reversible', uncertainty?, support? }`
  *   (pass it to item-values.js as `basePoints`); currencies are not included.
  * - `diagnostics`: `{ packages: [{ id, ratio }], medianError, p90Error, parameters, equations }`
  *   where ratio = fitted contents / what the deal % says (1 = exact).
  */
-function fitItemPoints(data, { excludeFamilies = null, initialValues = null } = {}) {
+function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zeroItems = null } = {}) {
     const items = data.items || {};
     const packages = data.packages || {};
     const currencyIds = currencyItemIds(data.exchange_shops, data.mines);
 
     const pinned = new Map([[ANCHOR_ID, { value: 1, source: 'anchor' }]]);
+    for (const id of zeroItems || []) {
+        if (items[id] && id !== ANCHOR_ID) {
+            pinned.set(id, { value: 0, source: 'excluded' });
+        }
+    }
     lendReversible(items, pinned);
     const groupOf = tieGroups(items, pinned, currencyIds);
 

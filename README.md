@@ -18,7 +18,10 @@ its contents without a common value scale. The tool uses one:
   VIP shop) or what the floors they dig give.
 - **Your priorities** — on the Item Priorities page each item is Don't care (0%), Low (50%), Normal (100%) or High
   (150%) of its worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and
-  Direct Relocate start at Don't care.
+  Direct Relocate start at Don't care. They still count in the fit (the game's deal % pays for them), so the rest of a
+  pack isn't worth more for it. VIP points are the exception: by default ("Count VIP points in the worth" off on the
+  Home page) they're worth 0 in the fit too, so the other contents carry each pack's whole price, on every page;
+  switched on, the worth follows the game's deal % for them as well.
 - **Banknote worth** — one weekly optimisation (linear program, [HiGHS](https://highs.dev/) compiled to
   WebAssembly): the best purchases for your weekly Banknote spend within all purchase limits, passes and the events
   you tick. Worth = points ÷ what your last Banknote buys; diamonds and coins at what one more unit could still buy

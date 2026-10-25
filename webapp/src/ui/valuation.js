@@ -10,16 +10,18 @@
 import { fitItemPoints } from '../core/point-fit.js';
 import { solveWeeklyPlan } from '../core/planner.js';
 import { loadBrowserHighs } from './highs-browser.js';
-import { priorityWeights } from './settings.js';
+import { priorityWeights, zeroFitItems } from './settings.js';
 import { t } from './i18n.js';
 import { formatThousands } from './format.js';
 
-let fitCache = { data: null, fit: null };
+let fitCache = { data: null, key: null, fit: null };
 
-/** The deal % fit (cached: it only changes with the data). */
-function pointFit(data) {
-    if (fitCache.data !== data) {
-        fitCache = { data, fit: fitItemPoints(data) };
+/** The deal % fit (cached: it only changes with the data and the items the settings leave out, see zeroFitItems). */
+function pointFit(data, settings) {
+    const zeroItems = zeroFitItems(settings);
+    const key = zeroItems.join(',');
+    if (fitCache.data !== data || fitCache.key !== key) {
+        fitCache = { data, key, fit: fitItemPoints(data, { zeroItems: new Set(zeroItems) }) };
     }
     return fitCache.fit;
 }
@@ -35,14 +37,14 @@ function planOptions(data, settings, overrides = {}) {
         includePasses: true,
         includeExclusives: false,
         weights: priorityWeights(settings),
-        basePoints: pointFit(data).points,
+        basePoints: pointFit(data, settings).points,
         ...overrides,
     };
 }
 
 /** `overrides`: extra planner options for a what-if valuation (e.g. the Events page's exceeded pack limits). */
 async function buildValuation(data, settings, overrides = {}) {
-    const fit = pointFit(data);
+    const fit = pointFit(data, settings);
     const highs = await loadBrowserHighs();
     const plan = solveWeeklyPlan(highs, data, planOptions(data, settings, overrides));
 

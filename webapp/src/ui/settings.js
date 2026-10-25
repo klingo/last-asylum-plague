@@ -32,6 +32,9 @@ const DEFAULT_NONE_ITEMS = [
 
 const DEFAULT_SETTINGS = {
     budget: 20000, // Banknotes per week
+    // VIP points count in the deal % fit (false: worth 0, the rest of a pack carries its price) (Home). Stored
+    // under this name since the default became false, so a `countVipPoints: true` saved before doesn't stick.
+    vipPointsInWorth: false,
     extraDiamonds: 0, // diamonds per week from outside the packs, for the VIP Shop (Events page)
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
     exceedEventLimits: [], // event ids whose pack limits the Events page lifts ("Exceed event pack limits")
@@ -42,6 +45,11 @@ const DEFAULT_SETTINGS = {
     seasonalPasses: [], // family ids of the seasonal passes on sale right now; other passes are always on sale
     priorities: Object.fromEntries(DEFAULT_NONE_ITEMS.map((id) => [id, 'none'])), // itemId -> level ('normal' omitted)
 };
+
+/** Items worth 0 points in the deal % fit by the settings (point-fit.js `zeroItems`): VIP points, if not counted. */
+function zeroFitItems(settings) {
+    return settings.vipPointsInWorth ? [] : ['vip_points'];
+}
 
 /** Nearest priority level for an old weight factor. */
 function levelForWeight(weight) {
@@ -68,6 +76,9 @@ function loadSettings() {
     if (typeof stored.seasonalPass === 'string') {
         // Older settings: a single seasonal pass on sale.
         settings.seasonalPasses = [stored.seasonalPass];
+    }
+    if (typeof stored.vipPointsInWorth === 'boolean') {
+        settings.vipPointsInWorth = stored.vipPointsInWorth;
     }
     if (Number.isFinite(stored.extraDiamonds) && stored.extraDiamonds >= 0) {
         settings.extraDiamonds = stored.extraDiamonds;
@@ -179,4 +190,5 @@ export {
     PRIORITY_LEVELS,
     PRIORITY_WEIGHTS,
     MINE_SAFETY_LEVELS,
+    zeroFitItems,
 };

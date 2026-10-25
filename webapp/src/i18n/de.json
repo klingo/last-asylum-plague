@@ -129,7 +129,14 @@
         "spendRewardsDescription": "Wähle eine kumulative Ausgabenbelohnung und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
         "gearDescription": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Stufen und Sterne erhöhst, Schritt für Schritt.",
         "itemsDescription": "Sag dem Tool, welche Gegenstände dir egal sind und welche dir besonders wichtig sind. Jede Seite nutzt das.",
-        "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen."
+        "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen.",
+        "settings": {
+            "heading": "Einstellungen",
+            "countVipPoints": "VIP-Punkte im Wert mitzählen",
+            "impact": "Ändert jeden Wert auf jeder Seite",
+            "vipOn": "An: Die Werte folgen dem Deal-% des Spiels, in dem VIP-Punkte Teil des Paketpreises sind.",
+            "vipOff": "Aus (Standard): VIP-Punkte sind nichts wert; der übrige Inhalt jedes Pakets trägt seinen Preis (Münzen, Spitzhacken und was sie kaufen, steigen)."
+        }
     },
     "calendar": {
         "schedule": {

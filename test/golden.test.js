@@ -7,14 +7,19 @@ import { fitItemPoints, fitSensitivity } from '../webapp/src/core/point-fit.js';
 import { solveWeeklyPlan } from '../webapp/src/core/planner.js';
 import { solveNeeds } from '../webapp/src/core/acquire.js';
 import { loadHighs } from '../webapp/src/core/lp.js';
-import { DEFAULT_SETTINGS, priorityWeights } from '../webapp/src/ui/settings.js';
+import { DEFAULT_SETTINGS, priorityWeights, zeroFitItems } from '../webapp/src/ui/settings.js';
 import { loadFixture, expectGolden } from './helpers.js';
 
 const data = loadFixture();
 const fit = fitItemPoints(data);
+// The fit as the pages use it by default: VIP points worth 0 ("Count VIP points in the worth" off).
+const defaultFit = fitItemPoints(data, { zeroItems: new Set(zeroFitItems(DEFAULT_SETTINGS)) });
 const highs = await loadHighs();
 
-/** Planner options as valuation.js `planOptions` builds them from the default settings. */
+/**
+ * Planner options as valuation.js `planOptions` builds them from the default settings, but on the fit with VIP
+ * points counted (the model as the game prices it); `plan-default-no-vip` pins the pages' default fit.
+ */
 function planOptions(overrides = {}) {
     return {
         budget: DEFAULT_SETTINGS.budget,
@@ -83,6 +88,8 @@ test('fit sensitivity (leave one pack family out)', () => {
 const scenarios = {
     // Ranking, Items, Choices, ... with the default settings.
     'plan-default': {},
+    // The pages' default: VIP points left out of the fit, the rest of each pack carries its price.
+    'plan-default-no-vip': { basePoints: defaultFit.points },
     // Budget so high that it isn't binding: the rate falls back to the weakest bought pack.
     'plan-unbound': { budget: 1000000 },
     // Events, a seasonal pass and a spend reward track running (Spend Rewards).

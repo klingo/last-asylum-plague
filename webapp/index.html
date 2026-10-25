@@ -73,6 +73,24 @@
                     </a>
                 </div>
             </section>
+
+            <!-- Settings that shape every value in the app (saved in the browser, like the weekly spend). -->
+            <section class="card welcome-settings">
+                <h2 data-i18n="welcome.settings.heading"></h2>
+                <!-- One row per setting: what it does (the active state stands out) and a switch. -->
+                <label class="setting-row" for="count-vip-points">
+                    <span class="setting-row__text">
+                        <span class="setting-row__title">
+                            <span data-item-id="vip_points"></span>
+                            <span data-i18n="welcome.settings.countVipPoints"></span>
+                            <span class="impact-badge" data-i18n="welcome.settings.impact"></span>
+                        </span>
+                        <span class="setting-row__state" data-state="on" data-i18n="welcome.settings.vipOn"></span>
+                        <span class="setting-row__state" data-state="off" data-i18n="welcome.settings.vipOff"></span>
+                    </span>
+                    <input type="checkbox" class="switch" id="count-vip-points" role="switch" />
+                </label>
+            </section>
         </main>
         <footer class="app-footer"><span data-i18n="footer.welcome"></span></footer>
         <script type="module" src="/src/pages/welcome.js"></script>

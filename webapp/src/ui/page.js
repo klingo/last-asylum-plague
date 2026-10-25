@@ -23,7 +23,7 @@ function showLoadError(error) {
         );
 }
 
-/** `init(data)`: the page's setup (may be async); `withData: false` for pages without pack data (Home). */
+/** `init(data)`: the page's setup (may be async); `withData: false` for a page without pack data. */
 function startPage(pageId, { init = null, onLocaleChange = null, withData = true } = {}) {
     renderNav(pageId);
     applyStaticTranslations();

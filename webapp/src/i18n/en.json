@@ -129,7 +129,14 @@
         "spendRewardsDescription": "Pick a cumulative spend-reward track and see up to which tier spending more still pays off.",
         "gearDescription": "A squad's UR gear: in which order to craft it and to raise its levels and stars, step by step.",
         "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
-        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it."
+        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it.",
+        "settings": {
+            "heading": "Settings",
+            "countVipPoints": "Count VIP points in the worth",
+            "impact": "Affects every value on every page",
+            "vipOn": "On: values follow the game's deal %, where VIP points are part of a pack's price.",
+            "vipOff": "Off (default): VIP points are worth nothing; each pack's other contents carry its price (coins, pickaxes and what they buy rise)."
+        }
     },
     "calendar": {
         "schedule": {
