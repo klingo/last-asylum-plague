@@ -6319,6 +6319,14 @@
             "category": "ingame_event",
             "image": "pandemic_experience"
         },
+        "quiz_of_wisdom": {
+            "name": {
+                "en": "Quiz of Wisdom",
+                "de": "Quiz der Weisheit"
+            },
+            "category": "ingame_event",
+            "image": "quiz_of_wisdom"
+        },
         "recluse_merchant": {
             "name": {
                 "en": "Recluse Merchant",
@@ -6843,6 +6851,12 @@
             {
                 "start": "2026-10-14",
                 "end": "2026-10-16"
+            }
+        ],
+        "quiz_of_wisdom": [
+            {
+                "start": "2026-10-25",
+                "end": "2026-10-25"
             }
         ],
         "recluse_merchant": [

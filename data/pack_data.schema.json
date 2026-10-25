@@ -689,7 +689,8 @@
                 "demon_king_ranger_blight",
                 "demon_king_warrior_blight",
                 "demon_king_warlock_blight",
-                "wandering_phantom"
+                "wandering_phantom",
+                "quiz_of_wisdom"
             ]
         },
         "event": {
