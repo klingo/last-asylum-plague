@@ -116,8 +116,11 @@ image of its main item (the package's `icon`, else its first item other than dia
 
 ### Deploying to GitHub Pages
 
-`.github/workflows/deploy-webapp.yml` lints, tests and builds the webapp with the current `data/pack_data.json`, then
-deploys it on every push to `master`, or manually via "Run workflow". Since the webapp computes everything live from that
-data, the deployed site is always in sync with `data/pack_data.json` at deploy time.
+`.github/workflows/deploy-webapp.yml` verifies the data, lints, tests and builds the webapp with the current
+`data/pack_data.json`, then deploys it on every push to `master`, or manually via "Run workflow". The same checks run on
+every pull request into `master` (without deploying). Since the webapp computes everything live from that data, the
+deployed site is always in sync with `data/pack_data.json` at deploy time.
 
-One-time repository setup: in **Settings → Pages**, set **Source** to **GitHub Actions**.
+One-time repository setup: in **Settings → Pages**, set **Source** to **GitHub Actions**. To make a PR need passing
+checks before it can be merged, add a branch protection rule (or ruleset) for `master` under **Settings → Branches**
+with **Require status checks to pass before merging** and select `verify-data` (plus `lint`, `test`, `build` if wanted).

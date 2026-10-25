@@ -1,7 +1,10 @@
-name: Deploy webapp to GitHub Pages
+name: Verify and deploy webapp
 
 on:
     push:
+        branches: [master]
+    # The checks below also run on every PR into master (make them required in the branch protection).
+    pull_request:
         branches: [master]
     workflow_dispatch: {}
 
@@ -10,9 +13,10 @@ permissions:
     pages: write
     id-token: write
 
-# Only allow one concurrent deployment, cancelling in-progress runs.
+# Only allow one concurrent deployment, cancelling in-progress runs. A PR has its own group, so its checks can
+# neither cancel a deployment nor be cancelled by one.
 concurrency:
-    group: pages
+    group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'pages' }}
     cancel-in-progress: true
 
 jobs:
@@ -89,16 +93,20 @@ jobs:
             - name: Build the webapp
               run: npm run webapp:build
 
+            # Only a deployment needs the Pages artifact; on a PR the build itself is the check.
             - name: Setup Pages
+              if: github.event_name != 'pull_request'
               uses: actions/configure-pages@v6
 
             - name: Upload Pages artifact
+              if: github.event_name != 'pull_request'
               uses: actions/upload-pages-artifact@v5
               with:
                   path: webapp/dist
 
     deploy:
         needs: [build, lint, test]
+        if: github.event_name != 'pull_request'
         runs-on: ubuntu-latest
         environment:
             name: github-pages
