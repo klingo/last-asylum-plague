@@ -95,7 +95,7 @@ async function verifyData() {
 
         if (!valid && validate.errors) {
             for (const err of validate.errors) {
-                reportError('Schema', `${err.instancePath || err.dataPath || 'root'} ${err.message}`);
+                reportError('Schema', `${err.instancePath || 'root'} ${err.message}`);
             }
         }
     });
