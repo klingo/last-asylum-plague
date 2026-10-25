@@ -427,10 +427,19 @@ button:disabled {
     gap: 20px;
     padding: 14px 16px;
     border: 1px solid var(--border);
-    border-left: 4px solid var(--warn);
+    border-left: 4px solid var(--accent);
     border-radius: var(--radius);
     background: var(--panel-alt);
     cursor: pointer;
+}
+
+.setting-row + .setting-row {
+    margin-top: 10px;
+}
+
+/* A setting that changes every value in the app. */
+.setting-row--impact {
+    border-left-color: var(--warn);
 }
 
 .setting-row__text {
@@ -1049,6 +1058,8 @@ tbody tr.choice-details:hover {
 
 .setup-bar__summary {
     display: flex;
+    flex: 1 1 0;
+    min-width: 0;
     flex-wrap: wrap;
     align-items: center;
     gap: 6px 18px;
@@ -3472,6 +3483,44 @@ a.schedule__bar {
 }
 
 /* The plan's rate in the setup bar: its explanation on hover / focus. */
+/* The setup bar's "Follow the calendar" switch: title (with the "running now" dot) and what it does right now. */
+.calendar-follow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.calendar-follow__text {
+    display: grid;
+    gap: 2px;
+}
+
+.calendar-follow__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.calendar-follow__title .toggle-chip__now {
+    margin-left: 0;
+}
+
+/* "Following the calendar" in the setup bar's summary: the mode is on. */
+.setup-chip--calendar {
+    gap: 6px;
+    padding: 1px 8px;
+    border: 1px solid var(--good);
+    border-radius: 999px;
+    color: var(--good);
+    font-size: 0.8rem;
+}
+
+.setup-chip--calendar .toggle-chip__now {
+    margin-left: 0;
+}
+
 .setup-chip--rate {
     color: var(--text-dim);
     border-bottom: 1px dotted var(--text-dim);

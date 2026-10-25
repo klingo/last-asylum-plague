@@ -1,11 +1,13 @@
 /**
  * How every page starts: the stylesheet, the nav (with `pageId` marked), the static translations, the pack
- * data, then the page's own `init(data)`. A failed start shows one error card instead of the page.
+ * data (and, while following the calendar, today's events and passes: calendar-sync.js), then the page's own
+ * `init(data)`. A failed start shows one error card instead of the page.
  *
  * On a language switch the static texts (`data-i18n`) are translated again, then the page's
  * `onLocaleChange()` re-renders the rest; only once `init` has finished, so it never runs on half a page.
  */
 import '../style.css';
+import { followCalendar } from './calendar-sync.js';
 import { renderNav } from './nav.js';
 import { applyStaticTranslations, t } from './i18n.js';
 import { loadPackData } from './data.js';
@@ -36,6 +38,10 @@ function startPage(pageId, { init = null, onLocaleChange = null, withData = true
     });
     (async () => {
         const data = withData ? await loadPackData() : null;
+        if (data) {
+            // Following the calendar: today's events and passes before the page computes anything.
+            followCalendar(data);
+        }
         await init?.(data);
         ready = true;
     })().catch(showLoadError);

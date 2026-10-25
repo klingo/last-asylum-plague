@@ -4,8 +4,10 @@
  * button that opens the controls below it (spend | events | passes; toggle chips for events and passes).
  * Changes go to the settings store (settings.js `updateSettings`); pages listen with `onSettingsChange`.
  *
- * Events and passes the recorded calendar (`schedule`) shows running today carry a dot, and one button
- * selects exactly those. The page shows its plan's rate in the bar with `showRate(valuation)`.
+ * Events and passes the recorded calendar (`schedule`) shows running today carry a dot. The "Follow the calendar"
+ * switch selects exactly those and keeps doing it on every page load (calendar-sync.js); selecting or unselecting
+ * one by hand turns it off, like a map's "follow my location" when you pan. While it's on, the summary says so.
+ * The page shows its plan's rate in the bar with `showRate(valuation)`.
  *
  * `fields`: which controls to show, any of 'budget', 'events', 'passes'.
  * Returns `{ open(), showRate(valuation) }`.
@@ -13,7 +15,7 @@
 import { localizedName, applyStaticTranslations, t, tHtml } from './i18n.js';
 import { getSettings, updateSettings, onSettingsChange, SETTINGS_KEY } from './settings.js';
 import { packageFamilyId } from '../core/pack-data.js';
-import { gameDay, scheduleRuns } from '../core/schedule.js';
+import { runningToday, calendarSelection } from './calendar-sync.js';
 import { escapeHtml, escapeAttr } from './html.js';
 import { banknoteIconHtml } from './images.js';
 import { formatThousands } from './format.js';
@@ -32,16 +34,6 @@ function passFamilies(packages) {
         }
     }
     return [...families];
-}
-
-/** Ids (events, pass families, tracks) the recorded calendar shows running today (the game day). */
-function runningToday(data) {
-    const today = gameDay(new Date()).day;
-    return new Set(
-        [...scheduleRuns(data)]
-            .filter(([, { runs }]) => runs.some((run) => run.start <= today && today <= run.end))
-            .map(([id]) => id),
-    );
 }
 
 const ALL_FIELDS = ['budget', 'events', 'passes'];
@@ -100,8 +92,6 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
         Object.entries(data.events || {}).filter(([, event]) => event.category !== 'ingame_event'),
     );
     const running = runningToday(data);
-    const runningEvents = Object.keys(shoppableEvents).filter((id) => running.has(id));
-    const runningPasses = passes.map(([id]) => id).filter((id) => running.has(id));
     const offerCalendar = (show.has('events') || show.has('passes')) && Object.keys(data.schedule || {}).length > 0;
 
     /** "🪙 20,000 / week · Events: … · Passes: … · Last Banknote: 41.41 pts" for the page's fields. */
@@ -143,6 +133,12 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
                 )}</span>`,
             );
         }
+        // Last, so switching it on or off doesn't shift the rest of the summary.
+        if (offerCalendar && settings.followsCalendar) {
+            chips.push(
+                `<span class="setup-chip setup-chip--calendar"><span class="toggle-chip__now" aria-hidden="true"></span>${escapeHtml(t('valuation.followingChip'))}</span>`,
+            );
+        }
         summary.innerHTML = chips.join('');
         enableInfoTooltips(summary);
     }
@@ -178,8 +174,13 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
                 ${
                     offerCalendar
                         ? `<div class="setup-panel__calendar">
-                            <button type="button" class="btn-secondary" id="vp-calendar" data-i18n="valuation.useCalendar"></button>
-                            <span class="text-dim"><span class="toggle-chip__now" aria-hidden="true"></span> <span data-i18n="valuation.useCalendarHint"></span></span>
+                            <label class="calendar-follow" for="vp-follow">
+                                <input type="checkbox" class="switch" role="switch" id="vp-follow" />
+                                <span class="calendar-follow__text">
+                                    <span class="calendar-follow__title"><span class="toggle-chip__now" aria-hidden="true"></span><span data-i18n="valuation.followCalendar"></span></span>
+                                    <span class="calendar-follow__state text-dim"></span>
+                                </span>
+                            </label>
                         </div>`
                         : ''
                 }
@@ -202,18 +203,20 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
             const { key, value } = chip.dataset;
             chip.addEventListener('click', () => {
                 const list = getSettings()[key];
-                updateSettings({ [key]: list.includes(value) ? list.filter((id) => id !== value) : [...list, value] });
+                // A choice by hand: no longer following the calendar.
+                updateSettings({
+                    [key]: list.includes(value) ? list.filter((id) => id !== value) : [...list, value],
+                    followsCalendar: false,
+                });
             });
         }
-        container.querySelector('#vp-calendar')?.addEventListener('click', () => {
-            const patch = {};
-            if (show.has('events')) {
-                patch.activeEvents = runningEvents;
-            }
-            if (show.has('passes')) {
-                patch.seasonalPasses = runningPasses;
-            }
-            updateSettings(patch);
+        // On: today's events and passes right away, and on every page load from now on.
+        container.querySelector('#vp-follow')?.addEventListener('change', (event) => {
+            updateSettings(
+                event.target.checked
+                    ? { followsCalendar: true, ...calendarSelection(data) }
+                    : { followsCalendar: false },
+            );
         });
         renderValues();
     }
@@ -228,6 +231,13 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
         for (const chip of container.querySelectorAll('.toggle-chip')) {
             const { key, value } = chip.dataset;
             chip.setAttribute('aria-pressed', String(settings[key].includes(value)));
+        }
+        const follow = container.querySelector('#vp-follow');
+        if (follow) {
+            follow.checked = settings.followsCalendar === true;
+            container.querySelector('.calendar-follow__state').textContent = t(
+                settings.followsCalendar ? 'valuation.followOn' : 'valuation.followOff',
+            );
         }
     }
 

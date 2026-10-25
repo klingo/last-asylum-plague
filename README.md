@@ -83,7 +83,9 @@ Choice Pick, Compare) and **Heroes** (Gear Upgrade Path). The page files keep th
 
 Weekly spend, events, seasonal passes on sale (e.g. the Gear Pass) and item priorities are shared by all pages
 (saved in the browser). In the setup bar, events and passes the calendar shows running today carry a green dot, and
-"Use this week's calendar" selects exactly those; the bar also shows what your last Banknote buys (hover it for the
+"Follow the calendar" (on by default) switches to exactly those and keeps them up to date on every page load ("Following the
+calendar" in the bar while it's on); selecting or unselecting an event or pass yourself turns it off; the bar also
+shows what your last Banknote buys (hover it for the
 explanation). Item names link to Item Sources, and the pages keep their selection in the URL (a reload or a shared
 link opens the same item, event, track or comparison). On phones the tables drop their secondary columns. Item images:
 drop a `<item_id>.png` into `webapp/public/assets/items/<category>/` (e.g. `items/chest/`; images not sorted yet are also found directly in `items/`, placeholder otherwise). Every item's `rarity`

@@ -35,6 +35,9 @@ const DEFAULT_SETTINGS = {
     // VIP points count in the deal % fit (false: worth 0, the rest of a pack carries its price) (Home). Stored
     // under this name since the default became false, so a `countVipPoints: true` saved before doesn't stick.
     vipPointsInWorth: false,
+    // Events and passes follow the calendar on every page load (setup bar switch; a change by hand turns it off).
+    // Stored under this name since the default became on, so a `followCalendar: false` saved before doesn't stick.
+    followsCalendar: true,
     extraDiamonds: 0, // diamonds per week from outside the packs, for the VIP Shop (Events page)
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
     exceedEventLimits: [], // event ids whose pack limits the Events page lifts ("Exceed event pack limits")
@@ -79,6 +82,9 @@ function loadSettings() {
     }
     if (typeof stored.vipPointsInWorth === 'boolean') {
         settings.vipPointsInWorth = stored.vipPointsInWorth;
+    }
+    if (typeof stored.followsCalendar === 'boolean') {
+        settings.followsCalendar = stored.followsCalendar;
     }
     if (Number.isFinite(stored.extraDiamonds) && stored.extraDiamonds >= 0) {
         settings.extraDiamonds = stored.extraDiamonds;
