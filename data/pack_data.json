@@ -6235,6 +6235,14 @@
             },
             "category": "ingame_event"
         },
+        "crystal_cluster_valley": {
+            "name": {
+                "en": "Crystal Cluster Valley",
+                "de": "Kristallcluster-Tal"
+            },
+            "category": "ingame_event",
+            "image": "crystal_cluster_valley"
+        },
         "demon_king_ranger_blight": {
             "name": {
                 "en": "Demon King: Ranger Blight",
@@ -6779,6 +6787,12 @@
             {
                 "start": "2026-10-12",
                 "end": "2026-10-13"
+            }
+        ],
+        "crystal_cluster_valley": [
+            {
+                "start": "2026-10-25",
+                "end": "2026-10-25"
             }
         ],
         "demon_king_ranger_blight": [
