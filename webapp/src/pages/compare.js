@@ -249,6 +249,6 @@ startPage('compare', {
         for (const side of sides) {
             side.picker.setItems(data.items);
         }
-        recompute();
+        void recompute();
     },
 });

@@ -425,9 +425,6 @@ function createItemPicker({
             selectedId = '';
             renderTrigger();
         },
-        hasItem(itemId) {
-            return items.some((item) => item.id === itemId);
-        },
     };
 }
 

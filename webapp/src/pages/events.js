@@ -1370,9 +1370,9 @@ function onEventChange() {
         Object.keys(settings.extraEventBanknotes || {}).length > 0 ||
         overridesKey() !== valuationKey
     ) {
-        recompute();
+        void recompute();
     } else {
-        withLoading(render);
+        void withLoading(render);
     }
 }
 

@@ -34,7 +34,7 @@ const trackPicker = createItemPicker({
     onChange: () => {
         expandedKeys.clear();
         setUrlParams({ track: trackPicker.getValue() });
-        withLoading(render);
+        void withLoading(render);
     },
 });
 const trackBanner = document.getElementById('track-banner');

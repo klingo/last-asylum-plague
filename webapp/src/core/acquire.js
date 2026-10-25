@@ -154,7 +154,7 @@ function solveNeeds(highs, data, needs, options = {}) {
 
     // Free conversions between items.
     const conversions = new Map();
-    const convert = (name, kind, itemId, detail, integer = false) => {
+    const convert = (name, kind, itemId, detail = {}, integer = false) => {
         conversions.set(name, { kind, itemId, ...detail });
         model.objective.set(name, CONVERSION_COST);
         if (integer) {
