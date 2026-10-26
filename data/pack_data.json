@@ -3777,6 +3777,186 @@
             "seasonal": true,
             "delivery_days": 7
         },
+        "halloween_ball_mystery_shop_lv5_raven_gear_choice_chest_iii": {
+            "name": {
+                "en": "Mystery Shop (Lv.5 Raven Gear Choice Chest III)",
+                "de": "Geheim-Shop (Lv.5 Raben-Ausrüstung Wahltruhe)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 1999,
+            "deal_percentage": 1500,
+            "purchase_limit": 2,
+            "limit_type": "daily",
+            "contains": {
+                "lv5_raven_gear_choice_chest": 80,
+                "diamonds": 2000,
+                "vip_points": 2000,
+                "lv4_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_magic_hat_iv": {
+            "name": {
+                "en": "Mystery Shop (Magic Hat IV)",
+                "de": "Geheim-Shop (Zauberhut IV)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 4999,
+            "deal_percentage": 2700,
+            "purchase_limit": 4,
+            "limit_type": "daily",
+            "contains": {
+                "magic_hat": 500,
+                "diamonds": 5000,
+                "vip_points": 5000,
+                "lv5_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_magic_hat_v": {
+            "name": {
+                "en": "Mystery Shop (Magic Hat V)",
+                "de": "Geheim-Shop (Zauberhut V)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 9999,
+            "deal_percentage": 2700,
+            "purchase_limit": 4,
+            "limit_type": "daily",
+            "contains": {
+                "magic_hat": 1000,
+                "diamonds": 10000,
+                "vip_points": 10000,
+                "lv6_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_magic_lucky_box_i": {
+            "name": {
+                "en": "Mystery Shop (Magic Lucky Box I)",
+                "de": "Geheim-Shop (Zauberhut-Glücksbox I)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 499,
+            "deal_percentage": 2600,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "magic_hat_lucky_box": 8,
+                "diamonds": 500,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_magic_lucky_box_ii": {
+            "name": {
+                "en": "Mystery Shop (Magic Lucky Box II)",
+                "de": "Geheim-Shop (Zauberhut-Glücksbox II)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 999,
+            "deal_percentage": 2600,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "magic_hat_lucky_box": 16,
+                "diamonds": 1000,
+                "vip_points": 1000,
+                "lv3_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_magic_lucky_box_iii": {
+            "name": {
+                "en": "Mystery Shop (Magic Lucky Box III)",
+                "de": "Geheim-Shop (Zauberhut-Glücksbox III)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 1999,
+            "deal_percentage": 2600,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "magic_hat_lucky_box": 32,
+                "diamonds": 2000,
+                "vip_points": 2000,
+                "lv4_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_magic_lucky_box_iv": {
+            "name": {
+                "en": "Mystery Shop (Magic Lucky Box IV)",
+                "de": "Geheim-Shop (Zauberhut-Glücksbox IV)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 4999,
+            "deal_percentage": 2600,
+            "purchase_limit": 2,
+            "limit_type": "daily",
+            "contains": {
+                "magic_hat_lucky_box": 80,
+                "diamonds": 5000,
+                "vip_points": 5000,
+                "lv5_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_raven_essence_iii": {
+            "name": {
+                "en": "Mystery Shop (Raven Essence III)",
+                "de": "Geheim-Shop (Rabenessenz III)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 1999,
+            "deal_percentage": 1500,
+            "purchase_limit": 2,
+            "limit_type": "daily",
+            "contains": {
+                "raven_essence": 80,
+                "diamonds": 2000,
+                "vip_points": 2000,
+                "lv4_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_ur_hero_omni_shard_ii": {
+            "name": {
+                "en": "Mystery Shop (UR Hero Omni Shard II)",
+                "de": "Geheim-Shop (UR Held-Omni-Splitter II)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 999,
+            "deal_percentage": 1500,
+            "purchase_limit": 2,
+            "limit_type": "daily",
+            "contains": {
+                "ur_hero_omni_shard": 15,
+                "diamonds": 1000,
+                "vip_points": 1000,
+                "lv3_alliance_chest": 1
+            }
+        },
+        "halloween_ball_mystery_shop_ur_hero_omni_shard_iii": {
+            "name": {
+                "en": "Mystery Shop (UR Hero Omni Shard III)",
+                "de": "Geheim-Shop (UR Held-Omni-Splitter III)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 1999,
+            "deal_percentage": 1500,
+            "purchase_limit": 2,
+            "limit_type": "daily",
+            "contains": {
+                "ur_hero_omni_shard": 30,
+                "diamonds": 2000,
+                "vip_points": 2000,
+                "lv4_alliance_chest": 1
+            }
+        },
         "halloween_ball_trick_or_treat": {
             "name": {
                 "en": "Trick-or-Treat",
