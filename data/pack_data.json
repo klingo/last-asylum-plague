@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-25"
+        "last_updated": "2026-10-26"
     },
     "items": {
         "alliance_coins": {
@@ -5682,6 +5682,13 @@
                     "currency_cost": 30000,
                     "quantity": 1,
                     "purchase_limit": 100,
+                    "limit_type": "weekly"
+                },
+                "exclusive_weapon_omni_shard": {
+                    "item_id": "exclusive_weapon_omni_shard",
+                    "currency_cost": 500000,
+                    "quantity": 1,
+                    "purchase_limit": 5,
                     "limit_type": "weekly"
                 },
                 "gearstone": {
