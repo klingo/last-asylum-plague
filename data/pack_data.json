@@ -956,7 +956,94 @@
                 "de": "Lv.3 Allianz Truhe"
             },
             "category": "chest",
-            "rarity": "sr"
+            "rarity": "sr",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "recruit_ticket": 1
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "survivor_recruit_ticket": 1
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "alliance_coins": 500
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "timber_level_supply_sr": 3
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "grain_level_supply_sr": 3
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "herb_level_supply_sr": 3
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "resource_supply_sr": 3
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "resource_supply_general": 3
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "speedup": 10
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "construction_speedup": 10
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "research_speedup": 10
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "diamonds": 10
+                    },
+                    "probability": 0.04
+                },
+                {
+                    "contains": {
+                        "basic_gear_supply": 40
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "vip_points": 100
+                    },
+                    "probability": 0.1
+                }
+            ]
         },
         "lv3_attackers_claw": {
             "name": {
@@ -1084,7 +1171,94 @@
             },
             "category": "chest",
             "rarity": "ssr",
-            "image": "city_seizure_chest"
+            "image": "city_seizure_chest",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "recruit_ticket": 1
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "survivor_recruit_ticket": 1
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "alliance_coins": 1000
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "timber_level_supply_sr": 4
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "grain_level_supply_sr": 4
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "herb_level_supply_sr": 4
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "resource_supply_sr": 4
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "resource_supply_general": 4
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "speedup": 20
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "construction_speedup": 20
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "research_speedup": 20
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "diamonds": 20
+                    },
+                    "probability": 0.04
+                },
+                {
+                    "contains": {
+                        "basic_gear_supply": 60
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "vip_points": 200
+                    },
+                    "probability": 0.1
+                }
+            ]
         },
         "lv5_alliance_chest": {
             "name": {
@@ -1093,7 +1267,94 @@
             },
             "category": "chest",
             "rarity": "ur",
-            "image": "ssr_explorer_chest"
+            "image": "ssr_explorer_chest",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "recruit_ticket": 1
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "survivor_recruit_ticket": 1
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "alliance_coins": 2500
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "timber_level_supply_sr": 6
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "grain_level_supply_sr": 6
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "herb_level_supply_sr": 6
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "resource_supply_sr": 6
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "resource_supply_general": 6
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "speedup": 50
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "construction_speedup": 50
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "research_speedup": 50
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "diamonds": 50
+                    },
+                    "probability": 0.04
+                },
+                {
+                    "contains": {
+                        "basic_gear_supply": 80
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "vip_points": 500
+                    },
+                    "probability": 0.1
+                }
+            ]
         },
         "lv5_attackers_claw": {
             "name": {
@@ -1253,7 +1514,94 @@
             },
             "category": "chest",
             "rarity": "mr",
-            "image": "ur_adventure_chest"
+            "image": "ur_adventure_chest",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "recruit_ticket": 1
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "survivor_recruit_ticket": 1
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "alliance_coins": 5000
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "timber_level_supply_sr": 8
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "grain_level_supply_sr": 8
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "herb_level_supply_sr": 8
+                    },
+                    "probability": 0.15
+                },
+                {
+                    "contains": {
+                        "resource_supply_sr": 8
+                    },
+                    "probability": 0.1
+                },
+                {
+                    "contains": {
+                        "resource_supply_general": 8
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "speedup": 100
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "construction_speedup": 100
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "research_speedup": 100
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "diamonds": 100
+                    },
+                    "probability": 0.04
+                },
+                {
+                    "contains": {
+                        "basic_gear_supply": 160
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "vip_points": 1000
+                    },
+                    "probability": 0.1
+                }
+            ]
         },
         "magic_hat": {
             "name": {
