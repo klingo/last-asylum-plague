@@ -252,6 +252,15 @@
                 ]
             }
         },
+        "demon_knight_permanent": {
+            "name": {
+                "en": "Demon Knight (Permanent)",
+                "de": "Dämonenritter (Dauerhaft)"
+            },
+            "category": "skin_decor",
+            "rarity": "ur",
+            "image": "demon_knight_permanent"
+        },
         "demons_eye": {
             "name": {
                 "en": "Demon's Eye",
@@ -501,6 +510,15 @@
                 "ur_epigraph_shard": 800
             },
             "substitutes_for": ["ur_epigraph"]
+        },
+        "haunting_shadows_permanent": {
+            "name": {
+                "en": "Haunting Shadows (Permanent)",
+                "de": "Spukende Schatten (Dauerhaft)"
+            },
+            "category": "skin_decor",
+            "rarity": "ur",
+            "image": "haunting_shadows_permanent"
         },
         "healing_speedup": {
             "name": {
@@ -1237,6 +1255,49 @@
             "rarity": "mr",
             "image": "ur_adventure_chest"
         },
+        "magic_hat": {
+            "name": {
+                "en": "Magic Hat",
+                "de": "Zauberhut"
+            },
+            "category": "event_item",
+            "rarity": "ur"
+        },
+        "magic_hat_lucky_box": {
+            "name": {
+                "en": "Magic Hat Lucky Box",
+                "de": "Zauberhut-Glücksbox"
+            },
+            "category": "chest",
+            "rarity": "ur",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "magic_hat": 4000
+                    },
+                    "probability": 0.0001
+                },
+                {
+                    "contains": {
+                        "magic_hat": 300
+                    },
+                    "probability": 0.001
+                },
+                {
+                    "contains": {
+                        "magic_hat": 50
+                    },
+                    "probability": 0.04
+                },
+                {
+                    "contains": {
+                        "magic_hat": 5
+                    },
+                    "probability": 0.9589
+                }
+            ]
+        },
         "moon_coin": {
             "name": {
                 "en": "Moon Coin",
@@ -1336,6 +1397,14 @@
                 "ur_epigraph_shard": 800
             },
             "substitutes_for": ["ur_epigraph"]
+        },
+        "pumpkin_ghost": {
+            "name": {
+                "en": "Pumpkin Ghost",
+                "de": "Kürbisgeist"
+            },
+            "category": "skin_decor",
+            "rarity": "ssr"
         },
         "r_epigraph": {
             "name": {
@@ -3358,6 +3427,55 @@
                 }
             },
             "seasonal": true,
+            "delivery_days": 7
+        },
+        "halloween_ball_trick_or_treat": {
+            "name": {
+                "en": "Trick-or-Treat",
+                "de": "Süßes oder Saures"
+            },
+            "image": "trick_or_treat",
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "limit_type": "weekly",
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 10500,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "lv2_alliance_chest": 1,
+                        "magic_hat_lucky_box": 3,
+                        "recruit_ticket": 6,
+                        "tempered_steel": 8,
+                        "resource_supply_ur": 9,
+                        "raven_essence": 8,
+                        "survivor_recruit_ticket": 3,
+                        "antitoxin_level_supply_ssr": 4,
+                        "resource_supply_ssr": 6,
+                        "raven_fruit": 10000,
+                        "gearstone": 1200
+                    }
+                },
+                "2": {
+                    "price": 1999,
+                    "deal_percentage": 8159,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "lv4_alliance_chest": 1,
+                        "magic_hat_lucky_box": 9,
+                        "recruit_ticket": 18,
+                        "tempered_steel": 24,
+                        "resource_supply_ur": 27,
+                        "raven_essence": 15,
+                        "survivor_recruit_ticket": 9,
+                        "antitoxin_level_supply_ssr": 12,
+                        "resource_supply_ssr": 18,
+                        "raven_fruit": 15000,
+                        "gearstone": 3600
+                    }
+                }
+            },
             "delivery_days": 7
         },
         "hero_awaken": {
@@ -5399,6 +5517,107 @@
                 }
             }
         },
+        "halloween_bazaar_shop": {
+            "name": {
+                "en": "Halloween Bazaar",
+                "de": "Halloween-Basar"
+            },
+            "event_id": "halloween_ball",
+            "currency_item_id": "magic_hat",
+            "offers": {
+                "antitoxin_level_supply_ssr": {
+                    "item_id": "antitoxin_level_supply_ssr",
+                    "currency_cost": 5,
+                    "quantity": 1,
+                    "purchase_limit": 2000,
+                    "limit_type": "weekly"
+                },
+                "cuir_chest_ur": {
+                    "item_id": "curio_chest_ur",
+                    "currency_cost": 70,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                },
+                "demon_knight_permanent": {
+                    "item_id": "demon_knight_permanent",
+                    "currency_cost": 4000,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "lifetime"
+                },
+                "gearstone": {
+                    "item_id": "gearstone",
+                    "currency_cost": 5,
+                    "quantity": 100,
+                    "purchase_limit": 2000,
+                    "limit_type": "weekly"
+                },
+                "haunting_shadows_permanent": {
+                    "item_id": "haunting_shadows_permanent",
+                    "currency_cost": 2000,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "lifetime"
+                },
+                "pumpkin_ghost": {
+                    "item_id": "pumpkin_ghost",
+                    "currency_cost": 40,
+                    "quantity": 1,
+                    "purchase_limit": 81,
+                    "limit_type": "weekly"
+                },
+                "raven_essence": {
+                    "item_id": "raven_essence",
+                    "currency_cost": 50,
+                    "quantity": 20,
+                    "purchase_limit": 20,
+                    "limit_type": "weekly"
+                },
+                "raven_fruit": {
+                    "item_id": "raven_fruit",
+                    "currency_cost": 20,
+                    "quantity": 100000,
+                    "purchase_limit": 50,
+                    "limit_type": "weekly"
+                },
+                "resource_supply_ssr": {
+                    "item_id": "resource_supply_ssr",
+                    "currency_cost": 5,
+                    "quantity": 1,
+                    "purchase_limit": 2000,
+                    "limit_type": "weekly"
+                },
+                "speedup_1h": {
+                    "item_id": "speedup",
+                    "currency_cost": 2,
+                    "quantity": 60,
+                    "purchase_limit": 2000,
+                    "limit_type": "weekly"
+                },
+                "speedup_3h": {
+                    "item_id": "speedup",
+                    "currency_cost": 5,
+                    "quantity": 180,
+                    "purchase_limit": 200,
+                    "limit_type": "weekly"
+                },
+                "universal_curio_shard": {
+                    "item_id": "universal_curio_shard",
+                    "currency_cost": 600,
+                    "quantity": 1000,
+                    "purchase_limit": 3,
+                    "limit_type": "weekly"
+                },
+                "ur_hero_and_awaken_choice_chest": {
+                    "item_id": "ur_hero_and_awaken_choice_chest",
+                    "currency_cost": 60,
+                    "quantity": 10,
+                    "purchase_limit": 1,
+                    "limit_type": "daily"
+                }
+            }
+        },
         "recluse_merchant": {
             "name": {
                 "en": "Recluse Merchant",
@@ -6813,6 +7032,14 @@
             "calendar_group": "spend_rewards",
             "image": "gear_upgrade"
         },
+        "halloween_ball": {
+            "name": {
+                "en": "Halloween Ball",
+                "de": "Halloween-Ball"
+            },
+            "category": "special_event",
+            "image": "halloween_bazaar"
+        },
         "hunt_battle": {
             "name": {
                 "en": "Hunt Battle",
@@ -7374,6 +7601,12 @@
             {
                 "start": "2026-10-24",
                 "end": "2026-10-25"
+            }
+        ],
+        "halloween_ball": [
+            {
+                "start": "2026-10-26",
+                "end": "2026-11-01"
             }
         ],
         "heroes_assemble": [
