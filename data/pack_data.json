@@ -7484,6 +7484,14 @@
             "category": "special_event",
             "image": "blades_out"
         },
+        "canyon_conquest": {
+            "name": {
+                "en": "Canyon Conquest",
+                "de": "Schluchteroberung"
+            },
+            "category": "ingame_event",
+            "image": "canyon_conquest"
+        },
         "claires_inner_demon": {
             "name": {
                 "en": "Claire's Inner Demon",
@@ -8050,6 +8058,12 @@
         "blades_out": [
             {
                 "start": "2026-10-27",
+                "end": "2026-11-01"
+            }
+        ],
+        "canyon_conquest": [
+            {
+                "start": "2026-10-26",
                 "end": "2026-11-01"
             }
         ],
