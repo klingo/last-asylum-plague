@@ -27,3 +27,22 @@ test('normalize: an offer still without cost or quantity is left out, so it cann
     assert.ok(Number.isFinite(fit.diagnostics.medianError), 'the fit stays finite');
     assert.ok(fit.diagnostics.medianError < 1, 'and sane');
 });
+
+test('normalize: spend reward tracks without own conversions use the shared ones', () => {
+    const shared = [
+        { price: 99, points: 100 },
+        { price: 499, points: 500 },
+    ];
+    const own = [{ price: 100, points: 300 }];
+    const data = normalizePackData({
+        spend_reward_conversions: shared,
+        spend_reward_tracks: {
+            standard: { tiers: { 1000: {} } },
+            special: { conversions: own, tiers: { 1000: {} } },
+            banknotes: { conversions: [], tiers: { 1000: {} } },
+        },
+    });
+    assert.deepEqual(data.spend_reward_tracks.standard.conversions, shared);
+    assert.deepEqual(data.spend_reward_tracks.special.conversions, own, 'its own list wins');
+    assert.deepEqual(data.spend_reward_tracks.banknotes.conversions, [], '[] stays: 1 point per Banknote');
+});

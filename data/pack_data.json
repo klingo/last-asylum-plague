@@ -7666,6 +7666,40 @@
             "image": "weekly_special"
         }
     },
+    "spend_reward_conversions": [
+        {
+            "price": 99,
+            "points": 100
+        },
+        {
+            "price": 199,
+            "points": 200
+        },
+        {
+            "price": 399,
+            "points": 400
+        },
+        {
+            "price": 499,
+            "points": 500
+        },
+        {
+            "price": 1999,
+            "points": 2000
+        },
+        {
+            "price": 2499,
+            "points": 2500
+        },
+        {
+            "price": 4999,
+            "points": 5000
+        },
+        {
+            "price": 9999,
+            "points": 10000
+        }
+    ],
     "spend_reward_tracks": {
         "ancient_recipe_antitoxin": {
             "name": {
@@ -7673,40 +7707,6 @@
                 "de": "Uraltes Rezept (Gegengift)"
             },
             "image": "ancient_recipe",
-            "conversions": [
-                {
-                    "price": 99,
-                    "points": 100
-                },
-                {
-                    "price": 199,
-                    "points": 200
-                },
-                {
-                    "price": 399,
-                    "points": 400
-                },
-                {
-                    "price": 499,
-                    "points": 500
-                },
-                {
-                    "price": 1999,
-                    "points": 2000
-                },
-                {
-                    "price": 2499,
-                    "points": 2500
-                },
-                {
-                    "price": 4999,
-                    "points": 5000
-                },
-                {
-                    "price": 9999,
-                    "points": 10000
-                }
-            ],
             "tiers": {
                 "1000": {
                     "ur_hero_omni_shard": 5,
@@ -7752,40 +7752,6 @@
                 "de": "Uraltes Rezept (Ausrüstungssteine)"
             },
             "image": "ancient_recipe",
-            "conversions": [
-                {
-                    "price": 99,
-                    "points": 100
-                },
-                {
-                    "price": 199,
-                    "points": 200
-                },
-                {
-                    "price": 399,
-                    "points": 400
-                },
-                {
-                    "price": 499,
-                    "points": 500
-                },
-                {
-                    "price": 1999,
-                    "points": 2000
-                },
-                {
-                    "price": 2499,
-                    "points": 2500
-                },
-                {
-                    "price": 4999,
-                    "points": 5000
-                },
-                {
-                    "price": 9999,
-                    "points": 10000
-                }
-            ],
             "tiers": {
                 "2000": {
                     "ur_hero_omni_shard": 5,
@@ -7865,40 +7831,6 @@
                 "de": "Auftrag des Handwerkers (Ausrüstungssteine)"
             },
             "image": "artisans_request",
-            "conversions": [
-                {
-                    "price": 99,
-                    "points": 100
-                },
-                {
-                    "price": 199,
-                    "points": 200
-                },
-                {
-                    "price": 399,
-                    "points": 400
-                },
-                {
-                    "price": 499,
-                    "points": 500
-                },
-                {
-                    "price": 1999,
-                    "points": 2000
-                },
-                {
-                    "price": 2499,
-                    "points": 2500
-                },
-                {
-                    "price": 4999,
-                    "points": 5000
-                },
-                {
-                    "price": 9999,
-                    "points": 10000
-                }
-            ],
             "tiers": {
                 "1000": {
                     "diamonds": 1000,
@@ -7956,40 +7888,6 @@
                 "de": "Auftrag des Handwerkers (Gehärteter Stahl)"
             },
             "image": "artisans_request",
-            "conversions": [
-                {
-                    "price": 99,
-                    "points": 100
-                },
-                {
-                    "price": 199,
-                    "points": 200
-                },
-                {
-                    "price": 399,
-                    "points": 400
-                },
-                {
-                    "price": 499,
-                    "points": 500
-                },
-                {
-                    "price": 1999,
-                    "points": 2000
-                },
-                {
-                    "price": 2499,
-                    "points": 2500
-                },
-                {
-                    "price": 4999,
-                    "points": 5000
-                },
-                {
-                    "price": 9999,
-                    "points": 10000
-                }
-            ],
             "tiers": {
                 "1000": {
                     "tempered_steel": 50,
@@ -8047,40 +7945,6 @@
                 "de": "Halloween-Keks"
             },
             "image": "halloween_cookie",
-            "conversions": [
-                {
-                    "price": 99,
-                    "points": 100
-                },
-                {
-                    "price": 199,
-                    "points": 200
-                },
-                {
-                    "price": 399,
-                    "points": 400
-                },
-                {
-                    "price": 499,
-                    "points": 500
-                },
-                {
-                    "price": 1999,
-                    "points": 2000
-                },
-                {
-                    "price": 2499,
-                    "points": 2500
-                },
-                {
-                    "price": 4999,
-                    "points": 5000
-                },
-                {
-                    "price": 9999,
-                    "points": 10000
-                }
-            ],
             "tiers": {
                 "1000": {
                     "raven_essence": 20,

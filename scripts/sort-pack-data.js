@@ -46,6 +46,9 @@ if (fs.existsSync(DATA_PATH)) {
         }
     }
 
+    if (Array.isArray(data.spend_reward_conversions)) {
+        data.spend_reward_conversions = [...data.spend_reward_conversions].sort((a, b) => a.price - b.price);
+    }
     for (const track of Object.values(data.spend_reward_tracks ?? {})) {
         if (isObject(track.tiers)) {
             track.tiers = sortByNumericKey(track.tiers);

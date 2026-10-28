@@ -56,12 +56,35 @@ function completeShops(shops) {
     );
 }
 
-/** The raw pack data with its packages expanded and its shops complete (the shape every core module expects). */
+/**
+ * Spend reward tracks with their conversions filled in: a track without its own `conversions` counts with the shared
+ * `spend_reward_conversions` (the same Banknote packs and points for every track). Its own list wins (`[]` = 1 point
+ * per Banknote).
+ */
+function completeTracks(tracks, sharedConversions) {
+    if (!Array.isArray(sharedConversions) || sharedConversions.length === 0) {
+        return tracks;
+    }
+    return Object.fromEntries(
+        Object.entries(tracks).map(([id, track]) => [
+            id,
+            Array.isArray(track.conversions) ? track : { ...track, conversions: sharedConversions },
+        ]),
+    );
+}
+
+/**
+ * The raw pack data with its packages expanded, its shops complete and its spend reward tracks' conversions filled
+ * in (the shape every core module expects).
+ */
 function normalizePackData(raw) {
     return {
         ...raw,
         packages: expandPackageFamilies(raw.packages || {}),
         ...(raw.exchange_shops ? { exchange_shops: completeShops(raw.exchange_shops) } : {}),
+        ...(raw.spend_reward_tracks
+            ? { spend_reward_tracks: completeTracks(raw.spend_reward_tracks, raw.spend_reward_conversions) }
+            : {}),
     };
 }
 

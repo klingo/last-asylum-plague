@@ -90,6 +90,8 @@ One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitH
   which starts at 02:00 UTC (`gameDay` in `core/schedule.js`). The setup bar's "Follow the calendar" switch (default on) sets the
   selected events and passes to today's on every page load (`ui/calendar-sync.js`, called in `startPage`); a manual
   event / pass change turns it off.
+- Spend reward tracks share one list of Banknote packs and the points they count (`spend_reward_conversions`);
+  `normalizePackData` gives it to every track without its own `conversions` (`[]` = 1 point per Banknote).
 - `image` on events, tracks and passes is a banner in `webapp/public/assets/events/` (720×360); `verify-data`
   checks the file.
 - The Gear Upgrade Path page reads `heroes`, `gear_upgrades` and `squad_guides`; `mergePaths` (`core/gear-path.js`)
