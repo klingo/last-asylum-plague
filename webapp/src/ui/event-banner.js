@@ -105,8 +105,11 @@ function scheduleTiming(data, id) {
             text: `${range} · ${runStatusText(status, now)}`,
         };
     }
-    const [next] = forecastRuns(runs, { from: today, to: today + FORECAST_DAYS, today });
-    const expected = next ? ` · ${t('calendar.status.expected', { date: formatGameDay(next.start) })}` : '';
+    // The next forecast run still to come (not one that should already have been recorded), said how sure it is.
+    const next = forecastRuns(runs, { from: today, to: today + FORECAST_DAYS, today }).find((run) => !run.missed);
+    const expected = next
+        ? ` · ${t(next.proven ? 'calendar.status.expected' : 'calendar.status.expectedGuess', { date: formatGameDay(next.start) })}`
+        : '';
     return { state: 'ended', text: `${runStatusText(status, now)}${expected}` };
 }
 

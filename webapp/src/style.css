@@ -3721,3 +3721,16 @@ a.schedule__label--link:hover {
         max-width: none;
     }
 }
+
+/* Calendar forecasts: a rough guess (no repeating pattern yet) fainter than a proven one; a run the forecast expected
+   by today but nobody recorded: hollow, dotted (a reminder to record it). After the forecast rules, so these win. */
+.schedule__bar.schedule__bar--guess,
+.schedule__swatch.schedule__swatch--guess {
+    opacity: 0.45;
+}
+
+.schedule__bar.schedule__bar--missed,
+.schedule__swatch.schedule__swatch--missed {
+    background: transparent;
+    border: 2px dotted var(--bar-color);
+}

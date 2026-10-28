@@ -157,6 +157,8 @@
             "lead": "What ran last week and this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice. Hover a bar for its dates and how long is left; click it (or its name) to open its plan.",
             "recorded": "Recorded",
             "forecast": "Forecast",
+            "forecastGuess": "Forecast (rough guess)",
+            "missed": "Not recorded yet",
             "past": "Ended",
             "today": "Today",
             "week": "W{week}",
@@ -168,6 +170,7 @@
             "days": "{count} days",
             "forecastBasis": "Forecast: about every {interval} days, last {last}",
             "forecastPattern": "Forecast: repeats every {days} days ({weekdays}), last {last}",
+            "guessNote": "Rough guess: only {count} runs recorded, no repeating pattern yet",
             "empty": "Nothing recorded for these weeks yet."
         },
         "rotation": {
@@ -188,6 +191,8 @@
             "endedYesterday": "Ended yesterday",
             "endedAgo": "Ended {count} days ago",
             "expected": "next expected around {date} (forecast)",
+            "expectedGuess": "next expected around {date} (rough guess)",
+            "notRecorded": "Expected by the forecast, not recorded yet",
             "none": "No dates recorded yet",
             "openPlan": "Click to open its plan"
         }

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
-import { dayDate, gameDay } from '../webapp/src/core/schedule.js';
+import { dayDate, forecastRuns, gameDay, scheduleRuns } from '../webapp/src/core/schedule.js';
 
 const ROOT = path.join(import.meta.dirname, '..');
 const DATA_PATH = path.join(ROOT, 'data', 'pack_data.json');
@@ -18,7 +18,8 @@ const DAYS_PATTERN = /^\d+$/;
  *   ids    event ids, seasonal pass family ids and/or spend reward track ids (classified automatically)
  *   START  first day, YYYY-MM-DD (default: today, the game day: it starts at 02:00 UTC)
  *   DAYS   how many days it runs, the start day included (end = START + DAYS - 1)
- *   --show print the recorded runs (of the given ids, or all; nothing is written)
+ *   --show print the recorded runs (of the given ids, or all; nothing is written), and the runs the forecast
+ *          expected by today that aren't recorded yet
  * A run with the same start as a recorded one replaces it (to correct its length); other overlaps are refused.
  */
 function main() {
@@ -39,6 +40,7 @@ function main() {
 
     if (args.includes('--show')) {
         printSchedule(data.schedule || {}, ids);
+        printMissed(data, ids);
         return;
     }
     // Nothing to record (or --help): show how to use it.
@@ -172,6 +174,33 @@ function printSchedule(schedule, ids) {
             console.log(`  ${daysText(run.start, run.end)}`);
         }
     }
+}
+
+/**
+ * Runs a proven forecast pattern expected by today (the game day) that nobody recorded yet (`missed`, see
+ * forecastRuns): a to-do list for keeping the schedule current.
+ */
+function printMissed(data, ids) {
+    const today = gameDay(new Date()).day;
+    const missing = [];
+    for (const [id, { runs }] of scheduleRuns(data)) {
+        if (ids.length > 0 && !ids.includes(id)) {
+            continue;
+        }
+        for (const run of forecastRuns(runs, { from: 0, to: today, today }).filter((r) => r.missed)) {
+            missing.push(`  ${id}: ${daysText(formatDay(run.start), formatDay(run.end))}`);
+        }
+    }
+    console.log(
+        missing.length > 0
+            ? `\nExpected by the forecast but not recorded yet:\n${missing.join('\n')}`
+            : '\nNothing the forecast expected is missing.',
+    );
+}
+
+/** A day number as YYYY-MM-DD. */
+function formatDay(day) {
+    return dayDate(day).toISOString().slice(0, 10);
 }
 
 function fail(message) {

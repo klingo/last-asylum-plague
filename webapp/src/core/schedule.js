@@ -114,12 +114,15 @@ function gapCycle(gaps) {
 }
 
 /**
- * The next runs of an id that ran at least twice, within [from, to] and not ended before `today`:
- * [{ start, end, intervalDays, last: { start, end }, pattern? }].
+ * The next runs of an id that ran at least twice, within [from, to]:
+ * [{ start, end, intervalDays, last: { start, end }, proven, runCount, missed, pattern? }].
  * - A repeating cycle of gaps (gapCycle: every 28 days, or Tuesdays and Thursdays) is continued after the last run,
- *   each run as long as the runs at the same place in the cycle usually are (median). A cycle of several gaps
- *   comes with `pattern: { days, weekdays }` (its length, the weekdays it starts on).
- * - Without one (yet): its usual rhythm, the median days between run starts and the median run length.
+ *   each run as long as the runs at the same place in the cycle usually are (median); `proven`. A cycle of several
+ *   gaps comes with `pattern: { days, weekdays }` (its length, the weekdays it starts on).
+ * - Without one (yet): its usual rhythm, the median days between run starts and the median run length; a rough guess
+ *   (`proven` false, `runCount` = the runs it rests on).
+ * Runs that should have started by `today` but aren't recorded (after the last recorded one) come only from a
+ * proven cycle, marked `missed` (a reminder to record them); a guess only gives runs not ended before `today`.
  * A forecast run never overlaps the next one.
  */
 function forecastRuns(runs, { from, to, today }) {
@@ -165,8 +168,18 @@ function forecastRuns(runs, { from, to, today }) {
             break;
         }
         const end = start + Math.min(lengthAt(i), gapAt(i + 1)) - 1;
-        if (start > last.end && end >= from && end >= today) {
-            forecast.push({ start, end, intervalDays, last, ...(pattern ? { pattern } : {}) });
+        const proven = Boolean(cycle);
+        if (start > last.end && end >= from && (proven || end >= today)) {
+            forecast.push({
+                start,
+                end,
+                intervalDays,
+                last,
+                proven,
+                runCount: runs.length,
+                missed: proven && start <= today,
+                ...(pattern ? { pattern } : {}),
+            });
         }
     }
     return forecast;
