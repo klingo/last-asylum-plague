@@ -652,6 +652,26 @@ function solveWeeklyPlan(highs, data, options = {}) {
         .filter((r) => r > EPS);
     const rate = budgetBinding ? lambda : boughtRates.length ? Math.min(...boughtRates) : NaN;
 
+    /**
+     * Points of one unit, or null: a currency at its marginal value; any other item at its points (currencies at 0)
+     * plus the currency it opens into at that currency's marginal value (e.g. a Magic Hat Lucky Box: its expected
+     * Magic Hats), as `bundlePoints` counts it inside a pack.
+     */
+    function itemPoints(itemId) {
+        if (mu.has(itemId)) {
+            return mu.get(itemId);
+        }
+        const value = values.get(itemId)?.value;
+        if (!Number.isFinite(value)) {
+            return null;
+        }
+        let total = value;
+        for (const [currencyId, qty] of currencyFlows({ [itemId]: 1 }, items, values, currencyIds)) {
+            total += qty * (mu.get(currencyId) || 0);
+        }
+        return total;
+    }
+
     return {
         values,
         rate,
@@ -671,13 +691,11 @@ function solveWeeklyPlan(highs, data, options = {}) {
         eventExtraUsed: ctx.extraForEvent > 0 ? Math.max(0, plan.values.get(EXTRA_USED) || 0) : 0,
         lockShortfalls,
         currencies,
-        /** Banknote worth of one unit (currencies: their marginal value), or null. */
+        itemPoints,
+        /** Banknote worth of one unit (see itemPoints), or null. */
         worth(itemId) {
-            if (mu.has(itemId)) {
-                return mu.get(itemId) / rate;
-            }
-            const value = values.get(itemId)?.value;
-            return Number.isFinite(value) ? value / rate : null;
+            const points = itemPoints(itemId);
+            return points === null ? null : points / rate;
         },
         /** Marginal points of a bundle, currencies at their marginal value. */
         bundlePoints(bundle) {

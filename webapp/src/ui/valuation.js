@@ -50,13 +50,8 @@ async function buildValuation(data, settings, overrides = {}) {
     const highs = await loadBrowserHighs();
     const plan = solveWeeklyPlan(highs, data, planOptions(data, settings, overrides));
 
-    function points(itemId) {
-        if (plan.mu.has(itemId)) {
-            return plan.mu.get(itemId);
-        }
-        const value = plan.values.get(itemId)?.value;
-        return Number.isFinite(value) ? value : null;
-    }
+    // Currencies at their marginal value, also inside items that open into them (planner.js `itemPoints`).
+    const points = (itemId) => plan.itemPoints(itemId);
 
     function bundle(contents, price) {
         const b = plan.bundlePoints(contents);
