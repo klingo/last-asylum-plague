@@ -3502,6 +3502,11 @@ a.schedule__bar {
     vertical-align: middle;
 }
 
+/* Its display would otherwise win over [hidden] (the item pickers hide it unless the selection runs now). */
+.toggle-chip__now[hidden] {
+    display: none;
+}
+
 .setup-panel__calendar {
     grid-column: 1 / -1;
     display: flex;
