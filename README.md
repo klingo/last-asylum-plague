@@ -97,7 +97,7 @@ drop a `<item_id>.png` into `webapp/public/assets/items/<category>/` (e.g. `item
 npm install                    # first time only (one package for everything)
 npm run webapp:dev             # Vite dev server; the app imports data/pack_data.json directly
 npm test                       # unit + golden tests of the valuation core (test/)
-npm run verify-data            # validates pack_data.json (schema, references, deal % fit, items without a worth, code labels)
+npm run verify-data            # validates pack_data.json (schema, references, deal % fit, items without a worth, packs far off their deal %, code labels)
 npm run i18n:missing -- de     # what German still lacks (UI texts, code labels, data names)
 npm run record-run -- <ids...> [START] <DAYS>   # records when events / seasonal passes / spend tracks run (--show)
 ```

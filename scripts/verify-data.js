@@ -3,12 +3,15 @@ import path from 'node:path';
 import Ajv from 'ajv';
 import * as gearPath from '../webapp/src/core/gear-path.js';
 import { fitItemPoints, fitSensitivity, isDependent } from '../webapp/src/core/point-fit.js';
-import { resolveItemValues } from '../webapp/src/core/item-values.js';
+import { resolveItemValues, bundleValue } from '../webapp/src/core/item-values.js';
+import { currencyFlows } from '../webapp/src/core/planner.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
 import { normalizePackData } from '../webapp/src/core/pack-data.js';
 import { missingCodeLabels } from './code-labels.js';
 
 const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
+// A pack whose worth is this many times above (or below) its deal % is reported (Pack Worth vs Deal %).
+const PACK_WORTH_OFF = 5;
 const SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.schema.json');
 const ITEM_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'items');
 const EN_TEXTS_PATH = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n', 'en.json');
@@ -779,6 +782,38 @@ async function verifyData() {
                 reportWarning(
                     'Partial Worth',
                     `Item "${itemId}" (${items[itemId].name.en}) contains items of unknown worth.`,
+                );
+            }
+        }
+    });
+
+    // 10. A pack's worth (from the items' points, as the pages count it) against its own deal %: far apart, a
+    // quantity or an item is probably wrong (80 instead of 1 chest made one pack worth 77x its deal % and skewed
+    // the whole Pack Ranking). Diamonds count 1 (as the deal % counts them), other currencies 0: that can only make
+    // a pack look cheaper, so "far below" is only reported for packs without any other currency inside.
+    checkCategory('Pack Worth vs Deal %', ({ reportWarning }) => {
+        const dealCurrencyValues = Object.fromEntries([...currencyIds].map((id) => [id, id === 'diamonds' ? 1 : 0]));
+        const dealValues = resolveItemValues(normalized.items, {
+            basePoints: fit.points,
+            currencyIds,
+            currencyValues: dealCurrencyValues,
+        });
+        for (const [id, pkg] of Object.entries(normalized.packages)) {
+            if (!(pkg.price > 0) || !(pkg.deal_percentage > 0)) {
+                continue;
+            }
+            const worth = bundleValue(pkg, dealValues);
+            if (worth.incomplete || !(worth.value > 0)) {
+                continue; // unknown worth: reported above
+            }
+            const ratio = worth.value / ((pkg.price * pkg.deal_percentage) / 100);
+            const hasOtherCurrency = [...currencyFlows(pkg.contains, normalized.items, dealValues, currencyIds)].some(
+                ([currencyId, qty]) => currencyId !== 'diamonds' && qty > 0,
+            );
+            if (ratio > PACK_WORTH_OFF || (ratio < 1 / PACK_WORTH_OFF && !hasOtherCurrency)) {
+                reportWarning(
+                    'Pack Worth',
+                    `Package "${id}" is worth ${ratio.toFixed(1)}x what its deal % (${pkg.deal_percentage}%) says. Check its quantities and items.`,
                 );
             }
         }

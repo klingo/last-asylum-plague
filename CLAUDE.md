@@ -51,7 +51,7 @@ A static webapp that values items, packages and exchange-shop offers from `data/
 ## Commands
 
 ```bash
-npm run verify-data                                          # validate data/pack_data.json (schema, references, item worth, code labels)
+npm run verify-data                                          # validate data/pack_data.json (schema, references, item worth, pack worth vs deal %, code labels)
 npm run lint                                                  # eslint .
 npm test                                                      # node:test: unit tests + golden files (test/)
 UPDATE_GOLDEN=1 npm test                                      # rewrite test/golden/*.json (only for an intended change)
