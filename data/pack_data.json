@@ -3921,6 +3921,24 @@
                 "lv4_alliance_chest": 1
             }
         },
+        "halloween_ball_mystery_shop_ur_hero_omni_shard_i": {
+            "name": {
+                "en": "Mystery Shop (UR Hero Omni Shard I)",
+                "de": "Geheim-Shop (UR Held-Omni-Splitter I)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 499,
+            "deal_percentage": 1500,
+            "purchase_limit": 1,
+            "limit_type": "daily",
+            "contains": {
+                "ur_hero_omni_shard": 8,
+                "diamonds": 5000,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            }
+        },
         "halloween_ball_mystery_shop_ur_hero_omni_shard_ii": {
             "name": {
                 "en": "Mystery Shop (UR Hero Omni Shard II)",
