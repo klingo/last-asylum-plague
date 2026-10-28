@@ -3,7 +3,7 @@ import { formatDays, getLocale, localizedName, t } from '../ui/i18n.js';
 import { formatThousands } from '../ui/format.js';
 import { buildValuation } from '../ui/valuation.js';
 import { withLoading } from '../ui/loading.js';
-import { shareColor } from '../ui/ratio-bar.js';
+import { ratioColor } from '../ui/ratio-bar.js';
 import { escapeHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { createItemImage } from '../ui/images.js';
@@ -309,13 +309,9 @@ function renderRotation() {
         section.hidden = true;
         return;
     }
-    // Relative colours: the offer with the best ratio of those shown is green, the worst red, the rest linear
-    // in between (a lone or all-equal ratio is green).
-    const ratios = rows.map((row) => row.ratio).filter((ratio) => ratio !== null);
-    const worst = Math.min(...ratios);
-    const best = Math.max(...ratios);
+    // The Pack Ranking's ratio colours (fixed scale around 1.0: red up to 0.85, amber at 1.0, green from 1.15).
     for (const row of rows) {
-        row.color = row.ratio === null ? null : shareColor(best > worst ? (row.ratio - worst) / (best - worst) : 1);
+        row.color = row.ratio === null ? null : ratioColor(row.ratio);
     }
 
     const days = Array.from({ length: ROTATION_DAYS }, (_, index) => from + index)

@@ -37,7 +37,7 @@ function ratioColor(ratio) {
     return mixColor(RATIO_GOOD_RGB, RATIO_GOOD_RGB, 0);
 }
 
-/** Colour of a position between the worst (0) and the best (1), red -> green ("vs. best", the Calendar's weekday offers). */
+/** Colour of a position between the worst (0) and the best (1), red -> green (shares such as "vs. best"). */
 function shareColor(fraction) {
     return mixColor(RATIO_BAD_RGB, RATIO_GOOD_RGB, fraction);
 }
