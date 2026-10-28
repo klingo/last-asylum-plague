@@ -15,6 +15,10 @@ import { t, getLocale, localizedName, enumLabel } from '../ui/i18n.js';
 const searchInput = document.getElementById('search-input');
 const changedOnly = document.getElementById('changed-only');
 const resetButton = document.getElementById('reset-priorities');
+const exportButton = document.getElementById('export-priorities');
+const importButton = document.getElementById('import-priorities');
+const importFile = document.getElementById('import-file');
+const fileNote = document.getElementById('priorities-file-note');
 const itemsSummary = document.getElementById('items-summary');
 const itemsTable = document.getElementById('items-table');
 const categoryJump = document.getElementById('category-jump');
@@ -42,6 +46,68 @@ function setPriority(id, level) {
         priorities[id] = level;
     }
     updateSettings({ priorities });
+}
+
+// The shared priorities file: what it is (so another file is recognized as such), then the priorities
+// (itemId -> "none" / "low" / "high"; items at "normal" are left out, as in the settings).
+const PRIORITIES_FILE = { app: 'last-asylum-pack-solver', type: 'item-priorities', version: 1 };
+
+/** Export: your priorities as a small JSON file to pass on. */
+function exportPriorities() {
+    const content = { ...PRIORITIES_FILE, priorities: getSettings().priorities };
+    const url = URL.createObjectURL(new Blob([`${JSON.stringify(content, null, 2)}\n`], { type: 'application/json' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `item-priorities-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+    fileNote.hidden = true;
+}
+
+/** "Imported 23 item priorities." (or why not) below the buttons. */
+function showFileNote(text, failed = false) {
+    fileNote.textContent = text;
+    fileNote.classList.toggle('text-bad', failed);
+    fileNote.hidden = false;
+}
+
+/**
+ * Import: a priorities file replaces your priorities. Items this data doesn't know (e.g. from a newer or older
+ * version) and unknown levels are skipped and counted.
+ */
+async function importPriorities(file) {
+    let content;
+    try {
+        content = JSON.parse(await file.text());
+    } catch {
+        // Not JSON: reported below like any other file that isn't a priorities file.
+    }
+    const source =
+        content?.type === PRIORITIES_FILE.type && content.priorities && typeof content.priorities === 'object'
+            ? content.priorities
+            : null;
+    if (!source) {
+        showFileNote(t('items.importFailed'), true);
+        return;
+    }
+    const priorities = {};
+    let skipped = 0;
+    for (const [id, level] of Object.entries(source)) {
+        if (!data.items?.[id] || !PRIORITY_LEVELS.includes(level)) {
+            skipped += 1;
+        } else if (level !== 'normal') {
+            priorities[id] = level;
+        }
+    }
+    updateSettings({ priorities });
+    const count = Object.keys(priorities).length;
+    showFileNote(skipped > 0 ? t('items.importedSkipped', { count, skipped }) : t('items.imported', { count }));
+}
+
+/** The buttons' hover texts (the page's static texts only fill in their labels). */
+function renderFileButtons() {
+    exportButton.title = t('items.exportHint');
+    importButton.title = t('items.importHint');
 }
 
 function priorityHtml(id) {
@@ -220,7 +286,21 @@ startPage('items', {
         searchInput.addEventListener('input', render);
         changedOnly.addEventListener('change', render);
         resetButton.addEventListener('click', () => updateSettings({ priorities: { ...DEFAULT_SETTINGS.priorities } }));
+        exportButton.addEventListener('click', exportPriorities);
+        importButton.addEventListener('click', () => importFile.click());
+        importFile.addEventListener('change', () => {
+            const [file] = importFile.files;
+            // Cleared, so choosing the same file again imports it again.
+            importFile.value = '';
+            if (file) {
+                importPriorities(file);
+            }
+        });
+        renderFileButtons();
         await recompute(getSettings());
     },
-    onLocaleChange: render,
+    onLocaleChange: () => {
+        renderFileButtons();
+        render();
+    },
 });

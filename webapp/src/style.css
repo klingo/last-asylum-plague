@@ -352,6 +352,13 @@ main {
     min-width: 130px;
 }
 
+/* Buttons side by side in a field (Item Priorities: Reset, Export, Import). */
+.field__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 .field label,
 .field .field-label {
     font-size: 0.8rem;

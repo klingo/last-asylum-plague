@@ -35,14 +35,31 @@
                         </div>
                     </div>
                     <div class="field field--reset">
-                        <button
-                            type="button"
-                            id="reset-priorities"
-                            class="btn-secondary"
-                            data-i18n="items.reset"
-                        ></button>
+                        <!-- Reset; export / import the priorities as a file, to share them. -->
+                        <div class="field__buttons">
+                            <button
+                                type="button"
+                                id="reset-priorities"
+                                class="btn-secondary"
+                                data-i18n="items.reset"
+                            ></button>
+                            <button
+                                type="button"
+                                id="export-priorities"
+                                class="btn-secondary"
+                                data-i18n="items.export"
+                            ></button>
+                            <button
+                                type="button"
+                                id="import-priorities"
+                                class="btn-secondary"
+                                data-i18n="items.import"
+                            ></button>
+                            <input type="file" id="import-file" accept=".json,application/json" hidden />
+                        </div>
                     </div>
                 </div>
+                <p class="footnote" id="priorities-file-note" hidden></p>
                 <p class="summary-line" id="items-summary"></p>
             </section>
 
