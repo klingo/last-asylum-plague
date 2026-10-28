@@ -153,7 +153,7 @@ function detailRowsHtml(row) {
                     <td></td>
                     <td><span class="item-cell">${part.item}</span></td>
                     <td class="text-right table-col-fit">${part.worthEach}</td>
-                    <td class="text-right table-col-fit">${part.unknown ? `<span class="text-bad">${t('choices.incomplete')}</span>` : banknotesHtml(formatThousands(part.worth, 0))}</td>
+                    <td class="text-right table-col-fit">${part.unknown ? `<span class="text-bad">${t('choices.incomplete')}</span>` : part.worth}</td>
                     <td></td>
                     <td></td>
                     <td class="table-col-fit"></td>
