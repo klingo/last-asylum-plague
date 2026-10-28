@@ -8040,6 +8040,127 @@
                     "speedup_supply": 60
                 }
             }
+        },
+        "halloween_cookie": {
+            "name": {
+                "en": "Halloween Cookie",
+                "de": "Halloween-Keks"
+            },
+            "image": "halloween_cookie",
+            "conversions": [
+                {
+                    "price": 99,
+                    "points": 100
+                },
+                {
+                    "price": 199,
+                    "points": 200
+                },
+                {
+                    "price": 399,
+                    "points": 400
+                },
+                {
+                    "price": 499,
+                    "points": 500
+                },
+                {
+                    "price": 1999,
+                    "points": 2000
+                },
+                {
+                    "price": 2499,
+                    "points": 2500
+                },
+                {
+                    "price": 4999,
+                    "points": 5000
+                },
+                {
+                    "price": 9999,
+                    "points": 10000
+                }
+            ],
+            "tiers": {
+                "1000": {
+                    "raven_essence": 20,
+                    "pumpkin_ghost": 1,
+                    "antitoxin_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "4000": {
+                    "raven_essence": 40,
+                    "pumpkin_ghost": 2,
+                    "antitoxin_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "10000": {
+                    "raven_essence": 60,
+                    "pumpkin_ghost": 3,
+                    "antitoxin_level_supply_ssr": 10,
+                    "resource_supply_sr": 10
+                },
+                "20000": {
+                    "raven_essence": 80,
+                    "pumpkin_ghost": 4,
+                    "antitoxin_level_supply_ssr": 20,
+                    "resource_supply_sr": 20
+                },
+                "40000": {
+                    "raven_essence": 100,
+                    "pumpkin_ghost": 5,
+                    "antitoxin_level_supply_ssr": 20,
+                    "resource_supply_sr": 20
+                },
+                "70000": {
+                    "raven_essence": 120,
+                    "pumpkin_ghost": 6,
+                    "antitoxin_level_supply_ssr": 30,
+                    "resource_supply_sr": 30
+                },
+                "100000": {
+                    "raven_essence": 160,
+                    "pumpkin_ghost": 7,
+                    "antitoxin_level_supply_ssr": 40,
+                    "resource_supply_sr": 40
+                },
+                "101000": {
+                    "ur_hero_omni_shard": 5,
+                    "skill_badge": 500,
+                    "antitoxin_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "103000": {
+                    "ur_hero_omni_shard": 5,
+                    "skill_badge": 500,
+                    "antitoxin_level_supply_ssr": 5,
+                    "resource_supply_sr": 5
+                },
+                "110000": {
+                    "ur_hero_omni_shard": 10,
+                    "skill_badge": 1000,
+                    "antitoxin_level_supply_ssr": 10,
+                    "resource_supply_sr": 10
+                },
+                "120000": {
+                    "ur_hero_omni_shard": 20,
+                    "skill_badge": 2000,
+                    "antitoxin_level_supply_ssr": 20,
+                    "resource_supply_sr": 20
+                },
+                "130000": {
+                    "ur_hero_omni_shard": 20,
+                    "skill_badge": 2000,
+                    "antitoxin_level_supply_ssr": 20,
+                    "resource_supply_sr": 20
+                },
+                "150000": {
+                    "ur_hero_omni_shard": 30,
+                    "skill_badge": 3000,
+                    "antitoxin_level_supply_ssr": 30,
+                    "resource_supply_sr": 30
+                }
+            }
         }
     },
     "schedule": {
@@ -8160,6 +8281,12 @@
             }
         ],
         "halloween_ball": [
+            {
+                "start": "2026-10-26",
+                "end": "2026-11-01"
+            }
+        ],
+        "halloween_cookie": [
             {
                 "start": "2026-10-26",
                 "end": "2026-11-01"
