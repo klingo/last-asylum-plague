@@ -160,7 +160,7 @@
             "forecastGuess": "Prognose (grobe Schätzung)",
             "missed": "Noch nicht erfasst",
             "past": "Beendet",
-            "today": "Heute",
+            "today": "Jetzt",
             "week": "KW {week}",
             "groupEvents": "Events",
             "groupIngame": "Ingame-Events",
@@ -179,8 +179,12 @@
             "today": "Heute",
             "tomorrow": "Morgen",
             "every": "jeweils {days}",
-            "now": "Jetzt (ein neuer Spieltag beginnt um {time})",
-            "colour": "Farbe = Ratio wie in der Paket-Rangliste (grün: lohnt sich bei deinen wöchentlichen Ausgaben, gelb: um 1,0, rot: darunter)"
+            "now": "Jetzt · die heutigen Angebote enden in {left} (ein neuer Spieltag beginnt um {time})",
+            "hoursMinutes": "{hours} Std. {minutes} Min.",
+            "minutes": "{minutes} Min.",
+            "colour": "Farbe = Ratio wie in der Paket-Rangliste (grün: lohnt sich bei deinen wöchentlichen Ausgaben, gelb: um 1,0, rot: darunter)",
+            "worthIt": "Lohnt sich bei deinen wöchentlichen Ausgaben: {offers}",
+            "noneWorthIt": "Keines dieser Angebote lohnt sich bei deinen wöchentlichen Ausgaben (am besten: {name}, Ratio {ratio})"
         },
         "status": {
             "endsIn": "Endet in {time}",

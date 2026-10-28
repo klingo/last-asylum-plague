@@ -3734,3 +3734,9 @@ a.schedule__label--link:hover {
     background: transparent;
     border: 2px dotted var(--bar-color);
 }
+
+/* Weekday offers: the line on which offers are worth it, below the chart. */
+.schedule__summary {
+    margin: 16px 0 0;
+    font-size: 0.85rem;
+}

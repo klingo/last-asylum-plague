@@ -40,6 +40,8 @@ let packData = null;
 let valuation = null;
 // The game day both charts start from (the "Now" line moves within it; a new one redraws them).
 let rotationDay = null;
+// The Event Schedule's window (first day, number of days), for moving its "Now" line every minute.
+let scheduleWindow = null;
 
 function scheduleName(data, id, kind) {
     if (kind === 'pass') {
@@ -159,10 +161,12 @@ function renderSchedule() {
         return;
     }
     // Today is the game day (it starts at 02:00 UTC), as in the weekday offers.
-    const today = gameDay(new Date()).day;
+    const now = gameDay(new Date());
+    const today = now.day;
     const from = today - weekdayIndex(today) - WEEKS_BACK * 7;
     const to = from + WEEKS * 7 - 1;
     const total = to - from + 1;
+    scheduleWindow = { from, total };
 
     const rows = [];
     for (const [id, { kind, runs }] of scheduleRuns(packData)) {
@@ -249,7 +253,7 @@ function renderSchedule() {
             <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(t('calendar.schedule.today'))}</span>
         </div>
         <div class="schedule__scroll">
-            <div class="schedule__chart" style="--columns: ${WEEKS}; --week-start: ${currentWeek}; --week-width: ${7 / total}; --today: ${(today - from + 0.5) / total}">
+            <div class="schedule__chart" style="--columns: ${WEEKS}; --week-start: ${currentWeek}; --week-width: ${7 / total}; --today: ${(today - from + now.fraction) / total}">
                 <div class="schedule__row schedule__row--axis">
                     <div class="schedule__label"></div>
                     <div class="schedule__track schedule__weeks">${weeks}</div>
@@ -271,9 +275,41 @@ function packageIcon(pkg) {
     return pkg.icon || Object.keys(pkg.contains || {}).find((itemId) => !FILLER_ITEMS.has(itemId)) || null;
 }
 
+/** "5h 12m", "42m": how long until a moment (whole minutes; the chart updates once a minute). */
+function untilText(ms) {
+    const minutes = Math.max(0, Math.floor(ms / 60000));
+    return minutes >= 60
+        ? t('calendar.rotation.hoursMinutes', { hours: Math.floor(minutes / 60), minutes: minutes % 60 })
+        : t('calendar.rotation.minutes', { minutes });
+}
+
+/** "Now · today's offers end in 5h 12m (a new game day starts at 04:00)": the game day `day` ends at the next reset. */
+function nowText(day) {
+    const nextReset = dayDate(day + 1).getTime() + GAME_DAY_START_MS;
+    const time = new Date(nextReset).toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' });
+    return t('calendar.rotation.now', { left: untilText(nextReset - Date.now()), time });
+}
+
+/**
+ * One line on what's worth it: the offers with a ratio of 1.0 or more (best first, with their weekdays), or, if none
+ * is, that none is and which comes closest. Empty without ratios.
+ */
+function rotationSummary(rows) {
+    const ranked = rows.filter((row) => row.ratio !== null).sort((a, b) => b.ratio - a.ratio);
+    if (ranked.length === 0) {
+        return '';
+    }
+    const worthIt = ranked.filter((row) => row.ratio >= 1);
+    return worthIt.length > 0
+        ? t('calendar.rotation.worthIt', {
+              offers: worthIt.map((row) => `${row.name} (${formatDays(row.days)})`).join(', '),
+          })
+        : t('calendar.rotation.noneWorthIt', { name: ranked[0].name, ratio: formatThousands(ranked[0].ratio, 2) });
+}
+
 /**
  * Weekday offers (`weekly_rotation` packs): today and the next 6 game days, one row per pack family, with a line
- * for now.
+ * for now (and how long today's offers last) and a line on which are worth it.
  */
 function renderRotation() {
     const section = document.getElementById('rotation');
@@ -308,7 +344,14 @@ function renderRotation() {
             ]
                 .filter(Boolean)
                 .join('\n');
-            return { name, tooltip, ratio, icon: packageIcon(pkg), bars: weekdayRuns(pkg.available_days, from, to) };
+            return {
+                name,
+                tooltip,
+                ratio,
+                days: pkg.available_days,
+                icon: packageIcon(pkg),
+                bars: weekdayRuns(pkg.available_days, from, to),
+            };
         })
         .filter((row) => row.bars.length > 0)
         .sort((a, b) => a.bars[0].start - b.bars[0].start || a.name.localeCompare(b.name));
@@ -343,15 +386,11 @@ function renderRotation() {
                 </div>`,
         )
         .join('');
-    // When the game day starts, in local time ("04:00" in CEST).
-    const dayStart = new Date(dayDate(from).getTime() + GAME_DAY_START_MS).toLocaleTimeString(getLocale(), {
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+    const summary = rotationSummary(rows);
     section.hidden = false;
     section.querySelector('.schedule__body').innerHTML = `
         <div class="schedule__legend">
-            <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(t('calendar.rotation.now', { time: dayStart }))}</span>
+            <span><i class="schedule__swatch schedule__swatch--today"></i><span class="schedule__now-text">${escapeHtml(nowText(from))}</span></span>
             <span>${escapeHtml(t('calendar.rotation.colour'))}</span>
         </div>
         <div class="schedule__scroll">
@@ -365,7 +404,8 @@ function renderRotation() {
                 <div class="schedule__current-week" aria-hidden="true"></div>
                 <div class="schedule__today" aria-hidden="true"></div>
             </div>
-        </div>`;
+        </div>
+        ${summary ? `<p class="schedule__summary">${escapeHtml(summary)}</p>` : ''}`;
     // Icons via createItemImage (placeholder if the image is missing, item name as mouse-over).
     for (const label of section.querySelectorAll('.schedule__label[data-icon]')) {
         const itemId = label.dataset.icon;
@@ -383,7 +423,7 @@ function render() {
     renderRotation();
 }
 
-/** Every minute: the "Now" line moves on; when a new game day starts, both charts move on to it. */
+/** Every minute: both charts' "Now" lines move on; when a new game day starts, both charts move on to it. */
 function tickRotation() {
     const now = gameDay(new Date());
     if (now.day !== rotationDay) {
@@ -393,6 +433,18 @@ function tickRotation() {
     document
         .querySelector('#rotation .schedule__chart')
         ?.style.setProperty('--today', String(now.fraction / ROTATION_DAYS));
+    if (scheduleWindow) {
+        document
+            .querySelector('#schedule .schedule__chart')
+            ?.style.setProperty(
+                '--today',
+                String((now.day - scheduleWindow.from + now.fraction) / scheduleWindow.total),
+            );
+    }
+    const nowLabel = document.querySelector('#rotation .schedule__now-text');
+    if (nowLabel) {
+        nowLabel.textContent = nowText(now.day);
+    }
 }
 
 startPage('calendar', {
