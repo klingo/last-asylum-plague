@@ -3789,7 +3789,7 @@
             "purchase_limit": 2,
             "limit_type": "daily",
             "contains": {
-                "lv5_raven_gear_choice_chest": 80,
+                "lv5_raven_gear_choice_chest": 1,
                 "diamonds": 2000,
                 "vip_points": 2000,
                 "lv4_alliance_chest": 1
