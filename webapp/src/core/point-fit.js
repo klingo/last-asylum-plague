@@ -457,7 +457,7 @@ function solveLogFit(params, equations, prior, initial = null) {
  * - `excludeFamilies`: Set of package family ids left out (fitSensitivity).
  * - `initialValues`: Map parameter -> value to start from (a previous fit's `paramValues`).
  * - `zeroItems`: Set of item ids worth 0 points (left out of what a pack's deal % pays for).
- * Returns `{ points, diagnostics, paramValues }`:
+ * Returns `{ points, diagnostics, paramValues, zeroItems }` (`zeroItems` as given, for the refits):
  * - `points`: Map itemId -> `{ value, source: 'fit'|'reversible', uncertainty?, support? }`
  *   (pass it to item-values.js as `basePoints`); currencies are not included.
  * - `diagnostics`: `{ packages: [{ id, ratio }], medianError, p90Error, parameters, equations }`
@@ -576,6 +576,8 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
     return {
         points,
         paramValues: values,
+        // As given: the leave-one-out refits (fitSensitivity, fitHoldOut) fit the same way.
+        zeroItems,
         diagnostics: {
             packages: packageRatios,
             medianError: median(errors),
@@ -603,9 +605,12 @@ function sensitivityFamilies(data) {
  */
 function fitSensitivity(data, base, { families = sensitivityFamilies(data), into = new Map() } = {}) {
     for (const family of families) {
+        // The same fit as `base` (its `zeroItems` too), only without the family: otherwise every refit would also
+        // differ by that setting, and items would look like they hinge on whichever family happened to be left out.
         const refit = fitItemPoints(data, {
             excludeFamilies: new Set([family]),
             initialValues: base.paramValues,
+            zeroItems: base.zeroItems,
         });
         for (const [id, entry] of base.points) {
             if (entry.source !== 'fit' || !(entry.value > 0)) {
@@ -627,7 +632,7 @@ function fitSensitivity(data, base, { families = sensitivityFamilies(data), into
  * run it in chunks. `base` = fitItemPoints' result for the same data; `zeroItems` as given to it. The honest
  * counterpart of the in-sample errors: the fit has seen nothing of the pack it is judged on.
  */
-function fitHoldOut(data, base, { zeroItems = null, families = sensitivityFamilies(data), into = [] } = {}) {
+function fitHoldOut(data, base, { zeroItems = base.zeroItems, families = sensitivityFamilies(data), into = [] } = {}) {
     for (const family of families) {
         const refit = fitItemPoints(data, {
             excludeFamilies: new Set([family]),

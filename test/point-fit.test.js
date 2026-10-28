@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fitItemPoints, fitHoldOut } from '../webapp/src/core/point-fit.js';
+import { fitItemPoints, fitHoldOut, fitSensitivity } from '../webapp/src/core/point-fit.js';
 
 // Two packs that pin down VIP points and gems exactly: 1'000 = 100 + 100 vip + 10 gem, 500 = 100 + 200 vip.
 const data = {
@@ -38,4 +38,19 @@ test('hold-out: a pack the others explain is predicted, one with an item nobody 
     const ids = heldOut.map((p) => p.id);
     assert.ok(!ids.includes('gem_pack'), 'the gem is in no other pack');
     near(heldOut.find((p) => p.id === 'vip_pack_2').ratio, 1);
+});
+
+test("sensitivity: the refits keep the fit's own settings (VIP points at 0 stay at 0)", () => {
+    const three = {
+        ...data,
+        packages: {
+            ...data.packages,
+            vip_pack_2: { price: 100, deal_percentage: 400, contains: { diamonds: 100, vip_points: 150 } },
+        },
+    };
+    const base = fitItemPoints(three, { zeroItems: new Set(['vip_points']) });
+    assert.deepEqual(base.zeroItems, new Set(['vip_points']), 'the fit says how it was made');
+    // With VIP points at 0, a VIP pack says nothing about gems: leaving it out mustn't move them.
+    const gem = fitSensitivity(three, base, { families: ['vip_pack'] }).get('gem');
+    assert.ok(gem.factor < 1.05, `gems moved ×${gem.factor.toFixed(2)} without a VIP pack`);
 });
