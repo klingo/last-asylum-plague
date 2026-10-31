@@ -69,7 +69,7 @@ a:hover {
     text-decoration: none;
 }
 
-/* Top nav: Home plus menus (Shop, Events, Items, Heroes), each a dropdown of its pages. */
+/* Top nav: Home plus menus (Shop, Events, Items, Heroes, Lord), each a dropdown of its pages. */
 .app-nav {
     display: flex;
     align-items: center;
@@ -3739,4 +3739,525 @@ a.schedule__label--link:hover {
 .schedule__summary {
     margin: 16px 0 0;
     font-size: 0.85rem;
+}
+
+/* Lord Specialty: the tree as in the game (Lv 1 at the bottom, a spine lit in the game's gold up to the level the build
+   needs, a badge per unlock level, a talent left and right of it), the bar below it and the details beside it. */
+/* The lord buttons, the player's level and extra points, and the preview switch on the right. */
+.lord-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+}
+
+/* The player's level and extra points: a label with a small number field each. */
+.lord-setup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+}
+
+.lord-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.lord-field input[type='number'] {
+    width: 72px;
+    padding: 4px 8px;
+}
+
+.lord-field input[type='range'] {
+    width: 200px;
+    padding: 0;
+    border: none;
+    background: none;
+    accent-color: var(--accent);
+}
+
+/* The slider's level: fixed width, so the row doesn't shift while dragging. */
+.lord-field__value {
+    min-width: 3.2em;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.lord-preview {
+    display: flex;
+    margin-left: auto;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.lord-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.lord-switch__button {
+    padding: 6px 16px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--accent);
+}
+
+.lord-switch__button:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.lord-switch__button.is-active {
+    background: var(--accent-dark);
+    border-color: var(--accent-dark);
+    color: #fff;
+}
+
+.lord-switch__button.is-active:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+}
+
+.lord-intro {
+    max-width: 900px;
+    margin: 12px 0 16px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+.lord-layout {
+    --lord-gold: #f7c531;
+    --lord-gold-edge: #b9800f;
+    --lord-off: #2b3a51;
+    --lord-off-edge: #1a2435;
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(280px, 400px);
+    gap: 24px;
+    align-items: start;
+}
+
+/* The tree scrolls and starts at its bottom (Lv 1), as in the game. */
+.lord-tree {
+    max-height: min(760px, calc(100vh - 240px));
+    padding: 6px 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.lord-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr);
+}
+
+/* The icon's middle is 46px from the row's top: the line to the spine and the badge sit there. */
+.lord-row__side {
+    display: flex;
+    align-items: flex-start;
+    padding: 8px 0;
+}
+
+.lord-row__side--left {
+    padding-left: 10%;
+}
+
+.lord-row__side--right {
+    justify-content: flex-end;
+    padding-right: 10%;
+}
+
+.lord-row__link {
+    flex: 1;
+    height: 5px;
+    margin-top: 36px;
+    background: var(--lord-off);
+    box-shadow: 0 0 0 1px var(--lord-off-edge);
+}
+
+.lord-row.is-reached .lord-row__link {
+    background: var(--lord-gold);
+    box-shadow: 0 0 0 1px var(--lord-gold-edge);
+}
+
+.lord-row__spine {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+/* The spine behind the rows, from the top badge to the bottom one (placed by lord-specialty.js), lit from the bottom
+   up to the player's level. */
+.lord-tree__inner {
+    position: relative;
+}
+
+.lord-spine {
+    position: absolute;
+    left: calc(50% - 5px);
+    width: 10px;
+    border-right: 2px solid var(--lord-off-edge);
+    border-left: 2px solid var(--lord-off-edge);
+    background: var(--lord-off);
+}
+
+.lord-spine__lit {
+    position: absolute;
+    right: -2px;
+    bottom: 0;
+    left: -2px;
+    border-right: 2px solid var(--lord-gold-edge);
+    border-left: 2px solid var(--lord-gold-edge);
+    background: var(--lord-gold);
+}
+
+.lord-row__badge {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin-top: 30px;
+    border: 3px solid #75849a;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 35%, #36639a, #1c375e);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.lord-row.is-reached .lord-row__badge {
+    border-color: var(--lord-gold);
+}
+
+/* A talent: its icon in a hexagon (active) or a rounded square (passive), the points below it. */
+.lord-talent {
+    --frame: var(--text-dim);
+    --tile: 76px;
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text);
+    font-weight: 600;
+    user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+}
+
+.lord-talent:hover {
+    border: none;
+    background: none;
+}
+
+.lord-talent:focus-visible {
+    outline: none;
+}
+
+.lord-talent__frame {
+    position: relative;
+    display: block;
+    width: var(--tile);
+    height: var(--tile);
+    padding: 3px;
+    background: var(--frame);
+}
+
+.lord-talent__frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--panel-alt);
+}
+
+.lord-talent--passive .lord-talent__frame {
+    border-radius: 12px;
+}
+
+.lord-talent--passive .lord-talent__frame img {
+    border-radius: 9px;
+}
+
+.lord-talent--active .lord-talent__frame,
+.lord-talent--active .lord-talent__frame img {
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+/* Points taken: a blue frame; at the max level a bright one that glows, with a bright count. */
+.lord-talent.has-points {
+    --frame: var(--accent-dark);
+}
+
+.lord-talent.is-max {
+    --frame: #9ad8ff;
+}
+
+.lord-talent.is-max .lord-talent__frame {
+    filter: drop-shadow(0 0 3px var(--accent));
+}
+
+/* At the max level a soft halo behind the icon, feathering out and slowly breathing. */
+.lord-talent.is-max::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--tile) * -0.25);
+    left: 50%;
+    width: calc(var(--tile) * 1.5);
+    height: calc(var(--tile) * 1.5);
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        color-mix(in srgb, var(--accent) 85%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 45%, transparent) 35%,
+        transparent 70%
+    );
+    filter: blur(6px);
+    transform: translateX(-50%);
+    pointer-events: none;
+    animation: lord-glow 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes lord-glow {
+    from {
+        opacity: 0.6;
+        transform: translateX(-50%) scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.06);
+    }
+}
+
+/* "Reduce motion" in the system settings: the halo stays still. */
+@media (prefers-reduced-motion: reduce) {
+    .lord-talent.is-max::before {
+        animation: none;
+    }
+}
+
+.lord-talent.is-locked {
+    --frame: var(--border);
+}
+
+.lord-talent.is-locked .lord-talent__frame img {
+    filter: grayscale(1);
+    opacity: 0.5;
+}
+
+.lord-talent:hover,
+.lord-talent:focus-visible {
+    --frame: #fff;
+}
+
+/* Locked: no points to add (hovering still shows what it does). */
+.lord-talent.is-locked {
+    cursor: not-allowed;
+}
+
+.lord-talent.is-locked:hover {
+    --frame: var(--border);
+}
+
+.lord-talent.is-locked::before {
+    display: none;
+}
+
+.lord-talent.is-locked .lord-talent__frame {
+    filter: none;
+}
+
+.lord-talent__count {
+    position: relative;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: var(--panel-alt);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.lord-talent.has-points .lord-talent__count {
+    background: var(--accent-dark);
+    color: #fff;
+}
+
+.lord-talent.is-max .lord-talent__count {
+    background: #9ad8ff;
+    color: #0d2236;
+    box-shadow: 0 0 8px var(--accent);
+}
+
+.lord-talent.is-locked .lord-talent__count {
+    color: var(--text-dim);
+}
+
+/* Points in a talent the level no longer unlocks: kept, but red until the level is back up (or they're removed). */
+.lord-talent.is-over .lord-talent__count {
+    background: var(--bad);
+    color: #fff;
+    box-shadow: none;
+}
+
+/* The bar below the tree, like the game's: the lord and the level the build needs, its points, Reset, Copy link. */
+.lord-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0 0;
+    border-top: 1px solid var(--border);
+}
+
+.lord-bar__summary {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 16px;
+    min-width: 0;
+}
+
+.lord-bar__points-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* The reset icon next to the points, as in the game. */
+.lord-bar__reset {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.lord-bar__copy {
+    flex: none;
+}
+
+.lord-bar__points {
+    color: var(--good);
+}
+
+.lord-bar__note {
+    color: var(--accent);
+}
+
+.lord-bar__note:empty {
+    display: none;
+}
+
+/* The details: beside the tree, staying in view. */
+.lord-detail {
+    position: sticky;
+    top: 16px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+}
+
+.lord-detail h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.lord-detail p {
+    margin: 8px 0 0;
+    line-height: 1.45;
+}
+
+.lord-detail__head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.lord-detail__head .lord-talent {
+    --tile: 56px;
+}
+
+.lord-detail__facts {
+    color: var(--text-dim);
+    font-size: 0.82rem;
+}
+
+.lord-detail__level {
+    font-weight: 600;
+}
+
+.lord-detail__label,
+.lord-detail__hint {
+    color: var(--text-dim);
+}
+
+.lord-detail__values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.lord-detail__values li {
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+}
+
+.lord-detail__values li.is-current {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+@media (max-width: 960px) {
+    .lord-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .lord-tree {
+        max-height: 62vh;
+    }
+
+    .lord-detail {
+        position: static;
+    }
+}
+
+/* Phones: smaller icons, the line and the badge at their middle (38px from the row top). */
+@media (max-width: 640px) {
+    .lord-row__side--left {
+        padding-left: 4%;
+    }
+
+    .lord-row__side--right {
+        padding-right: 4%;
+    }
+
+    .lord-talent {
+        --tile: 60px;
+    }
+
+    .lord-row__link {
+        margin-top: 28px;
+    }
+
+    .lord-row__badge {
+        margin-top: 22px;
+    }
 }

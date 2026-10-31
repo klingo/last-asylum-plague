@@ -24,6 +24,7 @@ export default defineConfig({
                 compare: resolve(root, 'compare.html'),
                 spendRewards: resolve(root, 'spend-rewards.html'),
                 gear: resolve(root, 'gear.html'),
+                lordSpecialty: resolve(root, 'lord-specialty.html'),
             },
         },
     },

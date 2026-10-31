@@ -31,7 +31,7 @@ its contents without a common value scale. The tool uses one:
 
 The top nav groups the pages into menus (`NAV_GROUPS` in `webapp/src/ui/nav.js`, the Home cards follow it): **Shop**
 (Pack Ranking, Spend Rewards), **Events** (Calendar, Shopping Plan), **Items** (Item Priorities, Item Sources, Best
-Choice Pick, Compare) and **Heroes** (Gear Upgrade Path). The page files keep their names (`rankings.html`,
+Choice Pick, Compare), **Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work.
 
 - **Pack Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
@@ -80,6 +80,17 @@ Choice Pick, Compare) and **Heroes** (Gear Upgrade Path). The page files keep th
   blueprints, optional cost tables) and `squad_guides` (formation, slots with a hero class and a hero per faction,
   `craft_path` / `level_path` /
   `star_path`) in `pack_data.json`; `verify-data` checks that the paths can be completed without a deadlock.
+- **Lord Specialty** (`lord-specialty.html`) — a planner for the specialty skills of the two lords (Handyman, Legion
+  Commander), drawn like the game's tree: Lv.1 at the bottom, a specialty skill left and right of every unlock level,
+  hexagons for active ones, squares for passive ones. Left click adds a point, right click removes one, hovering shows
+  what a specialty skill does (on a phone: tap adds, a long press removes). Above the tree you enter your level and
+  extra Specialty Skill Points (saved in the browser): specialty skills above your level are grey and take no points
+  (points they already have stay, with a red count, so lowering the level doesn't lose the build). The bar shows what
+  the build requires ("Legion Commander: Lv.31", extra points only beyond the season's highest level), red while you
+  can't have it yet, and your Specialty Points left. A preview switch shows the specialty skills of later seasons (Lv.45/50, greyed out). The lord and
+  the build are in the URL (`?lord=&t=`, one digit per specialty skill), so a link shares the build; the browser also
+  saves the lord and each lord's build (a shared link's build replaces yours only once you change it). Data:
+  `data/lord_specialty.json` (its own schema, checked by `verify-data`; icons in `webapp/public/assets/lord/`).
 
 Weekly spend, events, seasonal passes on sale (e.g. the Gear Pass) and item priorities are shared by all pages
 (saved in the browser). In the setup bar, events and passes the calendar shows running today carry a green dot, and

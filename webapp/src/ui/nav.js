@@ -59,6 +59,10 @@ const NAV_GROUPS = [
         key: 'heroes',
         items: [{ page: 'gear', href: 'gear.html', label: 'nav.gear' }],
     },
+    {
+        key: 'lord',
+        items: [{ page: 'lord-specialty', href: 'lord-specialty.html', label: 'nav.lordSpecialty' }],
+    },
 ];
 
 // Remembered across `renderNav()` calls so the "localechange" listener below can re-render

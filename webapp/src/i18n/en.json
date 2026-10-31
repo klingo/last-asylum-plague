@@ -11,6 +11,7 @@
         "choices": "Best Choice Pick",
         "spendRewards": "Spend Rewards",
         "gear": "Gear Upgrade Path",
+        "lordSpecialty": "Lord Specialty",
         "language": "Language",
         "items": "Item Priorities",
         "compare": "Compare",
@@ -19,7 +20,8 @@
             "shop": "Shop",
             "events": "Events",
             "items": "Items",
-            "heroes": "Heroes"
+            "heroes": "Heroes",
+            "lord": "Lord"
         }
     },
     "common": {
@@ -102,6 +104,7 @@
         "choices": "Best Choice Pick - Last Asylum Pack Solver",
         "spendRewards": "Spend Rewards - Last Asylum Pack Solver",
         "gear": "Gear Upgrade Path - Last Asylum Pack Solver",
+        "lordSpecialty": "Lord Specialty - Last Asylum Pack Solver",
         "items": "Item Priorities - Last Asylum Pack Solver",
         "compare": "Compare - Last Asylum Pack Solver"
     },
@@ -114,6 +117,7 @@
         "choices": "Last Asylum Pack Solver — choice options valued live from pack_data.json",
         "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json",
         "gear": "Last Asylum Pack Solver — gear upgrade path from pack_data.json",
+        "lordSpecialty": "Last Asylum Pack Solver — lord specialty skills from lord_specialty.json",
         "items": "Last Asylum Pack Solver — item worth computed live from pack_data.json",
         "compare": "Last Asylum Pack Solver — comparison computed live from pack_data.json",
         "lastUpdated": "Data last updated: {date}"
@@ -128,6 +132,7 @@
         "choicesDescription": "Pick a choice chest, a package with options, or a group you can only buy one of (e.g. calendar packs) and see which is worth the most.",
         "spendRewardsDescription": "Pick a cumulative spend-reward track and see up to which tier spending more still pays off.",
         "gearDescription": "A squad's UR gear: in which order to craft it and to raise its levels and stars, step by step.",
+        "lordSpecialtyDescription": "Plan the Handyman's or Legion Commander's specialty skills, see the level and points a build requires, and share it as a link.",
         "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
         "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it.",
         "settings": {
@@ -579,6 +584,48 @@
         "tileLabel": "{item}: Lv {level}, {stars} ★",
         "tileNotCrafted": "{item}: not crafted yet",
         "problem": "Not possible at this point (npm run verify-data says why)."
+    },
+    "lord": {
+        "heading": "Lord Specialty",
+        "description": "Plan your lord's specialty skills: the page tells you the level and extra Specialty Skill Points the build requires, how many of your points are left, and shares the build as a link.",
+        "how": {
+            "pointsTitle": "Points",
+            "points": "Every Specialty level gives 1 point, and you can unlock extra Specialty Skill Points; each specialty skill level costs 1 point. A specialty skill unlocks at the level on the line next to it. Set your level and your extra Specialty Skill Points above the tree (saved in this browser): specialty skills above your level are grey and take no points. If you lower your level after spending points, those points are kept with a red count (right click removes them), so the build is back when you raise the level again. The bar below the tree shows the level the build requires (red while you can't have it yet) and your Specialty Points left; extra Specialty Skill Points are only mentioned once the season's levels don't give enough points.",
+            "clicksTitle": "Adding points",
+            "clicks": "Left click a specialty skill to add a point, right click to remove one; hover it to see what it does. On a phone, tap a specialty skill to add a point (it also shows its details) and hold it to remove one. With the keyboard, Enter adds a point and Delete removes one.",
+            "shapesTitle": "Specialty skills",
+            "shapes": "As in the game, the tree starts at Lv.1 at the bottom. Hexagons are active specialty skills (you use them in the game, then they cool down), squares are passive ones. The preview switch shows the specialty skills of later seasons (Lv.45/50), greyed out: they can't take points yet.",
+            "shareTitle": "Sharing",
+            "share": "This browser remembers your lord, each lord's build, your level and your extra points. The page's address holds the lord and every specialty skill's points (not your level or extra points): Copy link copies it, and whoever opens it sees the same build. Opening a link shows its build; it replaces your saved one only once you change something."
+        },
+        "lords": "Lord",
+        "yourLevel": "Your level",
+        "levelValue": "Lv.{level}",
+        "yourExtra": "Extra Specialty Skill Points",
+        "preview": "Preview later seasons (Lv.45/50)",
+        "count": "{points}/{max}",
+        "talentLabel": "{name}, {points}/{max}",
+        "active": "Active",
+        "passive": "Passive",
+        "cooldown": "Cooldown {time}",
+        "unlocksAt": "Unlocks at Lv.{level}",
+        "outOfSeason": "Not in the current season",
+        "talentLevel": "Lv.{points}/{max}",
+        "now": "Now:",
+        "next": "Next level:",
+        "notTaken": "Not taken yet.",
+        "maxReached": "Max level reached.",
+        "values": "Values per level",
+        "valueLevel": "Lv.{level}:",
+        "pickHint": "Hover over a specialty skill to see what it does. Left click adds a point, right click removes one.",
+        "requires": "{lord}: {level}",
+        "left": "Specialty Points: {left}",
+        "copyLink": "Copy link",
+        "copied": "Link copied.",
+        "copyFailed": "Couldn't copy: copy the address bar instead.",
+        "blocked": {
+            "outOfSeason": "{name} is not in the current season."
+        }
     },
     "valuation": {
         "budgetLabel": "Weekly Banknote spend",

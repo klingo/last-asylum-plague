@@ -1,0 +1,98 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "LordSpecialty",
+    "description": "The lords' talent trees (Lord Specialty page). Names and texts are localized as in pack_data.json.",
+    "type": "object",
+    "required": ["max_level", "lords"],
+    "additionalProperties": false,
+    "properties": {
+        "max_level": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The highest Specialty level this season. Talents unlocking above it are shown, but locked."
+        },
+        "lords": {
+            "type": "object",
+            "description": "The lords (classes) to choose from, in the order of the page's switch.",
+            "minProperties": 1,
+            "propertyNames": {
+                "$ref": "pack_data.schema.json#/definitions/id"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/lord"
+            }
+        }
+    },
+    "definitions": {
+        "lord": {
+            "type": "object",
+            "required": ["name", "talents"],
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString"
+                },
+                "description": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString"
+                },
+                "talents": {
+                    "type": "array",
+                    "description": "The talent tree in order (by unlock level, the left talent of a level first). It is also the build's order in the page's URL: reordering or inserting talents changes what shared links mean.",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/talent"
+                    }
+                }
+            }
+        },
+        "talent": {
+            "type": "object",
+            "required": ["id", "name", "icon", "unlock_level", "kind", "max_level", "description"],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "$ref": "pack_data.schema.json#/definitions/id"
+                },
+                "name": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString"
+                },
+                "icon": {
+                    "type": "string",
+                    "description": "Image file in webapp/public/assets/lord/.",
+                    "pattern": "^[a-z0-9_]+\\.png$"
+                },
+                "unlock_level": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Specialty level that unlocks the talent."
+                },
+                "kind": {
+                    "enum": ["active", "passive"],
+                    "description": "Active talents are used (with a cooldown), passive ones always apply."
+                },
+                "cooldown_hours": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                },
+                "max_level": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9,
+                    "description": "Talent levels; each costs one Specialty point. At most 9 (one digit per talent in the URL)."
+                },
+                "description": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString",
+                    "description": "What the talent does; \"{value}\" stands for the value at the talent's level (`values`)."
+                },
+                "values": {
+                    "type": "array",
+                    "description": "The talent's number per level (one per level, max_level of them), shown in place of \"{value}\".",
+                    "minItems": 1,
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -15,6 +15,9 @@ const PACK_WORTH_OFF = 5;
 const SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.schema.json');
 const ITEM_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'items');
 const EN_TEXTS_PATH = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n', 'en.json');
+const LORD_DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.json');
+const LORD_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.schema.json');
+const LORD_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'lord');
 
 /**
  * Validates data integrity of pack_data.json
@@ -24,6 +27,7 @@ const EN_TEXTS_PATH = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18
  * - Drop table probability distributions
  * - Item points fitted from the deal % (webapp/src/core/point-fit.js) and items whose worth can't be
  *   resolved (webapp/src/core/item-values.js)
+ * - The lords' talent trees in data/lord_specialty.json (schema, icons, values per level)
  */
 async function verifyData() {
     console.log('Starting Pack Data Verification...\n');
@@ -734,6 +738,64 @@ async function verifyData() {
                         'Gear Upgrade Path',
                         `Squad guide "${guideId}", ${PATH_NAMES[entry.path]} path step ${entry.n + 1}: ${text}${pieces.length ? ` (${piecesText(pieces)})` : ''}.`,
                     );
+                }
+            }
+        }
+    });
+
+    // 8c. The lords' talent trees (data/lord_specialty.json, Lord Specialty page): its schema, the icons, one value
+    // per talent level, and "{value}" in the text exactly when there are values.
+    checkCategory('Lord Specialty', ({ reportError }) => {
+        let lordData;
+        let lordSchema;
+        try {
+            lordData = JSON.parse(fs.readFileSync(LORD_DATA_PATH, 'utf8'));
+            lordSchema = JSON.parse(fs.readFileSync(LORD_SCHEMA_PATH, 'utf8'));
+        } catch (err) {
+            reportError('Lord Specialty', `Failed to read ${LORD_DATA_PATH} or its schema: ${err.message}`);
+            return;
+        }
+        const ajv = new Ajv({ allErrors: true, strictTypes: false });
+        ajv.addSchema(schema, 'pack_data.schema.json');
+        const validate = ajv.compile(lordSchema);
+        if (!validate(lordData)) {
+            for (const err of validate.errors) {
+                reportError('Schema', `lord_specialty.json ${err.instancePath || 'root'} ${err.message}`);
+            }
+            return;
+        }
+        for (const [lordId, lord] of Object.entries(lordData.lords)) {
+            const ids = new Set();
+            let previousLevel = 0;
+            for (const talent of lord.talents) {
+                const where = `Lord "${lordId}", talent "${talent.id}"`;
+                if (ids.has(talent.id)) {
+                    reportError('Lord Talent', `${where} is listed twice.`);
+                }
+                ids.add(talent.id);
+                if (talent.unlock_level < previousLevel) {
+                    reportError('Lord Talent', `${where} unlocks before the talent above it (the tree's order).`);
+                }
+                previousLevel = talent.unlock_level;
+                if (!fs.existsSync(path.join(LORD_IMAGES_DIR, talent.icon))) {
+                    reportError(
+                        'Lord Talent',
+                        `${where} has no icon "${talent.icon}" (webapp/public/assets/lord/${talent.icon}).`,
+                    );
+                }
+                if (talent.values && talent.values.length !== talent.max_level) {
+                    reportError(
+                        'Lord Talent',
+                        `${where} has ${talent.values.length} values for ${talent.max_level} levels.`,
+                    );
+                }
+                for (const [lang, text] of Object.entries(talent.description)) {
+                    if (text && text.includes('{value}') !== Boolean(talent.values)) {
+                        reportError(
+                            'Lord Talent',
+                            `${where}: the ${lang} text ${talent.values ? 'lacks' : 'has'} "{value}" but the talent has ${talent.values ? '' : 'no '}values.`,
+                        );
+                    }
                 }
             }
         }

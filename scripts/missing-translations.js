@@ -4,19 +4,20 @@ import { missingCodeLabels } from './code-labels.js';
 
 const I18N_DIR = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n');
 const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
+const LORD_DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.json');
 const SOURCE_LANG = 'en';
 
 /**
  * Lists missing translations: UI texts (webapp/src/i18n/<lang>.json, compared with en.json), the
- * localized names in data/pack_data.json (`{ "en": "...", "<lang>": "..." }`), and the labels of the
- * data's codes (categories, hero classes, ...: scripts/code-labels.js), also those English lacks. A text
- * is missing when English has it and the language's value is absent or empty.
+ * localized names in data/pack_data.json and data/lord_specialty.json (`{ "en": "...", "<lang>": "..." }`),
+ * and the labels of the data's codes (categories, hero classes, ...: scripts/code-labels.js), also those
+ * English lacks. A text is missing when English has it and the language's value is absent or empty.
  *
  * Usage: npm run i18n:missing -- [lang] [--keys-only] [--data-only]
  *        (or node scripts/missing-translations.js [lang] [--keys-only] [--data-only])
  *   lang         e.g. "de"; without it, every language that has a webapp/src/i18n/<lang>.json
  *   --keys-only  print only the keys, not the English text next to them
- *   --data-only  only the data names (pack_data.json), not the UI texts
+ *   --data-only  only the data names (pack_data.json, lord_specialty.json), not the UI texts
  */
 function main() {
     const args = process.argv.slice(2);
@@ -36,6 +37,7 @@ function main() {
 
     const source = readJson(path.join(I18N_DIR, `${SOURCE_LANG}.json`));
     const data = readJson(DATA_PATH);
+    const lordData = readJson(LORD_DATA_PATH);
     if (!dataOnly) {
         // Labels English lacks too: the page would show the raw code in every language.
         const english = missingCodeLabels(data, source).map((key) => ({ key, english: '' }));
@@ -54,7 +56,8 @@ function main() {
                   .filter((key) => !uiKeys.has(key))
                   .map((key) => ({ key, english: '' }));
         const names = missingDataNames(data, lang);
-        console.log(`\n=== ${lang}: ${ui.length + labels.length + names.length} missing ===`);
+        const lordNames = missingDataNames(lordData, lang);
+        console.log(`\n=== ${lang}: ${ui.length + labels.length + names.length + lordNames.length} missing ===`);
         if (!dataOnly) {
             printSection(`UI texts (webapp/src/i18n/${lang}.json)`, ui, keysOnly);
             if (labels.length > 0) {
@@ -62,6 +65,7 @@ function main() {
             }
         }
         printSection('Data names (data/pack_data.json)', names, keysOnly);
+        printSection('Lord talents (data/lord_specialty.json)', lordNames, keysOnly);
     }
 }
 

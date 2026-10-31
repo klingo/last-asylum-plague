@@ -11,6 +11,7 @@
         "choices": "Beste Wahl",
         "spendRewards": "Ausgabenbelohnungen",
         "gear": "Ausrüstungs-Upgradepfad",
+        "lordSpecialty": "Lord-Spezialisierung",
         "language": "Sprache",
         "items": "Gegenstandsprioritäten",
         "compare": "Vergleich",
@@ -19,7 +20,8 @@
             "shop": "Shop",
             "events": "Events",
             "items": "Gegenstände",
-            "heroes": "Helden"
+            "heroes": "Helden",
+            "lord": "Lord"
         }
     },
     "common": {
@@ -102,6 +104,7 @@
         "choices": "Beste Wahl - Last Asylum Pack Solver",
         "spendRewards": "Ausgabenbelohnungen - Last Asylum Pack Solver",
         "gear": "Ausrüstungs-Upgradepfad - Last Asylum Pack Solver",
+        "lordSpecialty": "Lord-Spezialisierung - Last Asylum Pack Solver",
         "items": "Gegenstandsprioritäten - Last Asylum Pack Solver",
         "compare": "Vergleich - Last Asylum Pack Solver"
     },
@@ -114,6 +117,7 @@
         "choices": "Last Asylum Pack Solver — Wahloptionen live aus pack_data.json bewertet",
         "spendRewards": "Last Asylum Pack Solver — Ausgabenbelohnungs-Stufen live aus pack_data.json berechnet",
         "gear": "Last Asylum Pack Solver — Ausrüstungs-Upgradepfad aus pack_data.json",
+        "lordSpecialty": "Last Asylum Pack Solver — Spezialisierungsfähigkeiten der Lords aus lord_specialty.json",
         "items": "Last Asylum Pack Solver — Gegenstandswerte live aus pack_data.json berechnet",
         "compare": "Last Asylum Pack Solver — Vergleich live aus pack_data.json berechnet",
         "lastUpdated": "Daten zuletzt aktualisiert: {date}"
@@ -128,6 +132,7 @@
         "choicesDescription": "Wähle eine Wahltruhe, ein Paket mit Optionen oder eine Gruppe, von der du nur eines kaufen kannst (z. B. Kalenderpakete), und sieh, was am meisten wert ist.",
         "spendRewardsDescription": "Wähle eine kumulative Ausgabenbelohnung und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
         "gearDescription": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Stufen und Sterne erhöhst, Schritt für Schritt.",
+        "lordSpecialtyDescription": "Plane die Spezialisierungsfähigkeiten von Handyman oder Legion Commander, sieh, welche Stufe und wie viele Punkte ein Build braucht, und teile ihn als Link.",
         "itemsDescription": "Sag dem Tool, welche Gegenstände dir egal sind und welche dir besonders wichtig sind. Jede Seite nutzt das.",
         "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen.",
         "settings": {
@@ -579,6 +584,48 @@
         "tileLabel": "{item}: Stufe {level}, {stars} ★",
         "tileNotCrafted": "{item}: noch nicht hergestellt",
         "problem": "An dieser Stelle nicht möglich (npm run verify-data sagt warum)."
+    },
+    "lord": {
+        "heading": "Lord-Spezialisierung",
+        "description": "Plane die Spezialisierungsfähigkeiten deines Lords: Die Seite zeigt dir, welche Stufe und wie viele zusätzliche Spezialisierungspunkte der Build braucht, wie viele deiner Punkte übrig sind, und teilt den Build als Link.",
+        "how": {
+            "pointsTitle": "Punkte",
+            "points": "Jede Spezialisierungsstufe gibt 1 Punkt, und du kannst zusätzliche Spezialisierungspunkte freischalten; jede Stufe einer Spezialisierungsfähigkeit kostet 1 Punkt. Eine Spezialisierungsfähigkeit wird auf der Stufe frei, die auf der Linie daneben steht. Stelle über dem Baum deine Stufe und deine zusätzlichen Spezialisierungspunkte ein (in diesem Browser gespeichert): Spezialisierungsfähigkeiten über deiner Stufe sind grau und bekommen keine Punkte. Senkst du deine Stufe, nachdem du Punkte verteilt hast, bleiben diese Punkte mit roter Anzeige erhalten (Rechtsklick entfernt sie), so ist der Build wieder da, wenn du die Stufe wieder erhöhst. Die Leiste unter dem Baum zeigt die Stufe, die der Build braucht (rot, solange du ihn noch nicht haben kannst), und deine übrigen Spezialisierungspunkte; zusätzliche Spezialisierungspunkte werden erst erwähnt, wenn die Stufen der Saison nicht genug Punkte geben.",
+            "clicksTitle": "Punkte verteilen",
+            "clicks": "Linksklick auf eine Spezialisierungsfähigkeit fügt einen Punkt hinzu, Rechtsklick entfernt einen; fahre mit der Maus darüber, um zu sehen, was sie bewirkt. Auf dem Handy fügt Antippen einen Punkt hinzu (und zeigt die Details), Gedrückthalten entfernt einen. Mit der Tastatur fügt Enter einen Punkt hinzu und Entf entfernt einen.",
+            "shapesTitle": "Spezialisierungsfähigkeiten",
+            "shapes": "Wie im Spiel beginnt der Baum unten mit Lv.1. Sechsecke sind aktive Spezialisierungsfähigkeiten (du setzt sie im Spiel ein, danach laden sie sich auf), Quadrate sind passive. Der Vorschau-Schalter zeigt die Spezialisierungsfähigkeiten späterer Saisons (Lv.45/50), ausgegraut: Sie können noch keine Punkte bekommen.",
+            "shareTitle": "Teilen",
+            "share": "Dieser Browser merkt sich deinen Lord, den Build jedes Lords, deine Stufe und deine zusätzlichen Punkte. Die Adresse der Seite enthält den Lord und die Punkte jeder Spezialisierungsfähigkeit (nicht deine Stufe oder deine zusätzlichen Punkte): Link kopieren kopiert sie, und wer sie öffnet, sieht denselben Build. Ein geöffneter Link zeigt seinen Build; er ersetzt deinen gespeicherten erst, wenn du etwas änderst."
+        },
+        "lords": "Lord",
+        "yourLevel": "Deine Stufe",
+        "levelValue": "Lv.{level}",
+        "yourExtra": "Zusätzliche Spezialisierungspunkte",
+        "preview": "Vorschau späterer Saisons (Lv.45/50)",
+        "count": "{points}/{max}",
+        "talentLabel": "{name}, {points}/{max}",
+        "active": "Aktiv",
+        "passive": "Passiv",
+        "cooldown": "Abklingzeit {time}",
+        "unlocksAt": "Frei ab Lv.{level}",
+        "outOfSeason": "Nicht in der aktuellen Saison",
+        "talentLevel": "Lv.{points}/{max}",
+        "now": "Jetzt:",
+        "next": "Nächste Stufe:",
+        "notTaken": "Noch nicht gewählt.",
+        "maxReached": "Höchststufe erreicht.",
+        "values": "Werte pro Stufe",
+        "valueLevel": "Lv.{level}:",
+        "pickHint": "Fahre mit der Maus über eine Spezialisierungsfähigkeit, um zu sehen, was sie bewirkt. Linksklick fügt einen Punkt hinzu, Rechtsklick entfernt einen.",
+        "requires": "{lord}: {level}",
+        "left": "Spezialisierungspunkte: {left}",
+        "copyLink": "Link kopieren",
+        "copied": "Link kopiert.",
+        "copyFailed": "Kopieren fehlgeschlagen: kopiere stattdessen die Adresszeile.",
+        "blocked": {
+            "outOfSeason": "{name} ist nicht in der aktuellen Saison."
+        }
     },
     "valuation": {
         "budgetLabel": "Wöchentliche Banknoten-Ausgaben",

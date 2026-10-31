@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.lordSpecialty"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="lord.heading"></h2>
+                <p class="page-lead" data-i18n="lord.description"></p>
+                <details class="page-details">
+                    <summary data-i18n="common.howItWorks"></summary>
+                    <ul class="page-details__list">
+                        <li>
+                            <strong data-i18n="lord.how.pointsTitle"></strong>:
+                            <span data-i18n="lord.how.points"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="lord.how.clicksTitle"></strong>:
+                            <span data-i18n="lord.how.clicks"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="lord.how.shapesTitle"></strong>:
+                            <span data-i18n="lord.how.shapes"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="lord.how.shareTitle"></strong>: <span data-i18n="lord.how.share"></span>
+                        </li>
+                    </ul>
+                </details>
+            </section>
+
+            <section class="card">
+                <div class="lord-controls">
+                    <div id="lord-controls" class="lord-switch" role="group"></div>
+                    <div class="lord-setup">
+                        <label class="lord-field" for="lord-level">
+                            <span data-i18n="lord.yourLevel"></span>
+                            <input type="range" id="lord-level" min="1" />
+                            <output id="lord-level-value" class="lord-field__value" for="lord-level"></output>
+                        </label>
+                        <label class="lord-field" for="lord-extra">
+                            <span data-i18n="lord.yourExtra"></span>
+                            <input type="number" id="lord-extra" min="0" inputmode="numeric" />
+                        </label>
+                    </div>
+                    <label class="lord-preview" for="lord-preview">
+                        <input type="checkbox" class="switch" role="switch" id="lord-preview" />
+                        <span data-i18n="lord.preview"></span>
+                    </label>
+                </div>
+                <p id="lord-intro" class="lord-intro"></p>
+                <div class="lord-layout">
+                    <div class="lord-board">
+                        <div id="lord-tree" class="lord-tree"></div>
+                        <div id="lord-bar" class="lord-bar"></div>
+                    </div>
+                    <aside id="lord-detail" class="lord-detail" aria-live="polite"></aside>
+                </div>
+            </section>
+        </main>
+        <footer class="app-footer"><span data-i18n="footer.lordSpecialty"></span></footer>
+        <script type="module" src="/src/pages/lord-specialty.js"></script>
+    </body>
+</html>

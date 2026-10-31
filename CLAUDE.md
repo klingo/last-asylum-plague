@@ -98,6 +98,10 @@ One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitH
   checks the file.
 - The Gear Upgrade Path page reads `heroes`, `gear_upgrades` and `squad_guides`; `mergePaths` (`core/gear-path.js`)
   orders its three paths, and `verify-data` reports paths that deadlock.
+- The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
+  by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs
+  (`core/lord-specialty.js`), so don't reorder or insert talents casually. Talents above `max_level` show as "not in
+  the current season".
 
 ## Valuation Model
 
