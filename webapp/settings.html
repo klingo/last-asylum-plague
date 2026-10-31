@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-i18n="docTitle.settings"></title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <!-- Settings that shape every value in the app (saved in the browser, like the weekly spend). -->
+            <section class="card settings-values">
+                <h2 data-i18n="settings.heading"></h2>
+                <p class="page-lead" data-i18n="settings.description"></p>
+                <!-- One row per setting: what it does (the active state stands out) and a switch. -->
+                <label class="setting-row setting-row--impact" for="count-vip-points">
+                    <span class="setting-row__text">
+                        <span class="setting-row__title">
+                            <span data-item-id="vip_points"></span>
+                            <span data-i18n="settings.countVipPoints"></span>
+                            <span class="impact-badge" data-i18n="settings.impact"></span>
+                        </span>
+                        <span class="setting-row__state" data-state="on" data-i18n="settings.vipOn"></span>
+                        <span class="setting-row__state" data-state="off" data-i18n="settings.vipOff"></span>
+                    </span>
+                    <input type="checkbox" class="switch" id="count-vip-points" role="switch" />
+                </label>
+            </section>
+
+            <!-- How well the fitted worths reproduce the packs' deal % (with the settings above). -->
+            <section class="card" id="fit-quality">
+                <h2 data-i18n="settings.quality.heading"></h2>
+                <div class="mine-stats" id="fit-stats"></div>
+                <p class="text-dim" data-i18n="settings.quality.worstHeading"></p>
+                <ol class="fit-worst" id="fit-worst"></ol>
+            </section>
+        </main>
+        <footer class="app-footer"><span data-i18n="footer.settings"></span></footer>
+        <script type="module" src="/src/pages/settings.js"></script>
+    </body>
+</html>

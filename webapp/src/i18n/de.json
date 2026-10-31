@@ -16,6 +16,7 @@
         "items": "Gegenstandsprioritäten",
         "compare": "Vergleich",
         "menu": "Menü",
+        "settings": "Einstellungen",
         "groups": {
             "shop": "Shop",
             "events": "Events",
@@ -105,6 +106,7 @@
         "spendRewards": "Ausgabenbelohnungen - Last Asylum Pack Solver",
         "gear": "Ausrüstungs-Upgradepfad - Last Asylum Pack Solver",
         "lordSpecialty": "Lord-Spezialisierung - Last Asylum Pack Solver",
+        "settings": "Einstellungen - Last Asylum Pack Solver",
         "items": "Gegenstandsprioritäten - Last Asylum Pack Solver",
         "compare": "Vergleich - Last Asylum Pack Solver"
     },
@@ -118,6 +120,7 @@
         "spendRewards": "Last Asylum Pack Solver — Ausgabenbelohnungs-Stufen live aus pack_data.json berechnet",
         "gear": "Last Asylum Pack Solver — Ausrüstungs-Upgradepfad aus pack_data.json",
         "lordSpecialty": "Last Asylum Pack Solver — Spezialisierungsfähigkeiten der Lords aus lord_specialty.json",
+        "settings": "Last Asylum Pack Solver — Einstellungen und Modellqualität, live aus pack_data.json berechnet",
         "items": "Last Asylum Pack Solver — Gegenstandswerte live aus pack_data.json berechnet",
         "compare": "Last Asylum Pack Solver — Vergleich live aus pack_data.json berechnet",
         "lastUpdated": "Daten zuletzt aktualisiert: {date}"
@@ -134,14 +137,15 @@
         "gearDescription": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Stufen und Sterne erhöhst, Schritt für Schritt.",
         "lordSpecialtyDescription": "Plane die Spezialisierungsfähigkeiten von Handyman oder Legion Commander, sieh, welche Stufe und wie viele Punkte ein Build braucht, und teile ihn als Link.",
         "itemsDescription": "Sag dem Tool, welche Gegenstände dir egal sind und welche dir besonders wichtig sind. Jede Seite nutzt das.",
-        "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen.",
-        "settings": {
-            "heading": "Einstellungen",
-            "countVipPoints": "VIP-Punkte im Wert mitzählen",
-            "impact": "Ändert jeden Wert auf jeder Seite",
-            "vipOn": "An: Die Werte folgen dem Deal-% des Spiels, in dem VIP-Punkte Teil des Paketpreises sind.",
-            "vipOff": "Aus (Standard): VIP-Punkte sind nichts wert; der übrige Inhalt jedes Pakets trägt seinen Preis (Münzen, Spitzhacken und was sie kaufen, steigen)."
-        },
+        "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen."
+    },
+    "settings": {
+        "heading": "Einstellungen",
+        "description": "Einstellungen, die jeden Wert auf jeder Seite beeinflussen, in diesem Browser gespeichert.",
+        "countVipPoints": "VIP-Punkte im Wert mitzählen",
+        "impact": "Ändert jeden Wert auf jeder Seite",
+        "vipOn": "An: Die Werte folgen dem Deal-% des Spiels, in dem VIP-Punkte Teil des Paketpreises sind.",
+        "vipOff": "Aus (Standard): VIP-Punkte sind nichts wert; der übrige Inhalt jedes Pakets trägt seinen Preis (Münzen, Spitzhacken und was sie kaufen, steigen).",
         "quality": {
             "heading": "Modellqualität",
             "median": "Mittlerer Paketfehler (Median)",

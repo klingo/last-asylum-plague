@@ -80,7 +80,7 @@ function closeMenus(keep = null) {
 }
 
 /**
- * Renders the shared top navigation bar (menus with their pages, plus the language switcher)
+ * Renders the shared top navigation bar (menus with their pages, plus the settings cogwheel and the language switcher)
  * and marks the current page and its menu as active. Re-run automatically on every
  * "localechange" event so the nav's own text stays in sync, without each page having to
  * remember to do it.
@@ -116,10 +116,13 @@ function renderNav(activePage) {
             ${link('index.html', 'nav.home', activePage === 'welcome')}
             ${groups}
         </nav>
-        <label class="lang-switch">
-            <span class="sr-only">${t('nav.language')}</span>
-            <select id="lang-select">${langOptions}</select>
-        </label>
+        <div class="app-header__tools">
+            <a href="${base}settings.html" class="app-settings-link${activePage === 'settings' ? ' active' : ''}" title="${t('nav.settings')}" aria-label="${t('nav.settings')}" ${activePage === 'settings' ? 'aria-current="page"' : ''}>⚙</a>
+            <label class="lang-switch">
+                <span class="sr-only">${t('nav.language')}</span>
+                <select id="lang-select">${langOptions}</select>
+            </label>
+        </div>
     `;
 
     header.querySelector('#lang-select').addEventListener('change', (event) => {

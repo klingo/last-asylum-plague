@@ -20,7 +20,7 @@ its contents without a common value scale. The tool uses one:
   (150%) of its worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and
   Direct Relocate start at Don't care. They still count in the fit (the game's deal % pays for them), so the rest of a
   pack isn't worth more for it. VIP points are the exception: by default ("Count VIP points in the worth" off on the
-  Home page) they're worth 0 in the fit too, so the other contents carry each pack's whole price, on every page;
+  Settings page, the cogwheel in the header) they're worth 0 in the fit too, so the other contents carry each pack's whole price, on every page;
   switched on, the worth follows the game's deal % for them as well.
 - **Banknote worth** — one weekly optimisation (linear program, [HiGHS](https://highs.dev/) compiled to
   WebAssembly): the best purchases for your weekly Banknote spend within all purchase limits, passes and the events
@@ -32,7 +32,9 @@ its contents without a common value scale. The tool uses one:
 The top nav groups the pages into menus (`NAV_GROUPS` in `webapp/src/ui/nav.js`, the Home cards follow it): **Shop**
 (Pack Ranking, Spend Rewards), **Events** (Calendar, Shopping Plan), **Items** (Item Priorities, Item Sources, Best
 Choice Pick, Compare), **Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
-`events.html`, `gear.html`, ...), so saved links still work.
+`events.html`, `gear.html`, ...), so saved links still work. The cogwheel next to the language switcher opens
+**Settings** (`settings.html`): the settings that shape every value (Count VIP points in the worth) and the model
+quality (how well the fitted worths reproduce the packs' deal %).
 
 - **Pack Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /

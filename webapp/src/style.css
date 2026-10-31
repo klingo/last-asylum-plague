@@ -186,7 +186,7 @@ a:hover {
         order: 2;
     }
 
-    .lang-switch {
+    .app-header__tools {
         order: 1;
     }
 
@@ -222,6 +222,34 @@ a:hover {
         border: none;
         box-shadow: none;
     }
+}
+
+/* The settings cogwheel and the language switcher, at the right of the header. */
+.app-header__tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* As tall as the language switcher next to it, square. */
+.app-settings-link {
+    display: grid;
+    place-items: center;
+    align-self: stretch;
+    width: 37px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+    color: var(--text-dim);
+    font-size: 1.15rem;
+    line-height: 1;
+}
+
+.app-settings-link:hover,
+.app-settings-link.active {
+    border-color: var(--accent);
+    color: var(--text);
+    text-decoration: none;
 }
 
 .lang-switch select {
@@ -1596,7 +1624,7 @@ tbody tr.choice-details:hover {
     font-weight: 700;
 }
 
-/* Home: the packs the fit is furthest off. */
+/* Settings: the packs the fit is furthest off. */
 .fit-worst {
     font-size: 0.85rem;
 }

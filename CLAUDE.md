@@ -115,7 +115,7 @@ the Diamond Golden Egg) is worth that currency at its marginal value too (`itemP
 
 - The user's item priorities (Don't care / Low / Normal / High = 0 / 50 / 100 / 150 %) multiply values after the
   fit. Alliance chests, ... start at Don't care but stay in the fit; VIP points are fixed at 0 in the fit itself
-  (`zeroItems`, everywhere) unless the Home page's "Count VIP points" setting (default off) is on. Moon Coins and Star Moon Sigils are
+  (`zeroItems`, everywhere) unless the Settings page's "Count VIP points" setting (default off) is on. Moon Coins and Star Moon Sigils are
   deliberately unmodelled (`UNMODELLED_ITEMS`).
 - There is ONE model (`valuation.js`): the weekly-budget MILP/LP (`planner.js`, HiGHS) maximizing points under
   purchase limits at the user's weekly spend; worth = points ÷ the marginal points per Banknote. Every page uses it

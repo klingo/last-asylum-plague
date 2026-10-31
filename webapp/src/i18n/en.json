@@ -16,6 +16,7 @@
         "items": "Item Priorities",
         "compare": "Compare",
         "menu": "Menu",
+        "settings": "Settings",
         "groups": {
             "shop": "Shop",
             "events": "Events",
@@ -105,6 +106,7 @@
         "spendRewards": "Spend Rewards - Last Asylum Pack Solver",
         "gear": "Gear Upgrade Path - Last Asylum Pack Solver",
         "lordSpecialty": "Lord Specialty - Last Asylum Pack Solver",
+        "settings": "Settings - Last Asylum Pack Solver",
         "items": "Item Priorities - Last Asylum Pack Solver",
         "compare": "Compare - Last Asylum Pack Solver"
     },
@@ -118,6 +120,7 @@
         "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json",
         "gear": "Last Asylum Pack Solver — gear upgrade path from pack_data.json",
         "lordSpecialty": "Last Asylum Pack Solver — lord specialty skills from lord_specialty.json",
+        "settings": "Last Asylum Pack Solver — settings and model quality, computed live from pack_data.json",
         "items": "Last Asylum Pack Solver — item worth computed live from pack_data.json",
         "compare": "Last Asylum Pack Solver — comparison computed live from pack_data.json",
         "lastUpdated": "Data last updated: {date}"
@@ -134,14 +137,15 @@
         "gearDescription": "A squad's UR gear: in which order to craft it and to raise its levels and stars, step by step.",
         "lordSpecialtyDescription": "Plan the Handyman's or Legion Commander's specialty skills, see the level and points a build requires, and share it as a link.",
         "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
-        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it.",
-        "settings": {
-            "heading": "Settings",
-            "countVipPoints": "Count VIP points in the worth",
-            "impact": "Affects every value on every page",
-            "vipOn": "On: values follow the game's deal %, where VIP points are part of a pack's price.",
-            "vipOff": "Off (default): VIP points are worth nothing; each pack's other contents carry its price (coins, pickaxes and what they buy rise)."
-        },
+        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it."
+    },
+    "settings": {
+        "heading": "Settings",
+        "description": "Settings that shape every value on every page, saved in this browser.",
+        "countVipPoints": "Count VIP points in the worth",
+        "impact": "Affects every value on every page",
+        "vipOn": "On: values follow the game's deal %, where VIP points are part of a pack's price.",
+        "vipOff": "Off (default): VIP points are worth nothing; each pack's other contents carry its price (coins, pickaxes and what they buy rise).",
         "quality": {
             "heading": "Model quality",
             "median": "Median pack error",

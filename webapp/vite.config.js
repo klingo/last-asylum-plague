@@ -25,6 +25,7 @@ export default defineConfig({
                 spendRewards: resolve(root, 'spend-rewards.html'),
                 gear: resolve(root, 'gear.html'),
                 lordSpecialty: resolve(root, 'lord-specialty.html'),
+                settings: resolve(root, 'settings.html'),
             },
         },
     },
