@@ -260,6 +260,8 @@
         "buyInBundleTip": "{name} enthält es bereits, deshalb kauft der Plan es nicht einzeln.",
         "buyOtherInGroup": "andere Wahl",
         "buyOtherInGroupTip": "Nur eines davon kann gekauft werden: der Plan kauft {name}.",
+        "buyForTiers": "für die Bonusstufen",
+        "buyForTiersTip": "Für sich allein ist es weniger wert als sein Preis, aber seine Münzen helfen, die Bonusstufen des Shops zu erreichen, deren Extra-Belohnungen den Kauf lohnend machen (siehe Einkaufsplan).",
         "pointsTooltip": "{points} Punkte je Stück",
         "lifetimeTotal": "{count}× insgesamt",
         "perMonth": "Monat",

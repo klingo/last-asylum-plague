@@ -20,7 +20,8 @@
  * Two solves: the integer program gives the actual weekly shopping list (whole purchases);
  * its continuous relaxation (bonus tiers fixed to the integer result) gives the marginal rates:
  * - lambda = points the last Banknote of the budget buys;
- * - mu[c]  = points one more unit of currency c would buy.
+ * - mu[c]  = points one more unit of currency c would buy (at most what its best shop offer with room left
+ *            gives, see capCurrencyRates).
  * Worth of an item = points / lambda Banknotes; of a currency = mu / lambda.
  *
  * Pure module: callers pass an initialized HiGHS instance and the normalized data (pack-data.js).
@@ -476,6 +477,32 @@ function marginalRates(highs, model, plan, balanceRows) {
 }
 
 /**
+ * Caps each shop currency's `mu` at what one more unit buys: the best points per unit among its shop offers that
+ * still have room in the plan (below their limit, unlocked). The relaxation keeps the bonus tiers the plan reaches,
+ * so their thresholds force the coin purchases and the dual alone would price a coin at what the packs selling it
+ * cost (every such pack at exactly ratio 1.0). Currencies without an offer with room keep their dual.
+ */
+function capCurrencyRates(mu, offerVars, shops, model, plan) {
+    const useValue = new Map();
+    for (const [name, { shopId, offer, points }] of offerVars) {
+        const count = plan.values.get(name) || 0;
+        const unlocked =
+            !(offer.unlock_points > 0) ||
+            (plan.values.get(varName('u', shopId, String(offer.unlock_points))) || 0) > 0.5;
+        if (!unlocked || count >= (model.bounds.get(name)?.upper ?? Infinity) - 1e-6) {
+            continue;
+        }
+        const currencyId = shops[shopId].currency_item_id;
+        useValue.set(currencyId, Math.max(useValue.get(currencyId) ?? 0, points / offer.currency_cost));
+    }
+    for (const [currencyId, value] of useValue) {
+        if (mu.has(currencyId)) {
+            mu.set(currencyId, Math.min(mu.get(currencyId), value));
+        }
+    }
+}
+
+/**
  * Solves the weekly plan (`data`: normalized, see pack-data.js).
  * options: `budget` (Banknotes/week), `activeEventIds` (Set; events running this week),
  * `includePasses`, `includeExclusives`, `weights` (the user's priorities as factors), `basePoints`
@@ -559,6 +586,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
 
     // 2) Marginal rates.
     const { lambda, mu } = marginalRates(highs, model, plan, balanceRows);
+    capCurrencyRates(mu, offerVars, ctx.shops, model, plan);
 
     // 3) The plan as the pages read it.
     const purchases = [];
@@ -692,6 +720,16 @@ function solveWeeklyPlan(highs, data, options = {}) {
         lockShortfalls,
         currencies,
         itemPoints,
+        /**
+         * Whether the package gives the currency of a shop whose bonus tiers the plan reaches: then it can be worth
+         * buying for those tiers' rewards even below ratio 1.0 on its own (see capCurrencyRates).
+         */
+        forBonusTiers(pkg) {
+            const tierCurrencies = new Set(reachedOf(tierVars).map((tier) => ctx.shops[tier.shopId].currency_item_id));
+            return [...currencyFlows(pkg.contains, items, values, currencyIds).keys()].some((id) =>
+                tierCurrencies.has(id),
+            );
+        },
         /** Banknote worth of one unit (see itemPoints), or null. */
         worth(itemId) {
             const points = itemPoints(itemId);

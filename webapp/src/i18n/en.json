@@ -260,6 +260,8 @@
         "buyInBundleTip": "{name} already includes it, so the plan doesn't buy it on its own.",
         "buyOtherInGroup": "other pick",
         "buyOtherInGroupTip": "Only one of these can be bought: the plan buys {name}.",
+        "buyForTiers": "for the bonus tiers",
+        "buyForTiersTip": "On its own it's worth less than its price, but its coins help reach the shop's bonus tiers, whose extra rewards make buying it pay off (see the Shopping Plan).",
         "pointsTooltip": "{points} points each",
         "lifetimeTotal": "{count}× total",
         "perMonth": "month",

@@ -1365,7 +1365,10 @@ tbody tr.choice-details:hover {
 }
 
 .events-packs-grid {
-    grid-template-columns: minmax(260px, 2.5fr) minmax(90px, 0.6fr) minmax(90px, 0.7fr) minmax(90px, 0.8fr) 90px 90px;
+    grid-template-columns: minmax(260px, 2.5fr) minmax(90px, 0.6fr) minmax(90px, 0.7fr) minmax(90px, 0.8fr) 90px minmax(
+            90px,
+            max-content
+        );
 }
 
 .events-shop-grid {
@@ -1887,6 +1890,19 @@ tbody tr.choice-details:hover {
     color: var(--bg);
     font-weight: 700;
     font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+/* A Buy cell with a note on a second line (e.g. "for the bonus tiers"). */
+.buy-stack {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.buy-note {
+    font-size: 0.75rem;
     white-space: nowrap;
 }
 

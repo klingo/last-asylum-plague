@@ -25,7 +25,8 @@ its contents without a common value scale. The tool uses one:
 - **Banknote worth** — one weekly optimisation (linear program, [HiGHS](https://highs.dev/) compiled to
   WebAssembly): the best purchases for your weekly Banknote spend within all purchase limits, passes and the events
   you tick. Worth = points ÷ what your last Banknote buys; diamonds and coins at what one more unit could still buy
-  this week (0 once the shops are exhausted). A ratio of 1.0 or more = worth buying at your weekly spend.
+  this week (at most what their best offer with room left gives, 0 once the shops are exhausted; a shop's bonus tiers
+  don't raise it). A ratio of 1.0 or more = worth buying at your weekly spend.
 
 ## Pages
 
@@ -38,7 +39,8 @@ quality (how well the fitted worths reproduce the packs' deal %).
 
 - **Pack Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
-  "other pick" when a bundle or another member of its group is bought instead). "Plan only" shows just the weekly
+  "other pick" when a bundle or another member of its group is bought instead; "for the bonus tiers" when a pack below
+  1.0 is bought because its coins reach an event shop's bonus tiers). "Plan only" shows just the weekly
   shopping list, the Type pills filter by kind; entries of unknown worth are listed unranked.
 - **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below; each entry with the
   game's art, a hover card with how long is left, and a click opens its plan) and the Weekday Offers of the next 7

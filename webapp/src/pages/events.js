@@ -485,7 +485,13 @@ function renderPacks({ eventId }) {
                 numCell(gold(formatThousands(pkg.price, 0))),
                 numCell(gold(formatThousands(worth, 0))),
                 numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
-                numCell(count ? `<span class="buy-badge">×${formatThousands(count)}</span>` : ''),
+                numCell(
+                    count
+                        ? ratio !== null && ratio < 0.995 && valuation.plan.forBonusTiers(pkg)
+                            ? `<span class="buy-stack"><span class="buy-badge">×${formatThousands(count)}</span><span class="buy-note text-dim">${t('rankings.buyForTiers')}${infoIconHtml(t('rankings.buyForTiersTip'))}</span></span>`
+                            : `<span class="buy-badge">×${formatThousands(count)}</span>`
+                        : '',
+                ),
             ],
             { buy: count > 0 },
         ),
@@ -499,6 +505,7 @@ function renderPacks({ eventId }) {
         headerCell('buy', true),
     ]);
     packsTable.innerHTML = gridTable(header, rows.join(''));
+    enableInfoTooltips(packsTable);
 }
 
 /** Shop offers grouped by unlock stage (unlock amount once per group); rows the plan buys stand out. */

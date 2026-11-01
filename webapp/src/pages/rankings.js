@@ -41,13 +41,17 @@ const expandedKeys = new Set();
 let planOnly = false;
 const shownTypes = new Set();
 
+/** The Buy cell with "for the bonus tiers" on a second line. */
+const withTiersNote = (html) =>
+    `<span class="buy-stack"><span>${html}</span><span class="buy-note text-dim">${t('rankings.buyForTiers')}${infoIconHtml(t('rankings.buyForTiersTip'))}</span></span>`;
+
 /**
  * "Buy" cell: how many the best plan for your weekly spend buys out of what's on sale this week,
  * e.g. "3 / 7", "1 / month" (monthly pass), "1 / 2 weeks" (biweekly pass), "2 / ∞" (no limit). Lifetime-limited packs aren't part of
  * the weekly plan: "once" / "3× total". A pack the plan leaves out says why when it isn't just the spend:
  * "in Weekly Pass" (a bundle the plan buys includes it), "other pick" (only one of its group can be bought).
  * "doesn't fit" marks a good deal (ratio clearly above 1.0) left out because whole purchases don't fit your
- * exact spend.
+ * exact spend. A pack bought below ratio 1.0 for a shop's bonus tiers says so ("for the bonus tiers").
  */
 function buyHtml(entry) {
     const { planned, capacity, limitType } = entry;
@@ -75,7 +79,8 @@ function buyHtml(entry) {
     if (count === 0 && entry.rank && entry.ratio > 1.005) {
         return `<span class="text-dim">${t('rankings.buyNoFit')}</span>`;
     }
-    return `${countHtml}<span class="text-dim buy-limit">&nbsp;/&nbsp;${limit}</span>`;
+    const html = `${countHtml}<span class="text-dim buy-limit">&nbsp;/&nbsp;${limit}</span>`;
+    return count > 0 && entry.forTiers ? withTiersNote(html) : html;
 }
 
 /**
@@ -141,6 +146,8 @@ function buildEntries() {
             priceHtml: `${weeklyShare}${banknotesHtml(formatThousands(pkg.price))}`,
             planned: planned.get(id) || 0,
             notBought: reasons.get(id) || null,
+            // Bought below ratio 1.0 for the bonus tiers of the shop its coins go to.
+            forTiers: b.ratio < 0.995 && valuation.plan.forBonusTiers(pkg),
             capacity,
             limitType: pkg.limit_type,
             worth: b.worth,

@@ -43,7 +43,7 @@
     "eventExtraUsed": 1246.2,
     "mu": {
         "diamonds": 2.74600008,
-        "surprise_emblem": 483.207273
+        "surprise_emblem": 382.522963
     },
     "currencies": {
         "diamonds": {
@@ -56,7 +56,7 @@
             "received": 320,
             "extra": 0,
             "spent": 320,
-            "mu": 483.207273
+            "mu": 382.522963
         }
     },
     "mines": [],
@@ -189,7 +189,7 @@
         "stone_blade": 0,
         "strange_coin": 0,
         "study_scroll": 2.27690513,
-        "surprise_emblem": 11.6414059,
+        "surprise_emblem": 9.21572439,
         "survivor_recruit_ticket": 7.2097603,
         "survivor_token": 5.72883959,
         "tempered_steel": 1.75046578,
@@ -338,11 +338,11 @@
         "strange_bazaar_select_pack": 1384.021,
         "strange_bazaar_ultimate_pack": 27482.0427,
         "study_scroll": 266701.538,
-        "surprise_encounter_exquisite_pack": 26928.4057,
-        "surprise_encounter_premium_pack": 134642.028,
-        "surprise_encounter_rare_pack": 53856.8114,
-        "surprise_encounter_select_pack": 20712.3119,
-        "surprise_encounter_ultimate_pack": 269284.057,
+        "surprise_encounter_exquisite_pack": 21894.1901,
+        "surprise_encounter_premium_pack": 109470.951,
+        "surprise_encounter_rare_pack": 43788.3803,
+        "surprise_encounter_select_pack": 16684.9395,
+        "surprise_encounter_ultimate_pack": 218941.901,
         "survivor_pack": 6153.07462,
         "tempered_arms_t1": 84749.1794,
         "troop_training_pack": 7933.51442,

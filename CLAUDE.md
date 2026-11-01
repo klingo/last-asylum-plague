@@ -110,7 +110,8 @@ is stored in `pack_data.json`: `point-fit.js` fits the "leaf" items live from ev
 else is derived from its structure (`contains`, random `drop_table`, `choice`, `substitutes_for`,
 `value_equivalent`, `reversible` chains, `crafted_from` recipes). A single-entry `value_equivalent` makes a value
 level chain (worth only, the levels can't be crafted). Currencies (diamonds, event coins) have no points of their
-own — they're worth only what their shop offers buy; an item that opens into a currency (a Magic Hat Lucky Box,
+own — they're worth only what their shop offers buy (at most the best offer with room left, `capCurrencyRates`, so
+reached bonus tiers don't make a coin worth what its packs cost); an item that opens into a currency (a Magic Hat Lucky Box,
 the Diamond Golden Egg) is worth that currency at its marginal value too (`itemPoints` in `planner.js`).
 
 - The user's item priorities (Don't care / Low / Normal / High = 0 / 50 / 100 / 150 %) multiply values after the
