@@ -2881,7 +2881,7 @@
         "blades_out_deluxe_pack": {
             "name": {
                 "en": "Blades Out Deluxe Pack",
-                "de": ""
+                "de": "Klingen Raus Deluxe-Paket"
             },
             "category": "special_event",
             "event_id": "blades_out",
@@ -2901,7 +2901,7 @@
         "blades_out_premium_pack": {
             "name": {
                 "en": "Blades Out Premium Pack",
-                "de": ""
+                "de": "Klingen Raus Premium-Paket"
             },
             "category": "special_event",
             "event_id": "blades_out",
@@ -2921,7 +2921,7 @@
         "blades_out_rare_pack": {
             "name": {
                 "en": "Blades Out Rare Pack",
-                "de": ""
+                "de": "Klingen Raus Seltenes Paket"
             },
             "category": "special_event",
             "event_id": "blades_out",
@@ -2941,7 +2941,7 @@
         "blades_out_select_pack": {
             "name": {
                 "en": "Blades Out Select Pack",
-                "de": ""
+                "de": "Klingen Raus Auswahlpaket"
             },
             "category": "special_event",
             "event_id": "blades_out",
@@ -2961,7 +2961,7 @@
         "blades_out_ultimate_pack": {
             "name": {
                 "en": "Blades Out Ultimate Pack",
-                "de": ""
+                "de": "Klingen Raus Ultimatives Paket"
             },
             "category": "special_event",
             "event_id": "blades_out",
@@ -7497,7 +7497,7 @@
         "blades_out": {
             "name": {
                 "en": "Blades Out",
-                "de": ""
+                "de": "Klingen Raus"
             },
             "category": "special_event",
             "image": "blades_out"
@@ -7605,7 +7605,7 @@
         "mystic_cabinet": {
             "name": {
                 "en": "Mystic Cabinet",
-                "de": ""
+                "de": "Mystischer Schrank"
             },
             "category": "season_event"
         },
