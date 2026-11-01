@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-10-31"
+        "last_updated": "2026-11-01"
     },
     "items": {
         "alliance_coins": {
@@ -8088,6 +8088,10 @@
             {
                 "start": "2026-10-25",
                 "end": "2026-10-25"
+            },
+            {
+                "start": "2026-11-01",
+                "end": "2026-11-01"
             }
         ],
         "demon_king_ranger_blight": [
@@ -8220,6 +8224,10 @@
             {
                 "start": "2026-10-25",
                 "end": "2026-10-25"
+            },
+            {
+                "start": "2026-11-01",
+                "end": "2026-11-01"
             }
         ],
         "recluse_merchant": [
@@ -8232,6 +8240,10 @@
             {
                 "start": "2026-10-18",
                 "end": "2026-10-18"
+            },
+            {
+                "start": "2026-11-01",
+                "end": "2026-11-01"
             }
         ],
         "strange_bazaar": [
