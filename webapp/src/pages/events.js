@@ -51,6 +51,8 @@ const eventBanner = document.getElementById('event-banner');
 const exceedNote = document.getElementById('exceed-note');
 const lockNote = document.getElementById('lock-note');
 const eventSummary = document.getElementById('event-summary');
+const packsSection = document.getElementById('packs-section');
+const packsTable = document.getElementById('packs-table');
 const shopSection = document.getElementById('shop-section');
 const shopHeading = document.getElementById('shop-heading');
 const shopNote = document.getElementById('shop-note');
@@ -199,6 +201,25 @@ function eventMaxSpend(eventId) {
         return Infinity;
     }
     return packages.reduce((sum, pkg) => sum + packageWeeklyCapacity(pkg, rules) * pkg.price, 0);
+}
+
+/** Every pack of the event on sale (also the ones the plan skips), best ratio (worth ÷ price) first. */
+function eventPacks(eventId) {
+    const rules = { activeEventIds: new Set([eventId]), eventDaysLeft: pageOverrides().eventDaysLeft };
+    const bought = new Map(eventPurchases(valuation.plan, eventId).map((p) => [p.id, p.count]));
+    return Object.entries(data.packages)
+        .filter(([id, pkg]) => pkg.event_id === eventId && isOnSale(id, pkg, rules))
+        .map(([id, pkg]) => {
+            const b = valuation.bundle(pkg, pkg.price);
+            return {
+                pkg,
+                limit: packageWeeklyCapacity(pkg, rules),
+                count: bought.get(id) || 0,
+                worth: b.worth,
+                ratio: b.incomplete ? null : b.ratio,
+            };
+        })
+        .sort((a, b) => (b.ratio ?? -1) - (a.ratio ?? -1));
 }
 
 /** Price of the event's cheapest pack (whole packs rarely hit a spend level exactly). */
@@ -445,6 +466,39 @@ function itemTotals({ eventId, shopId, shop, mineId, mine }) {
         .filter(([, qty]) => Math.abs(qty) > 1e-9)
         .map(([id, qty]) => ({ id, qty, worth: qty * (valuation.worth(id) ?? 0) }))
         .sort((a, b) => b.worth - a.worth);
+}
+
+/** Every pack of the event on sale, like the shop's offers: the ones the plan buys stand out. */
+function renderPacks({ eventId }) {
+    const packs = eventId ? eventPacks(eventId) : [];
+    packsSection.hidden = packs.length === 0;
+    if (packsSection.hidden) {
+        return;
+    }
+    const locale = getLocale();
+    const maxRatio = Math.max(1, ...packs.map((p) => p.ratio).filter(Number.isFinite));
+    const rows = packs.map(({ pkg, limit, count, worth, ratio }) =>
+        gridRow(
+            [
+                cell(packageDisplayName(pkg, locale)),
+                numCell(formatThousands(limit), WIDE),
+                numCell(gold(formatThousands(pkg.price, 0))),
+                numCell(gold(formatThousands(worth, 0))),
+                numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
+                numCell(count ? `<span class="buy-badge">×${formatThousands(count)}</span>` : ''),
+            ],
+            { buy: count > 0 },
+        ),
+    );
+    const header = gridRow([
+        headerCell('pack'),
+        headerCell('limit', true, true),
+        headerCell('price', true),
+        headerCell('worth', true),
+        headerCell('ratio', true),
+        headerCell('buy', true),
+    ]);
+    packsTable.innerHTML = gridTable(header, rows.join(''));
 }
 
 /** Shop offers grouped by unlock stage (unlock amount once per group); rows the plan buys stand out. */
@@ -1335,6 +1389,7 @@ function render() {
     startCountdowns(eventBanner, render);
     renderLockNote();
     renderSummary(selected);
+    renderPacks(selected);
     renderShop(selected);
     renderMine(selected);
     renderSteps(selected);

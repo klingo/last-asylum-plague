@@ -1364,6 +1364,10 @@ tbody tr.choice-details:hover {
     font-size: 0.78rem;
 }
 
+.events-packs-grid {
+    grid-template-columns: minmax(260px, 2.5fr) minmax(90px, 0.6fr) minmax(90px, 0.7fr) minmax(90px, 0.8fr) 90px 90px;
+}
+
 .events-shop-grid {
     grid-template-columns:
         minmax(260px, 2.5fr) minmax(90px, 0.6fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) minmax(90px, 0.8fr) 90px
@@ -3496,6 +3500,10 @@ a.schedule__bar {
 
     .sources-grid {
         grid-template-columns: max-content minmax(90px, 1fr) max-content max-content max-content;
+    }
+
+    .events-packs-grid {
+        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content;
     }
 
     .events-shop-grid {

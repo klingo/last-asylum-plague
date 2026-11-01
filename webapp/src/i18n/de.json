@@ -276,6 +276,7 @@
         "selectPrompt": "Wähle oben ein Event oder einen Shop.",
         "planHeading": "Dein Plan",
         "summaryNoPacks": "Dein Plan kauft bei deinen wöchentlichen Ausgaben keines der Pakete dieses Events.",
+        "packsHeading": "Event-Pakete",
         "bonusSection": "Bonusstufen: Extra-Belohnungen, sobald im Shop genug ausgegeben wurde",
         "bonusTier": "Bonus bei {threshold}",
         "reached": "erreicht",
@@ -388,6 +389,8 @@
         "perDay": "{count}/Tag",
         "table": {
             "offer": "Angebot",
+            "pack": "Paket",
+            "price": "Preis",
             "limit": "Max. / Woche",
             "cost": "Kosten",
             "costBanknotes": "Kosten in Banknoten",

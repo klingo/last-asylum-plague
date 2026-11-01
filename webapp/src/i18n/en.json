@@ -276,6 +276,7 @@
         "selectPrompt": "Select an event or shop above.",
         "planHeading": "Your plan",
         "summaryNoPacks": "Your plan buys none of this event's packs at your weekly spend.",
+        "packsHeading": "Event packs",
         "bonusSection": "Bonus tiers: extra rewards once enough has been spent in the shop",
         "bonusTier": "Bonus at {threshold}",
         "reached": "reached",
@@ -388,6 +389,8 @@
         "perDay": "{count}/day",
         "table": {
             "offer": "Offer",
+            "pack": "Pack",
+            "price": "Price",
             "limit": "Max / week",
             "cost": "Cost",
             "costBanknotes": "Cost in Banknotes",
