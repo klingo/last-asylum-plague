@@ -3903,6 +3903,24 @@
                 "lv5_alliance_chest": 1
             }
         },
+        "halloween_ball_mystery_shop_raven_essence_ii": {
+            "name": {
+                "en": "Mystery Shop (Raven Essence II)",
+                "de": "Geheim-Shop (Rabenessenz II)"
+            },
+            "category": "special_event",
+            "event_id": "halloween_ball",
+            "price": 999,
+            "deal_percentage": 1500,
+            "purchase_limit": 2,
+            "limit_type": "daily",
+            "contains": {
+                "raven_essence": 40,
+                "diamonds": 1000,
+                "vip_points": 1000,
+                "lv3_alliance_chest": 1
+            }
+        },
         "halloween_ball_mystery_shop_raven_essence_iii": {
             "name": {
                 "en": "Mystery Shop (Raven Essence III)",
