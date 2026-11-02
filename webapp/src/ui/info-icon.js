@@ -4,7 +4,7 @@
  */
 import { localizedName, t } from './i18n.js';
 import { packageDisplayName } from './labels.js';
-import { escapeAttr } from './html.js';
+import { escapeAttr, escapeHtml } from './html.js';
 
 // "i" in a circle; the button itself carries the accessible name (aria-label), so the SVG is decorative.
 const INFO_ICON_SVG =
@@ -14,10 +14,15 @@ const INFO_ICON_SVG =
     '<rect x="7.3" y="7" width="1.4" height="4.6" rx="0.7" fill="currentColor" />' +
     '</svg>';
 
-/** Info-icon button showing `text` (markup-safe text, e.g. with escaped names) as its tooltip. */
-function infoIconHtml(text) {
+/**
+ * Info-icon button showing `text` (markup-safe text, e.g. with escaped names) as its tooltip. With `rows` (plain
+ * text: `[{ text, item? }]`) the tooltip shows those lines instead, each with the item's icon in front (tooltip.js);
+ * `text` stays the accessible name.
+ */
+function infoIconHtml(text, rows = null) {
     const label = escapeAttr(text);
-    return `<button type="button" class="info-icon" data-tooltip="${label}" aria-label="${label}">${INFO_ICON_SVG}</button>`;
+    const rowsAttr = rows ? ` data-tooltip-rows="${escapeHtml(JSON.stringify(rows))}"` : '';
+    return `<button type="button" class="info-icon" data-tooltip="${label}"${rowsAttr} aria-label="${label}">${INFO_ICON_SVG}</button>`;
 }
 
 /** Name of what `requiresId` stands for: a package (with its tier) or an item. */

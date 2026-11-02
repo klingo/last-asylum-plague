@@ -1,9 +1,9 @@
 {
     "app": {
-        "title": "Last Asylum: Plague - Klingo's Pack Solver"
+        "title": "Last Asylum: Plague - Klingo's Companion"
     },
     "nav": {
-        "home": "Home",
+        "home": "Today",
         "rankings": "Pack Ranking",
         "calendar": "Calendar",
         "eventPlan": "Shopping Plan",
@@ -24,6 +24,19 @@
             "items": "Items",
             "heroes": "Heroes",
             "lord": "Lord"
+        },
+        "descriptions": {
+            "rankings": "Every package and pass ranked by how much value it brings for its price. A ratio of 1.0 or more = worth buying at your weekly spend.",
+            "spendRewards": "Pick a cumulative spend-reward track and see up to which tier spending more still pays off.",
+            "seasonalPasses": "Pick a seasonal pass and see everything it gives, what the pass costs and whether its contents are worth the price.",
+            "calendar": "What runs when: the event schedule with a forecast for the coming weeks, and the packs on sale on fixed weekdays.",
+            "events": "Pick an event: which of its packs to buy at your weekly spend, what to buy with its coins (in unlock order) and whether spending more on it still pays off.",
+            "sources": "Pick an item and see every pack and shop offer that gives it, even nested in chests and supplies, ranked by what one unit costs.",
+            "choices": "Pick a choice chest, a package with options, or a group you can only buy one of (e.g. calendar packs) and see which is worth the most.",
+            "items": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
+            "compare": "Pick two items with amounts: what each is worth, and the cheapest way to get it.",
+            "gear": "A squad's UR gear: in which order to craft it and to raise its levels and stars, step by step.",
+            "lordSpecialty": "Plan the Handyman's or Legion Commander's specialty skills, see the level and points a build requires, and share it as a link."
         }
     },
     "common": {
@@ -99,50 +112,38 @@
         "limited": "Limited"
     },
     "docTitle": {
-        "welcome": "Last Asylum Pack Solver",
-        "rankings": "Pack Ranking - Last Asylum Pack Solver",
-        "calendar": "Calendar - Last Asylum Pack Solver",
-        "events": "Shopping Plan - Last Asylum Pack Solver",
-        "sources": "Item Sources - Last Asylum Pack Solver",
-        "choices": "Best Choice Pick - Last Asylum Pack Solver",
-        "spendRewards": "Spend Rewards - Last Asylum Pack Solver",
-        "seasonalPasses": "Seasonal Passes - Last Asylum Pack Solver",
-        "gear": "Gear Upgrade Path - Last Asylum Pack Solver",
-        "lordSpecialty": "Lord Specialty - Last Asylum Pack Solver",
-        "settings": "Settings - Last Asylum Pack Solver",
-        "items": "Item Priorities - Last Asylum Pack Solver",
-        "compare": "Compare - Last Asylum Pack Solver"
+        "welcome": "Last Asylum: Plague - Klingo's Companion",
+        "rankings": "Pack Ranking - Klingo's Companion",
+        "calendar": "Calendar - Klingo's Companion",
+        "events": "Shopping Plan - Klingo's Companion",
+        "sources": "Item Sources - Klingo's Companion",
+        "choices": "Best Choice Pick - Klingo's Companion",
+        "spendRewards": "Spend Rewards - Klingo's Companion",
+        "seasonalPasses": "Seasonal Passes - Klingo's Companion",
+        "gear": "Gear Upgrade Path - Klingo's Companion",
+        "lordSpecialty": "Lord Specialty - Klingo's Companion",
+        "settings": "Settings - Klingo's Companion",
+        "items": "Item Priorities - Klingo's Companion",
+        "compare": "Compare - Klingo's Companion"
     },
     "footer": {
-        "welcome": "Last Asylum Pack Solver — computed live from pack_data.json",
-        "rankings": "Last Asylum Pack Solver — pack ranking computed live from pack_data.json",
-        "calendar": "Last Asylum Pack Solver — schedule recorded in pack_data.json",
-        "events": "Last Asylum Pack Solver — shopping plans computed live from pack_data.json",
-        "sources": "Last Asylum Pack Solver — item sources computed live from pack_data.json",
-        "choices": "Last Asylum Pack Solver — choice options valued live from pack_data.json",
-        "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json",
-        "seasonalPasses": "Last Asylum Pack Solver — seasonal passes valued live from pack_data.json",
-        "gear": "Last Asylum Pack Solver — gear upgrade path from pack_data.json",
-        "lordSpecialty": "Last Asylum Pack Solver — lord specialty skills from lord_specialty.json",
-        "settings": "Last Asylum Pack Solver — settings and model quality, computed live from pack_data.json",
-        "items": "Last Asylum Pack Solver — item worth computed live from pack_data.json",
-        "compare": "Last Asylum Pack Solver — comparison computed live from pack_data.json",
+        "welcome": "Klingo's Companion — computed live from pack_data.json",
+        "rankings": "Klingo's Companion — pack ranking computed live from pack_data.json",
+        "calendar": "Klingo's Companion — schedule recorded in pack_data.json",
+        "events": "Klingo's Companion — shopping plans computed live from pack_data.json",
+        "sources": "Klingo's Companion — item sources computed live from pack_data.json",
+        "choices": "Klingo's Companion — choice options valued live from pack_data.json",
+        "spendRewards": "Klingo's Companion — spend reward tiers computed live from pack_data.json",
+        "seasonalPasses": "Klingo's Companion — seasonal passes valued live from pack_data.json",
+        "gear": "Klingo's Companion — gear upgrade path from pack_data.json",
+        "lordSpecialty": "Klingo's Companion — lord specialty skills from lord_specialty.json",
+        "settings": "Klingo's Companion — settings and model quality, computed live from pack_data.json",
+        "items": "Klingo's Companion — item worth computed live from pack_data.json",
+        "compare": "Klingo's Companion — comparison computed live from pack_data.json",
         "lastUpdated": "Data last updated: {date}"
     },
     "welcome": {
-        "heading": "Welcome",
-        "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from manually harvested pack data. Every value is based on the game's own deal percentages, your weekly Banknote spend and how much each item matters to you.",
-        "rankingsDescription": "Every package and pass ranked by how much value it brings for its price. A ratio of 1.0 or more = worth buying at your weekly spend.",
-        "calendarDescription": "What runs when: the event schedule with a forecast for the coming weeks, and the packs on sale on fixed weekdays.",
-        "eventsDescription": "Pick an event: which of its packs to buy at your weekly spend, what to buy with its coins (in unlock order) and whether spending more on it still pays off.",
-        "sourcesDescription": "Pick an item and see every pack and shop offer that gives it, even nested in chests and supplies, ranked by what one unit costs.",
-        "choicesDescription": "Pick a choice chest, a package with options, or a group you can only buy one of (e.g. calendar packs) and see which is worth the most.",
-        "spendRewardsDescription": "Pick a cumulative spend-reward track and see up to which tier spending more still pays off.",
-        "seasonalPassesDescription": "Pick a seasonal pass and see everything it gives, what the pass costs and whether its contents are worth the price.",
-        "gearDescription": "A squad's UR gear: in which order to craft it and to raise its levels and stars, step by step.",
-        "lordSpecialtyDescription": "Plan the Handyman's or Legion Commander's specialty skills, see the level and points a build requires, and share it as a link.",
-        "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
-        "compareDescription": "Pick two items with amounts: what each is worth, and the cheapest way to get it."
+        "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from manually harvested pack data. Every value is based on the game's own deal percentages, your weekly Banknote spend and how much each item matters to you."
     },
     "settings": {
         "heading": "Settings",
@@ -199,6 +200,12 @@
             "colour": "Colour = ratio, as on the Pack Ranking (green: worth it at your weekly spend, amber: around 1.0, red: below)",
             "worthIt": "Worth it at your weekly spend: {offers}",
             "noneWorthIt": "None of these offers is worth it at your weekly spend (best: {name}, ratio {ratio})"
+        },
+        "eventRotation": {
+            "lead": "The phases from today through the next 6 days, in your local time. Hover a bar for its time.",
+            "now": "Now · {current} until {time}, then {next}",
+            "active": "On now",
+            "upcoming": "Upcoming"
         },
         "status": {
             "endsIn": "Ends in {time}",
@@ -499,6 +506,31 @@
         "verdictNone": "No step beyond your weekly spend brings as much as your last Banknote does.",
         "reachedSummary": "Your weekly spend of {budget} Banknotes already reaches tier {tier}.",
         "verdictAll": "Your weekly spend already reaches every tier of this track."
+    },
+    "today": {
+        "heading": "Today",
+        "description": "What runs today, what starts soon, today's weekday offers and your plan for the week at your weekly spend.",
+        "runningHeading": "Running now",
+        "runningEmpty": "Nothing is recorded as running today.",
+        "soonHeading": "Starting soon",
+        "soonEmpty": "Nothing is expected to start in the next 3 days.",
+        "expected": "expected",
+        "earnPoints": "How to earn points:",
+        "offersHeading": "Today's weekday offers",
+        "offersEmpty": "No weekday offers on sale today.",
+        "planHeading": "Your plan this week",
+        "planSummary": "The best plan for your weekly spend buys for {spent} of your {budget} Banknotes.",
+        "planEmpty": "Your plan buys nothing at your weekly spend.",
+        "tiles": {
+            "daily": "Daily packs",
+            "weekly": "Weekly and longer packs",
+            "rotation": "Weekday offers",
+            "shops": "Shop offers"
+        },
+        "week": "week",
+        "shopOffers": "Offers to buy: {count}",
+        "planNote": "Prices are what the plan spends per week; monthly and two-week packs count at their weekly share of the price.",
+        "openPlan": "Open the Shopping Plan"
     },
     "seasonalPasses": {
         "heading": "Seasonal Passes",

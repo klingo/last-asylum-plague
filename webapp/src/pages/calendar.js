@@ -8,7 +8,14 @@ import { escapeHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { createItemImage } from '../ui/images.js';
 import { DEFAULT_NONE_ITEMS, getSettings } from '../ui/settings.js';
-import { eventImageUrl, runStatusText, scheduleImage } from '../ui/event-banner.js';
+import {
+    eventImageUrl,
+    runStatusText,
+    scheduleHref,
+    scheduleImage,
+    scheduleName,
+    slotRangeText,
+} from '../ui/event-banner.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import {
     GAME_DAY_START_MS,
@@ -16,6 +23,8 @@ import {
     forecastRuns,
     gameDay,
     isoWeekNumber,
+    rotationSlots,
+    rotationWindow,
     runStatus,
     scheduleRuns,
     weekdayIndex,
@@ -32,8 +41,9 @@ const GROUPS = [
     ['track', 'calendar.schedule.groupTracks'],
 ];
 
-// Weekday offers: today and the next 6 days (game days: they start at 02:00 UTC).
+// Weekday offers (and the event rotations): today and the next 6 days (game days: they start at 02:00 UTC).
 const ROTATION_DAYS = 7;
+const HOUR_MS = 3600000;
 
 let packData = null;
 // The worth model (valuation.js): the weekday offers' bars are coloured by their ratio, as on the Pack Ranking.
@@ -42,16 +52,6 @@ let valuation = null;
 let rotationDay = null;
 // The Event Schedule's window (first day, number of days), for moving its "Now" line every minute.
 let scheduleWindow = null;
-
-function scheduleName(data, id, kind) {
-    if (kind === 'pass') {
-        const entry = Object.entries(data.packages || {}).find(([pkgId, pkg]) => packageFamilyId(pkgId, pkg) === id);
-        return entry ? localizedName(entry[1].name) : id;
-    }
-    // The "track" group also holds events with `calendar_group: "spend_rewards"`.
-    const entry = data.events?.[id] || (kind === 'track' ? data.spend_reward_tracks?.[id] : null);
-    return entry ? localizedName(entry.name) : id;
-}
 
 function formatDay(day, options) {
     return dayDate(day).toLocaleDateString(getLocale(), { timeZone: 'UTC', ...options });
@@ -100,23 +100,6 @@ function scheduleTooltip(bar, row, today) {
     return lines.join('\n');
 }
 
-/**
- * Where a schedule entry is planned: a ticked event on the Events page, a spend reward track on Spend Rewards, a
- * seasonal pass on Seasonal Passes (in-game events have no page of their own); null otherwise.
- */
-function planHref(id) {
-    const isSeasonalPass = Object.entries(packData.packages || {}).some(
-        ([pkgId, pkg]) => pkg.seasonal && packageFamilyId(pkgId, pkg) === id,
-    );
-    if (isSeasonalPass) {
-        return `seasonal-passes.html?pass=${encodeURIComponent(id)}`;
-    }
-    if (packData.events?.[id]?.category !== 'ingame_event' && getSettings().activeEvents?.includes(id)) {
-        return `events.html?event=${encodeURIComponent(`event:${id}`)}`;
-    }
-    return packData.spend_reward_tracks?.[id] ? `spend-rewards.html?track=${encodeURIComponent(id)}` : null;
-}
-
 /** A bar; with `href` a link (opens its plan), with `image` the hover card shows the art. */
 function barHtml(bar, from, to, tooltip, { href = null, image = null, color = null } = {}) {
     const start = Math.max(bar.start, from);
@@ -128,6 +111,7 @@ function barHtml(bar, from, to, tooltip, { href = null, image = null, color = nu
         bar.forecast && !bar.proven ? 'schedule__bar--guess' : '',
         bar.missed ? 'schedule__bar--missed' : '',
         bar.past ? 'schedule__bar--past' : '',
+        bar.active ? 'schedule__bar--active' : '',
         bar.start < from ? 'schedule__bar--cut-start' : '',
         bar.end > to ? 'schedule__bar--cut-end' : '',
     ].filter(Boolean);
@@ -184,12 +168,12 @@ function renderSchedule() {
         if (bars.length > 0) {
             rows.push({
                 kind,
-                name: scheduleName(packData, id, kind),
+                name: scheduleName(packData, id),
                 description: localizedName(packData.events?.[id]?.description) || null,
                 bars,
                 first: bars[0].start,
                 image: eventImageUrl(scheduleImage(packData, id)),
-                href: planHref(id),
+                href: scheduleHref(packData, id, getSettings().activeEvents),
             });
         }
     }
@@ -313,6 +297,178 @@ function rotationSummary(rows) {
         : t('calendar.rotation.noneWorthIt', { name: ranked[0].name, ratio: formatThousands(ranked[0].ratio, 2) });
 }
 
+/** The weekday columns of a day chart: "Today", "Tomorrow", then the weekday, each with its date; `from` = first game day. */
+function dayHeadersHtml(from) {
+    return Array.from({ length: ROTATION_DAYS }, (_, index) => from + index)
+        .map((day, index) => {
+            const label =
+                index < 2
+                    ? t(index === 0 ? 'calendar.rotation.today' : 'calendar.rotation.tomorrow')
+                    : formatDay(day, { weekday: 'short' });
+            return `
+                <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
+                    <strong>${escapeHtml(label)}</strong>
+                    <span>${escapeHtml(formatDay(day, { day: 'numeric', month: 'short' }))}</span>
+                </div>`;
+        })
+        .join('');
+}
+
+/** The local midnights that bound today and the next 6 days (a day is 23 or 25 hours long where the clocks change). */
+function localDayBoundaries(nowMs) {
+    const today = new Date(nowMs);
+    return Array.from({ length: ROTATION_DAYS + 1 }, (_, index) =>
+        new Date(today.getFullYear(), today.getMonth(), today.getDate() + index).getTime(),
+    );
+}
+
+/** The day columns of a chart in the user's local days: "Today", "Tomorrow", then the weekday, each with its date. */
+function localDayHeadersHtml(boundaries) {
+    const locale = getLocale();
+    return boundaries
+        .slice(0, ROTATION_DAYS)
+        .map((ms, index) => {
+            const date = new Date(ms);
+            const label =
+                index < 2
+                    ? t(index === 0 ? 'calendar.rotation.today' : 'calendar.rotation.tomorrow')
+                    : date.toLocaleDateString(locale, { weekday: 'short' });
+            return `
+                <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
+                    <strong>${escapeHtml(label)}</strong>
+                    <span>${escapeHtml(date.toLocaleDateString(locale, { day: 'numeric', month: 'short' }))}</span>
+                </div>`;
+        })
+        .join('');
+}
+
+/** "03" (or "08:30" where the time zone is off the full hour): a moment's local time, short. */
+function hourLabel(ms) {
+    const date = new Date(ms);
+    const hours = String(date.getHours()).padStart(2, '0');
+    return date.getMinutes() === 0 ? hours : `${hours}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
+/** One slot's hover card: the phase and its times in local time. */
+function slotTooltip(slot) {
+    return [localizedName(slot.phase.name), slotRangeText(slot.start, slot.end)].join('\n');
+}
+
+/**
+ * Event rotations (Survival Battle): a chart each, in the user's local time: today and the next 6 local days as
+ * columns (midnight to midnight), one row per phase with a bar for each of its slots at the time it starts (so one can
+ * run over midnight, e.g. 23:00 to 03:00; the ones already over grey), the day's own time slots (04:00, 08:00, ...) as
+ * hours above the rows with a faint line each, and a line for the phase on now.
+ */
+function renderEventRotations() {
+    const container = document.getElementById('event-rotations');
+    if (!container || !packData) {
+        return;
+    }
+    const nowMs = Date.now();
+    const boundaries = localDayBoundaries(nowMs);
+    const from = boundaries[0];
+    const to = boundaries[ROTATION_DAYS];
+    const percent = (ms) => ((ms - from) / (to - from)) * 100;
+    container.innerHTML = Object.values(packData.event_rotations || {})
+        .map((rotation) => {
+            const slots = rotationWindow(rotation, from, to);
+            const { current, next } = rotationSlots(rotation, nowMs);
+            const rowsHtml = rotation.phases
+                .map((phase) => {
+                    const name = localizedName(phase.name);
+                    const bars = slots
+                        .filter((slot) => slot.phaseId === phase.id)
+                        .map((slot) =>
+                            // As the day chart's bars take them: counted in "days" of the window (a seventh of it, with fractions).
+                            barHtml(
+                                {
+                                    start: ((slot.start - from) / (to - from)) * ROTATION_DAYS,
+                                    end: ((slot.end - from) / (to - from)) * ROTATION_DAYS - 1,
+                                    past: slot.end <= nowMs,
+                                    active: slot.start <= nowMs && nowMs < slot.end,
+                                },
+                                0,
+                                ROTATION_DAYS - 1,
+                                slotTooltip(slot),
+                            ),
+                        );
+                    return `
+                        <div class="schedule__row schedule__row--ingame">
+                            <div class="schedule__label" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+                            <div class="schedule__track">${bars.join('')}</div>
+                        </div>`;
+                })
+                .join('');
+            // The day's own time slots as faint lines with the local hour above them (00:00 is the day's line): every
+            // `hours` from local midnight (04:00, 08:00, 12:00, ...) where they divide the day, else the slots' boundaries.
+            const ticks =
+                24 % rotation.hours === 0
+                    ? boundaries.slice(0, ROTATION_DAYS).flatMap((midnight) => {
+                          const day = new Date(midnight);
+                          return Array.from({ length: 24 / rotation.hours - 1 }, (_, index) =>
+                              new Date(
+                                  day.getFullYear(),
+                                  day.getMonth(),
+                                  day.getDate(),
+                                  (index + 1) * rotation.hours,
+                              ).getTime(),
+                          );
+                      })
+                    : [...new Set(slots.flatMap((slot) => [slot.start, slot.end]))]
+                          .filter((ms) => ms > from && ms < to)
+                          .sort((a, b) => a - b);
+            const hours = ticks.map(
+                (ms) => `<span class="schedule__hour" style="left: ${percent(ms)}%">${hourLabel(ms)}</span>`,
+            );
+            const lines = [
+                ...ticks.map((ms) => `<i style="left: ${percent(ms)}%"></i>`),
+                ...boundaries
+                    .slice(0, ROTATION_DAYS)
+                    .map((ms) => `<i class="schedule__grid-major" style="left: ${percent(ms)}%"></i>`),
+            ];
+            const columns = boundaries
+                .slice(0, ROTATION_DAYS)
+                .map((ms, index) => `${(boundaries[index + 1] - ms) / HOUR_MS}fr`)
+                .join(' ');
+            const until = new Date(current.end).toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' });
+            const nowLine = t('calendar.eventRotation.now', {
+                current: localizedName(current.phase.name),
+                time: until,
+                next: localizedName(next.phase.name),
+            });
+            // `data-refresh-at`: when the phase on now ends or the local day changes, the chart is drawn again.
+            return `
+                <section class="card schedule schedule--event-rotation" data-from="${from}" data-to="${to}" data-refresh-at="${Math.min(current.end, boundaries[1])}">
+                    <h2>${escapeHtml(localizedName(packData.events[rotation.event_id].name))}</h2>
+                    <p class="text-dim">${escapeHtml(t('calendar.eventRotation.lead'))}</p>
+                    <div class="schedule__body">
+                        <div class="schedule__legend">
+                            <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(nowLine)}</span>
+                            <span><i class="schedule__swatch schedule__swatch--active"></i>${escapeHtml(t('calendar.eventRotation.active'))}</span>
+                            <span><i class="schedule__swatch schedule__swatch--upcoming"></i>${escapeHtml(t('calendar.eventRotation.upcoming'))}</span>
+                            <span><i class="schedule__swatch schedule__swatch--past"></i>${escapeHtml(t('calendar.schedule.past'))}</span>
+                        </div>
+                        <div class="schedule__scroll">
+                            <div class="schedule__chart schedule__chart--days" style="--columns: ${ROTATION_DAYS}; --week-start: 0; --week-width: ${(boundaries[1] - boundaries[0]) / (to - from)}; --today: ${(nowMs - from) / (to - from)}">
+                                <div class="schedule__row schedule__row--axis">
+                                    <div class="schedule__label"></div>
+                                    <div class="schedule__track schedule__weeks" style="grid-template-columns: ${columns}">${localDayHeadersHtml(boundaries)}</div>
+                                </div>
+                                ${hours.length > 0 ? `<div class="schedule__row schedule__row--hours" aria-hidden="true"><div class="schedule__label"></div><div class="schedule__track">${hours.join('')}</div></div>` : ''}
+                                ${rowsHtml}
+                                <div class="schedule__grid" aria-hidden="true">${lines.join('')}</div>
+                                <div class="schedule__current-week" aria-hidden="true"></div>
+                                <div class="schedule__today" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>`;
+        })
+        .join('');
+    enableInfoTooltips(container);
+}
+
 /**
  * Weekday offers (`weekly_rotation` packs): today and the next 6 game days, one row per pack family, with a line
  * for now (and how long today's offers last) and a line on which are worth it.
@@ -370,19 +526,7 @@ function renderRotation() {
         row.color = row.ratio === null ? null : ratioColor(row.ratio);
     }
 
-    const days = Array.from({ length: ROTATION_DAYS }, (_, index) => from + index)
-        .map((day, index) => {
-            const label =
-                index < 2
-                    ? t(index === 0 ? 'calendar.rotation.today' : 'calendar.rotation.tomorrow')
-                    : formatDay(day, { weekday: 'short' });
-            return `
-                <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
-                    <strong>${escapeHtml(label)}</strong>
-                    <span>${escapeHtml(formatDay(day, { day: 'numeric', month: 'short' }))}</span>
-                </div>`;
-        })
-        .join('');
+    const days = dayHeadersHtml(from);
     const rowsHtml = rows
         .map(
             (row) => `
@@ -427,9 +571,13 @@ function renderRotation() {
 function render() {
     renderSchedule();
     renderRotation();
+    renderEventRotations();
 }
 
-/** Every minute: both charts' "Now" lines move on; when a new game day starts, both charts move on to it. */
+/**
+ * Every minute: the charts' "Now" lines move on; when a new game day starts, the charts move on to it, and a
+ * Survival Battle chart is drawn again when the phase on now ends.
+ */
 function tickRotation() {
     const now = gameDay(new Date());
     if (now.day !== rotationDay) {
@@ -450,6 +598,22 @@ function tickRotation() {
     const nowLabel = document.querySelector('#rotation .schedule__now-text');
     if (nowLabel) {
         nowLabel.textContent = nowText(now.day);
+    }
+    const nowMs = Date.now();
+    for (const section of document.querySelectorAll('.schedule--event-rotation')) {
+        if (nowMs >= Number(section.dataset.refreshAt)) {
+            renderEventRotations();
+            break;
+        }
+        section
+            .querySelector('.schedule__chart')
+            ?.style.setProperty(
+                '--today',
+                String(
+                    (nowMs - Number(section.dataset.from)) /
+                        (Number(section.dataset.to) - Number(section.dataset.from)),
+                ),
+            );
     }
 }
 

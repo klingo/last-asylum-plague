@@ -2,9 +2,9 @@
  * The game's art for events, spend reward tracks and seasonal passes (`image` in pack_data.json:
  * assets/events/<image>.webp, 720×360), and when they run: "Ends in 6d 5h", "Starts in 05:06:44" (a live countdown on
  * the banners; runs start and end at the game day's reset, 02:00 UTC). Used by the Calendar (thumbnails, hover
- * cards), the Shopping Plan, Spend Rewards and Seasonal Passes (banners).
+ * cards), the Shopping Plan, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).
  */
-import { getLocale, t } from './i18n.js';
+import { getLocale, localizedName, t } from './i18n.js';
 import { escapeHtml } from './html.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { dayDate, forecastRuns, gameDay, runMoments, runStatus, scheduleRuns } from '../core/schedule.js';
@@ -28,6 +28,32 @@ function scheduleImage(data, id) {
         ([pkgId, pkg]) => pkg.image && packageFamilyId(pkgId, pkg) === id,
     );
     return pass ? pass[1].image : null;
+}
+
+/** The name of a schedule id: an event, a spend reward track or a seasonal pass family (the id itself if unknown). */
+function scheduleName(data, id) {
+    const entry =
+        data.events?.[id] ||
+        data.spend_reward_tracks?.[id] ||
+        Object.entries(data.packages || {}).find(([pkgId, pkg]) => packageFamilyId(pkgId, pkg) === id)?.[1];
+    return entry ? localizedName(entry.name) : id;
+}
+
+/**
+ * Where a schedule id is planned: a ticked event (`activeEvents`) on the Shopping Plan, a spend reward track on Spend
+ * Rewards, a seasonal pass on Seasonal Passes (in-game events have no page of their own); null otherwise.
+ */
+function scheduleHref(data, id, activeEvents) {
+    const isSeasonalPass = Object.entries(data.packages || {}).some(
+        ([pkgId, pkg]) => pkg.seasonal && packageFamilyId(pkgId, pkg) === id,
+    );
+    if (isSeasonalPass) {
+        return `seasonal-passes.html?pass=${encodeURIComponent(id)}`;
+    }
+    if (data.events?.[id]?.category !== 'ingame_event' && activeEvents?.includes(id)) {
+        return `events.html?event=${encodeURIComponent(`event:${id}`)}`;
+    }
+    return data.spend_reward_tracks?.[id] ? `spend-rewards.html?track=${encodeURIComponent(id)}` : null;
 }
 
 /** "Mon, Oct 12" (a day number, shown as the game's date in any time zone). */
@@ -54,17 +80,29 @@ function statusMoment(status) {
     return status.state === 'running' ? moments.end : moments.start;
 }
 
+/** "Ends in 6d 5h" (`state` running) / "Starts in 05:06:44" (upcoming): the countdown to `until` (ms) as of `now`. */
+function countdownText(state, until, now = Date.now()) {
+    return t(state === 'running' ? 'calendar.status.endsIn' : 'calendar.status.startsIn', {
+        time: durationText(until - now),
+    });
+}
+
 /** "Ends in 6d 5h" / "Starts in 05:06:44" (as of `now`), "Ended 5 days ago" for a runStatus result. */
 function runStatusText(status, now = Date.now()) {
-    if (status.state === 'running') {
-        return t('calendar.status.endsIn', { time: durationText(statusMoment(status) - now) });
-    }
-    if (status.state === 'upcoming') {
-        return t('calendar.status.startsIn', { time: durationText(statusMoment(status) - now) });
+    if (status.state === 'running' || status.state === 'upcoming') {
+        return countdownText(status.state, statusMoment(status), now);
     }
     return status.days === 1
         ? t('calendar.status.endedYesterday')
         : t('calendar.status.endedAgo', { count: status.days });
+}
+
+/** "Tue, Nov 3 · 04:00 – 08:00" in local time: a slot of an event rotation (Survival Battle), `start` / `end` in ms. */
+function slotRangeText(start, end) {
+    const locale = getLocale();
+    const day = new Date(start).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+    const time = (ms) => new Date(ms).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+    return `${day} · ${time(start)} – ${time(end)}`;
 }
 
 /** "Sun, Oct 25, 04:00" in local time. */
@@ -161,10 +199,21 @@ function startCountdowns(root, onExpire) {
                 onExpire();
                 return;
             }
-            const key = element.dataset.state === 'running' ? 'calendar.status.endsIn' : 'calendar.status.startsIn';
-            element.textContent = t(key, { time: durationText(remaining) });
+            element.textContent = countdownText(element.dataset.state, Number(element.dataset.until), now);
         }
     }, 1000);
 }
 
-export { eventImageUrl, scheduleImage, formatGameDay, runStatusText, scheduleTiming, eventBannerHtml, startCountdowns };
+export {
+    eventImageUrl,
+    scheduleImage,
+    scheduleName,
+    scheduleHref,
+    formatGameDay,
+    slotRangeText,
+    runStatusText,
+    countdownText,
+    scheduleTiming,
+    eventBannerHtml,
+    startCountdowns,
+};

@@ -56,6 +56,16 @@
                 "$ref": "#/definitions/event"
             }
         },
+        "event_rotations": {
+            "type": "object",
+            "description": "In-game events that cycle through phases on a fixed clock (Survival Battle): which phase is on now and which comes next (core/schedule.js `rotationSlots`, shown on the Today page). Keyed by the event's id.",
+            "propertyNames": {
+                "$ref": "#/definitions/eventId"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/eventRotation"
+            }
+        },
         "spend_reward_conversions": {
             "allOf": [
                 {
@@ -708,7 +718,8 @@
                 "quiz_of_wisdom",
                 "crystal_cluster_valley",
                 "halloween_ball",
-                "canyon_conquest"
+                "canyon_conquest",
+                "survival_battle"
             ]
         },
         "event": {
@@ -737,6 +748,81 @@
                     "type": "string",
                     "enum": ["spend_rewards"],
                     "description": "Show the event in this group of the Calendar's schedule instead of the one its category gives. For reward ladders that count something other than Banknotes (e.g. materials used on gear) and so aren't `spend_reward_tracks`."
+                }
+            }
+        },
+        "eventRotation": {
+            "type": "object",
+            "description": "An in-game event that runs through a fixed list of phases, `hours` each, from the start of the week: `week` names the phase of every slot, in order. The same week repeats every week.",
+            "required": ["event_id", "week_starts", "hours", "phases", "week"],
+            "additionalProperties": false,
+            "properties": {
+                "event_id": {
+                    "$ref": "#/definitions/eventId"
+                },
+                "week_starts": {
+                    "$ref": "#/definitions/weekday",
+                    "description": "The weekday whose daily reset (02:00 UTC = 00:00 server time) starts the week, and so its first slot."
+                },
+                "hours": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 168,
+                    "description": "Length of every slot in hours; `week` has 168 ÷ `hours` slots."
+                },
+                "phases": {
+                    "type": "array",
+                    "minItems": 2,
+                    "description": "The distinct phases (what each is called, looks like and earns points with); `week` says when each runs.",
+                    "items": {
+                        "$ref": "#/definitions/rotationPhase"
+                    }
+                },
+                "week": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "The phase (its `id`) of every slot of the week, starting with the first slot at the start of the week. Not a plain loop: the sequence is as the game runs it, so list every slot.",
+                    "items": {
+                        "$ref": "#/definitions/id"
+                    }
+                }
+            }
+        },
+        "rotationPhase": {
+            "type": "object",
+            "required": ["id", "name"],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/id"
+                },
+                "name": {
+                    "$ref": "#/definitions/localizedString"
+                },
+                "image": {
+                    "$ref": "#/definitions/eventImage"
+                },
+                "earn_points": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "How to earn points in this phase.",
+                    "items": {
+                        "$ref": "#/definitions/earnPoint"
+                    }
+                }
+            }
+        },
+        "earnPoint": {
+            "type": "object",
+            "description": "One way to earn points, in the game's words; `item_id` names the item the rule is about (the one consumed, or the one a bought pack contains), if there is one.",
+            "required": ["text"],
+            "additionalProperties": false,
+            "properties": {
+                "text": {
+                    "$ref": "#/definitions/localizedString"
+                },
+                "item_id": {
+                    "$ref": "#/definitions/id"
                 }
             }
         },
@@ -891,7 +977,7 @@
         },
         "eventImage": {
             "$ref": "#/definitions/id",
-            "description": "The game's banner for an event, spend reward track or seasonal pass: webapp/public/assets/events/<image>.webp (720×360). Shown on the Calendar, the Events page and Spend Rewards. Several entries may share one."
+            "description": "The game's banner for an event, spend reward track, seasonal pass or event rotation phase: webapp/public/assets/events/<image>.webp (720×360). Shown on the Calendar, the Events page, Spend Rewards and Today. Several entries may share one."
         },
         "heroClass": {
             "type": "string",

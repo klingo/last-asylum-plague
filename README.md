@@ -1,4 +1,4 @@
-# Last Asylum Pack Solver
+# Klingo's Companion for Last Asylum: Plague
 
 A small static webapp (in `webapp/`) that values items, packages and exchange-shop offers from
 `data/pack_data.json` (Last Asylum: Plague), computed live in the browser and deployed to GitHub Pages.
@@ -30,12 +30,21 @@ its contents without a common value scale. The tool uses one:
 
 ## Pages
 
-The top nav groups the pages into menus (`NAV_GROUPS` in `webapp/src/ui/nav.js`, the Home cards follow it): **Shop**
-(Pack Ranking, Spend Rewards), **Events** (Calendar, Shopping Plan), **Items** (Item Priorities, Item Sources, Best
-Choice Pick, Compare), **Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
+The top nav starts with **Today** (the home page), then groups the pages into menus (`NAV_GROUPS` in
+`webapp/src/ui/nav.js`; each page's short description is the `title` of its link: shown on hover, read out by
+screen readers): **Shop** (Pack Ranking, Spend Rewards, Seasonal
+Passes), **Events** (Calendar, Shopping Plan), **Items** (Item Priorities, Item Sources, Best Choice Pick, Compare),
+**Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work. The cogwheel next to the language switcher opens
 **Settings** (`settings.html`): the settings that shape every value (Count VIP points in the worth) and the model
 quality (how well the fitted worths reproduce the packs' deal %).
+
+- **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
+  days (recorded runs and proven forecasts), today's weekday offers with their ratio, what the plan buys and what each gives (Details), and
+  the weekly plan by when to buy it: daily packs, weekly and longer packs, weekday offers, each event's packs and how
+  many different shop offers it buys (linking to its Shopping Plan). Running entries are ordered by when they end.
+  Survival Battle (`event_rotations` in `pack_data.json`: the 42 four-hour slots of its week, from Sunday's reset, the
+  same every week) shows the phase on now and the next one, with their local times and how to earn points in them.
 
 - **Pack Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
@@ -43,8 +52,9 @@ quality (how well the fitted worths reproduce the packs' deal %).
   1.0 is bought because its coins reach an event shop's bonus tiers). "Plan only" shows just the weekly
   shopping list, the Type pills filter by kind; entries of unknown worth are listed unranked.
 - **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below; each entry with the
-  game's art, a hover card with how long is left, and a click opens its plan) and the Weekday Offers of the next 7
-  days.
+  game's art, a hover card with how long is left, and a click opens its plan), the Weekday Offers of the next 7 days
+  and, for each event rotation (Survival Battle), a chart of today and the next 6 days: one row per phase, a bar for
+  each 4-hour slot (elapsed ones grey), a line for the phase on now, local times in the hover card.
 - **Shopping Plan** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),

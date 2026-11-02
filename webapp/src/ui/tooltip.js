@@ -16,6 +16,8 @@
  * and stays put until the trigger loses hover/focus.
  */
 
+import { createItemImage } from './images.js';
+
 let tooltipEl = null;
 
 function ensureTooltipEl() {
@@ -49,9 +51,35 @@ function positionTooltip(trigger) {
     el.style.left = `${left + window.scrollX}px`;
 }
 
+/**
+ * The tooltip's lines as rows (`data-tooltip-rows`: JSON `[{ text, item? }]`), each with the item's icon in front if it
+ * has one. The popup is as wide as its longest row, so a line doesn't break. `data-tooltip` stays the plain text (the
+ * accessible name).
+ */
+function fillRows(el, rows) {
+    el.textContent = '';
+    for (const { text, item } of rows) {
+        const row = document.createElement('div');
+        row.className = 'app-tooltip__row';
+        if (item) {
+            row.append(createItemImage(item, '', 'item-icon item-icon--sm'));
+        }
+        const line = document.createElement('span');
+        line.textContent = text;
+        row.append(line);
+        el.append(row);
+    }
+}
+
 function showTooltip(trigger) {
     const el = ensureTooltipEl();
-    el.textContent = trigger.dataset.tooltip || '';
+    const rows = trigger.dataset.tooltipRows ? JSON.parse(trigger.dataset.tooltipRows) : null;
+    el.classList.toggle('app-tooltip--rows', Boolean(rows));
+    if (rows) {
+        fillRows(el, rows);
+    } else {
+        el.textContent = trigger.dataset.tooltip || '';
+    }
     // Optional picture above the text (`data-tooltip-image`: an event's art on the Calendar), greyed with
     // `data-tooltip-image-muted` (an ended run).
     el.classList.toggle('app-tooltip--image', Boolean(trigger.dataset.tooltipImage));

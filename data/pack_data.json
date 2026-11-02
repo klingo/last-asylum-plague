@@ -7794,6 +7794,14 @@
             "exceedable_pack_limits": true,
             "image": "surprise_encounter"
         },
+        "survival_battle": {
+            "name": {
+                "en": "Survival Battle",
+                "de": "Überlebenskampf"
+            },
+            "category": "ingame_event",
+            "image": "survival_battle"
+        },
         "thief_hunt": {
             "name": {
                 "en": "Thief Hunt",
@@ -7817,6 +7825,202 @@
             },
             "category": "special_event",
             "image": "weekly_special"
+        }
+    },
+    "event_rotations": {
+        "survival_battle": {
+            "event_id": "survival_battle",
+            "week_starts": "sunday",
+            "hours": 4,
+            "phases": [
+                {
+                    "id": "build_territory",
+                    "name": {
+                        "en": "Build Territory",
+                        "de": "Gebietsbau"
+                    },
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup: +10",
+                                "de": ""
+                            },
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Building Might: +1",
+                                "de": ""
+                            },
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
+                            },
+                            "item_id": "diamonds"
+                        }
+                    ]
+                },
+                {
+                    "id": "train_soldiers",
+                    "name": {
+                        "en": "Train Soldiers",
+                        "de": "Soldatentraining"
+                    },
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Use 1m Training Boost: +10",
+                                "de": ""
+                            },
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
+                            },
+                            "item_id": "diamonds"
+                        }
+                    ]
+                },
+                {
+                    "id": "technology_research",
+                    "name": {
+                        "en": "Technology Research",
+                        "de": "Technologieforschung"
+                    },
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup: +10",
+                                "de": ""
+                            },
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Tech Might: +1",
+                                "de": ""
+                            },
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
+                            },
+                            "item_id": "diamonds"
+                        }
+                    ]
+                },
+                {
+                    "id": "enhance_raven",
+                    "name": {
+                        "en": "Enhance Raven",
+                        "de": "Rabenverbesserung"
+                    },
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "For every 10 Raven Fruits consumed: +1",
+                                "de": "Für jede 10 verbrauchten Rabenfrüchte, +1"
+                            },
+                            "item_id": "raven_fruit"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Stamina: +100",
+                                "de": "Verbrauche 1 Ausdauer, +100"
+                            },
+                            "item_id": "stamina"
+                        },
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
+                            },
+                            "item_id": "diamonds"
+                        }
+                    ]
+                },
+                {
+                    "id": "enhance_heroes",
+                    "name": {
+                        "en": "Enhance Heroes",
+                        "de": "Heldenverbesserung"
+                    },
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Recruit heroes once: +400",
+                                "de": "Rekrutiere Helden einmal: +400"
+                            },
+                            "item_id": "recruit_ticket"
+                        },
+                        {
+                            "text": {
+                                "en": "For every 1950 Antitoxin consumed: +1",
+                                "de": "Für jeweils 1950 verbrauchtes Gegenhift: +1"
+                            },
+                            "item_id": "antitoxin"
+                        },
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
+                            },
+                            "item_id": "diamonds"
+                        }
+                    ]
+                }
+            ],
+            "week": [
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes"
+            ]
         }
     },
     "spend_reward_conversions": [

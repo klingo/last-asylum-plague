@@ -1,4 +1,5 @@
 import { t, getLocale, setLocale, LOCALES } from './i18n.js';
+import { escapeAttr } from './html.js';
 
 // Date the pack data was last updated (`metadata.last_updated`), shown in the footer.
 let dataDate = null;
@@ -29,46 +30,74 @@ function renderDataDate() {
 
 window.addEventListener('localechange', renderDataDate);
 
-// The top menus (label `nav.groups.<key>`) and their pages (`page` = the id passed to `renderNav`).
+// The top menus (label `nav.groups.<key>`) and their pages (`page` = the id passed to `renderNav`, `description` = the
+// text shown on hover and read out by screen readers).
 // New pages go into the menu whose question they answer.
 const NAV_GROUPS = [
     {
         key: 'shop',
         items: [
-            { page: 'rankings', href: 'rankings.html', label: 'nav.rankings' },
-            { page: 'spend-rewards', href: 'spend-rewards.html', label: 'nav.spendRewards' },
-            { page: 'seasonal-passes', href: 'seasonal-passes.html', label: 'nav.seasonalPasses' },
+            {
+                page: 'rankings',
+                href: 'rankings.html',
+                label: 'nav.rankings',
+                description: 'nav.descriptions.rankings',
+            },
+            {
+                page: 'spend-rewards',
+                href: 'spend-rewards.html',
+                label: 'nav.spendRewards',
+                description: 'nav.descriptions.spendRewards',
+            },
+            {
+                page: 'seasonal-passes',
+                href: 'seasonal-passes.html',
+                label: 'nav.seasonalPasses',
+                description: 'nav.descriptions.seasonalPasses',
+            },
         ],
     },
     {
         key: 'events',
         items: [
-            { page: 'calendar', href: 'calendar.html', label: 'nav.calendar' },
-            { page: 'events', href: 'events.html', label: 'nav.eventPlan' },
+            {
+                page: 'calendar',
+                href: 'calendar.html',
+                label: 'nav.calendar',
+                description: 'nav.descriptions.calendar',
+            },
+            { page: 'events', href: 'events.html', label: 'nav.eventPlan', description: 'nav.descriptions.events' },
         ],
     },
     {
         key: 'items',
         items: [
-            { page: 'items', href: 'items.html', label: 'nav.items' },
-            { page: 'sources', href: 'sources.html', label: 'nav.sources' },
-            { page: 'choices', href: 'choices.html', label: 'nav.choices' },
-            { page: 'compare', href: 'compare.html', label: 'nav.compare' },
+            { page: 'items', href: 'items.html', label: 'nav.items', description: 'nav.descriptions.items' },
+            { page: 'sources', href: 'sources.html', label: 'nav.sources', description: 'nav.descriptions.sources' },
+            { page: 'choices', href: 'choices.html', label: 'nav.choices', description: 'nav.descriptions.choices' },
+            { page: 'compare', href: 'compare.html', label: 'nav.compare', description: 'nav.descriptions.compare' },
         ],
     },
     {
         key: 'heroes',
-        items: [{ page: 'gear', href: 'gear.html', label: 'nav.gear' }],
+        items: [{ page: 'gear', href: 'gear.html', label: 'nav.gear', description: 'nav.descriptions.gear' }],
     },
     {
         key: 'lord',
-        items: [{ page: 'lord-specialty', href: 'lord-specialty.html', label: 'nav.lordSpecialty' }],
+        items: [
+            {
+                page: 'lord-specialty',
+                href: 'lord-specialty.html',
+                label: 'nav.lordSpecialty',
+                description: 'nav.descriptions.lordSpecialty',
+            },
+        ],
     },
 ];
 
 // Remembered across `renderNav()` calls so the "localechange" listener below can re-render
 // with the same active page without having to re-derive it from the (about to be replaced) DOM.
-let currentActivePage = 'welcome';
+let currentActivePage = 'today';
 
 /** Closes every open menu except `keep` (a `.app-nav__group`, or none). */
 function closeMenus(keep = null) {
@@ -97,11 +126,13 @@ function renderNav(activePage) {
     const langOptions = Object.entries(LOCALES)
         .map(([code, { label }]) => `<option value="${code}" ${code === locale ? 'selected' : ''}>${label}</option>`)
         .join('');
-    const link = (href, label, active) =>
-        `<a href="${base}${href}" class="${active ? 'active' : ''}" ${active ? 'aria-current="page"' : ''}>${t(label)}</a>`;
+    const link = (href, label, active, description) =>
+        `<a href="${base}${href}" class="${active ? 'active' : ''}" title="${escapeAttr(t(description))}" ${active ? 'aria-current="page"' : ''}>${t(label)}</a>`;
     const groups = NAV_GROUPS.map((group) => {
         const active = group.items.some((item) => item.page === activePage);
-        const items = group.items.map((item) => link(item.href, item.label, item.page === activePage)).join('');
+        const items = group.items
+            .map((item) => link(item.href, item.label, item.page === activePage, item.description))
+            .join('');
         return `
             <div class="app-nav__group ${active ? 'active' : ''}">
                 <button type="button" class="app-nav__group-button" aria-expanded="false" aria-haspopup="true">
@@ -114,7 +145,7 @@ function renderNav(activePage) {
         <h1><a href="${base}index.html" class="app-title">${t('app.title')}</a></h1>
         <button type="button" class="app-nav__toggle" aria-expanded="${header.classList.contains('nav-open')}" aria-controls="app-nav" aria-label="${t('nav.menu')}">☰</button>
         <nav class="app-nav" id="app-nav">
-            ${link('index.html', 'nav.home', activePage === 'welcome')}
+            ${link('index.html', 'nav.home', activePage === 'today', 'today.description')}
             ${groups}
         </nav>
         <div class="app-header__tools">

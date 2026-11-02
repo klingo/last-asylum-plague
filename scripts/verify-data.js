@@ -12,8 +12,11 @@ import { missingCodeLabels } from './code-labels.js';
 const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
 // A pack whose worth is this many times above (or below) its deal % is reported (Pack Worth vs Deal %).
 const PACK_WORTH_OFF = 5;
+// Hours in a week: an event rotation's phase length must divide it.
+const WEEK_HOURS = 168;
 const SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.schema.json');
 const ITEM_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'items');
+const EVENT_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'events');
 const EN_TEXTS_PATH = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n', 'en.json');
 const LORD_DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.json');
 const LORD_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.schema.json');
@@ -568,6 +571,69 @@ async function verifyData() {
         }
     });
 
+    // 7c. Event rotations (Survival Battle): the event exists, the week list fills the week with known phases, the art and the items they
+    // name exist.
+    checkCategory('Event Rotations', ({ reportError, reportWarning }) => {
+        for (const [id, rotation] of Object.entries(data.event_rotations || {})) {
+            if (!events[rotation.event_id]) {
+                reportError('Rotation Event', `Event rotation "${id}" names the unknown event "${rotation.event_id}".`);
+            }
+            if (rotation.event_id !== id) {
+                reportError(
+                    'Rotation Event',
+                    `Event rotation "${id}" has event_id "${rotation.event_id}" (the key is the event's id).`,
+                );
+            }
+            if ((rotation.week || []).length * rotation.hours !== WEEK_HOURS) {
+                reportError(
+                    'Rotation Week',
+                    `Event rotation "${id}": ${(rotation.week || []).length} slots of ${rotation.hours} hours are not a week (${WEEK_HOURS} hours).`,
+                );
+            }
+            const phaseIds = new Set();
+            for (const phase of rotation.phases || []) {
+                if (phaseIds.has(phase.id)) {
+                    reportError('Rotation Phase', `Event rotation "${id}" has the phase id "${phase.id}" twice.`);
+                }
+                phaseIds.add(phase.id);
+            }
+            for (const [index, phaseId] of (rotation.week || []).entries()) {
+                if (!phaseIds.has(phaseId)) {
+                    reportError(
+                        'Rotation Phase',
+                        `Event rotation "${id}": slot ${index + 1} of the week names the unknown phase "${phaseId}".`,
+                    );
+                }
+            }
+            for (const phase of rotation.phases || []) {
+                if (!(rotation.week || []).includes(phase.id)) {
+                    reportWarning(
+                        'Rotation Phase',
+                        `Event rotation "${id}": the phase "${phase.id}" never runs in the week.`,
+                    );
+                }
+                if (phase.image && !fs.existsSync(path.join(EVENT_IMAGES_DIR, `${phase.image}.webp`))) {
+                    reportError(
+                        'Rotation Image',
+                        `Event rotation "${id}", phase "${phase.name.en}" has no image "${phase.image}" (webapp/public/assets/events/${phase.image}.webp).`,
+                    );
+                }
+                for (const earn of phase.earn_points || []) {
+                    if (!earn.item_id) {
+                        continue;
+                    }
+                    referencedItemKeys.add(earn.item_id);
+                    if (!itemKeys.has(earn.item_id)) {
+                        reportError(
+                            'Rotation Item',
+                            `Event rotation "${id}", phase "${phase.name.en}" earns points with the unknown item "${earn.item_id}".`,
+                        );
+                    }
+                }
+            }
+        }
+    });
+
     // 8. Report Unreferenced Items (Informational / Warnings)
     checkCategory('Unreferenced Items', ({ reportWarning }) => {
         for (const itemId of itemKeys) {
@@ -598,15 +664,7 @@ async function verifyData() {
         ];
         for (const [kind, entries] of owners) {
             for (const [id, entry] of Object.entries(entries || {})) {
-                const file = path.join(
-                    import.meta.dirname,
-                    '..',
-                    'webapp',
-                    'public',
-                    'assets',
-                    'events',
-                    `${entry.image}.webp`,
-                );
+                const file = path.join(EVENT_IMAGES_DIR, `${entry.image}.webp`);
                 if (entry.image && !fs.existsSync(file)) {
                     reportError(
                         'Event Image',

@@ -10,85 +10,39 @@
         <header class="app-header"></header>
         <main>
             <section class="card">
-                <h2 data-i18n="welcome.heading"></h2>
-                <p class="text-dim" data-i18n="welcome.intro"></p>
+                <h2 data-i18n="today.heading"></h2>
+                <p class="page-lead" data-i18n="today.description"></p>
+                <details class="page-details">
+                    <summary data-i18n="common.howItWorks"></summary>
+                    <p data-i18n="welcome.intro"></p>
+                </details>
+                <div id="valuation-panel"></div>
             </section>
 
-            <section class="welcome-group">
-                <h2 data-i18n="nav.groups.shop"></h2>
-                <div class="welcome-grid">
-                    <a class="welcome-card" href="rankings.html">
-                        <h3 data-i18n="nav.rankings"></h3>
-                        <p data-i18n="welcome.rankingsDescription"></p>
-                    </a>
-                    <a class="welcome-card" href="spend-rewards.html">
-                        <h3 data-i18n="nav.spendRewards"></h3>
-                        <p data-i18n="welcome.spendRewardsDescription"></p>
-                    </a>
-                    <a class="welcome-card" href="seasonal-passes.html">
-                        <h3 data-i18n="nav.seasonalPasses"></h3>
-                        <p data-i18n="welcome.seasonalPassesDescription"></p>
-                    </a>
+            <!-- What runs today and what starts soon (art, name, countdown), each entry linking to its page. -->
+            <section class="card" id="schedule-card">
+                <h3 data-i18n="today.runningHeading"></h3>
+                <div id="running-list" class="today-list"></div>
+                <h3 data-i18n="today.soonHeading"></h3>
+                <div id="soon-list" class="today-list"></div>
+            </section>
+
+            <section class="card">
+                <h3 data-i18n="today.offersHeading"></h3>
+                <p class="text-dim" id="offers-empty" hidden data-i18n="today.offersEmpty"></p>
+                <div class="table-wrap" id="offers-wrap">
+                    <div id="offers-table" class="ranking-grid today-offers-grid" role="table"></div>
                 </div>
             </section>
 
-            <section class="welcome-group">
-                <h2 data-i18n="nav.groups.events"></h2>
-                <div class="welcome-grid">
-                    <a class="welcome-card" href="calendar.html">
-                        <h3 data-i18n="nav.calendar"></h3>
-                        <p data-i18n="welcome.calendarDescription"></p>
-                    </a>
-                    <a class="welcome-card" href="events.html">
-                        <h3 data-i18n="nav.eventPlan"></h3>
-                        <p data-i18n="welcome.eventsDescription"></p>
-                    </a>
-                </div>
-            </section>
-
-            <section class="welcome-group">
-                <h2 data-i18n="nav.groups.items"></h2>
-                <div class="welcome-grid">
-                    <a class="welcome-card" href="items.html">
-                        <h3 data-i18n="nav.items"></h3>
-                        <p data-i18n="welcome.itemsDescription"></p>
-                    </a>
-                    <a class="welcome-card" href="sources.html">
-                        <h3 data-i18n="nav.sources"></h3>
-                        <p data-i18n="welcome.sourcesDescription"></p>
-                    </a>
-                    <a class="welcome-card" href="choices.html">
-                        <h3 data-i18n="nav.choices"></h3>
-                        <p data-i18n="welcome.choicesDescription"></p>
-                    </a>
-                    <a class="welcome-card" href="compare.html">
-                        <h3 data-i18n="nav.compare"></h3>
-                        <p data-i18n="welcome.compareDescription"></p>
-                    </a>
-                </div>
-            </section>
-
-            <section class="welcome-group">
-                <h2 data-i18n="nav.groups.heroes"></h2>
-                <div class="welcome-grid">
-                    <a class="welcome-card" href="gear.html">
-                        <h3 data-i18n="nav.gear"></h3>
-                        <p data-i18n="welcome.gearDescription"></p>
-                    </a>
-                </div>
-            </section>
-
-            <section class="welcome-group">
-                <h2 data-i18n="nav.groups.lord"></h2>
-                <div class="welcome-grid">
-                    <a class="welcome-card" href="lord-specialty.html">
-                        <h3 data-i18n="nav.lordSpecialty"></h3>
-                        <p data-i18n="welcome.lordSpecialtyDescription"></p>
-                    </a>
-                </div>
+            <section class="card">
+                <h3 data-i18n="today.planHeading"></h3>
+                <p class="text-dim" id="plan-summary"></p>
+                <div id="plan-tiles" class="plan-tiles"></div>
+                <p class="footnote" data-i18n="today.planNote"></p>
             </section>
         </main>
         <footer class="app-footer"><span data-i18n="footer.welcome"></span></footer>
-        <script type="module" src="/src/pages/welcome.js"></script>
+        <script type="module" src="/src/pages/today.js"></script>
     </body>
 </html>

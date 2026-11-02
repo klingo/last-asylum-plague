@@ -1,9 +1,9 @@
 {
     "app": {
-        "title": "Last Asylum: Plague - Klingo's Pack Solver"
+        "title": "Last Asylum: Plague - Klingo's Companion"
     },
     "nav": {
-        "home": "Start",
+        "home": "Heute",
         "rankings": "Paket-Rangliste",
         "calendar": "Kalender",
         "eventPlan": "Einkaufsplan",
@@ -24,6 +24,19 @@
             "items": "Gegenstände",
             "heroes": "Helden",
             "lord": "Lord"
+        },
+        "descriptions": {
+            "rankings": "Jedes Paket und jeder Pass, geordnet danach, wie viel Wert es für seinen Preis bringt. Ein Ratio von 1,0 oder mehr = lohnt sich bei deinen wöchentlichen Ausgaben.",
+            "spendRewards": "Wähle eine kumulative Ausgabenbelohnung und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
+            "seasonalPasses": "Wähle einen Saisonpass und sieh, was er alles gibt, was er kostet und ob sich sein Inhalt für den Preis lohnt.",
+            "calendar": "Was wann läuft: der Event-Zeitplan mit Prognose für die nächsten Wochen und die Pakete, die an festen Wochentagen angeboten werden.",
+            "events": "Wähle ein Event: welche seiner Pakete du bei deinen wöchentlichen Ausgaben kaufen solltest, was du mit seinen Münzen kaufst (in Freischaltreihenfolge) und ob sich mehr Ausgaben dafür noch lohnen.",
+            "sources": "Wähle einen Gegenstand und sieh alle Pakete und Shop-Angebote, die ihn geben – auch verschachtelt in Truhen und Vorräten –, geordnet nach den Kosten pro Einheit.",
+            "choices": "Wähle eine Wahltruhe, ein Paket mit Optionen oder eine Gruppe, von der du nur eines kaufen kannst (z. B. Kalenderpakete), und sieh, was am meisten wert ist.",
+            "items": "Sag dem Tool, welche Gegenstände dir egal sind und welche dir besonders wichtig sind. Jede Seite nutzt das.",
+            "compare": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen.",
+            "gear": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Stufen und Sterne erhöhst, Schritt für Schritt.",
+            "lordSpecialty": "Plane die Spezialisierungsfähigkeiten von Handyman oder Legion Commander, sieh, welche Stufe und wie viele Punkte ein Build braucht, und teile ihn als Link."
         }
     },
     "common": {
@@ -99,50 +112,38 @@
         "limited": "Begrenzt"
     },
     "docTitle": {
-        "welcome": "Last Asylum Pack Solver",
-        "rankings": "Paket-Rangliste - Last Asylum Pack Solver",
-        "calendar": "Kalender - Last Asylum Pack Solver",
-        "events": "Einkaufsplan - Last Asylum Pack Solver",
-        "sources": "Gegenstandsquellen - Last Asylum Pack Solver",
-        "choices": "Beste Wahl - Last Asylum Pack Solver",
-        "spendRewards": "Ausgabenbelohnungen - Last Asylum Pack Solver",
-        "seasonalPasses": "Saisonpässe - Last Asylum Pack Solver",
-        "gear": "Ausrüstungs-Upgradepfad - Last Asylum Pack Solver",
-        "lordSpecialty": "Lord-Spezialisierung - Last Asylum Pack Solver",
-        "settings": "Einstellungen - Last Asylum Pack Solver",
-        "items": "Gegenstandsprioritäten - Last Asylum Pack Solver",
-        "compare": "Vergleich - Last Asylum Pack Solver"
+        "welcome": "Last Asylum: Plague - Klingo's Companion",
+        "rankings": "Paket-Rangliste - Klingo's Companion",
+        "calendar": "Kalender - Klingo's Companion",
+        "events": "Einkaufsplan - Klingo's Companion",
+        "sources": "Gegenstandsquellen - Klingo's Companion",
+        "choices": "Beste Wahl - Klingo's Companion",
+        "spendRewards": "Ausgabenbelohnungen - Klingo's Companion",
+        "seasonalPasses": "Saisonpässe - Klingo's Companion",
+        "gear": "Ausrüstungs-Upgradepfad - Klingo's Companion",
+        "lordSpecialty": "Lord-Spezialisierung - Klingo's Companion",
+        "settings": "Einstellungen - Klingo's Companion",
+        "items": "Gegenstandsprioritäten - Klingo's Companion",
+        "compare": "Vergleich - Klingo's Companion"
     },
     "footer": {
-        "welcome": "Last Asylum Pack Solver — live aus pack_data.json berechnet",
-        "rankings": "Last Asylum Pack Solver — Paket-Rangliste live aus pack_data.json berechnet",
-        "calendar": "Last Asylum Pack Solver — Zeitplan aus pack_data.json",
-        "events": "Last Asylum Pack Solver — Einkaufspläne live aus pack_data.json berechnet",
-        "sources": "Last Asylum Pack Solver — Gegenstandsquellen live aus pack_data.json berechnet",
-        "choices": "Last Asylum Pack Solver — Wahloptionen live aus pack_data.json bewertet",
-        "spendRewards": "Last Asylum Pack Solver — Ausgabenbelohnungs-Stufen live aus pack_data.json berechnet",
-        "seasonalPasses": "Last Asylum Pack Solver — Saisonpässe live aus pack_data.json bewertet",
-        "gear": "Last Asylum Pack Solver — Ausrüstungs-Upgradepfad aus pack_data.json",
-        "lordSpecialty": "Last Asylum Pack Solver — Spezialisierungsfähigkeiten der Lords aus lord_specialty.json",
-        "settings": "Last Asylum Pack Solver — Einstellungen und Modellqualität, live aus pack_data.json berechnet",
-        "items": "Last Asylum Pack Solver — Gegenstandswerte live aus pack_data.json berechnet",
-        "compare": "Last Asylum Pack Solver — Vergleich live aus pack_data.json berechnet",
+        "welcome": "Klingo's Companion — live aus pack_data.json berechnet",
+        "rankings": "Klingo's Companion — Paket-Rangliste live aus pack_data.json berechnet",
+        "calendar": "Klingo's Companion — Zeitplan aus pack_data.json",
+        "events": "Klingo's Companion — Einkaufspläne live aus pack_data.json berechnet",
+        "sources": "Klingo's Companion — Gegenstandsquellen live aus pack_data.json berechnet",
+        "choices": "Klingo's Companion — Wahloptionen live aus pack_data.json bewertet",
+        "spendRewards": "Klingo's Companion — Ausgabenbelohnungs-Stufen live aus pack_data.json berechnet",
+        "seasonalPasses": "Klingo's Companion — Saisonpässe live aus pack_data.json bewertet",
+        "gear": "Klingo's Companion — Ausrüstungs-Upgradepfad aus pack_data.json",
+        "lordSpecialty": "Klingo's Companion — Spezialisierungsfähigkeiten der Lords aus lord_specialty.json",
+        "settings": "Klingo's Companion — Einstellungen und Modellqualität, live aus pack_data.json berechnet",
+        "items": "Klingo's Companion — Gegenstandswerte live aus pack_data.json berechnet",
+        "compare": "Klingo's Companion — Vergleich live aus pack_data.json berechnet",
         "lastUpdated": "Daten zuletzt aktualisiert: {date}"
     },
     "welcome": {
-        "heading": "Willkommen",
-        "intro": "Werkzeuge, um herauszufinden, wie du deine Banknoten in Last Asylum: Plague am besten ausgibst – live berechnet aus manuell erfassten Paketdaten. Jeder Wert basiert auf den Deal-Prozentwerten des Spiels, deinen wöchentlichen Banknoten-Ausgaben und darauf, wie wichtig dir jeder Gegenstand ist.",
-        "rankingsDescription": "Jedes Paket und jeder Pass, geordnet danach, wie viel Wert es für seinen Preis bringt. Ein Ratio von 1,0 oder mehr = lohnt sich bei deinen wöchentlichen Ausgaben.",
-        "calendarDescription": "Was wann läuft: der Event-Zeitplan mit Prognose für die nächsten Wochen und die Pakete, die an festen Wochentagen angeboten werden.",
-        "eventsDescription": "Wähle ein Event: welche seiner Pakete du bei deinen wöchentlichen Ausgaben kaufen solltest, was du mit seinen Münzen kaufst (in Freischaltreihenfolge) und ob sich mehr Ausgaben dafür noch lohnen.",
-        "sourcesDescription": "Wähle einen Gegenstand und sieh alle Pakete und Shop-Angebote, die ihn geben – auch verschachtelt in Truhen und Vorräten –, geordnet nach den Kosten pro Einheit.",
-        "choicesDescription": "Wähle eine Wahltruhe, ein Paket mit Optionen oder eine Gruppe, von der du nur eines kaufen kannst (z. B. Kalenderpakete), und sieh, was am meisten wert ist.",
-        "spendRewardsDescription": "Wähle eine kumulative Ausgabenbelohnung und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
-        "seasonalPassesDescription": "Wähle einen Saisonpass und sieh, was er alles gibt, was er kostet und ob sich sein Inhalt für den Preis lohnt.",
-        "gearDescription": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Stufen und Sterne erhöhst, Schritt für Schritt.",
-        "lordSpecialtyDescription": "Plane die Spezialisierungsfähigkeiten von Handyman oder Legion Commander, sieh, welche Stufe und wie viele Punkte ein Build braucht, und teile ihn als Link.",
-        "itemsDescription": "Sag dem Tool, welche Gegenstände dir egal sind und welche dir besonders wichtig sind. Jede Seite nutzt das.",
-        "compareDescription": "Wähle zwei Gegenstände mit Mengen: was jeder wert ist und der günstigste Weg, ihn zu bekommen."
+        "intro": "Werkzeuge, um herauszufinden, wie du deine Banknoten in Last Asylum: Plague am besten ausgibst – live berechnet aus manuell erfassten Paketdaten. Jeder Wert basiert auf den Deal-Prozentwerten des Spiels, deinen wöchentlichen Banknoten-Ausgaben und darauf, wie wichtig dir jeder Gegenstand ist."
     },
     "settings": {
         "heading": "Einstellungen",
@@ -199,6 +200,12 @@
             "colour": "Farbe = Ratio wie in der Paket-Rangliste (grün: lohnt sich bei deinen wöchentlichen Ausgaben, gelb: um 1,0, rot: darunter)",
             "worthIt": "Lohnt sich bei deinen wöchentlichen Ausgaben: {offers}",
             "noneWorthIt": "Keines dieser Angebote lohnt sich bei deinen wöchentlichen Ausgaben (am besten: {name}, Ratio {ratio})"
+        },
+        "eventRotation": {
+            "lead": "Die Phasen von heute bis zu den nächsten 6 Tagen, in deiner Ortszeit. Fahre über einen Balken für seine Zeit.",
+            "now": "Jetzt · {current} bis {time}, danach {next}",
+            "active": "Läuft jetzt",
+            "upcoming": "Bevorstehend"
         },
         "status": {
             "endsIn": "Endet in {time}",
@@ -499,6 +506,31 @@
         "verdictNone": "Keine Stufe über deine wöchentlichen Ausgaben hinaus bringt so viel wie deine letzte Banknote.",
         "reachedSummary": "Deine wöchentlichen Ausgaben von {budget} Banknoten erreichen bereits Stufe {tier}.",
         "verdictAll": "Deine wöchentlichen Ausgaben erreichen bereits jede Stufe dieser Ausgabenbelohnung."
+    },
+    "today": {
+        "heading": "Heute",
+        "description": "Was heute läuft, was bald startet, die heutigen Wochentags-Angebote und dein Plan für die Woche bei deinen wöchentlichen Ausgaben.",
+        "runningHeading": "Läuft jetzt",
+        "runningEmpty": "Heute ist nichts als laufend eingetragen.",
+        "soonHeading": "Startet bald",
+        "soonEmpty": "In den nächsten 3 Tagen wird nichts erwartet.",
+        "expected": "erwartet",
+        "earnPoints": "So sammelst du Punkte:",
+        "offersHeading": "Heutige Wochentags-Angebote",
+        "offersEmpty": "Heute sind keine Wochentags-Angebote im Verkauf.",
+        "planHeading": "Dein Plan diese Woche",
+        "planSummary": "Der beste Plan für deine wöchentlichen Ausgaben kauft für {spent} von deinen {budget} Banknoten.",
+        "planEmpty": "Dein Plan kauft bei deinen wöchentlichen Ausgaben nichts.",
+        "tiles": {
+            "daily": "Tägliche Pakete",
+            "weekly": "Wöchentliche und längere Pakete",
+            "rotation": "Wochentags-Angebote",
+            "shops": "Shop-Angebote"
+        },
+        "week": "Woche",
+        "shopOffers": "Zu kaufende Angebote: {count}",
+        "planNote": "Die Preise sind das, was der Plan pro Woche ausgibt; Monats- und Zwei-Wochen-Pakete zählen mit ihrem Wochenanteil am Preis.",
+        "openPlan": "Einkaufsplan öffnen"
     },
     "seasonalPasses": {
         "heading": "Saisonpässe",

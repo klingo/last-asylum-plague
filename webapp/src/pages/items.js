@@ -50,7 +50,7 @@ function setPriority(id, level) {
 
 // The shared priorities file: what it is (so another file is recognized as such), then the priorities
 // (itemId -> "none" / "low" / "high"; items at "normal" are left out, as in the settings).
-const PRIORITIES_FILE = { app: 'last-asylum-pack-solver', type: 'item-priorities', version: 1 };
+const PRIORITIES_FILE = { app: 'klingos-companion', type: 'item-priorities', version: 1 };
 
 /** Export: your priorities as a small JSON file to pass on. */
 function exportPriorities() {

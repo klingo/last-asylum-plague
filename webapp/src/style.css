@@ -292,46 +292,6 @@ main {
 }
 
 /* Home: the pages grouped like the nav menus; auto-fill keeps the columns aligned across groups. */
-.welcome-group {
-    margin-bottom: 24px;
-}
-
-.welcome-group h2 {
-    margin: 0 0 12px;
-    font-size: 1.1rem;
-}
-
-.welcome-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.welcome-card {
-    display: block;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    color: var(--text);
-}
-
-.welcome-card:hover {
-    border-color: var(--accent);
-    text-decoration: none;
-}
-
-.welcome-card h3 {
-    margin: 0 0 8px;
-    color: var(--accent);
-    font-size: 1.05rem;
-}
-
-.welcome-card p {
-    margin: 0;
-    color: var(--text-dim);
-}
-
 .form-row {
     display: flex;
     flex-wrap: wrap;
@@ -928,6 +888,28 @@ tbody tr.choice-details:hover {
     width: 260px;
 }
 
+/* Rows with an item icon each (info icon with `data-tooltip-rows`): as wide as the longest line, so none breaks. */
+.app-tooltip--rows {
+    width: max-content;
+    max-width: 460px;
+}
+
+.app-tooltip__row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.app-tooltip__row + .app-tooltip__row {
+    margin-top: 3px;
+}
+
+.app-tooltip__row .item-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+}
+
 .app-tooltip__image {
     display: block;
     width: calc(100% + 20px);
@@ -1374,6 +1356,126 @@ tbody tr.choice-details:hover {
     grid-template-columns:
         minmax(260px, 2.5fr) minmax(90px, 0.6fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) minmax(90px, 0.8fr) 90px
         90px;
+}
+
+/* Today's weekday offers: pack, price, worth, ratio, buy, details (as the Shopping Plan's pack table). */
+.today-offers-grid {
+    grid-template-columns:
+        minmax(220px, 2.5fr) minmax(90px, 0.7fr) minmax(90px, 0.8fr) 90px minmax(90px, max-content)
+        110px;
+}
+
+/* Today: what runs and what starts soon, one entry per line (art, name and dates, the countdown, its kind). */
+.today-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 8px 0 20px;
+}
+
+/* The faint fill up to --progress (set from the script): how far a running entry is (green), how close an upcoming one
+   is to starting (blue; fainter for a forecast). */
+.today-entry {
+    --fill: transparent;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 10px;
+    background: linear-gradient(to right, var(--fill) calc(var(--progress, 0) * 100%), transparent 0), var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+}
+
+.today-entry--running {
+    --fill: color-mix(in srgb, var(--good) 8%, transparent);
+}
+
+.today-entry--upcoming {
+    --fill: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.today-entry--forecast {
+    --fill: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+a.today-entry:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+.today-entry__art {
+    flex: none;
+    width: 80px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.today-entry__art--none {
+    background: var(--panel);
+}
+
+.today-entry__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.today-entry__name {
+    font-weight: 600;
+}
+
+.today-entry__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 10px;
+}
+
+.today-entry__description {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+/* The info icon (how to earn points) beside the title: centred on the line, not on the text's baseline. */
+.today-entry__title .info-icon {
+    align-self: center;
+}
+
+.today-entry__dates {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+/* The countdown: bold, in its own column at the far right, in the colour of its list. */
+.today-entry__time {
+    flex: none;
+    width: 11.5em;
+    padding: 0 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.today-entry--running .today-entry__time {
+    color: var(--good);
+}
+
+.today-entry--upcoming .today-entry__time {
+    color: var(--accent);
+}
+
+.today-entry__kind {
+    flex: none;
+    width: 11em;
+    overflow: hidden;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* With the "Must buy" column (lock + count) before "Buy / week". */
@@ -2363,6 +2465,31 @@ tbody tr.choice-details:hover {
     background: #4b5263;
 }
 
+/* An event rotation's chart (Survival Battle): the phase on now stands out from the ones to come. */
+.schedule__swatch--active,
+.schedule__bar.schedule__bar--active {
+    --bar-color: var(--good);
+}
+
+.schedule__swatch--upcoming {
+    --bar-color: var(--gold);
+}
+
+/* The local hour of every slot boundary, small, above the phases (the lines are in the grid). */
+.schedule__row--hours {
+    min-height: 16px;
+}
+
+.schedule__hour {
+    position: absolute;
+    top: 2px;
+    padding-left: 2px;
+    font-size: 0.6rem;
+    line-height: 1;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+}
+
 .schedule__swatch--today {
     width: 2px;
     height: 14px;
@@ -2572,6 +2699,10 @@ a.schedule__bar {
 @media (max-width: 640px) {
     .schedule__chart {
         --label-width: 130px;
+    }
+
+    .schedule__row--hours {
+        display: none;
     }
 }
 
@@ -3527,6 +3658,25 @@ a.schedule__bar {
 
     .events-shop-grid {
         grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content;
+    }
+
+    .today-offers-grid {
+        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content max-content;
+    }
+
+    .today-entry__art {
+        width: 64px;
+        height: 32px;
+    }
+
+    /* No room for the kind: the countdown stays. */
+    .today-entry__kind {
+        display: none;
+    }
+
+    .today-entry__time {
+        width: auto;
+        padding: 0;
     }
 
     .events-shop-grid--locks {

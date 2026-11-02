@@ -214,6 +214,57 @@ function runMoments(run) {
     };
 }
 
+const HOUR_MS = 3600000;
+const WEEK_MS = 7 * DAY_MS;
+
+/** The moment (ms) the rotation's week that `ms` falls in started: the daily reset (02:00 UTC) of `week_starts`. */
+function rotationWeekStart(rotation, ms) {
+    const today = gameDay(new Date(ms)).day;
+    const weekStartDay = today - ((weekdayIndex(today) - WEEKDAYS.indexOf(rotation.week_starts) + 7) % 7);
+    return dayDate(weekStartDay).getTime() + GAME_DAY_START_MS;
+}
+
+/** Slot `k` of the week that started at `weekStartMs`: `{ slot, phaseId, phase, start, end }` (ms). */
+function rotationSlot(rotation, weekStartMs, k) {
+    const phaseId = rotation.week[k];
+    const start = weekStartMs + k * rotation.hours * HOUR_MS;
+    const phase = rotation.phases.find((candidate) => candidate.id === phaseId);
+    return { slot: k, phaseId, phase, start, end: start + rotation.hours * HOUR_MS };
+}
+
+/**
+ * Where an event rotation (`event_rotations` in pack_data.json: a list of slots of `hours` each, `week`, naming the
+ * phase of every slot from the start of the week) stands at `nowMs`: `{ current, next }`, each
+ * `{ slot, phaseId, phase, start, end }` (ms). The week starts at the daily reset (02:00 UTC) of `week_starts` and the
+ * same week repeats, so the slot after the week's last one is slot 0 of the next week. The list is the sequence as the
+ * game runs it, not a loop (Survival Battle: a round of five, Territory > Heroes, then seven rounds of five).
+ */
+function rotationSlots(rotation, nowMs) {
+    const weekStart = rotationWeekStart(rotation, nowMs);
+    const k = Math.floor((nowMs - weekStart) / (rotation.hours * HOUR_MS));
+    return {
+        current: rotationSlot(rotation, weekStart, k),
+        next:
+            k + 1 < rotation.week.length
+                ? rotationSlot(rotation, weekStart, k + 1)
+                : rotationSlot(rotation, weekStart + WEEK_MS, 0),
+    };
+}
+
+/** Every slot of the rotation that overlaps [fromMs, toMs), in order (a slot cut by the window is included whole). */
+function rotationWindow(rotation, fromMs, toMs) {
+    const slots = [];
+    for (let weekStart = rotationWeekStart(rotation, fromMs); weekStart < toMs; weekStart += WEEK_MS) {
+        for (let k = 0; k < rotation.week.length; k += 1) {
+            const slot = rotationSlot(rotation, weekStart, k);
+            if (slot.end > fromMs && slot.start < toMs) {
+                slots.push(slot);
+            }
+        }
+    }
+    return slots;
+}
+
 export {
     dayDate,
     gameDay,
@@ -225,4 +276,6 @@ export {
     weekdayRuns,
     runStatus,
     runMoments,
+    rotationSlots,
+    rotationWindow,
 };

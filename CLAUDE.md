@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Last Asylum Pack Solver
+## Klingo's Companion (Last Asylum: Plague)
 
 A static webapp that values items, packages and exchange-shop offers from `data/pack_data.json` (mobile game
 "Last Asylum: Plague"), computed live in the browser, deployed to GitHub Pages.
@@ -92,6 +92,13 @@ One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitH
   which starts at 02:00 UTC (`gameDay` in `core/schedule.js`). The setup bar's "Follow the calendar" switch (default on) sets the
   selected events and passes to today's on every page load (`ui/calendar-sync.js`, called in `startPage`); a manual
   event / pass change turns it off.
+- `event_rotations` holds in-game events that run through a fixed list of slots on a fixed clock (Survival Battle: 42
+  slots of 4 hours from Sunday's reset, the same week every week): `phases` (id, name, an optional `image` and optional
+  `earn_points`: the game's rule as text, `item_id` for the item the rule is about) and `week`, the phase of every slot. The
+  sequence is as the game runs it, not a loop (a round of five, Territory > Heroes, then seven rounds of five), so
+  every slot is listed. `rotationSlots` (`core/schedule.js`) gives the phase on now and the next; the Today page shows
+  them. The event itself stays a plain `ingame_event` in `events`. Times are UTC; the game's server time is UTC−2 (its
+  00:00 = our 02:00).
 - Spend reward tracks share one list of Banknote packs and the points they count (`spend_reward_conversions`);
   `normalizePackData` gives it to every track without its own `conversions` (`[]` = 1 point per Banknote).
 - `image` on events, tracks and passes is a banner in `webapp/public/assets/events/` (720×360); `verify-data`
