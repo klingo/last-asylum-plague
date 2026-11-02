@@ -10,6 +10,7 @@
         "sources": "Item Sources",
         "choices": "Best Choice Pick",
         "spendRewards": "Spend Rewards",
+        "seasonalPasses": "Seasonal Passes",
         "gear": "Gear Upgrade Path",
         "lordSpecialty": "Lord Specialty",
         "language": "Language",
@@ -85,7 +86,8 @@
         "pack_shop": "Pack Shop",
         "clinic_development_pack": "Clinic Development Pack",
         "shop": "Shops",
-        "spend_track": "Spend reward tracks"
+        "spend_track": "Spend reward tracks",
+        "seasonal_pass": "Seasonal passes"
     },
     "sourceType": {
         "package": "Package",
@@ -104,6 +106,7 @@
         "sources": "Item Sources - Last Asylum Pack Solver",
         "choices": "Best Choice Pick - Last Asylum Pack Solver",
         "spendRewards": "Spend Rewards - Last Asylum Pack Solver",
+        "seasonalPasses": "Seasonal Passes - Last Asylum Pack Solver",
         "gear": "Gear Upgrade Path - Last Asylum Pack Solver",
         "lordSpecialty": "Lord Specialty - Last Asylum Pack Solver",
         "settings": "Settings - Last Asylum Pack Solver",
@@ -118,6 +121,7 @@
         "sources": "Last Asylum Pack Solver — item sources computed live from pack_data.json",
         "choices": "Last Asylum Pack Solver — choice options valued live from pack_data.json",
         "spendRewards": "Last Asylum Pack Solver — spend reward tiers computed live from pack_data.json",
+        "seasonalPasses": "Last Asylum Pack Solver — seasonal passes valued live from pack_data.json",
         "gear": "Last Asylum Pack Solver — gear upgrade path from pack_data.json",
         "lordSpecialty": "Last Asylum Pack Solver — lord specialty skills from lord_specialty.json",
         "settings": "Last Asylum Pack Solver — settings and model quality, computed live from pack_data.json",
@@ -134,6 +138,7 @@
         "sourcesDescription": "Pick an item and see every pack and shop offer that gives it, even nested in chests and supplies, ranked by what one unit costs.",
         "choicesDescription": "Pick a choice chest, a package with options, or a group you can only buy one of (e.g. calendar packs) and see which is worth the most.",
         "spendRewardsDescription": "Pick a cumulative spend-reward track and see up to which tier spending more still pays off.",
+        "seasonalPassesDescription": "Pick a seasonal pass and see everything it gives, what the pass costs and whether its contents are worth the price.",
         "gearDescription": "A squad's UR gear: in which order to craft it and to raise its levels and stars, step by step.",
         "lordSpecialtyDescription": "Plan the Handyman's or Legion Commander's specialty skills, see the level and points a build requires, and share it as a link.",
         "itemsDescription": "Tell the tool which items you don't care about and which are extra important to you. Every page uses it.",
@@ -494,6 +499,29 @@
         "verdictNone": "No step beyond your weekly spend brings as much as your last Banknote does.",
         "reachedSummary": "Your weekly spend of {budget} Banknotes already reaches tier {tier}.",
         "verdictAll": "Your weekly spend already reaches every tier of this track."
+    },
+    "seasonalPasses": {
+        "heading": "Seasonal Passes",
+        "description": "Pick a seasonal pass to see everything it gives, what it costs and whether its contents are worth the price.",
+        "details": "The worth is what the pass's items are worth at your weekly spend and item priorities (the same worth as on the Pack Ranking). Ratio 1.0 or more = the pass returns at least as much as the same Banknotes would elsewhere. A pass with several tiers is counted with all of its tiers bought once.",
+        "passLabel": "Seasonal pass",
+        "passPlaceholder": "Select a pass…",
+        "passSearch": "Search passes…",
+        "empty": "No seasonal passes defined yet.",
+        "selectPrompt": "Select a seasonal pass above to see what it gives.",
+        "tiersHeading": "Tiers",
+        "tiles": {
+            "price": "Price",
+            "worth": "Worth vs. price"
+        },
+        "worthFor": "worth for {price} Banknotes",
+        "verdictGood": "Worth buying at your weekly spend: it returns more than the Banknotes it costs.",
+        "verdictBad": "Not worth buying at your weekly spend: your Banknotes have better uses.",
+        "planNone": "Your weekly plan doesn't buy this pass.",
+        "planBuys": "Your weekly plan buys: {tiers}.",
+        "notOnSale": "This pass isn't selected as on sale under \"Seasonal passes on sale\" above, so your plan doesn't count it. The worth shown is still correct.",
+        "note": "Values are in Banknotes at your weekly spend.",
+        "deliveryNote": "The rewards arrive daily over {days} days."
     },
     "gear": {
         "heading": "Gear Upgrade Path",

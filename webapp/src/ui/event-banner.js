@@ -2,7 +2,7 @@
  * The game's art for events, spend reward tracks and seasonal passes (`image` in pack_data.json:
  * assets/events/<image>.webp, 720×360), and when they run: "Ends in 6d 5h", "Starts in 05:06:44" (a live countdown on
  * the banners; runs start and end at the game day's reset, 02:00 UTC). Used by the Calendar (thumbnails, hover
- * cards), the Shopping Plan and Spend Rewards (banners).
+ * cards), the Shopping Plan, Spend Rewards and Seasonal Passes (banners).
  */
 import { getLocale, t } from './i18n.js';
 import { escapeHtml } from './html.js';

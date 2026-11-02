@@ -23,6 +23,7 @@ export default defineConfig({
                 choices: resolve(root, 'choices.html'),
                 compare: resolve(root, 'compare.html'),
                 spendRewards: resolve(root, 'spend-rewards.html'),
+                seasonalPasses: resolve(root, 'seasonal-passes.html'),
                 gear: resolve(root, 'gear.html'),
                 lordSpecialty: resolve(root, 'lord-specialty.html'),
                 settings: resolve(root, 'settings.html'),

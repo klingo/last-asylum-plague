@@ -10,6 +10,7 @@
         "sources": "Gegenstandsquellen",
         "choices": "Beste Wahl",
         "spendRewards": "Ausgabenbelohnungen",
+        "seasonalPasses": "Saisonpässe",
         "gear": "Ausrüstungs-Upgradepfad",
         "lordSpecialty": "Lord-Spezialisierung",
         "language": "Sprache",
@@ -85,7 +86,8 @@
         "pack_shop": "Paketshop",
         "clinic_development_pack": "Klinik-Entwicklungspaket",
         "shop": "Shops",
-        "spend_track": "Ausgabenbelohnungen"
+        "spend_track": "Ausgabenbelohnungen",
+        "seasonal_pass": "Saisonpässe"
     },
     "sourceType": {
         "package": "Paket",
@@ -104,6 +106,7 @@
         "sources": "Gegenstandsquellen - Last Asylum Pack Solver",
         "choices": "Beste Wahl - Last Asylum Pack Solver",
         "spendRewards": "Ausgabenbelohnungen - Last Asylum Pack Solver",
+        "seasonalPasses": "Saisonpässe - Last Asylum Pack Solver",
         "gear": "Ausrüstungs-Upgradepfad - Last Asylum Pack Solver",
         "lordSpecialty": "Lord-Spezialisierung - Last Asylum Pack Solver",
         "settings": "Einstellungen - Last Asylum Pack Solver",
@@ -118,6 +121,7 @@
         "sources": "Last Asylum Pack Solver — Gegenstandsquellen live aus pack_data.json berechnet",
         "choices": "Last Asylum Pack Solver — Wahloptionen live aus pack_data.json bewertet",
         "spendRewards": "Last Asylum Pack Solver — Ausgabenbelohnungs-Stufen live aus pack_data.json berechnet",
+        "seasonalPasses": "Last Asylum Pack Solver — Saisonpässe live aus pack_data.json bewertet",
         "gear": "Last Asylum Pack Solver — Ausrüstungs-Upgradepfad aus pack_data.json",
         "lordSpecialty": "Last Asylum Pack Solver — Spezialisierungsfähigkeiten der Lords aus lord_specialty.json",
         "settings": "Last Asylum Pack Solver — Einstellungen und Modellqualität, live aus pack_data.json berechnet",
@@ -134,6 +138,7 @@
         "sourcesDescription": "Wähle einen Gegenstand und sieh alle Pakete und Shop-Angebote, die ihn geben – auch verschachtelt in Truhen und Vorräten –, geordnet nach den Kosten pro Einheit.",
         "choicesDescription": "Wähle eine Wahltruhe, ein Paket mit Optionen oder eine Gruppe, von der du nur eines kaufen kannst (z. B. Kalenderpakete), und sieh, was am meisten wert ist.",
         "spendRewardsDescription": "Wähle eine kumulative Ausgabenbelohnung und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
+        "seasonalPassesDescription": "Wähle einen Saisonpass und sieh, was er alles gibt, was er kostet und ob sich sein Inhalt für den Preis lohnt.",
         "gearDescription": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Stufen und Sterne erhöhst, Schritt für Schritt.",
         "lordSpecialtyDescription": "Plane die Spezialisierungsfähigkeiten von Handyman oder Legion Commander, sieh, welche Stufe und wie viele Punkte ein Build braucht, und teile ihn als Link.",
         "itemsDescription": "Sag dem Tool, welche Gegenstände dir egal sind und welche dir besonders wichtig sind. Jede Seite nutzt das.",
@@ -494,6 +499,29 @@
         "verdictNone": "Keine Stufe über deine wöchentlichen Ausgaben hinaus bringt so viel wie deine letzte Banknote.",
         "reachedSummary": "Deine wöchentlichen Ausgaben von {budget} Banknoten erreichen bereits Stufe {tier}.",
         "verdictAll": "Deine wöchentlichen Ausgaben erreichen bereits jede Stufe dieser Ausgabenbelohnung."
+    },
+    "seasonalPasses": {
+        "heading": "Saisonpässe",
+        "description": "Wähle einen Saisonpass, um zu sehen, was er alles gibt, was er kostet und ob sich sein Inhalt für den Preis lohnt.",
+        "details": "Der Wert ist, was die Gegenstände des Passes bei deinen wöchentlichen Ausgaben und Gegenstandsprioritäten wert sind (derselbe Wert wie in der Paket-Rangliste). Ratio 1,0 oder mehr = der Pass bringt mindestens so viel zurück, wie dieselben Banknoten anderswo bringen würden. Ein Pass mit mehreren Stufen wird mit allen Stufen gerechnet, je einmal gekauft.",
+        "passLabel": "Saisonpass",
+        "passPlaceholder": "Pass auswählen…",
+        "passSearch": "Pässe durchsuchen…",
+        "empty": "Noch keine Saisonpässe definiert.",
+        "selectPrompt": "Wähle oben einen Saisonpass, um zu sehen, was er gibt.",
+        "tiersHeading": "Stufen",
+        "tiles": {
+            "price": "Preis",
+            "worth": "Wert vs. Preis"
+        },
+        "worthFor": "Wert für {price} Banknoten",
+        "verdictGood": "Lohnt sich bei deinen wöchentlichen Ausgaben: er bringt mehr zurück, als er an Banknoten kostet.",
+        "verdictBad": "Lohnt sich bei deinen wöchentlichen Ausgaben nicht: deine Banknoten haben bessere Verwendungen.",
+        "planNone": "Dein Wochenplan kauft diesen Pass nicht.",
+        "planBuys": "Dein Wochenplan kauft: {tiers}.",
+        "notOnSale": "Dieser Pass ist oben unter „Saisonpässe im Angebot“ nicht als im Verkauf ausgewählt, daher zählt ihn dein Plan nicht. Der angezeigte Wert stimmt trotzdem.",
+        "note": "Werte in Banknoten bei deinen wöchentlichen Ausgaben.",
+        "deliveryNote": "Die Belohnungen kommen täglich über {days} Tage."
     },
     "gear": {
         "heading": "Ausrüstungs-Upgradepfad",

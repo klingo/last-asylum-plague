@@ -6,8 +6,8 @@
  */
 import { PURCHASE_TYPES, WEEKDAYS } from '../webapp/src/core/catalog.js';
 
-// Groups the pages put into the item picker themselves (events.js, spend-rewards.js, item-picker.js).
-const PICKER_GROUPS = ['shop', 'spend_track', 'other'];
+// Groups the pages put into the item picker themselves (events.js, spend-rewards.js, seasonal-passes.js, item-picker.js).
+const PICKER_GROUPS = ['shop', 'spend_track', 'seasonal_pass', 'other'];
 
 /** Sorted `<group>.<code>` keys the UI texts must have for `data` (raw or normalized pack data). */
 function codeLabelKeys(data) {

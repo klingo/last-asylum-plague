@@ -101,10 +101,16 @@ function scheduleTooltip(bar, row, today) {
 }
 
 /**
- * Where a schedule entry is planned: a ticked event on the Events page, a spend reward track on Spend Rewards
- * (passes and in-game events have no page of their own); null otherwise.
+ * Where a schedule entry is planned: a ticked event on the Events page, a spend reward track on Spend Rewards, a
+ * seasonal pass on Seasonal Passes (in-game events have no page of their own); null otherwise.
  */
 function planHref(id) {
+    const isSeasonalPass = Object.entries(packData.packages || {}).some(
+        ([pkgId, pkg]) => pkg.seasonal && packageFamilyId(pkgId, pkg) === id,
+    );
+    if (isSeasonalPass) {
+        return `seasonal-passes.html?pass=${encodeURIComponent(id)}`;
+    }
     if (packData.events?.[id]?.category !== 'ingame_event' && getSettings().activeEvents?.includes(id)) {
         return `events.html?event=${encodeURIComponent(`event:${id}`)}`;
     }

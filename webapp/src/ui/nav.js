@@ -37,6 +37,7 @@ const NAV_GROUPS = [
         items: [
             { page: 'rankings', href: 'rankings.html', label: 'nav.rankings' },
             { page: 'spend-rewards', href: 'spend-rewards.html', label: 'nav.spendRewards' },
+            { page: 'seasonal-passes', href: 'seasonal-passes.html', label: 'nav.seasonalPasses' },
         ],
     },
     {

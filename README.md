@@ -75,6 +75,10 @@ quality (how well the fitted worths reproduce the packs' deal %).
 - **Spend Rewards** (`spend-rewards.html`) — the track's banner and when it runs, and per tier of a spend track, what
   the extra Banknotes buy (the best packs
   still available at that total spend) plus the tier reward, as a step ratio: spend more while it's 1.0 or more.
+- **Seasonal Passes** (`seasonal-passes.html`) — pick a seasonal pass (`?pass=<family id>`; the one running today is
+  pre-selected, and the Calendar's pass bars link here): its banner and when it runs, its price, everything the
+  whole pass gives (all tiers) with each item's worth, and the pass's worth against its price as a ratio, plus the
+  tiers your weekly plan buys.
 - **Gear Upgrade Path** (`gear.html`) — a squad (2 tanks in front, carries and support behind, each hero with its sword,
   armor, gauntlets and boots) and the guide to its UR gear in two phases: first crafting every piece, then two
   queues, one card each: the next level step and the next star step (star steps use Gear Blueprints, so you pick the
