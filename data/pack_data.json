@@ -201,6 +201,14 @@
             "category": "resource",
             "rarity": null
         },
+        "covert_order": {
+            "name": {
+                "en": "Covert Order",
+                "de": "Verdeckter Auftrag"
+            },
+            "category": "material",
+            "rarity": "ur"
+        },
         "curio_chest_ssr": {
             "name": {
                 "en": "Curio Chest (SSR)",
@@ -2149,6 +2157,107 @@
                 }
             ]
         },
+        "secret_reward": {
+            "name": {
+                "en": "Secret Reward",
+                "de": "Geheime Belohnung"
+            },
+            "category": "chest",
+            "rarity": "ssr",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "trade_agreement": 1
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "recruit_ticket": 1
+                    },
+                    "probability": 0.0025
+                },
+                {
+                    "contains": {
+                        "survivor_recruit_ticket": 1
+                    },
+                    "probability": 0.0025
+                },
+                {
+                    "contains": {
+                        "ur_hero_omni_shard": 1
+                    },
+                    "probability": 0.001
+                },
+                {
+                    "contains": {
+                        "covert_order": 1
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "diamonds": 5000
+                    },
+                    "probability": 0.0001
+                },
+                {
+                    "contains": {
+                        "curio_chest_ssr": 1
+                    },
+                    "probability": 0.001
+                },
+                {
+                    "contains": {
+                        "resource_supply_general": 1
+                    },
+                    "probability": 0.8394
+                },
+                {
+                    "contains": {
+                        "skill_badge": 150
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "gearstone": 100
+                    },
+                    "probability": 0.025
+                },
+                {
+                    "contains": {
+                        "diamonds": 10
+                    },
+                    "probability": 0.01
+                },
+                {
+                    "contains": {
+                        "diamonds": 50
+                    },
+                    "probability": 0.001
+                },
+                {
+                    "contains": {
+                        "basic_gear_supply": 20
+                    },
+                    "probability": 0.0475
+                },
+                {
+                    "contains": {
+                        "speedup_supply": 5
+                    },
+                    "probability": 0.02
+                },
+                {
+                    "contains": {
+                        "lv1_raven_gear_chest": 1
+                    },
+                    "probability": 0.01
+                }
+            ]
+        },
         "shield": {
             "name": {
                 "en": "Shield",
@@ -2499,6 +2608,14 @@
             "name": {
                 "en": "Top-Up EXP",
                 "de": "Aufladung-EP"
+            },
+            "category": "consumable",
+            "rarity": "ur"
+        },
+        "trade_agreement": {
+            "name": {
+                "en": "Trade Agreement",
+                "de": "Handelspakt"
             },
             "category": "consumable",
             "rarity": "ur"
@@ -4511,7 +4628,7 @@
         "mystic_cabinet_i": {
             "name": {
                 "en": "Mystic Cabinet I",
-                "de": ""
+                "de": "Mystischer Schrank I"
             },
             "category": "season_event",
             "limit_type": "event",
@@ -4560,7 +4677,7 @@
         "mystic_cabinet_ii": {
             "name": {
                 "en": "Mystic Cabinet II",
-                "de": ""
+                "de": "Mystischer Schrank II"
             },
             "category": "season_event",
             "limit_type": "event",
@@ -4583,7 +4700,7 @@
         "mystic_cabinet_iii": {
             "name": {
                 "en": "Mystic Cabinet III",
-                "de": ""
+                "de": "Mystischer Schrank III"
             },
             "category": "season_event",
             "limit_type": "event",
@@ -6448,7 +6565,7 @@
         "sanctuary_shop": {
             "name": {
                 "en": "Sanctuary Shop",
-                "de": ""
+                "de": "Zuflucht Shop"
             },
             "currency_item_id": "copper_coin",
             "income_per_hour": 236300,
