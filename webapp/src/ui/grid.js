@@ -32,9 +32,9 @@ function gridHeader(label = '', options = {}) {
     return `<div class="${cellClasses('ranking-grid__cell ranking-grid__cell--header', options)}" role="columnheader">${label}</div>`;
 }
 
-/** A row of cells; `buy`: a row the plan buys (tinted). */
-function gridRow(cells, { buy = false } = {}) {
-    return `<div class="ranking-grid__row${buy ? ' ranking-grid__row--buy' : ''}" role="row">${cells.join('')}</div>`;
+/** A row of cells; `buy`: a row the plan buys (tinted); `dim`: a row that isn't counted (faded). */
+function gridRow(cells, { buy = false, dim = false } = {}) {
+    return `<div class="ranking-grid__row${buy ? ' ranking-grid__row--buy' : ''}${dim ? ' ranking-grid__row--dim' : ''}" role="row">${cells.join('')}</div>`;
 }
 
 /** The header row and the body rows, each as a row group (for screen readers; no box of their own). */

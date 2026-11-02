@@ -80,6 +80,8 @@ let lockCostCache = { key: null, cost: null };
 let valuationKey = null;
 // The mine table's open Details blocks (kept across re-renders).
 const mineExpanded = new Set();
+// The pack table's open Details blocks.
+const packExpanded = new Set();
 // itemId -> whether any pack or another shop gives it (for the "Only here" badge), per shop.
 const otherSourceCache = new Map();
 
@@ -212,6 +214,7 @@ function eventPacks(eventId) {
         .map(([id, pkg]) => {
             const b = valuation.bundle(pkg, pkg.price);
             return {
+                id,
                 pkg,
                 limit: packageWeeklyCapacity(pkg, rules),
                 count: bought.get(id) || 0,
@@ -477,8 +480,9 @@ function renderPacks({ eventId }) {
     }
     const locale = getLocale();
     const maxRatio = Math.max(1, ...packs.map((p) => p.ratio).filter(Number.isFinite));
-    const rows = packs.map(({ pkg, limit, count, worth, ratio }) =>
-        gridRow(
+    const rows = packs.map(({ id, pkg, limit, count, worth, ratio }) => {
+        const key = `pack:${id}`;
+        const row = gridRow(
             [
                 cell(packageDisplayName(pkg, locale)),
                 numCell(formatThousands(limit), WIDE),
@@ -492,10 +496,12 @@ function renderPacks({ eventId }) {
                             : `<span class="buy-badge">×${formatThousands(count)}</span>`
                         : '',
                 ),
+                numCell(detailsToggleHtml(key, packExpanded)),
             ],
             { buy: count > 0 },
-        ),
-    );
+        );
+        return row + packDetailsHtml(key, pkg);
+    });
     const header = gridRow([
         headerCell('pack'),
         headerCell('limit', true, true),
@@ -503,9 +509,59 @@ function renderPacks({ eventId }) {
         headerCell('worth', true),
         headerCell('ratio', true),
         headerCell('buy', true),
+        gridHeader(),
     ]);
     packsTable.innerHTML = gridTable(header, rows.join(''));
+    hydrateItemIcons(packsTable);
     enableInfoTooltips(packsTable);
+    wireDetailsToggles(packsTable, packExpanded);
+}
+
+/**
+ * The Details block of a pack: what its worth adds up from. Each item with its amount and worth; for a pack
+ * with a pick (`choice`), the always included items, the options counted (the most valuable, as the worth does)
+ * and, dimmed, the ones left out.
+ */
+function packDetailsHtml(key, pkg) {
+    const intro = (text) => `<p class="ranking-grid__details-intro">${escapeHtml(text)}</p>`;
+    const itemRows = (parts, dim = false) =>
+        breakdownParts(parts, data, valuation).map((part) =>
+            gridRow(
+                [
+                    cell(part.item, 'item-cell'),
+                    numCell('', WIDE),
+                    numCell(''),
+                    numCell(part.worth),
+                    numCell(''),
+                    numCell(''),
+                    numCell(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
+                ],
+                { dim },
+            ),
+        );
+    const optionParts = (indexes) =>
+        indexes.flatMap((index) => valuation.bundle({ contains: pkg.choice.choices[index] }, 0).parts);
+    const blocks = [];
+    const fixed = itemRows(valuation.bundle({ contains: pkg.contains }, 0).parts);
+    if (fixed.length > 0) {
+        blocks.push((pkg.choice ? intro(t('events.packDetails.always')) : '') + fixed.join(''));
+    }
+    if (pkg.choice) {
+        const picked = valuation.bundle(pkg, 0).picked || [];
+        const skipped = pkg.choice.choices.map((_, index) => index).filter((index) => !picked.includes(index));
+        blocks.push(
+            intro(
+                t('events.packDetails.picks', {
+                    count: formatThousands(pkg.choice.select_count || 1),
+                    total: formatThousands(pkg.choice.choices.length),
+                }),
+            ) + itemRows(optionParts(picked)).join(''),
+        );
+        if (skipped.length > 0) {
+            blocks.push(intro(t('events.packDetails.skipped')) + itemRows(optionParts(skipped), true).join(''));
+        }
+    }
+    return gridDetails(key, packExpanded, blocks.join(''));
 }
 
 /** Shop offers grouped by unlock stage (unlock amount once per group); rows the plan buys stand out. */

@@ -306,6 +306,11 @@
             "wishes": "Wish rewards: pick one per floor ({count} floors; worth of one)",
             "loot": "The other tiles found on the way (expected)"
         },
+        "packDetails": {
+            "contents": "Always included",
+            "picks": "Pick {count} of {total}: counted with the {count} most valuable options",
+            "skipped": "Not counted (less valuable)"
+        },
         "mineStat": {
             "floors": "Floors this run",
             "pickaxes": "Pickaxes dug",

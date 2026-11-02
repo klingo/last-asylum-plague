@@ -306,6 +306,11 @@
             "wishes": "Wunschbelohnungen: eine pro Etage wählen ({count} Etagen; Wert von einer)",
             "loot": "Die übrigen Felder unterwegs (erwartet)"
         },
+        "packDetails": {
+            "contents": "Immer enthalten",
+            "picks": "{count} von {total} wählen: gerechnet mit den {count} wertvollsten Optionen",
+            "skipped": "Nicht gezählt (weniger wertvoll)"
+        },
         "mineStat": {
             "floors": "Etagen in diesem Lauf",
             "pickaxes": "Gegrabene Spitzhacken",
