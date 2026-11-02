@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-01"
+        "last_updated": "2026-11-02"
     },
     "items": {
         "alliance_coins": {
@@ -8070,6 +8070,12 @@
                 "end": "2026-10-18"
             }
         ],
+        "artisans_request_gearstone": [
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-08"
+            }
+        ],
         "artisans_request_tempered_steel": [
             {
                 "start": "2026-10-19",
@@ -8085,7 +8091,7 @@
         "canyon_conquest": [
             {
                 "start": "2026-10-26",
-                "end": "2026-11-01"
+                "end": "2026-11-02"
             }
         ],
         "claires_inner_demon": [
@@ -8142,6 +8148,10 @@
             {
                 "start": "2026-10-29",
                 "end": "2026-10-29"
+            },
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-02"
             }
         ],
         "demon_king_warrior_blight": [
@@ -8178,6 +8188,12 @@
             {
                 "start": "2026-10-12",
                 "end": "2026-10-18"
+            }
+        ],
+        "falcon_tower_pass": [
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-08"
             }
         ],
         "gear_pass": [
@@ -8222,6 +8238,10 @@
             {
                 "start": "2026-10-19",
                 "end": "2026-10-20"
+            },
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-03"
             }
         ],
         "mystic_cabinet": [
@@ -8298,6 +8318,10 @@
             {
                 "start": "2026-10-19",
                 "end": "2026-10-25"
+            },
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-08"
             }
         ]
     },
