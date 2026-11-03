@@ -1450,6 +1450,12 @@ a.today-entry:hover {
     font-size: 0.85rem;
 }
 
+/* The Banknote icon of the plan line sized to its text, so a row with it is no taller than one without. */
+.today-entry__title .currency-icon {
+    width: 14px;
+    height: 14px;
+}
+
 /* The info icon (how to earn points) beside the title: centred on the line, not on the text's baseline. */
 .today-entry__title .info-icon {
     align-self: center;
@@ -1473,6 +1479,10 @@ a.today-entry:hover {
 
 .today-entry--running .today-entry__time {
     color: var(--good);
+}
+
+.today-entry--running.today-entry--ending .today-entry__time {
+    color: var(--warn);
 }
 
 .today-entry--upcoming .today-entry__time {

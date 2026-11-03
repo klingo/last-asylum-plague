@@ -130,9 +130,6 @@
         "lastUpdated": "Daten zuletzt aktualisiert: {date}",
         "lastChange": "Letzte Änderung: {date}"
     },
-    "welcome": {
-        "intro": "Werkzeuge, um herauszufinden, wie du deine Banknoten in Last Asylum: Plague am besten ausgibst – live berechnet aus manuell erfassten Paketdaten. Jeder Wert basiert auf den Deal-Prozentwerten des Spiels, deinen wöchentlichen Banknoten-Ausgaben und darauf, wie wichtig dir jeder Gegenstand ist."
-    },
     "settings": {
         "heading": "Einstellungen",
         "description": "Einstellungen, die jeden Wert auf jeder Seite beeinflussen, in diesem Browser gespeichert.",
@@ -504,7 +501,7 @@
     },
     "today": {
         "heading": "Heute",
-        "description": "Was heute läuft, was bald startet, die heutigen Wochentags-Angebote und dein Plan für die Woche bei deinen wöchentlichen Ausgaben.",
+        "description": "Was heute läuft, was bald startet, dein Plan für die Woche bei deinen wöchentlichen Ausgaben und die heutigen Wochentags-Angebote.",
         "runningHeading": "Läuft jetzt",
         "runningEmpty": "Heute ist nichts als laufend eingetragen.",
         "soonHeading": "Startet bald",
@@ -524,8 +521,14 @@
         },
         "week": "Woche",
         "shopOffers": "Zu kaufende Angebote: {count}",
+        "planPacks": "Pakete in deinem Plan: {count} ({spent})",
         "planNote": "Die Preise sind das, was der Plan pro Woche ausgibt; Monats- und Zwei-Wochen-Pakete zählen mit ihrem Wochenanteil am Preis.",
-        "openPlan": "Einkaufsplan öffnen"
+        "openPlan": "Einkaufsplan öffnen",
+        "how": {
+            "schedule": "Was laut Kalender heute läuft (zuerst, was zuerst endet) und was in den nächsten 3 Tagen startet. Ein Countdown wird in den letzten 24 Stunden gelb, und bei einem laufenden Event oder Pass steht, was dein Plan davon kauft. Ein blasser Eintrag wird nach dem üblichen Rhythmus erwartet, ist aber noch nicht eingetragen. Jeder Eintrag verlinkt auf seine Seite.",
+            "plan": "Was der beste Plan für deine wöchentlichen Banknoten-Ausgaben diese Woche kauft, nach dem Zeitpunkt des Kaufs, mit deinen Gegenstandsprioritäten, gesperrten Angeboten und übersprungenen Paketen: derselbe Plan wie auf jeder Seite. Wochentags-Angebote, die heute nicht im Angebot sind, sind gedimmt, und verblasst, sobald ihre Tage diese Woche vorbei sind.",
+            "offers": "Die Wochentags-Angebote, die heute im Angebot sind, nach dem besten Wert für den Preis zuerst, mit der Anzahl, die dein Plan kauft, und was jedes gibt."
+        }
     },
     "seasonalPasses": {
         "heading": "Saisonpässe",

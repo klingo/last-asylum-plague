@@ -45,6 +45,8 @@ import {
 
 // An upcoming entry's fill grows over the last hours before it starts (the same for all, whatever it is).
 const SOON_FILL_MS = 4 * 3600000;
+// A running entry with less than this left has its countdown in yellow.
+const ENDING_MS = 24 * 3600000;
 // What starts within this many days is listed under "Starting soon".
 const SOON_DAYS = 3;
 // The order of the schedule's kinds (as on the Calendar) and their labels.
@@ -124,6 +126,24 @@ function rotationEntry(rotation, slot, state) {
 }
 
 /**
+ * What the plan buys from a running event or pass: "Packs in your plan: 3 (120 Banknotes)" ('' when none, and for
+ * tracks, in-game events and phases).
+ */
+function planShareHtml(entry) {
+    if (!valuation || (entry.kind !== 'event' && entry.kind !== 'pass')) {
+        return '';
+    }
+    const mine = valuation.plan.purchases.filter(({ id, pkg }) =>
+        entry.kind === 'event' ? pkg.event_id === entry.id : packageFamilyId(id, pkg) === entry.id,
+    );
+    if (mine.length === 0) {
+        return '';
+    }
+    const spent = mine.reduce((sum, { spend }) => sum + spend, 0);
+    return tHtml('today.planPacks', { count: formatThousands(mine.length), spent: gold(formatThousands(spent, 0)) });
+}
+
+/**
  * One entry of a list: its art, title, dates, the countdown in a column of its own and its kind. A faint fill behind it
  * (`updateProgress`) shows how far a running entry is, or, for an upcoming one, how close it is to starting: empty
  * until 4 hours before, full at its start.
@@ -148,6 +168,7 @@ function entryHtml(entry) {
               ]
             : null;
     const until = running ? entry.end : entry.start;
+    const planShare = running ? planShareHtml(entry) : '';
     return `
         <${tag} class="${classes}" data-from="${from}" data-to="${to}"${link}>
             ${art}
@@ -155,6 +176,7 @@ function entryHtml(entry) {
                 <span class="today-entry__title">
                     <span class="today-entry__name">${escapeHtml(entry.title)}</span>
                     ${entry.description ? `<span class="today-entry__description">${escapeHtml(entry.description)}</span>` : ''}
+                    ${planShare ? `<span class="today-entry__description">${planShare}</span>` : ''}
                     ${earnRows ? infoIconHtml(earnRows.map((row) => row.text).join('\n'), earnRows) : ''}
                 </span>
                 <span class="today-entry__dates">${escapeHtml(entry.dates)}</span>
@@ -172,6 +194,11 @@ function updateProgress() {
         const to = Number(entry.dataset.to);
         const fraction = Math.min(1, Math.max(0, (now - from) / (to - from)));
         entry.style.setProperty('--progress', fraction.toFixed(3));
+        // Yellow countdown in the last day of a run (so always for an event rotation's 4-hour phases).
+        entry.classList.toggle(
+            'today-entry--ending',
+            entry.classList.contains('today-entry--running') && to - now < ENDING_MS,
+        );
     }
 }
 

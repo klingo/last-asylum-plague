@@ -40,9 +40,11 @@ Passes), **Events** (Calendar, Shopping Plan), **Items** (Item Priorities, Item 
 quality (how well the fitted worths reproduce the packs' deal %).
 
 - **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
-  days (recorded runs and proven forecasts), today's weekday offers with their ratio, what the plan buys and what each gives (Details), and
-  the weekly plan by when to buy it: daily packs, weekly and longer packs, weekday offers, each event's packs and how
-  many different shop offers it buys (linking to its Shopping Plan). Running entries are ordered by when they end.
+  days (recorded runs and proven forecasts), the weekly plan by when to buy it (daily packs, weekly and longer packs,
+  weekday offers, each event's packs and how many different shop offers it buys, linking to its Shopping Plan) and
+  today's weekday offers with their ratio, what the plan buys and what each gives (Details). Running entries are
+  ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
+  plan buys from it.
   Survival Battle (`event_rotations` in `pack_data.json`: the 42 four-hour slots of its week, from Sunday's reset, the
   same every week) shows the phase on now and the next one, with their local times and how to earn points in them.
 

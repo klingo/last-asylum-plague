@@ -14,7 +14,22 @@
                 <p class="page-lead" data-i18n="today.description"></p>
                 <details class="page-details">
                     <summary data-i18n="common.howItWorks"></summary>
-                    <p data-i18n="welcome.intro"></p>
+                    <ul class="page-details__list">
+                        <li>
+                            <strong
+                                ><span data-i18n="today.runningHeading"></span> /
+                                <span data-i18n="today.soonHeading"></span></strong
+                            >:
+                            <span data-i18n="today.how.schedule"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="today.planHeading"></strong>: <span data-i18n="today.how.plan"></span>
+                        </li>
+                        <li>
+                            <strong data-i18n="today.offersHeading"></strong>:
+                            <span data-i18n="today.how.offers"></span>
+                        </li>
+                    </ul>
                 </details>
                 <div id="valuation-panel"></div>
             </section>
@@ -28,18 +43,18 @@
             </section>
 
             <section class="card">
+                <h3 data-i18n="today.planHeading"></h3>
+                <p class="text-dim" id="plan-summary"></p>
+                <div id="plan-tiles" class="plan-tiles"></div>
+                <p class="footnote" data-i18n="today.planNote"></p>
+            </section>
+
+            <section class="card">
                 <h3 data-i18n="today.offersHeading"></h3>
                 <p class="text-dim" id="offers-empty" hidden data-i18n="today.offersEmpty"></p>
                 <div class="table-wrap" id="offers-wrap">
                     <div id="offers-table" class="ranking-grid today-offers-grid" role="table"></div>
                 </div>
-            </section>
-
-            <section class="card">
-                <h3 data-i18n="today.planHeading"></h3>
-                <p class="text-dim" id="plan-summary"></p>
-                <div id="plan-tiles" class="plan-tiles"></div>
-                <p class="footnote" data-i18n="today.planNote"></p>
             </section>
         </main>
         <footer class="app-footer"><span>Klingo's Companion</span></footer>

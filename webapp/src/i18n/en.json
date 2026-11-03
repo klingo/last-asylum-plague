@@ -130,9 +130,6 @@
         "lastUpdated": "Data last updated: {date}",
         "lastChange": "Last change: {date}"
     },
-    "welcome": {
-        "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from manually harvested pack data. Every value is based on the game's own deal percentages, your weekly Banknote spend and how much each item matters to you."
-    },
     "settings": {
         "heading": "Settings",
         "description": "Settings that shape every value on every page, saved in this browser.",
@@ -504,7 +501,7 @@
     },
     "today": {
         "heading": "Today",
-        "description": "What runs today, what starts soon, today's weekday offers and your plan for the week at your weekly spend.",
+        "description": "What runs today, what starts soon, your plan for the week at your weekly spend and today's weekday offers.",
         "runningHeading": "Running now",
         "runningEmpty": "Nothing is recorded as running today.",
         "soonHeading": "Starting soon",
@@ -524,8 +521,14 @@
         },
         "week": "week",
         "shopOffers": "Offers to buy: {count}",
+        "planPacks": "Packs in your plan: {count} ({spent})",
         "planNote": "Prices are what the plan spends per week; monthly and two-week packs count at their weekly share of the price.",
-        "openPlan": "Open the Shopping Plan"
+        "openPlan": "Open the Shopping Plan",
+        "how": {
+            "schedule": "What the Calendar records as running today, ending first, and what starts in the next 3 days. A countdown turns yellow in the last 24 hours, and a running event or pass shows what your plan buys from it. A faded entry is expected from its usual rhythm but not recorded yet. Each one links to its page.",
+            "plan": "What the best plan for your weekly Banknote spend buys this week, by when to buy it, with your item priorities, locked offers and skipped packs: the same plan as on every page. Weekday offers not on sale today are dimmed, and faded once their days are over this week.",
+            "offers": "The weekday offers on sale today, best worth for the price first, with how many your plan buys and what each gives."
+        }
     },
     "seasonalPasses": {
         "heading": "Seasonal Passes",
