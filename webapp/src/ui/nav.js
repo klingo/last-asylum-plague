@@ -4,31 +4,45 @@ import { escapeAttr } from './html.js';
 // Date the pack data was last updated (`metadata.last_updated`), shown in the footer.
 let dataDate = null;
 
-/** Shows when the pack data was last updated in the page footer (re-rendered on "localechange"). */
+/** Shows when the pack data was last updated, and when the site last changed, in the page footer (re-rendered on "localechange"). */
 function showDataDate(date) {
     dataDate = date || null;
-    renderDataDate();
+    renderStamps();
 }
 
-function renderDataDate() {
+function formatStamp(iso) {
+    // A date alone is read as local time, a full timestamp as the instant it names.
+    const parsed = new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? `${iso}T00:00:00` : iso);
+    return Number.isNaN(parsed.getTime())
+        ? iso
+        : parsed.toLocaleDateString(getLocale(), { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function renderStamps() {
     const footer = document.querySelector('.app-footer');
-    if (!footer || !dataDate) {
+    if (!footer) {
         return;
     }
-    let span = footer.querySelector('.app-footer__updated');
-    if (!span) {
-        span = document.createElement('span');
-        span.className = 'app-footer__updated';
-        footer.appendChild(span);
+    const stamps = [
+        ['app-footer__updated', 'footer.lastUpdated', dataDate],
+        // __LAST_CHANGE__ is set at build time (webapp/vite.config.js): the commit date of the deployed version.
+        ['app-footer__change', 'footer.lastChange', __LAST_CHANGE__],
+    ];
+    for (const [className, key, value] of stamps) {
+        if (!value) {
+            continue;
+        }
+        let span = footer.querySelector(`.${className}`);
+        if (!span) {
+            span = document.createElement('span');
+            span.className = className;
+            footer.appendChild(span);
+        }
+        span.textContent = t(key, { date: formatStamp(value) });
     }
-    const parsed = new Date(`${dataDate}T00:00:00`);
-    const date = Number.isNaN(parsed.getTime())
-        ? dataDate
-        : parsed.toLocaleDateString(getLocale(), { year: 'numeric', month: 'long', day: 'numeric' });
-    span.textContent = t('footer.lastUpdated', { date });
 }
 
-window.addEventListener('localechange', renderDataDate);
+window.addEventListener('localechange', renderStamps);
 
 // The top menus (label `nav.groups.<key>`) and their pages (`page` = the id passed to `renderNav`, `description` = the
 // text shown on hover and read out by screen readers).

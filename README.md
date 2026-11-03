@@ -153,6 +153,10 @@ image of its main item (the package's `icon`, else its first item other than dia
 every pull request into `master` (without deploying). Since the webapp computes everything live from that data, the
 deployed site is always in sync with `data/pack_data.json` at deploy time.
 
+Every page footer shows two stamps: when the data was last updated (`metadata.last_updated`) and when the site last changed.
+The second is filled in at build time (`__LAST_CHANGE__` in `webapp/vite.config.js`) from the date of the latest commit, so
+a rebuild without a change keeps it, and a code-only change updates it.
+
 One-time repository setup: in **Settings → Pages**, set **Source** to **GitHub Actions**. To make a PR need passing
 checks before it can be merged, add a branch protection rule (or ruleset) for `master` under **Settings → Branches**
 with **Require status checks to pass before merging** and select `verify-data` (plus `lint`, `test`, `build` if wanted).

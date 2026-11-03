@@ -127,20 +127,8 @@
         "compare": "Vergleich - Klingo's Companion"
     },
     "footer": {
-        "welcome": "Klingo's Companion — live aus pack_data.json berechnet",
-        "rankings": "Klingo's Companion — Paket-Rangliste live aus pack_data.json berechnet",
-        "calendar": "Klingo's Companion — Zeitplan aus pack_data.json",
-        "events": "Klingo's Companion — Einkaufspläne live aus pack_data.json berechnet",
-        "sources": "Klingo's Companion — Gegenstandsquellen live aus pack_data.json berechnet",
-        "choices": "Klingo's Companion — Wahloptionen live aus pack_data.json bewertet",
-        "spendRewards": "Klingo's Companion — Ausgabenbelohnungs-Stufen live aus pack_data.json berechnet",
-        "seasonalPasses": "Klingo's Companion — Saisonpässe live aus pack_data.json bewertet",
-        "gear": "Klingo's Companion — Ausrüstungs-Upgradepfad aus pack_data.json",
-        "lordSpecialty": "Klingo's Companion — Spezialisierungsfähigkeiten der Lords aus lord_specialty.json",
-        "settings": "Klingo's Companion — Einstellungen und Modellqualität, live aus pack_data.json berechnet",
-        "items": "Klingo's Companion — Gegenstandswerte live aus pack_data.json berechnet",
-        "compare": "Klingo's Companion — Vergleich live aus pack_data.json berechnet",
-        "lastUpdated": "Daten zuletzt aktualisiert: {date}"
+        "lastUpdated": "Daten zuletzt aktualisiert: {date}",
+        "lastChange": "Letzte Änderung: {date}"
     },
     "welcome": {
         "intro": "Werkzeuge, um herauszufinden, wie du deine Banknoten in Last Asylum: Plague am besten ausgibst – live berechnet aus manuell erfassten Paketdaten. Jeder Wert basiert auf den Deal-Prozentwerten des Spiels, deinen wöchentlichen Banknoten-Ausgaben und darauf, wie wichtig dir jeder Gegenstand ist."

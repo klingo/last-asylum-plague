@@ -56,7 +56,7 @@ export default defineConfig([
         files: ['webapp/src/**/*.js'],
         ignores: ['webapp/src/core/**'],
         languageOptions: {
-            globals: { ...globals.browser },
+            globals: { ...globals.browser, __LAST_CHANGE__: 'readonly' },
         },
     },
     {

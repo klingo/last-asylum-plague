@@ -2432,7 +2432,8 @@ a.today-entry:hover {
     padding-left: 0;
 }
 
-.app-footer__updated::before {
+.app-footer__updated::before,
+.app-footer__change::before {
     content: ' · ';
 }
 

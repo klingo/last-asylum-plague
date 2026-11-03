@@ -127,20 +127,8 @@
         "compare": "Compare - Klingo's Companion"
     },
     "footer": {
-        "welcome": "Klingo's Companion — computed live from pack_data.json",
-        "rankings": "Klingo's Companion — pack ranking computed live from pack_data.json",
-        "calendar": "Klingo's Companion — schedule recorded in pack_data.json",
-        "events": "Klingo's Companion — shopping plans computed live from pack_data.json",
-        "sources": "Klingo's Companion — item sources computed live from pack_data.json",
-        "choices": "Klingo's Companion — choice options valued live from pack_data.json",
-        "spendRewards": "Klingo's Companion — spend reward tiers computed live from pack_data.json",
-        "seasonalPasses": "Klingo's Companion — seasonal passes valued live from pack_data.json",
-        "gear": "Klingo's Companion — gear upgrade path from pack_data.json",
-        "lordSpecialty": "Klingo's Companion — lord specialty skills from lord_specialty.json",
-        "settings": "Klingo's Companion — settings and model quality, computed live from pack_data.json",
-        "items": "Klingo's Companion — item worth computed live from pack_data.json",
-        "compare": "Klingo's Companion — comparison computed live from pack_data.json",
-        "lastUpdated": "Data last updated: {date}"
+        "lastUpdated": "Data last updated: {date}",
+        "lastChange": "Last change: {date}"
     },
     "welcome": {
         "intro": "Tools for figuring out the best way to spend your Banknotes in Last Asylum: Plague, computed live from manually harvested pack data. Every value is based on the game's own deal percentages, your weekly Banknote spend and how much each item matters to you."
