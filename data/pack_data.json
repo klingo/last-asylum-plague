@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-02"
+        "last_updated": "2026-11-03"
     },
     "items": {
         "alliance_coins": {
@@ -3098,7 +3098,7 @@
         "building_speedup_pack": {
             "name": {
                 "en": "Building Speedup Pack",
-                "de": ""
+                "de": "Gebäude-Beschleunigungspaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3366,7 +3366,7 @@
         "development_pack": {
             "name": {
                 "en": "Development Pack",
-                "de": ""
+                "de": "Entwicklungspaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3745,7 +3745,7 @@
         "exclusive_weapon_pack": {
             "name": {
                 "en": "Exclusive Weapon Pack",
-                "de": ""
+                "de": "Exklusive Waffe Paket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -4254,7 +4254,7 @@
         "hero_exclusive_weapon_pack": {
             "name": {
                 "en": "<Hero> Exclusive Weapon Pack",
-                "de": ""
+                "de": "<Held> Exklusive Waffe Paket"
             },
             "category": "unlock_exclusive",
             "limit_type": "lifetime",
@@ -7896,14 +7896,14 @@
                         {
                             "text": {
                                 "en": "Use 1m Research Speedup: +10",
-                                "de": ""
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung: +10"
                             },
                             "item_id": "research_speedup"
                         },
                         {
                             "text": {
                                 "en": "Increase 1 Tech Might: +1",
-                                "de": ""
+                                "de": "Erhöhe Technologiemacht um 1: +1"
                             },
                             "item_id": "research_speedup"
                         },
@@ -8455,6 +8455,10 @@
             {
                 "start": "2026-10-30",
                 "end": "2026-10-30"
+            },
+            {
+                "start": "2026-11-03",
+                "end": "2026-11-03"
             }
         ],
         "demon_king_warlock_blight": [
@@ -8615,6 +8619,12 @@
             {
                 "start": "2026-10-13",
                 "end": "2026-10-18"
+            }
+        ],
+        "surprise_encounter": [
+            {
+                "start": "2026-11-03",
+                "end": "2026-11-08"
             }
         ],
         "tempered_arms": [
