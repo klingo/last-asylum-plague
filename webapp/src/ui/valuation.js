@@ -8,6 +8,8 @@
  * where ratio = worth ÷ price: 1.0 or more = worth buying at your weekly spend.
  */
 import { fitItemPoints } from '../core/point-fit.js';
+import { gameDay } from '../core/schedule.js';
+import { activeSkips } from '../core/skips.js';
 import { solveWeeklyPlan } from '../core/planner.js';
 import { loadBrowserHighs } from './highs-browser.js';
 import { priorityWeights, zeroFitItems } from './settings.js';
@@ -34,6 +36,8 @@ function planOptions(data, settings, overrides = {}) {
         seasonalPasses: settings.seasonalPasses,
         // "Must buy" shop offers shape the one plan on every page.
         lockedOffers: settings.lockedOffers,
+        // Packs the user skipped on the Pack Ranking (not bought, nor the higher tiers that need them).
+        skippedPackages: activeSkips(settings.skippedPackages, gameDay(new Date()).day),
         // Currency from outside the packs ("Extra ... per week" of a shop without event, Events page).
         extraCurrency: settings.extraCurrency,
         includePasses: true,

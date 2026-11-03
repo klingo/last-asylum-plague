@@ -1,11 +1,14 @@
 import { startPage } from '../ui/page.js';
 import { buildValuation } from '../ui/valuation.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, onSettingsChange } from '../ui/settings.js';
+import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
+import { gameDay } from '../core/schedule.js';
+import { skipUntilDay, activeSkips, expandSkips } from '../core/skips.js';
+import { formatGameDay } from '../ui/event-banner.js';
 import { withLoading } from '../ui/loading.js';
 import { packageWeeklyCapacity, isOnSale, purchaseType, bundledPairs } from '../core/catalog.js';
-import { packageDisplayName } from '../ui/labels.js';
-import { banknotesHtml, hydrateItemIcons } from '../ui/html.js';
+import { packageDisplayName, packageDisplayText } from '../ui/labels.js';
+import { banknotesHtml, escapeHtml, hydrateItemIcons } from '../ui/html.js';
 import {
     gridCell,
     gridNum,
@@ -53,7 +56,7 @@ const withTiersNote = (html) =>
  * "doesn't fit" marks a good deal (ratio clearly above 1.0) left out because whole purchases don't fit your
  * exact spend. A pack bought below ratio 1.0 for a shop's bonus tiers says so ("for the bonus tiers").
  */
-function buyHtml(entry) {
+function buyCountHtml(entry) {
     const { planned, capacity, limitType } = entry;
     if (limitType === 'lifetime') {
         return capacity === 1 ? t('rankings.once') : t('rankings.lifetimeTotal', { count: formatThousands(capacity) });
@@ -81,6 +84,39 @@ function buyHtml(entry) {
     }
     const html = `${countHtml}<span class="text-dim buy-limit">&nbsp;/&nbsp;${limit}</span>`;
     return count > 0 && entry.forTiers ? withTiersNote(html) : html;
+}
+
+/** The small Skip button of a pack the plan buys (the plan is made again without it, see core/skips.js). */
+function skipButtonHtml(entry) {
+    const label = escapeHtml(t('rankings.skipLabel', { name: entry.plainName }));
+    return `<button type="button" class="skip-btn" data-skip="${entry.packageId}" aria-label="${label}">${t('rankings.skip')}</button>`;
+}
+
+/**
+ * A skipped pack in the Buy cell: "Skipped" with when the skip ends, or, for a higher tier carried along by the skip
+ * of a lower one, with why.
+ */
+function skippedHtml(entry) {
+    const note =
+        entry.skipCause === entry.packageId
+            ? t('rankings.skippedUntil', { date: formatGameDay(entry.skipUntil) })
+            : t('rankings.skippedNeeds', { name: entry.causeName });
+    return `<span class="text-dim">${t('rankings.skipped')}</span>${infoIconHtml(note)}`;
+}
+
+/** The Buy cell: skipped, or how many the plan buys. */
+function buyHtml(entry) {
+    return entry.skipCause ? skippedHtml(entry) : buyCountHtml(entry);
+}
+
+/** The Skip column: Skip on a pack the plan buys, Undo on a pack skipped by name (a tier carried along has none). */
+function skipCellHtml(entry) {
+    if (entry.skipCause) {
+        return entry.skipCause === entry.packageId
+            ? `<button type="button" class="skip-btn" data-unskip="${entry.packageId}">${t('rankings.undo')}</button>`
+            : '';
+    }
+    return entry.planned > 1e-6 ? skipButtonHtml(entry) : '';
 }
 
 /**
@@ -123,6 +159,8 @@ function buildEntries() {
     const capacityRules = { activeEventIds, includePasses: true, includeExclusives: true };
     const planned = new Map(valuation.plan.purchases.map((p) => [p.id, p.count]));
     const reasons = notBoughtReasons(planned, locale);
+    // The packs skipped (still running), and the higher tiers the skip takes along: package id -> the one that causes it.
+    const skipCauses = expandSkips(activeSkips(settings.skippedPackages, gameDay(new Date()).day), data.packages);
     const result = [];
     for (const [id, pkg] of Object.entries(data.packages)) {
         if (!isOnSale(id, pkg, { activeEventIds, seasonalPasses: settings.seasonalPasses })) {
@@ -137,6 +175,11 @@ function buildEntries() {
                 : '';
         result.push({
             key: `package:${id}`,
+            packageId: id,
+            plainName: packageDisplayText(pkg, locale),
+            skipCause: skipCauses.get(id) || null,
+            causeName: skipCauses.has(id) ? packageDisplayName(data.packages[skipCauses.get(id)], locale) : null,
+            skipUntil: settings.skippedPackages?.[id],
             section: b.incomplete ? 'unknown' : 'ranked',
             type: purchaseType(pkg),
             category: pkg.category,
@@ -183,6 +226,7 @@ function detailsHtml(entry) {
         gridHeader(t('rankings.table.category'), { wide: true }),
         gridHeader(t('rankings.table.worthEach'), { num: true }),
         gridHeader('', { wide: true }),
+        gridHeader(),
         gridHeader(t('rankings.table.worth'), { num: true }),
         gridHeader(),
         gridHeader(),
@@ -195,6 +239,7 @@ function detailsHtml(entry) {
             gridCell(part.category, { wide: true }),
             gridNum(part.worthEach),
             gridCell('', { wide: true }),
+            gridCell(),
             gridNum(part.worth),
             gridCell(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
             gridCell(),
@@ -231,12 +276,13 @@ function renderTable(filtered) {
                     { wide: true },
                 ),
                 gridNum(entry.priceHtml),
-                gridNum(buyHtml(entry)),
+                gridNum(buyHtml(entry), { className: 'skip-cell' }),
+                gridCell(skipCellHtml(entry), { className: 'skip-cell' }),
                 gridNum(banknotesHtml(formatThousands(entry.worth, 0)), { wide: true }),
                 gridNum(ratioHtml(entry, maxRatio)),
                 gridCell(detailsToggleHtml(entry.key, expandedKeys)),
             ],
-            { buy: entry.planned > 1e-6 },
+            { buy: entry.planned > 1e-6, dim: Boolean(entry.skipCause) },
         );
         return `${heading}${row}${detailsHtml(entry)}`;
     });
@@ -248,6 +294,7 @@ function renderTable(filtered) {
         gridHeader(t('rankings.table.category'), { wide: true }),
         gridHeader(t('rankings.table.price'), { num: true }),
         gridHeader(t('rankings.table.buy'), { num: true }),
+        gridHeader(),
         gridHeader(t('rankings.table.worth'), { num: true, wide: true }),
         gridHeader(t('rankings.table.ratio'), { num: true }),
         gridHeader(),
@@ -317,6 +364,22 @@ startPage('rankings', {
         onSettingsChange((next) => {
             settings = next;
             recompute();
+        });
+        // Skip / Undo: saved with the settings, which makes every page plan again (a skip lasts until the week or the
+        // pack's event / pass is over).
+        rankingTable.addEventListener('click', (event) => {
+            const button = event.target.closest('button[data-skip], button[data-unskip]');
+            if (!button) {
+                return;
+            }
+            const skipped = { ...settings.skippedPackages };
+            if (button.dataset.skip) {
+                const id = button.dataset.skip;
+                skipped[id] = skipUntilDay(id, data.packages[id], gameDay(new Date()).day, data);
+            } else {
+                delete skipped[button.dataset.unskip];
+            }
+            updateSettings({ skippedPackages: skipped });
         });
         searchInput.addEventListener('input', applyFilters);
         showMode.addEventListener('click', (event) => {

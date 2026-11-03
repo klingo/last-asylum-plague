@@ -5,6 +5,8 @@
  * The page's one copy: `getSettings()` reads it, `updateSettings(patch)` changes and saves it and tells
  * every `onSettingsChange` listener (the setup panel, the page's recalculation).
  */
+import { gameDay } from '../core/schedule.js';
+
 const STORAGE_KEY = 'lasps_valuation';
 // Bumped when the stored shape changes (see loadSettings for the migrations).
 const SETTINGS_VERSION = 3;
@@ -41,6 +43,7 @@ const DEFAULT_SETTINGS = {
     extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
     exceedEventLimits: [], // event ids whose pack limits the Events page lifts ("Exceed event pack limits")
+    skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Pack Ranking's "Skip", core/skips.js)
     lockedOffers: {}, // "<shopId>:<offerKey>" -> exact count the plan buys per week, 0 = never (Events page)
     mineProgress: {}, // mineId -> { pickaxes owned, floor reached, run: start day of the run the floor is from } (Events page)
     minePlanSafety: 1, // share of runs the planned pickaxes suffice in: 0.5 (average), 0.9, 0.99, 1 (worst case) (Events page)
@@ -93,6 +96,12 @@ function loadSettings() {
     } else if (Number.isFinite(stored.extraDiamonds) && stored.extraDiamonds > 0) {
         // Older settings: the extra diamonds of the VIP Shop.
         settings.extraCurrency = { diamonds: stored.extraDiamonds };
+    }
+    if (stored.skippedPackages && typeof stored.skippedPackages === 'object') {
+        const today = gameDay(new Date()).day;
+        settings.skippedPackages = Object.fromEntries(
+            Object.entries(stored.skippedPackages).filter(([, until]) => Number.isFinite(until) && until > today),
+        );
     }
     if (stored.lockedOffers && typeof stored.lockedOffers === 'object') {
         settings.lockedOffers = Object.fromEntries(

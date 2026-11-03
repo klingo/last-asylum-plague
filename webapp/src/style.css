@@ -1322,8 +1322,8 @@ tbody tr.choice-details:hover {
 .ranking-grid {
     display: grid;
     grid-template-columns:
-        50px minmax(160px, 1.5fr) 110px 190px minmax(70px, 0.6fr) minmax(110px, 0.8fr) minmax(80px, 0.6fr) 90px
-        80px;
+        50px minmax(160px, 1.5fr) 110px 176px minmax(70px, 0.6fr) minmax(110px, 0.8fr) 70px minmax(70px, 0.4fr)
+        90px 80px;
     width: 100%;
     font-size: 0.9rem;
 }
@@ -1363,6 +1363,17 @@ tbody tr.choice-details:hover {
     grid-template-columns:
         minmax(220px, 2.5fr) minmax(90px, 0.7fr) minmax(90px, 0.8fr) 90px minmax(90px, max-content)
         110px;
+}
+
+/* A higher tier in Today's weekday offers: indented under its lower tier, with a small connector. */
+.item-cell.offer-tier {
+    padding-left: 22px;
+}
+
+.item-cell.offer-tier::before {
+    content: '└';
+    margin-right: -2px;
+    color: var(--text-dim);
 }
 
 /* Today: what runs and what starts soon, one entry per line (art, name and dates, the countdown, its kind). */
@@ -2191,6 +2202,29 @@ a.today-entry:hover {
 
 .ranking-grid__row--dim > .ranking-grid__cell {
     opacity: 0.55;
+}
+
+/* A skipped pack's row is faded, its Buy cell (Skipped, Undo) is not. */
+.ranking-grid__row--dim > .ranking-grid__cell.skip-cell {
+    opacity: 1;
+}
+
+/* Skip / Undo in the Buy cell: small, quiet; over the global `button:hover` (an accent fill). */
+.skip-btn {
+    padding: 1px 7px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.skip-btn:hover {
+    background: transparent;
+    border-color: var(--accent);
+    color: var(--text);
 }
 
 .ranking-grid__row:hover > .ranking-grid__cell {
@@ -3634,7 +3668,9 @@ a.schedule__bar {
     /* The name column takes what's left; the number columns are as wide as their content (a price and its
        icon never squeeze into the next column). */
     .ranking-grid--rankings {
-        grid-template-columns: minmax(80px, 1fr) max-content minmax(56px, max-content) max-content max-content;
+        grid-template-columns:
+            minmax(80px, 1fr) max-content minmax(56px, max-content)
+            max-content max-content max-content;
     }
 
     /* The Ranking's "/ 7" after a count and the weekly-share icon at a price: details for wide screens. */

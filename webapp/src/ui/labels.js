@@ -6,6 +6,7 @@
 import { localizedName, t } from './i18n.js';
 import { formatThousands } from './format.js';
 import { escapeHtml } from './html.js';
+import { DEFAULT_NONE_ITEMS } from './settings.js';
 import { itemSourcesHref } from './url.js';
 import { sourcesListing } from '../core/item-sources.js';
 import { gameDay, weekdayIndex } from '../core/schedule.js';
@@ -14,6 +15,14 @@ import { gameDay, weekdayIndex } from '../core/schedule.js';
 function packageDisplayText(pkg, locale) {
     const name = localizedName(pkg.name, locale);
     return pkg.tier != null ? `${name} ${t('common.tierSuffix', { tier: pkg.tier })}` : name;
+}
+
+// Items every pack gives on the side: never a pack's icon.
+const FILLER_ITEMS = new Set(['diamonds', ...DEFAULT_NONE_ITEMS]);
+
+/** The item whose image stands for a package: its `icon`, else its first item that isn't filler. */
+function packageIcon(pkg) {
+    return pkg.icon || Object.keys(pkg.contains || {}).find((itemId) => !FILLER_ITEMS.has(itemId)) || null;
 }
 
 /** packageDisplayText, HTML-escaped. */
@@ -85,6 +94,7 @@ function todayWeekdayIndex() {
 }
 
 export {
+    packageIcon,
     packageDisplayText,
     packageDisplayName,
     itemDisplayName,

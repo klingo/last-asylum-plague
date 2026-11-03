@@ -132,6 +132,9 @@ the Diamond Golden Egg) is worth that currency at its marginal value too (`itemP
   weekday-aware, counting only what random chests guarantee. Shop progress points (`bonus_tiers`, `unlock_points`)
   apply to the weekly plan only.
 - Locks on shop offers (`lockedOffers`, set on the Shopping Plan) apply to the ONE plan on every page.
+- So do skipped packs (`skippedPackages`: package id -> the first game day the skip ends, set by "Skip" on the Pack
+  Ranking; `core/skips.js`, planner option `skippedPackages`). A skip lasts until the weekly reset or the end of the
+  pack's event / pass run, and takes the higher tiers that `requires` the skipped one along.
 
 ## Reference Documents
 

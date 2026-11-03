@@ -31,6 +31,7 @@ import { fitItemPoints } from './point-fit.js';
 import { DAYS_PER_WEEK, currencyItemIds, packageWeeklyCapacity, offerWeeklyCapacity, isOnSale } from './catalog.js';
 import { isRandomItem } from './items.js';
 import { addPackageRules } from './package-rows.js';
+import { expandSkips } from './skips.js';
 import { createModel, addTerm, solveModel, varName } from './lp.js';
 import { trackPointsForPrice } from './spend-tracks.js';
 import { targetFloor, freeCurrency, pickaxeOdds, mineSegments, normalRewardBundle } from './mine.js';
@@ -122,12 +123,25 @@ function createContext(data, options) {
  */
 function addPackages(
     ctx,
-    { activeEventIds, includePasses, includeExclusives, seasonalPasses, exceedEventPackLimits, eventDaysLeft },
+    {
+        activeEventIds,
+        includePasses,
+        includeExclusives,
+        seasonalPasses,
+        exceedEventPackLimits,
+        eventDaysLeft,
+        skippedPackages,
+    },
 ) {
     const { model, packages, items, values, currencyIds } = ctx;
     const availability = { activeEventIds, includePasses, includeExclusives, eventDaysLeft };
     const packageVars = new Map();
+    // Skipped packages, and the higher tiers that need them, are not bought (the rest of the spend fills up).
+    const skipped = expandSkips(skippedPackages || [], packages);
     for (const [id, pkg] of Object.entries(packages)) {
+        if (skipped.has(id)) {
+            continue;
+        }
         let capacity = packageWeeklyCapacity(pkg, availability);
         if (capacity > 0 && pkg.event_id && exceedEventPackLimits?.has(pkg.event_id)) {
             capacity = Infinity;
@@ -517,7 +531,8 @@ function capCurrencyRates(mu, offerVars, shops, model, plan) {
  * `lockShortfalls` in the result), `eventDaysLeft` (`{ eventId: days }`: days left of the event's run, for its
  * daily pack limits and a mine's free pickaxes; default a whole week), `mineProgress` (`{ mineId: { owned,
  * floor } }`: pickaxes owned and the floor reached this run, Events page), `mineSafety` (the share of runs the
- * pickaxes for the target floor should suffice in: 0.5 = the average (default), 0.9, 0.99, 1 = the worst case).
+ * pickaxes for the target floor should suffice in: 0.5 = the average (default), 0.9, 0.99, 1 = the worst case),
+ * `skippedPackages` (package ids the user skipped, core/skips.js: not bought, nor the higher tiers that need them).
  */
 function solveWeeklyPlan(highs, data, options = {}) {
     const opts = {
@@ -533,6 +548,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         extraCurrency: null,
         eventBudget: null,
         lockedOffers: null,
+        skippedPackages: null,
         eventDaysLeft: null,
         mineProgress: null,
         mineSafety: 0.5,

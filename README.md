@@ -50,7 +50,10 @@ quality (how well the fitted worths reproduce the packs' deal %).
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
   "other pick" when a bundle or another member of its group is bought instead; "for the bonus tiers" when a pack below
   1.0 is bought because its coins reach an event shop's bonus tiers). "Plan only" shows just the weekly
-  shopping list, the Type pills filter by kind; entries of unknown worth are listed unranked.
+  shopping list, the Type pills filter by kind; entries of unknown worth are listed unranked. A pack the plan
+  buys has a small "Skip": the plan is made again without it (and without the higher tiers that need it), so the
+  weekly spend is filled up with other packs, on every page. The row stays, faded, with Undo; a skip lasts until the
+  weekly reset or until its event / pass is over, whichever comes first.
 - **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below; each entry with the
   game's art, a hover card with how long is left, and a click opens its plan), the Weekday Offers of the next 7 days
   and, for each event rotation (Survival Battle), a chart of today and the next 6 days: one row per phase, a bar for

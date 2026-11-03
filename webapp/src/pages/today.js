@@ -3,10 +3,10 @@ import { buildValuation } from '../ui/valuation.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
-import { banknotesHtml, escapeHtml, hydrateItemIcons } from '../ui/html.js';
+import { banknotesHtml, escapeHtml, hydrateItemIcons, itemIconSlot } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
-import { infoIconHtml } from '../ui/info-icon.js';
-import { packageDisplayName } from '../ui/labels.js';
+import { infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
+import { packageDisplayName, packageIcon } from '../ui/labels.js';
 import {
     gridCell,
     gridNum,
@@ -32,6 +32,7 @@ import {
     startCountdowns,
 } from '../ui/event-banner.js';
 import { WEEKDAYS, isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
+import { packageFamilyId } from '../core/pack-data.js';
 import { forecastRuns, gameDay, rotationSlots, runMoments, scheduleRuns, weekdayIndex } from '../core/schedule.js';
 
 // An upcoming entry's fill grows over the last hours before it starts (the same for all, whatever it is).
@@ -225,21 +226,40 @@ function renderOffers() {
                 pkg.category === 'weekly_rotation' && pkg.available_days?.includes(weekday) && isOnSale(id, pkg, rules),
         )
         .map(([id, pkg]) => ({ id, pkg, ...valuation.bundle(pkg, pkg.price) }));
-    // Best ratio first; offers with items of unknown worth (no ratio) last.
+    // Best ratio first, a pack's tiers together (its best tier places it), the lowest tier first; offers with items of
+    // unknown worth (no ratio) last.
     const rank = (offer) => (offer.incomplete ? -1 : (offer.ratio ?? -1));
-    offers.sort((a, b) => rank(b) - rank(a));
+    const family = (offer) => packageFamilyId(offer.id, offer.pkg);
+    const best = new Map();
+    for (const offer of offers) {
+        best.set(family(offer), Math.max(best.get(family(offer)) ?? -1, rank(offer)));
+    }
+    offers.sort(
+        (a, b) =>
+            best.get(family(b)) - best.get(family(a)) ||
+            family(a).localeCompare(family(b)) ||
+            (a.pkg.tier ?? 0) - (b.pkg.tier ?? 0),
+    );
     offersWrap.hidden = offers.length === 0;
     offersEmpty.hidden = offers.length > 0;
     if (offers.length === 0) {
         return;
     }
     const maxRatio = Math.max(1, ...offers.map((o) => o.ratio).filter(Number.isFinite));
+    let previousFamily = null;
     const rows = offers.map((offer) => {
         const { id, pkg, worth, ratio, incomplete } = offer;
+        // A higher tier of the pack above it: indented, as a step of its ladder.
+        const higherTier = family(offer) === previousFamily;
+        previousFamily = family(offer);
         const count = planned.get(id) || 0;
+        const icon = packageIcon(pkg);
         const row = gridRow(
             [
-                gridCell(packageDisplayName(pkg, locale)),
+                gridCell(
+                    `${icon ? itemIconSlot(icon) : ''}${packageDisplayName(pkg, locale)}${requiresIconHtml(pkg.requires, data.packages, data.items, locale)}`,
+                    { className: `item-cell${higherTier ? ' offer-tier' : ''}` },
+                ),
                 gridNum(gold(formatThousands(pkg.price, 0))),
                 gridNum(gold(formatThousands(worth, 0))),
                 gridNum(incomplete || ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
@@ -260,6 +280,7 @@ function renderOffers() {
     ]);
     offersTable.innerHTML = gridTable(header, rows.join(''));
     hydrateItemIcons(offersTable);
+    enableInfoTooltips(offersTable);
     wireDetailsToggles(offersTable, offerExpanded);
 }
 
@@ -278,15 +299,20 @@ function offerDetailsHtml(key, bundle) {
     return gridDetails(key, offerExpanded, rows.join(''));
 }
 
-/** "×3 / week", "×1 / month": what the plan buys of a package in the unit its limit counts in. */
-function countText(pkg, count) {
+/** The purchases a plan line asks for: whole ones, per period for monthly and biweekly packs. */
+function plannedPurchases(pkg, count) {
     const periodic = pkg.limit_type === 'monthly' || pkg.limit_type === 'biweekly';
-    if (periodic) {
+    return Math.max(1, Math.round(periodic ? count / packageWeeklyCapacity(pkg) : count));
+}
+
+/** "×3 / week", "×1 / month": what the plan buys of a package in the unit its limit counts in. */
+function countText(pkg, planned) {
+    if (pkg.limit_type === 'monthly' || pkg.limit_type === 'biweekly') {
         const per = pkg.limit_type === 'monthly' ? t('rankings.perMonth') : t('rankings.perTwoWeeks');
-        return `×${formatThousands(Math.max(1, Math.round(count / packageWeeklyCapacity(pkg))))} / ${per}`;
+        return `×${formatThousands(planned)} / ${per}`;
     }
     const perWeek = pkg.limit_type === 'daily' && !pkg.event_id ? ` / ${t('today.week')}` : '';
-    return `×${formatThousands(Math.round(count))}${perWeek}`;
+    return `×${formatThousands(planned)}${perWeek}`;
 }
 
 /** The Shopping Plan's tab of an event, or of a shop without event. */
@@ -309,7 +335,11 @@ function renderPlan() {
     };
     const line = (label, value) => `<li><span>${label}</span><span>${value}</span></li>`;
     for (const { pkg, count, spend } of plan.purchases) {
-        const entry = [packageDisplayName(pkg, locale), countText(pkg, count), gold(formatThousands(spend, 0))];
+        const entry = [
+            packageDisplayName(pkg, locale),
+            countText(pkg, plannedPurchases(pkg, count)),
+            gold(formatThousands(spend, 0)),
+        ];
         if (pkg.event_id) {
             eventTile(pkg.event_id).packs.push(entry);
         } else if (pkg.category === 'weekly_rotation') {

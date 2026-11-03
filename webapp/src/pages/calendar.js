@@ -7,7 +7,8 @@ import { ratioColor } from '../ui/ratio-bar.js';
 import { escapeHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { createItemImage } from '../ui/images.js';
-import { DEFAULT_NONE_ITEMS, getSettings } from '../ui/settings.js';
+import { getSettings } from '../ui/settings.js';
+import { packageIcon } from '../ui/labels.js';
 import {
     eventImageUrl,
     runStatusText,
@@ -254,14 +255,6 @@ function renderSchedule() {
             </div>
         </div>`;
     enableInfoTooltips(body);
-}
-
-// Items every pack gives on the side: never a pack's icon.
-const FILLER_ITEMS = new Set(['diamonds', ...DEFAULT_NONE_ITEMS]);
-
-/** The item whose image stands for a package: its `icon`, else its first item that isn't filler. */
-function packageIcon(pkg) {
-    return pkg.icon || Object.keys(pkg.contains || {}).find((itemId) => !FILLER_ITEMS.has(itemId)) || null;
 }
 
 /** "5h 12m", "42m": how long until a moment (whole minutes; the chart updates once a minute). */
