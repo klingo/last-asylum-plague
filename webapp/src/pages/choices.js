@@ -120,8 +120,8 @@ function render() {
             <tr>
                 <th class="text-right table-col-rank">${t('choices.table.rank')}</th>
                 <th>${t('choices.table.option')}</th>
-                <th>${t('choices.table.category')}</th>
-                <th class="text-right">${t('choices.table.points')}</th>
+                <th class="table-col-wide">${t('choices.table.category')}</th>
+                <th class="text-right table-col-wide">${t('choices.table.points')}</th>
                 <th class="text-right table-col-fit">${t('choices.table.worth')}</th>
                 <th class="text-right">${t('choices.table.vsBest')}</th>
             </tr>
@@ -132,9 +132,9 @@ function render() {
                 <tr>
                     <td class="text-right table-col-rank">${tieFlags[index] ? '' : index + 1}</td>
                     <td><span class="item-cell">${itemIconSlot(row.firstId)}${row.label}${row.incomplete ? ` <span class="text-bad">${t('choices.incomplete')}</span>` : ''}</span></td>
-                    <td>${enumLabel('category', data.items[row.firstId]?.category)}</td>
-                    <td class="text-right">${formatSignificant(row.points)}</td>
-                    <td class="text-right">${banknotesHtml(formatSignificant(row.worth))}</td>
+                    <td class="table-col-wide">${enumLabel('category', data.items[row.firstId]?.category)}</td>
+                    <td class="text-right table-col-wide">${formatSignificant(row.points)}</td>
+                    <td class="text-right table-col-fit">${banknotesHtml(formatSignificant(row.worth))}</td>
                     <td class="text-right">${best > 0 ? ratioBarHtml(row.worth / best, 1, { label: `${formatThousands((100 * row.worth) / best, 1)}%` }) : t('common.notAvailable')}</td>
                 </tr>`,
             )
@@ -146,28 +146,30 @@ function render() {
 function detailRowsHtml(row) {
     const key = escapeHtml(row.key);
     const hidden = expandedKeys.has(row.key) ? '' : 'hidden';
+    // The Worth and Ratio columns are hidden on phones: the item's worth moves to the (otherwise empty) Gain column.
     const parts = breakdownParts(row.parts, data, valuation)
-        .map(
-            (part) => `
+        .map((part) => {
+            const worth = part.unknown ? `<span class="text-bad">${t('choices.incomplete')}</span>` : part.worth;
+            return `
                 <tr class="choice-details" data-details-key="${key}" ${hidden}>
                     <td></td>
                     <td><span class="item-cell">${part.item}</span></td>
                     <td class="text-right table-col-fit">${part.worthEach}</td>
-                    <td class="text-right table-col-fit">${part.unknown ? `<span class="text-bad">${t('choices.incomplete')}</span>` : part.worth}</td>
-                    <td></td>
-                    <td></td>
+                    <td class="text-right table-col-fit table-col-wide">${worth}</td>
+                    <td class="table-col-wide"></td>
+                    <td class="text-right table-col-fit"><span class="phone-only">${worth}</span></td>
                     <td class="table-col-fit"></td>
-                </tr>`,
-        )
+                </tr>`;
+        })
         .join('');
     return `
         <tr class="choice-details choice-details--header" data-details-key="${key}" ${hidden}>
             <th></th>
             <th>${t('choices.table.item')}</th>
             <th class="text-right table-col-fit">${t('choices.table.worthEach')}</th>
-            <th class="text-right table-col-fit">${t('choices.table.worth')}</th>
-            <th></th>
-            <th></th>
+            <th class="text-right table-col-fit table-col-wide">${t('choices.table.worth')}</th>
+            <th class="table-col-wide"></th>
+            <th class="text-right table-col-fit"><span class="phone-only">${t('choices.table.worth')}</span></th>
             <th class="table-col-fit"></th>
         </tr>
         ${parts}`;
@@ -201,8 +203,8 @@ function renderGroup(packages, locale) {
                 <th class="text-right table-col-rank">${t('choices.table.rank')}</th>
                 <th>${t('choices.table.package')}</th>
                 <th class="text-right table-col-fit table-col-num">${t('choices.table.price')}</th>
-                <th class="text-right table-col-fit table-col-num">${t('choices.table.worth')}</th>
-                <th class="text-right table-col-fit table-col-num">${t('choices.table.ratio')}</th>
+                <th class="text-right table-col-fit table-col-num table-col-wide">${t('choices.table.worth')}</th>
+                <th class="text-right table-col-fit table-col-num table-col-wide">${t('choices.table.ratio')}</th>
                 <th class="text-right table-col-fit table-col-num">${t('choices.table.gain')}</th>
                 <th class="table-col-fit table-col-button"></th>
             </tr>
@@ -214,8 +216,8 @@ function renderGroup(packages, locale) {
                     <td class="text-right table-col-rank">${tieFlags[index] ? '' : index + 1}</td>
                     <td>${packageDisplayName(row.pkg, locale)}${row.incomplete ? ` <span class="text-bad">${t('choices.incomplete')}</span>` : ''}</td>
                     <td class="text-right table-col-fit">${gold(row.pkg.price)}</td>
-                    <td class="text-right table-col-fit">${gold(row.worth)}</td>
-                    <td class="text-right table-col-fit">${ratioBarHtml(row.ratio, maxRatio)}</td>
+                    <td class="text-right table-col-fit table-col-wide">${gold(row.worth)}</td>
+                    <td class="text-right table-col-fit table-col-wide">${ratioBarHtml(row.ratio, maxRatio)}</td>
                     <td class="text-right table-col-fit ${row.gain >= 0 ? 'text-good' : 'text-bad'}">${gold(row.gain)}</td>
                     <td class="text-right table-col-fit">${detailsToggleHtml(row.key, expandedKeys)}</td>
                 </tr>

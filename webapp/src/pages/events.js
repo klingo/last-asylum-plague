@@ -89,7 +89,7 @@ const gold = banknotesHtml;
 const iconHtml = itemIconSlot;
 const cell = (html, className = '') => gridCell(html, { className });
 const numCell = gridNum;
-// `wide`: column hidden on phones (Limit, Cost in Banknotes of the shop table).
+// `wide`: column hidden on phones (Limit, Worth, Cost in Banknotes of the packs and shop tables).
 const WIDE = { wide: true };
 const headerCell = (key, num = false, wide = false) => gridHeader(t(`events.table.${key}`), { num, wide });
 
@@ -487,7 +487,7 @@ function renderPacks({ eventId }) {
                 cell(packageDisplayName(pkg, locale)),
                 numCell(formatThousands(limit), WIDE),
                 numCell(gold(formatThousands(pkg.price, 0))),
-                numCell(gold(formatThousands(worth, 0))),
+                numCell(gold(formatThousands(worth, 0)), WIDE),
                 numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
                 numCell(
                     count
@@ -506,7 +506,7 @@ function renderPacks({ eventId }) {
         headerCell('pack'),
         headerCell('limit', true, true),
         headerCell('price', true),
-        headerCell('worth', true),
+        headerCell('worth', true, true),
         headerCell('ratio', true),
         headerCell('buy', true),
         gridHeader(),
@@ -530,8 +530,9 @@ function packDetailsHtml(key, pkg) {
                 [
                     cell(part.item, 'item-cell'),
                     numCell('', WIDE),
-                    numCell(''),
-                    numCell(part.worth),
+                    // On phones the Worth column is hidden: the item's worth moves to the Price column.
+                    numCell(`<span class="phone-only">${part.worth}</span>`),
+                    numCell(part.worth, WIDE),
                     numCell(''),
                     numCell(''),
                     numCell(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
@@ -649,13 +650,13 @@ function renderShop({ shopId, shop }) {
                 gridRow(
                     [
                         cell(
-                            `${iconHtml(offer.item_id)}${itemLinkName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}${onlyHereBadge(offer)}`,
+                            `${iconHtml(offer.item_id)}<span>${itemLinkName(data.items, offer.item_id, locale)} ×${formatThousands(offer.quantity)}${onlyHereBadge(offer)}</span>`,
                             'item-cell',
                         ),
                         numCell(limitHtml(offer), WIDE),
                         numCell(`${formatThousands(offer.currency_cost)} ${coinIcon}`),
                         numCell(coinWorth > 0 ? bn(offer.currency_cost * coinWorth) : t('common.dash'), WIDE),
-                        numCell(bn(worth)),
+                        numCell(bn(worth), WIDE),
                         numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
                         lockable ? lockCell(offerKey, offer) : '',
                         numCell(buyCell({ count, ratio })),
@@ -683,7 +684,7 @@ function renderShop({ shopId, shop }) {
                     numCell(t('common.dash'), WIDE),
                     numCell(t('common.dash')),
                     numCell(t('common.dash'), WIDE),
-                    numCell(bn(b.worth)),
+                    numCell(bn(b.worth), WIDE),
                     numCell(''),
                     lockable ? numCell('') : '',
                     numCell(reached.has(threshold) ? buyBadge(`✓ ${t('events.reached')}`) : ''),
@@ -697,7 +698,7 @@ function renderShop({ shopId, shop }) {
         headerCell('limit', true, true),
         headerCell('cost', true),
         headerCell('costBanknotes', true, true),
-        headerCell('worth', true),
+        headerCell('worth', true, true),
         headerCell('ratio', true),
         lockable ? headerCell('mustBuy', true) : '',
         headerCell(shop.random_offers ? 'buyIfOffered' : 'buy', true),
@@ -1390,7 +1391,7 @@ function renderSteps({ eventId }) {
                     `${step.isPlan ? `<span class="text-dim">${t('events.yourPlan')}</span>&nbsp;` : ''}${gold(formatThousands(step.eventSpend, 0))}`,
                 ),
                 numCell(step.stepCost === null ? t('common.dash') : gold(formatThousands(step.stepCost, 0))),
-                numCell(step.stepWorth === null ? t('common.dash') : gold(formatThousands(step.stepWorth, 0))),
+                numCell(step.stepWorth === null ? t('common.dash') : gold(formatThousands(step.stepWorth, 0)), WIDE),
                 numCell(step.ratio === null ? t('common.dash') : ratioBarHtml(step.ratio, maxRatio, { digits: 3 })),
                 cell(packsHtml(step.packs)),
             ],
@@ -1400,7 +1401,7 @@ function renderSteps({ eventId }) {
     const header = gridRow([
         headerCell('eventSpend', true),
         headerCell('stepCost', true),
-        headerCell('stepWorth', true),
+        headerCell('stepWorth', true, true),
         headerCell('stepRatio', true),
         headerCell('packs'),
     ]);

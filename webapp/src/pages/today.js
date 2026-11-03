@@ -296,7 +296,7 @@ function renderOffers() {
                     { className: `item-cell${higherTier ? ' offer-tier' : ''}` },
                 ),
                 gridNum(gold(formatThousands(pkg.price, 0))),
-                gridNum(gold(formatThousands(worth, 0))),
+                gridNum(gold(formatThousands(worth, 0)), { wide: true }),
                 gridNum(incomplete || ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
                 gridNum(count ? `<span class="buy-badge">×${formatThousands(count)}</span>` : ''),
                 gridNum(detailsToggleHtml(id, offerExpanded)),
@@ -308,7 +308,7 @@ function renderOffers() {
     const header = gridRow([
         gridHeader(t('events.table.pack')),
         gridHeader(t('events.table.price'), { num: true }),
-        gridHeader(t('events.table.worth'), { num: true }),
+        gridHeader(t('events.table.worth'), { num: true, wide: true }),
         gridHeader(t('events.table.ratio'), { num: true }),
         gridHeader(t('events.table.buy'), { num: true }),
         gridHeader(),
@@ -324,8 +324,9 @@ function offerDetailsHtml(key, bundle) {
     const rows = breakdownParts(bundle.parts, data, valuation).map((part) =>
         gridRow([
             gridCell(part.item, { className: 'item-cell' }),
-            gridNum(''),
-            gridNum(part.worth),
+            // On phones the Worth column is hidden: the item's worth moves to the Price column.
+            gridNum(`<span class="phone-only">${part.worth}</span>`),
+            gridNum(part.worth, { wide: true }),
             gridNum(''),
             gridNum(''),
             gridNum(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),

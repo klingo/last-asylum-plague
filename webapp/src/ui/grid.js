@@ -5,6 +5,9 @@
  *
  * `wide: true` on a cell / header: shown on wide screens only. On phones the grid drops those columns (see
  * `.ranking-grid__cell--wide` in style.css), so mark the same columns in every row of a grid.
+ *
+ * Inside a cell, `<span class="wide-only">` / `<span class="phone-only">` show their content on wide screens / phones
+ * only: a Details row uses them to move a hidden column's value into a visible column.
  */
 import { t, enumLabel } from './i18n.js';
 import { itemDisplayName, itemLinkHtml } from './labels.js';
@@ -98,7 +101,8 @@ function breakdownParts(parts, data, valuation) {
             const qty = Number.isInteger(part.qty) ? formatThousands(part.qty) : formatSignificant(part.qty);
             return {
                 id: part.id,
-                item: `${itemIconSlot(part.id)}${itemLinkHtml(data.items, part.id, itemDisplayName(data.items, part.id))} &times;${qty}`,
+                // The name and amount in one span: in the (flex) cell they wrap together, the amount never splits.
+                item: `${itemIconSlot(part.id)}<span>${itemLinkHtml(data.items, part.id, itemDisplayName(data.items, part.id))} &times;${qty}</span>`,
                 category: enumLabel('category', data.items[part.id]?.category),
                 worthEach:
                     unitWorth === null

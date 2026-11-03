@@ -95,8 +95,9 @@ function detailsHtml(key, bundle) {
         gridRow([
             gridCell(part.item, { className: 'item-cell' }),
             gridNum('', { wide: true }),
-            gridNum(''),
-            gridNum(part.worth),
+            // On phones the Worth column is hidden: the item's worth moves to the Price column.
+            gridNum(`<span class="phone-only">${part.worth}</span>`),
+            gridNum(part.worth, { wide: true }),
             gridNum(''),
             gridNum(''),
             gridNum(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
@@ -196,7 +197,7 @@ function render() {
                     gridCell(packageDisplayName(pkg, locale)),
                     gridNum(formatThousands(packageWeeklyCapacity(pkg)), { wide: true }),
                     gridNum(gold(formatThousands(pkg.price, 0))),
-                    gridNum(gold(formatThousands(b.worth, 0))),
+                    gridNum(gold(formatThousands(b.worth, 0)), { wide: true }),
                     gridNum(
                         b.incomplete || b.ratio === null
                             ? t('common.dash')
@@ -214,7 +215,7 @@ function render() {
         headerCell('pack'),
         headerCell('limit', true, true),
         headerCell('price', true),
-        headerCell('worth', true),
+        headerCell('worth', true, true),
         headerCell('ratio', true),
         headerCell('buy', true),
         gridHeader(),

@@ -3687,11 +3687,12 @@ a.schedule__bar {
         display: none;
     }
 
-    /* The name column takes what's left; the number columns are as wide as their content (a price and its
-       icon never squeeze into the next column). */
+    /* The name column takes what's left, and at least what the number columns (~276px at their narrowest) leave: they
+       give way before it does. The number columns are as wide as their content (a price and its icon never squeeze
+       into the next column). */
     .ranking-grid--rankings {
         grid-template-columns:
-            minmax(80px, 1fr) max-content minmax(56px, max-content)
+            minmax(max(80px, calc(100% - 276px)), 1fr) max-content minmax(56px, max-content)
             max-content max-content max-content;
     }
 
@@ -3710,35 +3711,76 @@ a.schedule__bar {
         grid-template-columns: max-content minmax(90px, 1fr) max-content max-content max-content;
     }
 
-    .events-packs-grid {
-        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content max-content;
-    }
-
-    .events-shop-grid {
-        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content;
-    }
-
+    /* Pack, Price, Ratio, Buy, Details (Limit and Worth are wide-only). Buy may narrow: its note wraps. */
+    .events-packs-grid,
     .today-offers-grid {
-        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content max-content;
+        grid-template-columns: minmax(110px, 1fr) max-content max-content minmax(56px, max-content) max-content;
+    }
+
+    .buy-note {
+        white-space: normal;
+        text-align: right;
+    }
+
+    /* Offer, Cost, Ratio, Buy (Limit, Cost in Banknotes and Worth are wide-only); with the lock column one more. */
+    .events-shop-grid {
+        grid-template-columns: minmax(88px, 1fr) max-content max-content max-content;
+    }
+
+    .events-shop-grid--locks {
+        grid-template-columns: minmax(88px, 1fr) max-content max-content max-content max-content;
+    }
+
+    /* Extra spend, Step cost, Ratio, Packs (Step worth is wide-only). */
+    .events-steps-grid {
+        grid-template-columns: minmax(80px, max-content) minmax(70px, max-content) max-content minmax(120px, 1fr);
+    }
+
+    /* Tier, Total spend, Ratio, Details (Step cost, Packs and Reward worth are wide-only). */
+    .spend-reward-grid {
+        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content;
+    }
+
+    /* The value moved into another column in a Details row (see grid.js), and the wide-only text it replaces. */
+    .ranking-grid__cell > .phone-only {
+        margin-left: auto;
+    }
+
+    .wide-only {
+        display: none;
+    }
+
+    /* A Today entry: the art beside the name and dates, the countdown under them (no room for the kind). */
+    .today-entry {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas:
+            'art text'
+            'art time';
+        align-items: center;
+        gap: 2px 10px;
     }
 
     .today-entry__art {
+        grid-area: art;
         width: 64px;
         height: 32px;
     }
 
-    /* No room for the kind: the countdown stays. */
+    .today-entry__text {
+        grid-area: text;
+    }
+
     .today-entry__kind {
         display: none;
     }
 
     .today-entry__time {
+        grid-area: time;
         width: auto;
         padding: 0;
-    }
-
-    .events-shop-grid--locks {
-        grid-template-columns: minmax(100px, 1fr) max-content max-content max-content max-content max-content;
+        font-size: 0.9rem;
+        text-align: left;
     }
 
     .events-mine-grid {
@@ -4522,5 +4564,352 @@ a.schedule__label--link:hover {
 
     .lord-row__badge {
         margin-top: 22px;
+    }
+}
+
+/* Text for phones only (a Details row moving a hidden column's value into a visible one, see ui/grid.js). */
+.phone-only {
+    display: none;
+}
+
+/*
+ * Phones, one pattern for every page: each card is a full-width section (no side margin, border or corner, so the
+ * content gets the whole screen), 16px from the edge; what sits inside a card keeps one frame, with less padding;
+ * tables run edge to edge like a native list, their text still on the 16px line. Secondary grid columns are dropped
+ * (`wide` in grid.js) and names wrap, so no page scrolls sideways.
+ */
+@media (max-width: 640px) {
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    .phone-only {
+        display: inline;
+    }
+
+    .app-header {
+        padding: 10px 16px;
+        gap: 8px 12px;
+    }
+
+    .app-header h1 {
+        font-size: 1rem;
+    }
+
+    main {
+        padding: 8px 0;
+    }
+
+    .card {
+        margin-bottom: 8px;
+        padding: 16px;
+        border-right: none;
+        border-left: none;
+        border-radius: 0;
+    }
+
+    /* The setup bar's summary gets the full row; "Edit" wraps below it. */
+    .setup-bar {
+        padding: 10px 12px;
+    }
+
+    .setup-bar__summary {
+        flex-basis: 100%;
+    }
+
+    .setup-bar__toggle {
+        margin-left: auto;
+    }
+
+    .setup-panel {
+        padding: 12px 10px;
+    }
+
+    .event-banner {
+        min-height: 96px;
+        margin-bottom: 12px;
+        padding: 12px 14px;
+    }
+
+    /* Item pickers and wide fields use the whole row. */
+    .field--item,
+    .field--wide {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .lock-count {
+        width: 48px;
+    }
+
+    /* A <table>'s secondary columns (Best Choice Pick), as `wide` does in the grids. */
+    .table-col-wide {
+        display: none;
+    }
+
+    .table-col-rank {
+        width: 36px;
+    }
+
+    /* A header wraps (a price and its icon in the cells below still don't). */
+    th.table-col-fit {
+        white-space: normal;
+    }
+
+    /* Tables as lists: edge to edge, the first and last column keep the 16px line. */
+    .card .table-wrap:not(.page-details .table-wrap) {
+        margin-inline: -16px;
+    }
+
+    .card .table-wrap table :is(th, td) {
+        padding-inline: 6px;
+    }
+
+    .card .table-wrap table td:not(.text-right) {
+        overflow-wrap: anywhere;
+        hyphens: auto;
+    }
+
+    .card .table-wrap table :is(th, td):first-child {
+        padding-left: 16px;
+    }
+
+    .card .table-wrap table :is(th, td):last-child {
+        padding-right: 16px;
+    }
+
+    .ranking-grid__row > .ranking-grid__cell:first-child,
+    .ranking-grid--rankings .ranking-grid__row > .ranking-grid__cell:nth-child(2) {
+        padding-left: 16px;
+    }
+
+    .ranking-grid__row > .ranking-grid__cell:last-child {
+        padding-right: 16px;
+    }
+
+    .ranking-grid__section,
+    .ranking-grid__details-intro {
+        padding-inline: 16px;
+    }
+
+    /* Long names (one German word) break, with a hyphen, instead of running over the numbers. */
+    .ranking-grid__cell:not(.ranking-grid__cell--num) {
+        overflow-wrap: anywhere;
+        hyphens: auto;
+    }
+
+    /* A header wraps instead of widening its column ("Buy / week" over a "×1" badge). */
+    .ranking-grid__cell--header {
+        width: 0;
+        min-width: max(100%, 4.8em);
+        overflow-wrap: anywhere;
+    }
+
+    .ranking-grid__cell--header:empty {
+        min-width: 0;
+    }
+
+    .item-cell.offer-tier {
+        padding-left: 12px;
+    }
+
+    /* The plan's tiles, one per row: a line's label wraps, its price / count doesn't. */
+    .plan-tile {
+        flex-basis: 100%;
+        min-width: 0;
+        padding: 12px;
+    }
+
+    .plan-list li {
+        white-space: normal;
+    }
+
+    .plan-list li > :last-child {
+        flex: none;
+        white-space: nowrap;
+    }
+
+    .item-list li {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        gap: 8px;
+    }
+
+    .item-list .item-chip {
+        white-space: normal;
+    }
+
+    /* Details is a disclosure chevron (its text stays for screen readers): a column of 44px, not 70-105px. */
+    .expand-toggle {
+        min-width: 32px;
+        font-size: 0;
+    }
+
+    .expand-toggle::before {
+        content: '▸';
+        font-size: 1.4rem;
+        line-height: 1;
+    }
+
+    .expand-toggle[aria-expanded='true']::before {
+        content: '▾';
+    }
+
+    /* Skip / Undo as small icon buttons ("Überspringen" would take a third of the row; the text stays for screen readers). */
+    .skip-btn {
+        min-width: 32px;
+        font-size: 0;
+    }
+
+    .skip-btn::before {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .skip-btn[data-skip]::before {
+        content: '✕';
+    }
+
+    .skip-btn[data-unskip]::before {
+        content: '↶';
+    }
+
+    /* Touch targets of 44px (Details, Skip, info icons) without making the rows taller: an invisible hit area. */
+    .expand-toggle,
+    .skip-btn,
+    .info-icon {
+        position: relative;
+    }
+
+    .expand-toggle::after,
+    .skip-btn::after {
+        content: '';
+        position: absolute;
+        inset: -11px -6px;
+    }
+
+    .info-icon::after {
+        content: '';
+        position: absolute;
+        inset: -14px;
+    }
+
+    /* Compare's result table: the label on a line of its own, the two sides side by side under it. */
+    .compare-table,
+    .compare-table thead,
+    .compare-table tbody {
+        display: block;
+    }
+
+    .compare-table tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .compare-table .compare-table__a,
+    .compare-table .compare-table__b {
+        width: auto;
+    }
+
+    .compare-table .compare-table__label {
+        grid-column: 1 / -1;
+        order: -1;
+        width: auto;
+        padding-bottom: 0;
+        border-bottom: none;
+        font-size: 0.72rem;
+    }
+
+    .compare-table thead .compare-table__label {
+        display: none;
+    }
+
+    /* My Items: name and worth on a line, the priority control under them across the full width. */
+    #items-table thead {
+        display: none;
+    }
+
+    #items-table,
+    #items-table tbody {
+        display: block;
+    }
+
+    #items-table tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px 12px;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    #items-table td {
+        padding: 0;
+        border-bottom: none;
+    }
+
+    #items-table td:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    #items-table td:nth-child(2) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    #items-table td:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    #items-table tr.table-group {
+        display: block;
+        padding: 0;
+        border-bottom: none;
+    }
+
+    #items-table tr.table-group th {
+        display: block;
+        padding: 18px 16px 6px;
+    }
+
+    .priority-group {
+        display: flex;
+        width: 100%;
+    }
+
+    .priority-option {
+        flex: 1;
+        justify-content: center;
+        min-height: 40px;
+    }
+
+    /* Gear Path: smaller hero boxes (the 2×2 gear square stays), so the board doesn't push the steps off the screen. */
+    .gear-slot {
+        gap: 10px;
+        padding: 8px 10px;
+    }
+
+    .gear-hero {
+        width: 72px;
+    }
+
+    .gear-hero > img {
+        width: 64px;
+        height: 64px;
+    }
+
+    .gear-square {
+        grid-template-columns: repeat(2, 72px);
+        gap: 4px;
+    }
+
+    .gear-tile {
+        padding: 2px;
+    }
+
+    .gear-tile .item-icon {
+        width: 36px;
+        height: 36px;
     }
 }

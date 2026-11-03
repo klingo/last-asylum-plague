@@ -52,22 +52,26 @@ const expandedKeys = new Set();
 
 /** The Details block of a tier: its reward's contents in the table's columns. */
 function detailsHtml(key, tier) {
+    // The tier table's Step cost, Packs and Reward worth columns are hidden on phones (the three after Category). The
+    // Category column then shows the item's worth, in the place of the Total spend column above it.
     const header = gridRow([
         gridHeader(t('spendRewards.table.item')),
-        gridHeader(t('rankings.table.category')),
-        gridHeader(t('rankings.table.worthEach'), { num: true }),
-        gridHeader(t('rankings.table.worth'), { num: true }),
-        gridHeader(),
+        gridHeader(
+            `<span class="wide-only">${t('rankings.table.category')}</span><span class="phone-only">${t('rankings.table.worth')}</span>`,
+        ),
+        gridHeader(t('rankings.table.worthEach'), { num: true, wide: true }),
+        gridHeader(t('rankings.table.worth'), { num: true, wide: true }),
+        gridHeader('', { wide: true }),
         gridHeader(),
         gridHeader(),
     ]);
     const rows = breakdownParts(tier.reward.parts, data, valuation).map((part) =>
         gridRow([
             gridCell(part.item, { className: 'item-cell' }),
-            gridCell(part.category),
-            gridNum(part.worthEach),
-            gridNum(part.worth),
-            gridCell(),
+            gridCell(`<span class="wide-only">${part.category}</span><span class="phone-only">${part.worth}</span>`),
+            gridNum(part.worthEach, { wide: true }),
+            gridNum(part.worth, { wide: true }),
+            gridCell('', { wide: true }),
             gridCell(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
             gridCell(),
         ]),
@@ -226,12 +230,14 @@ function render() {
                     tier.atWeeklySpend
                         ? `<span class="text-dim nowrap">${t('spendRewards.reachedAtSpend')}</span>`
                         : banknotesHtml(formatThousands(tier.stepCost, 0)),
+                    { wide: true },
                 ),
-                gridNum(banknotesHtml(formatThousands(tier.packsWorth, 0))),
+                gridNum(banknotesHtml(formatThousands(tier.packsWorth, 0)), { wide: true }),
                 gridNum(
                     tier.reached
                         ? banknotesHtml(formatThousands(tier.reward.worth, 0))
                         : `<span class="text-dim">${t('spendRewards.notReached')}</span>`,
+                    { wide: true },
                 ),
                 gridNum(
                     tier.ratio === null || tier.ratio === undefined
@@ -247,9 +253,9 @@ function render() {
     const header = gridRow([
         gridHeader(t('spendRewards.table.tier')),
         gridHeader(t('spendRewards.table.threshold'), { num: true }),
-        gridHeader(t('spendRewards.table.stepCost'), { num: true }),
-        gridHeader(t('spendRewards.table.packs'), { num: true }),
-        gridHeader(t('spendRewards.table.worth'), { num: true }),
+        gridHeader(t('spendRewards.table.stepCost'), { num: true, wide: true }),
+        gridHeader(t('spendRewards.table.packs'), { num: true, wide: true }),
+        gridHeader(t('spendRewards.table.worth'), { num: true, wide: true }),
         gridHeader(t('spendRewards.table.ratio'), { num: true }),
         gridHeader(),
     ]);
