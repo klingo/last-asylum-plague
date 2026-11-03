@@ -211,16 +211,16 @@ function renderSchedule() {
     renderedDay = today;
     const running = [];
     const soon = [];
-    for (const [id, { kind, runs }] of scheduleRuns(data)) {
+    for (const [id, { kind, runs }] of scheduleRuns(data, today)) {
         const current = runs.find((run) => run.start <= today && today <= run.end);
         if (current) {
-            running.push(runEntry(id, kind, current, 'running'));
+            running.push(runEntry(id, kind, current, 'running', Boolean(current.forecast)));
         }
         // Forecasts only where the pattern has proven itself; a guess would be noise in a list of what's next.
         const upcoming = [
             ...runs.filter((run) => run.start > today),
             ...forecastRuns(runs, { from: today + 1, to: today + SOON_DAYS, today })
-                .filter((run) => run.proven && !run.missed)
+                .filter((run) => run.proven)
                 .map((run) => ({ ...run, forecast: true })),
         ].filter((run) => run.start > today && run.start <= today + SOON_DAYS);
         for (const run of upcoming) {

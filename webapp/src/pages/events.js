@@ -142,8 +142,8 @@ const extraFor = (eventId) => (eventId && settings.extraEventBanknotes?.[eventId
  * days; recorded or forecast). `{ state: 'running' | 'next', start, days }`, or null without a schedule.
  */
 function mineRun(eventId) {
-    const runs = scheduleRuns(data).get(eventId)?.runs || [];
     const today = gameDay(new Date()).day;
+    const runs = scheduleRuns(data, today).get(eventId)?.runs || [];
     const status = runStatus(runs, today);
     if (status?.state === 'running') {
         return { state: 'running', start: status.run.start, days: status.days + 1 };

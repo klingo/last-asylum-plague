@@ -1,10 +1,13 @@
 /**
  * The recorded schedule (`schedule` in pack_data.json: per id its runs as inclusive start/end dates) as day
- * numbers, plus a simple forecast for ids that ran at least twice. Days are whole numbers (days since 1970-01-01),
+ * numbers, plus a simple forecast for ids that ran at least twice; the runs of a proven pattern up to today count as
+ * runs (`scheduleRuns` with `today`). Days are whole numbers (days since 1970-01-01),
  * so time zones and daylight saving can't shift them.
  */
 
 const DAY_MS = 86400000;
+// A proven pattern is only trusted this long after its last recorded run (8 weeks); then it is a rough guess again.
+const STALE_DAYS = 56;
 const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 /** "2026-10-12" -> day number. */
@@ -47,8 +50,11 @@ function isoWeekNumber(day) {
  * id -> { kind, runs: [{ start, end }] } (inclusive day numbers, oldest first). kind: 'event', 'ingame' (events
  * with category "ingame_event"), 'pass' (seasonal pass families) or 'track' (spend reward tracks, and events with
  * `calendar_group: "spend_rewards"`).
+ * With `today` (a game day) the runs of a proven forecast that started by today are in too (`forecast: true`, with
+ * what `forecastRuns` gives): a pattern that has held counts as running without being recorded. Without it: the
+ * recorded runs only.
  */
-function scheduleRuns(data) {
+function scheduleRuns(data, today) {
     const result = new Map();
     for (const [id, runs] of Object.entries(data.schedule || {})) {
         let kind = 'pass';
@@ -65,6 +71,10 @@ function scheduleRuns(data) {
         const days = runs
             .map((run) => ({ start: dayNumber(run.start), end: dayNumber(run.end) }))
             .sort((a, b) => a.start - b.start);
+        if (today !== undefined) {
+            const proven = forecastRuns(days, { from: -Infinity, to: today, today }).filter((run) => run.proven);
+            days.push(...proven.map((run) => ({ ...run, forecast: true })));
+        }
         result.set(id, { kind, runs: days });
     }
     return result;
@@ -129,25 +139,30 @@ function gapCycle(gaps) {
 }
 
 /**
- * The next runs of an id that ran at least twice, within [from, to]:
- * [{ start, end, intervalDays, last: { start, end }, proven, runCount, missed, pattern? }].
+ * The next runs of an id that was recorded at least twice, within [from, to]:
+ * [{ start, end, intervalDays, last: { start, end }, proven, stale, runCount, pattern? }].
  * - A repeating cycle of gaps (gapCycle: every 28 days, or Tuesdays and Thursdays) is continued after the last run,
  *   each run as long as the runs at the same place in the cycle usually are (median); `proven`. A cycle of several
  *   gaps comes with `pattern: { days, weekdays }` (its length, the weekdays it starts on).
  * - Without one (yet): its usual rhythm, the median days between run starts and the median run length; a rough guess
- *   (`proven` false, `runCount` = the runs it rests on).
- * Runs that should have started by `today` but aren't recorded (after the last recorded one) come only from a
- * proven cycle, marked `missed` (a reminder to record them); a guess only gives runs not ended before `today`.
- * A forecast run never overlaps the next one.
+ *   (`proven` false, `runCount` = the recorded runs it rests on).
+ * - A cycle whose last recorded run ended more than STALE_DAYS before `today` is no longer trusted: its runs are a
+ *   rough guess too (`stale`), until a new run is recorded.
+ * Only recorded runs count (entries of `runs` with `forecast` are skipped, so the forecast of `scheduleRuns` can be
+ * passed in), and only runs after the last of all given ones are returned. A run that isn't proven is only given if
+ * it didn't end before `today`. A forecast run never overlaps the next one.
  */
-function forecastRuns(runs, { from, to, today }) {
+function forecastRuns(allRuns, { from, to, today }) {
+    const runs = allRuns.filter((run) => !run.forecast);
     if (runs.length < 2) {
         return [];
     }
     const gaps = runs.slice(1).map((run, index) => run.start - runs[index].start);
     const lengths = runs.map((run) => run.end - run.start + 1);
     const last = runs[runs.length - 1];
+    const lastEnd = Math.max(...allRuns.map((run) => run.end));
     const cycle = gapCycle(gaps);
+    const proven = Boolean(cycle) && today - last.end <= STALE_DAYS;
     let gapAt;
     let lengthAt;
     let intervalDays;
@@ -183,16 +198,15 @@ function forecastRuns(runs, { from, to, today }) {
             break;
         }
         const end = start + Math.min(lengthAt(i), gapAt(i + 1)) - 1;
-        const proven = Boolean(cycle);
-        if (start > last.end && end >= from && (proven || end >= today)) {
+        if (start > lastEnd && end >= from && (proven || end >= today)) {
             forecast.push({
                 start,
                 end,
                 intervalDays,
                 last,
                 proven,
+                stale: Boolean(cycle) && !proven,
                 runCount: runs.length,
-                missed: proven && start <= today,
                 ...(pattern ? { pattern } : {}),
             });
         }

@@ -143,8 +143,11 @@ tests), `webapp/src/ui/` (browser helpers) and `webapp/src/pages/` (one script p
 start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;
 the end is computed from the number of days). Recording the same start again corrects the length. Events without
 packs (`"category": "ingame_event"` in `events`) can be tracked this way too. The Calendar page shows it as the Event
-Schedule timeline (this week and the next four) with a simple forecast: an entry recorded at least twice
-repeats its usual rhythm (median days between starts, median length). Below it, Weekday Offers shows which
+Schedule timeline (this week and the next three) with a simple forecast: an entry recorded at least twice
+repeats its usual rhythm (median days between starts, median length). Once the gaps between its runs repeat (a proven
+pattern) its forecast runs count as runs, also today and in the past (Follow the calendar, Running now, ...), so they
+need no recording; 8 weeks after its last recorded run it is a rough guess again until the latest run is recorded
+(`record-run --show` lists those). Below it, Weekday Offers shows which
 `weekly_rotation` packs are on sale today and in the next 6 days (from their `available_days`), each with the
 image of its main item (the package's `icon`, else its first item other than diamonds, VIP points, alliance chests, ...).
 

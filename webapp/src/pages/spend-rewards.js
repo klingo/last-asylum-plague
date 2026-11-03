@@ -264,10 +264,10 @@ function render() {
     wireDetailsToggles(tiersTable, expandedKeys);
 }
 
-/** The spend reward tracks the recorded schedule shows running today (the game day). */
+/** The spend reward tracks the schedule shows running today (the game day). */
 function runningTrackIds() {
     const today = gameDay(new Date()).day;
-    return [...scheduleRuns(data)]
+    return [...scheduleRuns(data, today)]
         .filter(
             ([id, { kind, runs }]) =>
                 kind === 'track' &&

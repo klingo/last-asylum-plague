@@ -87,8 +87,10 @@ One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitH
 
 - `schedule` records per event, seasonal pass family and spend reward track its runs as inclusive dates; add them
   with `record-run`. Forecasts (`forecastRuns`) are `proven` (a repeating pattern) or a rough guess (median gap,
-  shown fainter); a proven run expected by today but not recorded is `missed` (a hollow bar on the Calendar, listed by
-  `record-run --show`). Events with `"category": "ingame_event"` have no packs or shop. "Today" is always the game day,
+  shown fainter). `scheduleRuns(data, today)` adds the proven forecast runs up to today, so they count as runs
+  everywhere (Calendar, Today, Follow the calendar, skips); without `today` it is the recorded runs only (`record-run`).
+  8 weeks after an id's last recorded run its pattern is `stale`: a rough guess again until recorded (`record-run --show`
+  lists those). Events with `"category": "ingame_event"` have no packs or shop. "Today" is always the game day,
   which starts at 02:00 UTC (`gameDay` in `core/schedule.js`). The setup bar's "Follow the calendar" switch (default on) sets the
   selected events and passes to today's on every page load (`ui/calendar-sync.js`, called in `startPage`); a manual
   event / pass change turns it off.

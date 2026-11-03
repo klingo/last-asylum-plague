@@ -32,8 +32,8 @@ import {
     weekdayRuns,
 } from '../core/schedule.js';
 
-// The schedule timeline: the current week and the 4 weeks ahead (Monday to Sunday).
-const WEEKS = 5;
+// The schedule timeline: the current week and the 3 weeks ahead (Monday to Sunday).
+const WEEKS = 4;
 const GROUPS = [
     ['event', 'calendar.schedule.groupEvents'],
     ['ingame', 'calendar.schedule.groupIngame'],
@@ -76,7 +76,7 @@ function scheduleTooltip(bar, row, today) {
         row.name,
         ...(row.description ? [row.description] : []),
         rangeText(bar.start, bar.end),
-        bar.missed ? t('calendar.status.notRecorded') : runStatusText(runStatus([bar], today)),
+        runStatusText(runStatus([bar], today)),
     ];
     if (bar.forecast) {
         const last = rangeText(bar.last.start, bar.last.end);
@@ -91,7 +91,11 @@ function scheduleTooltip(bar, row, today) {
                 : t('calendar.schedule.forecastBasis', { interval: bar.intervalDays, last }),
         );
         if (!bar.proven) {
-            lines.push(t('calendar.schedule.guessNote', { count: bar.runCount }));
+            lines.push(
+                bar.stale
+                    ? t('calendar.schedule.staleNote')
+                    : t('calendar.schedule.guessNote', { count: bar.runCount }),
+            );
         }
     }
     if (row.href) {
@@ -109,7 +113,6 @@ function barHtml(bar, from, to, tooltip, { href = null, image = null, color = nu
         'schedule__bar',
         bar.forecast ? 'schedule__bar--forecast' : '',
         bar.forecast && !bar.proven ? 'schedule__bar--guess' : '',
-        bar.missed ? 'schedule__bar--missed' : '',
         bar.past ? 'schedule__bar--past' : '',
         bar.active ? 'schedule__bar--active' : '',
         bar.start < from ? 'schedule__bar--cut-start' : '',
@@ -159,9 +162,9 @@ function renderSchedule() {
     scheduleWindow = { from, total };
 
     const rows = [];
-    for (const [id, { kind, runs }] of scheduleRuns(packData)) {
+    for (const [id, { kind, runs }] of scheduleRuns(packData, today)) {
         const bars = [
-            // Runs that ended before today are greyed out.
+            // Runs that ended before today are greyed out (the proven forecast's too).
             ...runs.map((run) => ({ ...run, past: run.end < today })),
             ...forecastRuns(runs, { from, to, today }).map((run) => ({ ...run, forecast: true })),
         ].filter((bar) => bar.end >= from && bar.start <= to);
@@ -238,7 +241,6 @@ function renderSchedule() {
             <span><i class="schedule__swatch"></i>${escapeHtml(t('calendar.schedule.recorded'))}</span>
             <span><i class="schedule__swatch schedule__swatch--forecast"></i>${escapeHtml(t('calendar.schedule.forecast'))}</span>
             <span><i class="schedule__swatch schedule__swatch--forecast schedule__swatch--guess"></i>${escapeHtml(t('calendar.schedule.forecastGuess'))}</span>
-            <span><i class="schedule__swatch schedule__swatch--missed"></i>${escapeHtml(t('calendar.schedule.missed'))}</span>
             <span><i class="schedule__swatch schedule__swatch--past"></i>${escapeHtml(t('calendar.schedule.past'))}</span>
             <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(t('calendar.schedule.today'))}</span>
         </div>

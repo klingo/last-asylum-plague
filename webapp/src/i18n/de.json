@@ -154,11 +154,10 @@
     "calendar": {
         "schedule": {
             "heading": "Event-Zeitplan",
-            "lead": "Was diese Woche läuft und was in den nächsten vier wahrscheinlich kommt. Prognosen wiederholen den üblichen Rhythmus eines Eintrags, sobald er mindestens zweimal erfasst wurde; fahre über einen Balken für seine Daten und die verbleibende Zeit, klicke ihn (oder seinen Namen) an, um seinen Plan zu öffnen.",
+            "lead": "Was diese Woche läuft und was in den nächsten drei wahrscheinlich kommt. Prognosen wiederholen den üblichen Rhythmus eines Eintrags, sobald er mindestens zweimal erfasst wurde; ein wiederkehrendes Muster gilt als laufend, ohne erfasst zu sein, bis sein letzter erfasster Durchlauf 8 Wochen zurückliegt. Fahre über einen Balken für seine Daten und die verbleibende Zeit, klicke ihn (oder seinen Namen) an, um seinen Plan zu öffnen.",
             "recorded": "Erfasst",
             "forecast": "Prognose",
             "forecastGuess": "Prognose (grobe Schätzung)",
-            "missed": "Noch nicht erfasst",
             "past": "Beendet",
             "today": "Jetzt",
             "week": "KW {week}",
@@ -171,6 +170,7 @@
             "forecastBasis": "Prognose: etwa alle {interval} Tage, zuletzt {last}",
             "forecastPattern": "Prognose: wiederholt sich alle {days} Tage ({weekdays}), zuletzt {last}",
             "guessNote": "Grobe Schätzung: erst {count} Durchläufe erfasst, noch kein wiederkehrendes Muster",
+            "staleNote": "Zuletzt vor über 8 Wochen erfasst: erfasse den letzten Durchlauf, damit das Muster wieder gilt",
             "empty": "Für diese Wochen ist noch nichts erfasst."
         },
         "rotation": {
@@ -203,7 +203,6 @@
             "endedAgo": "Vor {count} Tagen beendet",
             "expected": "nächstes Mal voraussichtlich um den {date} (Prognose)",
             "expectedGuess": "nächstes Mal voraussichtlich um den {date} (grobe Schätzung)",
-            "notRecorded": "Laut Prognose erwartet, noch nicht erfasst",
             "none": "Noch keine Daten erfasst",
             "openPlan": "Klicken, um den Plan zu öffnen"
         }

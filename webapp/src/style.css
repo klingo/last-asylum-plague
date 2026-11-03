@@ -2505,14 +2505,10 @@ a.today-entry:hover {
     background: var(--bar-color);
 }
 
+/* A proven forecast: the kind's colour as a light fill (a recorded run is solid, a rough guess striped and dashed). */
 .schedule__swatch--forecast,
 .schedule__bar.schedule__bar--forecast {
-    background: repeating-linear-gradient(
-        -45deg,
-        color-mix(in srgb, var(--bar-color) 55%, transparent) 0 3px,
-        transparent 3px 6px
-    );
-    border: 1px dashed var(--bar-color);
+    background: color-mix(in srgb, var(--bar-color) 30%, transparent);
 }
 
 /* A run that ended before today: grey, whatever its kind. */
@@ -2692,10 +2688,6 @@ a.today-entry:hover {
 
 a.schedule__bar {
     cursor: pointer;
-}
-
-.schedule__bar--forecast {
-    opacity: 0.85;
 }
 
 /* Cut by the window's edge: square, fading end (it continues outside the shown weeks). The mask reaches 4px past
@@ -4027,17 +4019,17 @@ a.schedule__label--link:hover {
     }
 }
 
-/* Calendar forecasts: a rough guess (no repeating pattern yet) fainter than a proven one; a run the forecast expected
-   by today but nobody recorded: hollow, dotted (a reminder to record it). After the forecast rules, so these win. */
+/* Calendar forecasts: a rough guess (no repeating pattern yet, or a proven one last recorded over 8 weeks ago) is
+   striped and fainter than a proven one. After the forecast rules, so this wins. */
 .schedule__bar.schedule__bar--guess,
 .schedule__swatch.schedule__swatch--guess {
+    background: repeating-linear-gradient(
+        -45deg,
+        color-mix(in srgb, var(--bar-color) 55%, transparent) 0 3px,
+        transparent 3px 6px
+    );
+    border: 1px dashed var(--bar-color);
     opacity: 0.45;
-}
-
-.schedule__bar.schedule__bar--missed,
-.schedule__swatch.schedule__swatch--missed {
-    background: transparent;
-    border: 2px dotted var(--bar-color);
 }
 
 /* Weekday offers: the line on which offers are worth it, below the chart. */

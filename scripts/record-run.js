@@ -18,8 +18,8 @@ const DAYS_PATTERN = /^\d+$/;
  *   ids    event ids, seasonal pass family ids and/or spend reward track ids (classified automatically)
  *   START  first day, YYYY-MM-DD (default: today, the game day: it starts at 02:00 UTC)
  *   DAYS   how many days it runs, the start day included (end = START + DAYS - 1)
- *   --show print the recorded runs (of the given ids, or all; nothing is written), and the runs the forecast
- *          expected by today that aren't recorded yet
+ *   --show print the recorded runs (of the given ids, or all; nothing is written), and the proven patterns whose
+ *          last recorded run is over 8 weeks old (they no longer count until you record their latest run)
  * A run with the same start as a recorded one replaces it (to correct its length); other overlaps are refused.
  */
 function main() {
@@ -177,24 +177,25 @@ function printSchedule(schedule, ids) {
 }
 
 /**
- * Runs a proven forecast pattern expected by today (the game day) that nobody recorded yet (`missed`, see
- * forecastRuns): a to-do list for keeping the schedule current.
+ * Ids with a repeating pattern (a forecast the Calendar trusts as runs) whose last recorded run is over 8 weeks old
+ * (`stale`, see forecastRuns): the pattern no longer counts until its latest run is recorded again.
  */
 function printMissed(data, ids) {
     const today = gameDay(new Date()).day;
-    const missing = [];
+    const stale = [];
     for (const [id, { runs }] of scheduleRuns(data)) {
         if (ids.length > 0 && !ids.includes(id)) {
             continue;
         }
-        for (const run of forecastRuns(runs, { from: 0, to: today, today }).filter((r) => r.missed)) {
-            missing.push(`  ${id}: ${daysText(formatDay(run.start), formatDay(run.end))}`);
+        if (forecastRuns(runs, { from: 0, to: today + 365, today }).some((run) => run.stale)) {
+            const last = runs[runs.length - 1];
+            stale.push(`  ${id}: last recorded ${daysText(formatDay(last.start), formatDay(last.end))}`);
         }
     }
     console.log(
-        missing.length > 0
-            ? `\nExpected by the forecast but not recorded yet:\n${missing.join('\n')}`
-            : '\nNothing the forecast expected is missing.',
+        stale.length > 0
+            ? `\nProven patterns last recorded over 8 weeks ago (record their latest run):\n${stale.join('\n')}`
+            : '\nEvery proven pattern was recorded within the last 8 weeks.',
     );
 }
 

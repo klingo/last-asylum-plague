@@ -1,5 +1,5 @@
 /**
- * The calendar's selection: the events and seasonal passes the recorded schedule shows running today (the game
+ * The calendar's selection: the events and seasonal passes the schedule shows running today (the game
  * day, from 02:00 UTC). The setup bar's "Follow the calendar" switch (on by default): every page applies it when it
  * loads, so the selection keeps up with the calendar. Selecting or unselecting an event or pass by hand turns it off
  * (valuation-panel.js), until the switch is turned on again.
@@ -8,11 +8,11 @@ import { gameDay, scheduleRuns } from '../core/schedule.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { getSettings, updateSettings } from './settings.js';
 
-/** Ids (events, pass families, tracks) the recorded calendar shows running today (the game day). */
+/** Ids (events, pass families, tracks) the calendar shows running today (the game day): recorded, or a proven pattern. */
 function runningToday(data) {
     const today = gameDay(new Date()).day;
     return new Set(
-        [...scheduleRuns(data)]
+        [...scheduleRuns(data, today)]
             .filter(([, { runs }]) => runs.some((run) => run.start <= today && today <= run.end))
             .map(([id]) => id),
     );

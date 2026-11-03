@@ -20,7 +20,7 @@ const MAX_LADDER = 20;
 function skipUntilDay(id, pkg, today, data) {
     const weekEnd = today - weekdayIndex(today) + DAYS_PER_WEEK;
     const scheduleId = pkg.event_id || (pkg.seasonal ? packageFamilyId(id, pkg) : null);
-    const runs = scheduleId ? scheduleRuns(data).get(scheduleId)?.runs : null;
+    const runs = scheduleId ? scheduleRuns(data, today).get(scheduleId)?.runs : null;
     const run = runs?.find((candidate) => candidate.start <= today && today <= candidate.end);
     return run ? Math.min(weekEnd, run.end + 1) : weekEnd;
 }

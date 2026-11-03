@@ -229,11 +229,11 @@ function render() {
     passNote.textContent = `${t('seasonalPasses.note')}${days ? ` ${t('seasonalPasses.deliveryNote', { days })}` : ''}`;
 }
 
-/** The seasonal pass families the recorded schedule shows running today (the game day). */
+/** The seasonal pass families the schedule shows running today (the game day). */
 function runningPassIds() {
     const today = gameDay(new Date()).day;
     const families = passFamilies();
-    return [...scheduleRuns(data)]
+    return [...scheduleRuns(data, today)]
         .filter(
             ([id, { kind, runs }]) =>
                 kind === 'pass' && families.has(id) && runs.some((run) => run.start <= today && today <= run.end),

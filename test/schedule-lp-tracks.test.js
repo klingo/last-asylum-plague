@@ -202,20 +202,19 @@ test('spend tracks: tier costs and track points', () => {
     assert.equal(trackPointsForPrice({ conversions: [] }, 1234), 1234);
 });
 
-test('schedule: forecast says how sure it is, and which expected runs are missing', () => {
-    // Weekly, 1 day, proven (gaps 7, 7). The run on day 21 wasn't recorded; today is day 23.
+test('schedule: forecast says how sure it is', () => {
+    // Weekly, 1 day, proven (gaps 7, 7). The run on day 21 wasn't recorded; today is day 23: it is still a proven run.
     const weekly = [0, 7, 14].map((start) => ({ start, end: start }));
     const proven = forecastRuns(weekly, { from: 15, to: 30, today: 23 });
     assert.deepEqual(
-        proven.map(({ start, missed, proven: sure }) => [start, missed, sure]),
+        proven.map(({ start, proven: sure, stale }) => [start, sure, stale]),
         [
-            [21, true, true],
-            [28, false, true],
+            [21, true, false],
+            [28, true, false],
         ],
-        'day 21 should have been recorded: missed',
     );
 
-    // Two runs (one gap): only a guess. A guess never claims a missing run, and says what it rests on.
+    // Two runs (one gap): only a guess, and it says what it rests on.
     const guess = forecastRuns(weekly.slice(1), { from: 15, to: 30, today: 23 });
     assert.deepEqual(
         guess.map(({ start }) => start),

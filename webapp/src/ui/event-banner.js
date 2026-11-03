@@ -122,9 +122,9 @@ function formatMoment(ms) {
  * a live countdown) and that moment in local time (`exact`); after the last run, the next forecast run if any.
  */
 function scheduleTiming(data, id) {
-    const runs = scheduleRuns(data).get(id)?.runs || [];
     const now = Date.now();
     const today = gameDay(new Date(now)).day;
+    const runs = scheduleRuns(data, today).get(id)?.runs || [];
     const status = runStatus(runs, today);
     if (!status) {
         return { state: 'none', text: t('calendar.status.none') };
@@ -143,8 +143,8 @@ function scheduleTiming(data, id) {
             text: `${range} · ${runStatusText(status, now)}`,
         };
     }
-    // The next forecast run still to come (not one that should already have been recorded), said how sure it is.
-    const next = forecastRuns(runs, { from: today, to: today + FORECAST_DAYS, today }).find((run) => !run.missed);
+    // The next forecast run still to come, said how sure it is.
+    const next = forecastRuns(runs, { from: today, to: today + FORECAST_DAYS, today })[0];
     const expected = next
         ? ` · ${t(next.proven ? 'calendar.status.expected' : 'calendar.status.expectedGuess', { date: formatGameDay(next.start) })}`
         : '';
