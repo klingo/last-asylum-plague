@@ -34,7 +34,8 @@ import {
 import { WEEKDAYS, isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
 import { forecastRuns, gameDay, rotationSlots, runMoments, scheduleRuns, weekdayIndex } from '../core/schedule.js';
 
-const DAY_MS = 86400000;
+// An upcoming entry's fill grows over the last hours before it starts (the same for all, whatever it is).
+const SOON_FILL_MS = 4 * 3600000;
 // What starts within this many days is listed under "Starting soon".
 const SOON_DAYS = 3;
 // The order of the schedule's kinds (as on the Calendar) and their labels.
@@ -70,8 +71,7 @@ const tileHtml = (label, body) =>
     `<div class="plan-tile"><div class="plan-tile__label">${label}</div><div class="plan-tile__body">${body}</div></div>`;
 
 /**
- * An entry of a list. `start` / `end` are moments (ms); `lead` is how long before its start an upcoming entry's fill
- * begins (`updateProgress`).
+ * An entry of a list. `start` / `end` are moments (ms).
  * - A run from the schedule (whole game days): the event's, pass's or track's name, its own short line beside it, the
  *   dates (and "expected" for a forecast), a link if it has a page.
  * - A phase of an event rotation (Survival Battle): the phase's name as the title, the event's name beside it, the
@@ -93,7 +93,6 @@ function runEntry(id, kind, run, state, forecast = false) {
         dates: forecast ? `${range} · ${t('today.expected')}` : range,
         start: moments.start,
         end: moments.end,
-        lead: SOON_DAYS * DAY_MS,
     };
 }
 
@@ -112,18 +111,17 @@ function rotationEntry(rotation, slot, state) {
         earnPoints: slot.phase.earn_points || [],
         start: slot.start,
         end: slot.end,
-        // The next phase follows right after this one: its fill grows while the current one runs.
-        lead: slot.end - slot.start,
     };
 }
 
 /**
  * One entry of a list: its art, title, dates, the countdown in a column of its own and its kind. A faint fill behind it
- * (`updateProgress`) shows how far a running entry is, or how close an upcoming one is to starting.
+ * (`updateProgress`) shows how far a running entry is, or, for an upcoming one, how close it is to starting: empty
+ * until 4 hours before, full at its start.
  */
 function entryHtml(entry) {
     const running = entry.state === 'running';
-    const [from, to] = running ? [entry.start, entry.end] : [entry.start - entry.lead, entry.start];
+    const [from, to] = running ? [entry.start, entry.end] : [entry.start - SOON_FILL_MS, entry.start];
     const url = eventImageUrl(entry.image);
     const art = url
         ? `<img class="today-entry__art" src="${url}" alt="" loading="lazy" decoding="async" />`

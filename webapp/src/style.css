@@ -869,7 +869,7 @@ tbody tr.choice-details:hover {
     white-space: pre-line;
     /* Above the sticky header. */
     z-index: 300;
-    max-width: 260px;
+    max-width: 320px;
     padding: 6px 10px;
     background: var(--panel-alt);
     border: 1px solid var(--border);

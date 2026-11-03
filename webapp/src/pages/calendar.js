@@ -31,9 +31,8 @@ import {
     weekdayRuns,
 } from '../core/schedule.js';
 
-// The schedule timeline: last week, the current week and 4 weeks ahead (Monday to Sunday).
-const WEEKS_BACK = 1;
-const WEEKS = 6;
+// The schedule timeline: the current week and the 4 weeks ahead (Monday to Sunday).
+const WEEKS = 5;
 const GROUPS = [
     ['event', 'calendar.schedule.groupEvents'],
     ['ingame', 'calendar.schedule.groupIngame'],
@@ -153,7 +152,7 @@ function renderSchedule() {
     // Today is the game day (it starts at 02:00 UTC), as in the weekday offers.
     const now = gameDay(new Date());
     const today = now.day;
-    const from = today - weekdayIndex(today) - WEEKS_BACK * 7;
+    const from = today - weekdayIndex(today);
     const to = from + WEEKS * 7 - 1;
     const total = to - from + 1;
     scheduleWindow = { from, total };
@@ -469,6 +468,17 @@ function renderEventRotations() {
     enableInfoTooltips(container);
 }
 
+/** When a weekday offer's bar (whole game days `start`..`end`) is on sale, in the user's time: "Thu 03:00 AM". */
+function saleWindowText(bar) {
+    const at = (day) =>
+        new Date(dayDate(day).getTime() + GAME_DAY_START_MS).toLocaleString(getLocale(), {
+            weekday: 'short',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    return t('calendar.rotation.onSale', { from: at(bar.start), to: at(bar.end + 1) });
+}
+
 /**
  * Weekday offers (`weekly_rotation` packs): today and the next 6 game days, one row per pack family, with a line
  * for now (and how long today's offers last) and a line on which are worth it.
@@ -532,7 +542,7 @@ function renderRotation() {
             (row) => `
                 <div class="schedule__row schedule__row--rotation">
                     <div class="schedule__label" title="${escapeHtml(row.name)}" data-icon="${escapeHtml(row.icon || '')}">${escapeHtml(row.name)}</div>
-                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, row.tooltip, { color: row.color })).join('')}</div>
+                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, `${row.tooltip}\n${saleWindowText(bar)}`, { color: row.color })).join('')}</div>
                 </div>`,
         )
         .join('');

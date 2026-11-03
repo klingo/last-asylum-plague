@@ -169,7 +169,7 @@
     "calendar": {
         "schedule": {
             "heading": "Event Schedule",
-            "lead": "What ran last week and this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice. Hover a bar for its dates and how long is left; click it (or its name) to open its plan.",
+            "lead": "What runs this week, and what is likely coming in the next four. Forecasts repeat an entry's usual rhythm once it was recorded at least twice. Hover a bar for its dates and how long is left; click it (or its name) to open its plan.",
             "recorded": "Recorded",
             "forecast": "Forecast",
             "forecastGuess": "Forecast (rough guess)",
@@ -194,6 +194,7 @@
             "today": "Today",
             "tomorrow": "Tomorrow",
             "every": "every {days}",
+            "onSale": "On sale {from} – {to}",
             "now": "Now · today's offers end in {left} (a new game day starts at {time})",
             "hoursMinutes": "{hours}h {minutes}m",
             "minutes": "{minutes}m",
