@@ -7843,14 +7843,14 @@
                         {
                             "text": {
                                 "en": "Use 1m Construction Speedup: +10",
-                                "de": ""
+                                "de": "Verwende 1-Min.-Baubeschleunigung: +10"
                             },
                             "item_id": "construction_speedup"
                         },
                         {
                             "text": {
                                 "en": "Increase 1 Building Might: +1",
-                                "de": ""
+                                "de": "Erhöhe die Gebäude-Macht um 1: +1"
                             },
                             "item_id": "construction_speedup"
                         },
