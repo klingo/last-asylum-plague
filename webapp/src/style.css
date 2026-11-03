@@ -2080,6 +2080,17 @@ a.today-entry:hover {
     padding: 3px 0;
 }
 
+/* A weekday offer of the plan that can't be bought today: dimmed text while it is still ahead this week, faded once
+   its weekdays are over (today's stay bright, like the other packs to buy now). */
+.plan-list__item--upcoming {
+    color: var(--text-dim);
+}
+
+.plan-list__item--past {
+    color: var(--text-dim);
+    opacity: 0.55;
+}
+
 .plan-stat {
     display: flex;
     align-items: center;

@@ -33,7 +33,15 @@ import {
 } from '../ui/event-banner.js';
 import { WEEKDAYS, isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
-import { forecastRuns, gameDay, rotationSlots, runMoments, scheduleRuns, weekdayIndex } from '../core/schedule.js';
+import {
+    forecastRuns,
+    gameDay,
+    rotationSlots,
+    runMoments,
+    scheduleRuns,
+    weekdayIndex,
+    weekdayOfferTiming,
+} from '../core/schedule.js';
 
 // An upcoming entry's fill grows over the last hours before it starts (the same for all, whatever it is).
 const SOON_FILL_MS = 4 * 3600000;
@@ -333,7 +341,8 @@ function renderPlan() {
         }
         return byEvent.get(eventId);
     };
-    const line = (label, value) => `<li><span>${label}</span><span>${value}</span></li>`;
+    const line = (label, value, className = '') =>
+        `<li${className ? ` class="${className}"` : ''}><span>${label}</span><span>${value}</span></li>`;
     for (const { pkg, count, spend } of plan.purchases) {
         const entry = [
             packageDisplayName(pkg, locale),
@@ -343,7 +352,11 @@ function renderPlan() {
         if (pkg.event_id) {
             eventTile(pkg.event_id).packs.push(entry);
         } else if (pkg.category === 'weekly_rotation') {
-            rotation.push([...entry, escapeHtml(formatDays(pkg.available_days))]);
+            rotation.push([
+                ...entry,
+                `<span class="text-dim">${escapeHtml(formatDays(pkg.available_days))}</span>`,
+                weekdayOfferTiming(pkg.available_days, renderedDay),
+            ]);
         } else if (pkg.limit_type === 'daily') {
             daily.push(entry);
         } else {
@@ -364,10 +377,20 @@ function renderPlan() {
 
     const packList = (entries) =>
         `<ul class="plan-list">${entries
-            .map(([name, count, price, days]) =>
-                line(`${name} <strong>${count}</strong>${days ? ` <span class="text-dim">${days}</span>` : ''}`, price),
+            .map(([name, count, price, days, timing]) =>
+                line(
+                    `${name} <strong>${count}</strong>${days ? ` ${days}` : ''}`,
+                    price,
+                    // Not on sale today: dimmed text (still ahead this week), faded (over this week).
+                    timing && timing.state !== 'today' ? `plan-list__item--${timing.state}` : '',
+                ),
             )
             .join('')}</ul>`;
+    const timingOrder = { today: 0, upcoming: 1, past: 2 };
+    rotation.sort(
+        (a, b) =>
+            timingOrder[a[4].state] - timingOrder[b[4].state] || a[4].days - b[4].days || a[0].localeCompare(b[0]),
+    );
     const tiles = [];
     for (const [key, entries] of [
         ['daily', daily],

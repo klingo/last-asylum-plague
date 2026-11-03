@@ -70,6 +70,21 @@ function scheduleRuns(data) {
     return result;
 }
 
+/**
+ * Where a weekday offer (on sale on `availableDays`, any day if none) stands in the game week of game day `today`
+ * (Monday to Sunday): `{ state, days }`: 'today' (on sale today), 'upcoming' (`days` until its next weekday this
+ * week) or 'past' (all its weekdays were earlier this week).
+ */
+function weekdayOfferTiming(availableDays, today) {
+    const index = weekdayIndex(today);
+    const wanted = (availableDays || []).map((name) => WEEKDAYS.indexOf(name)).filter((day) => day >= 0);
+    if (wanted.length === 0 || wanted.includes(index)) {
+        return { state: 'today', days: 0 };
+    }
+    const ahead = wanted.filter((day) => day > index);
+    return ahead.length > 0 ? { state: 'upcoming', days: Math.min(...ahead) - index } : { state: 'past', days: 0 };
+}
+
 /** The days in [from, to] on one of the given weekdays ("monday", ...), consecutive days merged into runs. */
 function weekdayRuns(availableDays, from, to) {
     const wanted = new Set((availableDays || []).map((name) => WEEKDAYS.indexOf(name)));
@@ -274,6 +289,7 @@ export {
     scheduleRuns,
     forecastRuns,
     weekdayRuns,
+    weekdayOfferTiming,
     runStatus,
     runMoments,
     rotationSlots,

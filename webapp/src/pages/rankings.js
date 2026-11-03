@@ -282,7 +282,11 @@ function renderTable(filtered) {
                 gridNum(ratioHtml(entry, maxRatio)),
                 gridCell(detailsToggleHtml(entry.key, expandedKeys)),
             ],
-            { buy: entry.planned > 1e-6, dim: Boolean(entry.skipCause) },
+            {
+                buy: entry.planned > 1e-6,
+                // Skipped, or left out because a bundle (Weekly Pass) or another member of its group is bought instead.
+                dim: Boolean(entry.skipCause) || (Boolean(entry.notBought) && entry.planned <= 1e-6),
+            },
         );
         return `${heading}${row}${detailsHtml(entry)}`;
     });
