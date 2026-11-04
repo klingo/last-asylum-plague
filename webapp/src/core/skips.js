@@ -1,5 +1,5 @@
 /**
- * Skipping a recommended pack (the Pack Ranking's "Skip"): the weekly plan is solved again without it, so the spend is
+ * Skipping a recommended pack (the Deal Ranking's "Skip"): the weekly plan is solved again without it, so the spend is
  * filled up with other packs. A skip is remembered as a package id and the first game day it no longer applies:
  * - it lasts until the earlier of the end of the game week (the next Monday's reset) and the end of the current run
  *   of the pack's event or seasonal pass (from the schedule), `skipUntilDay`;

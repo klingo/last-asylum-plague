@@ -44,10 +44,17 @@ function renderStamps() {
 
 window.addEventListener('localechange', renderStamps);
 
-// The top menus (label `nav.groups.<key>`) and their pages (`page` = the id passed to `renderNav`, `description` = the
-// text shown on hover and read out by screen readers).
-// New pages go into the menu whose question they answer.
+// The top bar after Today: a page on its own (`{ page, href, label, description }`, a plain link) or a menu (label
+// `nav.groups.<key>`) with its pages (`page` = the id passed to `renderNav`, `description` = the text shown on hover
+// and read out by screen readers).
+// New pages go into the menu whose question they answer; a menu of one page is a plain link instead.
 const NAV_GROUPS = [
+    {
+        page: 'calendar',
+        href: 'calendar.html',
+        label: 'nav.calendar',
+        description: 'nav.descriptions.calendar',
+    },
     {
         key: 'shop',
         items: [
@@ -57,39 +64,28 @@ const NAV_GROUPS = [
                 label: 'nav.rankings',
                 description: 'nav.descriptions.rankings',
             },
-            {
-                page: 'spend-rewards',
-                href: 'spend-rewards.html',
-                label: 'nav.spendRewards',
-                description: 'nav.descriptions.spendRewards',
-            },
+            { page: 'events', href: 'events.html', label: 'nav.eventPlan', description: 'nav.descriptions.events' },
             {
                 page: 'seasonal-passes',
                 href: 'seasonal-passes.html',
                 label: 'nav.seasonalPasses',
                 description: 'nav.descriptions.seasonalPasses',
             },
-        ],
-    },
-    {
-        key: 'events',
-        items: [
             {
-                page: 'calendar',
-                href: 'calendar.html',
-                label: 'nav.calendar',
-                description: 'nav.descriptions.calendar',
+                page: 'spend-rewards',
+                href: 'spend-rewards.html',
+                label: 'nav.spendRewards',
+                description: 'nav.descriptions.spendRewards',
             },
-            { page: 'events', href: 'events.html', label: 'nav.eventPlan', description: 'nav.descriptions.events' },
         ],
     },
     {
         key: 'items',
         items: [
-            { page: 'items', href: 'items.html', label: 'nav.items', description: 'nav.descriptions.items' },
             { page: 'sources', href: 'sources.html', label: 'nav.sources', description: 'nav.descriptions.sources' },
             { page: 'choices', href: 'choices.html', label: 'nav.choices', description: 'nav.descriptions.choices' },
             { page: 'compare', href: 'compare.html', label: 'nav.compare', description: 'nav.descriptions.compare' },
+            { page: 'items', href: 'items.html', label: 'nav.items', description: 'nav.descriptions.items' },
         ],
     },
     {
@@ -143,6 +139,9 @@ function renderNav(activePage) {
     const link = (href, label, active, description) =>
         `<a href="${base}${href}" class="${active ? 'active' : ''}" title="${escapeAttr(t(description))}" ${active ? 'aria-current="page"' : ''}>${t(label)}</a>`;
     const groups = NAV_GROUPS.map((group) => {
+        if (!group.items) {
+            return link(group.href, group.label, group.page === activePage, group.description);
+        }
         const active = group.items.some((item) => item.page === activePage);
         const items = group.items
             .map((item) => link(item.href, item.label, item.page === activePage, item.description))

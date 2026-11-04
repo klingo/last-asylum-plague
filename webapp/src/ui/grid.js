@@ -1,6 +1,6 @@
 /**
  * The ranking grid (`.ranking-grid`, a CSS grid of div rows: Ranking, Spend Rewards, Events, Item Sources)
- * as small builders, the "Details" toggles shared with the <table> pages (Best Choice Pick), and the rows of
+ * as small builders, the "Details" toggles shared with the <table> pages (Best Pick), and the rows of
  * a bundle's contents shown in Details.
  *
  * `wide: true` on a cell / header: shown on wide screens only. On phones the grid drops those columns (see

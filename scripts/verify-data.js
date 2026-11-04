@@ -909,7 +909,7 @@ async function verifyData() {
 
     // 10. A pack's worth (from the items' points, as the pages count it) against its own deal %: far apart, a
     // quantity or an item is probably wrong (80 instead of 1 chest made one pack worth 77x its deal % and skewed
-    // the whole Pack Ranking). Diamonds count 1 (as the deal % counts them), other currencies 0: that can only make
+    // the whole Deal Ranking). Diamonds count 1 (as the deal % counts them), other currencies 0: that can only make
     // a pack look cheaper, so "far below" is only reported for packs without any other currency inside.
     checkCategory('Pack Worth vs Deal %', ({ reportWarning }) => {
         const dealCurrencyValues = Object.fromEntries([...currencyIds].map((id) => [id, id === 'diamonds' ? 1 : 0]));

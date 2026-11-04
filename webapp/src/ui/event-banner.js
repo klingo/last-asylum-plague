@@ -2,7 +2,7 @@
  * The game's art for events, spend reward tracks and seasonal passes (`image` in pack_data.json:
  * assets/events/<image>.webp, 720×360), and when they run: "Ends in 6d 5h", "Starts in 05:06:44" (a live countdown on
  * the banners; runs start and end at the game day's reset, 02:00 UTC). Used by the Calendar (thumbnails, hover
- * cards), the Shopping Plan, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).
+ * cards), Event Shops, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).
  */
 import { getLocale, localizedName, t } from './i18n.js';
 import { escapeHtml } from './html.js';
@@ -40,7 +40,7 @@ function scheduleName(data, id) {
 }
 
 /**
- * Where a schedule id is planned: a ticked event (`activeEvents`) on the Shopping Plan, a spend reward track on Spend
+ * Where a schedule id is planned: a ticked event (`activeEvents`) on Event Shops, a spend reward track on Spend
  * Rewards, a seasonal pass on Seasonal Passes (in-game events have no page of their own); null otherwise.
  */
 function scheduleHref(data, id, activeEvents) {

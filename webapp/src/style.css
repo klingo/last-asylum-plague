@@ -822,7 +822,7 @@ tbody tr:hover {
     min-width: 70px;
 }
 
-/* Best Choice Pick: a package's opened "Details" (its contents and their worth). */
+/* Best Pick: a package's opened "Details" (its contents and their worth). */
 tr.choice-details,
 tbody tr.choice-details:hover {
     background: var(--panel-alt);
@@ -1358,7 +1358,7 @@ tbody tr.choice-details:hover {
         90px;
 }
 
-/* Today's weekday offers: pack, price, worth, ratio, buy, details (as the Shopping Plan's pack table). */
+/* Today's weekday offers: pack, price, worth, ratio, buy, details (as the Event Shops' pack table). */
 .today-offers-grid {
     grid-template-columns:
         minmax(220px, 2.5fr) minmax(90px, 0.7fr) minmax(90px, 0.8fr) 90px minmax(90px, max-content)
@@ -4637,7 +4637,7 @@ a.schedule__label--link:hover {
         width: 48px;
     }
 
-    /* A <table>'s secondary columns (Best Choice Pick), as `wide` does in the grids. */
+    /* A <table>'s secondary columns (Best Pick), as `wide` does in the grids. */
     .table-col-wide {
         display: none;
     }

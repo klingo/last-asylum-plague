@@ -1,5 +1,5 @@
 /**
- * Item picker (Item Sources, Compare, Best Choice Pick): a select-like button showing the current
+ * Item picker (Item Sources, Compare Items, Best Pick): a select-like button showing the current
  * item, opening a panel with its own search box over the full list (icons, grouped by category).
  *
  * The selection and the search are separate (as in GitHub's / Slack's pickers): reopening always

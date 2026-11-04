@@ -4,9 +4,9 @@
     },
     "nav": {
         "home": "Heute",
-        "rankings": "Paket-Rangliste",
+        "rankings": "Deal-Rangliste",
         "calendar": "Kalender",
-        "eventPlan": "Einkaufsplan",
+        "eventPlan": "Event-Shops",
         "sources": "Gegenstandsquellen",
         "choices": "Beste Wahl",
         "spendRewards": "Ausgabenbelohnungen",
@@ -15,18 +15,17 @@
         "lordSpecialty": "Lord-Spezialisierung",
         "language": "Sprache",
         "items": "Gegenstandsprioritäten",
-        "compare": "Vergleich",
+        "compare": "Gegenstände vergleichen",
         "menu": "Menü",
         "settings": "Einstellungen",
         "groups": {
             "shop": "Shop",
-            "events": "Events",
             "items": "Gegenstände",
             "heroes": "Helden",
             "lord": "Lord"
         },
         "descriptions": {
-            "rankings": "Jedes Paket und jeder Pass, geordnet danach, wie viel Wert es für seinen Preis bringt. Ein Ratio von 1,0 oder mehr = lohnt sich bei deinen wöchentlichen Ausgaben.",
+            "rankings": "Jedes Paket, jeder Pass, jedes Special und jedes Geschenk, geordnet danach, wie viel Wert es für seinen Preis bringt. Ein Ratio von 1,0 oder mehr = lohnt sich bei deinen wöchentlichen Ausgaben.",
             "spendRewards": "Wähle eine kumulative Ausgabenbelohnung und sieh, bis zu welcher Stufe sich mehr Ausgaben noch lohnen.",
             "seasonalPasses": "Wähle einen Saisonpass und sieh, was er alles gibt, was er kostet und ob sich sein Inhalt für den Preis lohnt.",
             "calendar": "Was wann läuft: der Event-Zeitplan mit Prognose für die nächsten Wochen und die Pakete, die an festen Wochentagen angeboten werden.",
@@ -113,9 +112,9 @@
     },
     "docTitle": {
         "welcome": "Last Asylum: Plague - Klingo's Companion",
-        "rankings": "Paket-Rangliste - Klingo's Companion",
+        "rankings": "Deal-Rangliste - Klingo's Companion",
         "calendar": "Kalender - Klingo's Companion",
-        "events": "Einkaufsplan - Klingo's Companion",
+        "events": "Event-Shops - Klingo's Companion",
         "sources": "Gegenstandsquellen - Klingo's Companion",
         "choices": "Beste Wahl - Klingo's Companion",
         "spendRewards": "Ausgabenbelohnungen - Klingo's Companion",
@@ -124,7 +123,7 @@
         "lordSpecialty": "Lord-Spezialisierung - Klingo's Companion",
         "settings": "Einstellungen - Klingo's Companion",
         "items": "Gegenstandsprioritäten - Klingo's Companion",
-        "compare": "Vergleich - Klingo's Companion"
+        "compare": "Gegenstände vergleichen - Klingo's Companion"
     },
     "footer": {
         "lastUpdated": "Daten zuletzt aktualisiert: {date}",
@@ -183,7 +182,7 @@
             "now": "Jetzt · die heutigen Angebote enden in {left} (ein neuer Spieltag beginnt um {time})",
             "hoursMinutes": "{hours} Std. {minutes} Min.",
             "minutes": "{minutes} Min.",
-            "colour": "Farbe = Ratio wie in der Paket-Rangliste (grün: lohnt sich bei deinen wöchentlichen Ausgaben, gelb: um 1,0, rot: darunter)",
+            "colour": "Farbe = Ratio wie in der Deal-Rangliste (grün: lohnt sich bei deinen wöchentlichen Ausgaben, gelb: um 1,0, rot: darunter)",
             "worthIt": "Lohnt sich bei deinen wöchentlichen Ausgaben: {offers}",
             "noneWorthIt": "Keines dieser Angebote lohnt sich bei deinen wöchentlichen Ausgaben (am besten: {name}, Ratio {ratio})"
         },
@@ -208,8 +207,8 @@
         }
     },
     "rankings": {
-        "heading": "Paket-Rangliste",
-        "description": "Alle diese Woche angebotenen Pakete und Pässe, nach Wert im Verhältnis zum Preis geordnet.",
+        "heading": "Deal-Rangliste",
+        "description": "Alle diese Woche angebotenen Pakete, Pässe, Specials und Geschenke, nach Wert im Verhältnis zum Preis geordnet.",
         "planShort": "Plan: {purchases} Pakete für {spent} von {budget} Banknoten · {count} Einträge.",
         "how": {
             "worth": "Was der Inhalt eines Pakets in Banknoten wert ist: nach den Deal-%-Werten des Spiels, deinen wöchentlichen Ausgaben und deinen Gegenstandsprioritäten.",
@@ -226,7 +225,7 @@
             "hiddenTerm": "Nicht aufgeführt",
             "hidden": "Pakete nicht ausgewählter Events sind ausgeblendet. Einträge mit Gegenständen unbekannten Werts stehen unter der Rangliste, ohne Rang.",
             "coinsTerm": "Münzen und Diamanten",
-            "coins": "Was du mit Event-Münzen und Diamanten kaufen solltest, steht im Einkaufsplan."
+            "coins": "Was du mit Event-Münzen und Diamanten kaufen solltest, steht in den Event-Shops."
         },
         "searchLabel": "Suche",
         "searchPlaceholder": "Nach Name oder Kategorie filtern",
@@ -264,7 +263,7 @@
         "skippedUntil": "Übersprungen bis {date}",
         "skippedNeeds": "Braucht {name}, das übersprungen ist",
         "buyForTiers": "für die Bonusstufen",
-        "buyForTiersTip": "Für sich allein ist es weniger wert als sein Preis, aber seine Münzen helfen, die Bonusstufen des Shops zu erreichen, deren Extra-Belohnungen den Kauf lohnend machen (siehe Einkaufsplan).",
+        "buyForTiersTip": "Für sich allein ist es weniger wert als sein Preis, aber seine Münzen helfen, die Bonusstufen des Shops zu erreichen, deren Extra-Belohnungen den Kauf lohnend machen (siehe Event-Shops).",
         "pointsTooltip": "{points} Punkte je Stück",
         "lifetimeTotal": "{count}× insgesamt",
         "perMonth": "Monat",
@@ -272,9 +271,9 @@
         "perWeekShare": "{amount} Banknoten / Woche"
     },
     "events": {
-        "heading": "Einkaufsplan",
+        "heading": "Event-Shops",
         "description": "Wähle ein ausgewähltes Event (oder den VIP-Shop), um seinen Anteil am besten Plan für deine wöchentlichen Ausgaben zu sehen: die zu kaufenden Event-Pakete, die Münzen, die sie geben, welche Shop-Angebote du damit kaufen solltest (in Freischaltreihenfolge) und ob sich mehr Ausgaben für das Event noch lohnen.",
-        "details": "Es ist derselbe Plan wie auf der Seite Paket-Rangliste, beide Seiten stimmen also überein.",
+        "details": "Es ist derselbe Plan wie auf der Seite Deal-Rangliste, beide Seiten stimmen also überein.",
         "eventLabel": "Event oder Shop",
         "tickHint": "Nur Events, die unter „Events diese Woche“ ausgewählt sind, werden aufgelistet.",
         "chooseEvents": "Events wählen",
@@ -364,7 +363,7 @@
         "optionsLabel": "Optionen",
         "exceedLimits": "Event-Paketlimits überschreiten",
         "exceedLimitsHint": "Lässt den Plan die Pakete des gewählten Events so oft kaufen, wie er möchte, statt nur bis zu ihrem Tageslimit (meist einmal pro Tag), z. B. um zu sehen, wie oft sich das beste Währungspaket zu wiederholen lohnt. Nur möglich für Events, deren Pakete im Spiel über ihr Limit hinaus gekauft werden können: {events}.",
-        "exceedNote": "Event-Paketlimits überschritten: Dieser Plan weicht von der Paket-Rangliste ab (die die Limits einhält).",
+        "exceedNote": "Event-Paketlimits überschritten: Dieser Plan weicht von der Deal-Rangliste ab (die die Limits einhält).",
         "tiles": {
             "packs": "Diese Pakete kaufen",
             "encounters": "Begegnungen",
@@ -421,7 +420,7 @@
     "sources": {
         "heading": "Gegenstandsquellen",
         "description": "Wähle einen Gegenstand, um alle diese Woche angebotenen Pakete und Shop-Angebote zu sehen, die ihn geben – auch Pakete, in denen er nur verschachtelt vorkommt (z. B. Ressourcenvorrat (SR) → Kräuter).",
-        "details": "Wahltruhen zählen als Wahl dieses Gegenstands, Zufallstruhen mit ihrer erwarteten Menge (~), generische Gegenstände dort, wo sie verwendbar sind. Pro Einheit = Banknoten pro Einheit, bei Massengütern pro 1.000 oder 1.000.000 Einheiten angegeben (Shop-Angebote mit dem, was ihre Münzen kosten: gekauft aus den günstigsten angebotenen Paketen, die sie geben, jedes so oft, wie es pro Woche kaufbar ist, der ganze Paketpreis für die Münzen gerechnet; Münzen, die kein Paket verkauft, mit ihrem Wert in deinem Plan). Ratio = Wert der gesamten Quelle ÷ Preis, wie in der Paket-Rangliste (1,0 oder mehr = ein gutes Geschäft bei deinen wöchentlichen Ausgaben). Gegenstands-Anteil = wie viel dieses Werts auf diesen Gegenstand entfällt. Gegenstands-Ratio = Wert nur dieses Gegenstands ÷ Preis (≈ Ratio × Gegenstands-Anteil). Die Quellen sind nach Gegenstands-Ratio geordnet, was dasselbe ist wie die günstigste pro Einheit zuerst. Grün hinterlegte Zeilen gehören zum besten Plan für deine wöchentlichen Ausgaben.",
+        "details": "Wahltruhen zählen als Wahl dieses Gegenstands, Zufallstruhen mit ihrer erwarteten Menge (~), generische Gegenstände dort, wo sie verwendbar sind. Pro Einheit = Banknoten pro Einheit, bei Massengütern pro 1.000 oder 1.000.000 Einheiten angegeben (Shop-Angebote mit dem, was ihre Münzen kosten: gekauft aus den günstigsten angebotenen Paketen, die sie geben, jedes so oft, wie es pro Woche kaufbar ist, der ganze Paketpreis für die Münzen gerechnet; Münzen, die kein Paket verkauft, mit ihrem Wert in deinem Plan). Ratio = Wert der gesamten Quelle ÷ Preis, wie in der Deal-Rangliste (1,0 oder mehr = ein gutes Geschäft bei deinen wöchentlichen Ausgaben). Gegenstands-Anteil = wie viel dieses Werts auf diesen Gegenstand entfällt. Gegenstands-Ratio = Wert nur dieses Gegenstands ÷ Preis (≈ Ratio × Gegenstands-Anteil). Die Quellen sind nach Gegenstands-Ratio geordnet, was dasselbe ist wie die günstigste pro Einheit zuerst. Grün hinterlegte Zeilen gehören zum besten Plan für deine wöchentlichen Ausgaben.",
         "itemLabel": "Gegenstand",
         "selectPrompt": "Wähle oben einen Gegenstand, um zu sehen, wo du ihn bekommst.",
         "empty": "Nichts im Angebot dieser Woche gibt diesen Gegenstand.",
@@ -522,7 +521,7 @@
         "shopOffers": "Zu kaufende Angebote: {count}",
         "planPacks": "Pakete in deinem Plan: {count} ({spent})",
         "planNote": "Die Preise sind das, was der Plan pro Woche ausgibt; Monats- und Zwei-Wochen-Pakete zählen mit ihrem Wochenanteil am Preis.",
-        "openPlan": "Einkaufsplan öffnen",
+        "openPlan": "Event-Shops öffnen",
         "how": {
             "schedule": "Was laut Kalender heute läuft (zuerst, was zuerst endet) und was in den nächsten 3 Tagen startet. Ein Countdown wird in den letzten 24 Stunden gelb, und bei einem laufenden Event oder Pass steht, was dein Plan davon kauft. Ein blasser Eintrag wird nach dem üblichen Rhythmus erwartet, ist aber noch nicht eingetragen. Jeder Eintrag verlinkt auf seine Seite.",
             "plan": "Was der beste Plan für deine wöchentlichen Banknoten-Ausgaben diese Woche kauft, nach dem Zeitpunkt des Kaufs, mit deinen Gegenstandsprioritäten, gesperrten Angeboten und übersprungenen Paketen: derselbe Plan wie auf jeder Seite. Wochentags-Angebote, die heute nicht im Angebot sind, sind gedimmt, und verblasst, sobald ihre Tage diese Woche vorbei sind.",
@@ -532,7 +531,7 @@
     "seasonalPasses": {
         "heading": "Saisonpässe",
         "description": "Wähle einen Saisonpass, um zu sehen, was er alles gibt, was er kostet und ob sich sein Inhalt für den Preis lohnt.",
-        "details": "Der Wert ist, was die Gegenstände des Passes bei deinen wöchentlichen Ausgaben und Gegenstandsprioritäten wert sind (derselbe Wert wie in der Paket-Rangliste). Ratio 1,0 oder mehr = der Pass bringt mindestens so viel zurück, wie dieselben Banknoten anderswo bringen würden. Ein Pass mit mehreren Stufen wird mit allen Stufen gerechnet, je einmal gekauft.",
+        "details": "Der Wert ist, was die Gegenstände des Passes bei deinen wöchentlichen Ausgaben und Gegenstandsprioritäten wert sind (derselbe Wert wie in der Deal-Rangliste). Ratio 1,0 oder mehr = der Pass bringt mindestens so viel zurück, wie dieselben Banknoten anderswo bringen würden. Ein Pass mit mehreren Stufen wird mit allen Stufen gerechnet, je einmal gekauft.",
         "passLabel": "Saisonpass",
         "passPlaceholder": "Pass auswählen…",
         "passSearch": "Pässe durchsuchen…",
@@ -741,7 +740,7 @@
         "importedSkipped": "{count} Gegenstandsprioritäten importiert; {skipped} unbekannte Gegenstände wurden übersprungen.",
         "importFailed": "Diese Datei enthält keine Gegenstandsprioritäten.",
         "empty": "Keine Gegenstände entsprechen deiner Suche.",
-        "footnote": "Wert = Banknoten pro Einheit bei den wöchentlichen Ausgaben, die auf der Seite Paket-Rangliste eingestellt sind. Unsicher = die Deal-%-Werte des Spiels bestimmen den Gegenstand kaum (fahre über das Info-Symbol für den Grund).",
+        "footnote": "Wert = Banknoten pro Einheit bei den wöchentlichen Ausgaben, die auf der Seite Deal-Rangliste eingestellt sind. Unsicher = die Deal-%-Werte des Spiels bestimmen den Gegenstand kaum (fahre über das Info-Symbol für den Grund).",
         "summary": "{count} Gegenstände geändert.",
         "uncertain": "unsicher",
         "uncertainTitle": "Die Pakete bestimmen diesen Wert kaum (z. B. kommt er nur in einem Paket neben anderen unbekannten Gegenständen vor).",
@@ -763,7 +762,7 @@
         "derivedNote": "aus anderen Gegenständen zusammengesetzt; stelle stattdessen diese ein und setze diesen auf Normal zurück"
     },
     "compare": {
-        "heading": "Vergleich",
+        "heading": "Gegenstände vergleichen",
         "description": "Wähle zwei Gegenstände und Mengen.",
         "details": "Du siehst, was jeder bei deinen wöchentlichen Ausgaben wert ist, und den günstigsten garantierten Weg, ihn innerhalb der gewählten Tage zu bekommen (ab heute; Wochenlimits werden am Montag zurückgesetzt), einschließlich dessen, was du unterwegs noch bekommst.",
         "sideA": "Erster Gegenstand",

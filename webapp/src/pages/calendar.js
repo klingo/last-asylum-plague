@@ -46,7 +46,7 @@ const ROTATION_DAYS = 7;
 const HOUR_MS = 3600000;
 
 let packData = null;
-// The worth model (valuation.js): the weekday offers' bars are coloured by their ratio, as on the Pack Ranking.
+// The worth model (valuation.js): the weekday offers' bars are coloured by their ratio, as on the Deal Ranking.
 let valuation = null;
 // The game day both charts start from (the "Now" line moves within it; a new one redraws them).
 let rotationDay = null;
@@ -493,7 +493,7 @@ function renderRotation() {
             continue;
         }
         const familyId = packageFamilyId(id, pkg);
-        // The family's best ratio over its tiers (the Pack Ranking's number), if all its contents have a worth.
+        // The family's best ratio over its tiers (the Deal Ranking's number), if all its contents have a worth.
         const ratio = valuation.bundle(pkg, pkg.price).ratio;
         const entry = families.get(familyId) || { pkg, ratio: null };
         if (Number.isFinite(ratio) && !(entry.ratio >= ratio)) {
@@ -526,7 +526,7 @@ function renderRotation() {
         section.hidden = true;
         return;
     }
-    // The Pack Ranking's ratio colours (fixed scale around 1.0: red up to 0.85, amber at 1.0, green from 1.15).
+    // The Deal Ranking's ratio colours (fixed scale around 1.0: red up to 0.85, amber at 1.0, green from 1.15).
     for (const row of rows) {
         row.color = row.ratio === null ? null : ratioColor(row.ratio);
     }

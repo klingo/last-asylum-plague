@@ -1,5 +1,5 @@
 /**
- * The coloured ratio with a small bar (Ranking, Events, Spend Rewards, Best Choice Pick). Number and
+ * The coloured ratio with a small bar (Ranking, Events, Spend Rewards, Best Pick). Number and
  * bar share one colour on a fixed scale around 1.0 (the worth-it line at your weekly spend): red at
  * 0.85 and below, amber at 1.0 (barely worth it: you gain next to nothing), green from 1.15 up,
  * blended in between. The bar's length shows the ratio relative to the best one in the table.

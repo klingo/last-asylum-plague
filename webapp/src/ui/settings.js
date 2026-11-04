@@ -43,7 +43,7 @@ const DEFAULT_SETTINGS = {
     extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
     exceedEventLimits: [], // event ids whose pack limits the Events page lifts ("Exceed event pack limits")
-    skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Pack Ranking's "Skip", core/skips.js)
+    skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Deal Ranking's "Skip", core/skips.js)
     lockedOffers: {}, // "<shopId>:<offerKey>" -> exact count the plan buys per week, 0 = never (Events page)
     mineProgress: {}, // mineId -> { pickaxes owned, floor reached, run: start day of the run the floor is from } (Events page)
     minePlanSafety: 1, // share of runs the planned pickaxes suffice in: 0.5 (average), 0.9, 0.99, 1 (worst case) (Events page)

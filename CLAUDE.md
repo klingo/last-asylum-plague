@@ -129,12 +129,12 @@ the Diamond Golden Egg) is worth that currency at its marginal value too (`itemP
   deliberately unmodelled (`UNMODELLED_ITEMS`).
 - There is ONE model (`valuation.js`): the weekly-budget MILP/LP (`planner.js`, HiGHS) maximizing points under
   purchase limits at the user's weekly spend; worth = points ÷ the marginal points per Banknote. Every page uses it
-  (Spend Rewards re-solves it per tier); the Shopping Plan shows an event's slice plus what-if options.
+  (Spend Rewards re-solves it per tier); Event Shops shows an event's slice plus what-if options.
 - Compare is the exception: `acquire.js` (`solveNeeds`) is an exact minimum-cost MILP over every conversion,
   weekday-aware, counting only what random chests guarantee. Shop progress points (`bonus_tiers`, `unlock_points`)
   apply to the weekly plan only.
-- Locks on shop offers (`lockedOffers`, set on the Shopping Plan) apply to the ONE plan on every page.
-- So do skipped packs (`skippedPackages`: package id -> the first game day the skip ends, set by "Skip" on the Pack
+- Locks on shop offers (`lockedOffers`, set on Event Shops) apply to the ONE plan on every page.
+- So do skipped packs (`skippedPackages`: package id -> the first game day the skip ends, set by "Skip" on the Deal
   Ranking; `core/skips.js`, planner option `skippedPackages`). A skip lasts until the weekly reset or the end of the
   pack's event / pass run, and takes the higher tiers that `requires` the skipped one along.
 

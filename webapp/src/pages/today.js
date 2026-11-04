@@ -351,7 +351,7 @@ function countText(pkg, planned) {
     return `×${formatThousands(planned)}${perWeek}`;
 }
 
-/** The Shopping Plan's tab of an event, or of a shop without event. */
+/** The Event Shops' tab of an event, or of a shop without event. */
 const shoppingPlanHref = (shopId, shop) =>
     `events.html?event=${encodeURIComponent(shop.event_id ? `event:${shop.event_id}` : `shop:${shopId}`)}`;
 

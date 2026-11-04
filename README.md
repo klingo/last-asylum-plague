@@ -30,10 +30,10 @@ its contents without a common value scale. The tool uses one:
 
 ## Pages
 
-The top nav starts with **Today** (the home page), then groups the pages into menus (`NAV_GROUPS` in
+The top nav starts with **Today** (the home page) and **Calendar**, then groups the other pages into menus (`NAV_GROUPS` in
 `webapp/src/ui/nav.js`; each page's short description is the `title` of its link: shown on hover, read out by
-screen readers): **Shop** (Pack Ranking, Spend Rewards, Seasonal
-Passes), **Events** (Calendar, Shopping Plan), **Items** (Item Priorities, Item Sources, Best Choice Pick, Compare),
+screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
+Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
 **Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work. The cogwheel next to the language switcher opens
 **Settings** (`settings.html`): the settings that shape every value (Count VIP points in the worth) and the model
@@ -41,14 +41,14 @@ quality (how well the fitted worths reproduce the packs' deal %).
 
 - **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
   days (recorded runs and proven forecasts), the weekly plan by when to buy it (daily packs, weekly and longer packs,
-  weekday offers, each event's packs and how many different shop offers it buys, linking to its Shopping Plan) and
+  weekday offers, each event's packs and how many different shop offers it buys, linking to its Event Shops tab) and
   today's weekday offers with their ratio, what the plan buys and what each gives (Details). Running entries are
   ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
   plan buys from it.
   Survival Battle (`event_rotations` in `pack_data.json`: the 42 four-hour slots of its week, from Sunday's reset, the
   same every week) shows the phase on now and the next one, with their local times and how to earn points in them.
 
-- **Pack Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
+- **Deal Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
   "other pick" when a bundle or another member of its group is bought instead; "for the bonus tiers" when a pack below
   1.0 is bought because its coins reach an event shop's bonus tiers). "Plan only" shows just the weekly
@@ -60,7 +60,7 @@ quality (how well the fitted worths reproduce the packs' deal %).
   game's art, a hover card with how long is left, and a click opens its plan), the Weekday Offers of the next 7 days
   and, for each event rotation (Survival Battle), a chart of today and the next 6 days: one row per phase, a bar for
   each 4-hour slot (elapsed ones grey), a line for the phase on now, local times in the hover card.
-- **Shopping Plan** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
+- **Event Shops** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
   and a step table of how much spending more on the event still pays off. Dig events (Dwarven Mine, `mines` in
@@ -83,9 +83,9 @@ quality (how well the fitted worths reproduce the packs' deal %).
   nested at any depth (e.g. SR Resource Supplies → Herbs), ranked by Banknotes per unit, with how much each gives and
   an item ratio (worth of the item alone ÷ price).
 - **Item Priorities** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
-- **Best Choice Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
+- **Best Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.
-- **Compare** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get
+- **Compare Items** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get
   it within N days (crafting, choices and shops included; weekly limits reset on Monday).
 - **Spend Rewards** (`spend-rewards.html`) — the track's banner and when it runs, and per tier of a spend track, what
   the extra Banknotes buy (the best packs

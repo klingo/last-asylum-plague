@@ -36,7 +36,7 @@ function planOptions(data, settings, overrides = {}) {
         seasonalPasses: settings.seasonalPasses,
         // "Must buy" shop offers shape the one plan on every page.
         lockedOffers: settings.lockedOffers,
-        // Packs the user skipped on the Pack Ranking (not bought, nor the higher tiers that need them).
+        // Packs the user skipped on the Deal Ranking (not bought, nor the higher tiers that need them).
         skippedPackages: activeSkips(settings.skippedPackages, gameDay(new Date()).day),
         // Currency from outside the packs ("Extra ... per week" of a shop without event, Events page).
         extraCurrency: settings.extraCurrency,
