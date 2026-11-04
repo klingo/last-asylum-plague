@@ -2967,7 +2967,7 @@
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
-            "available_days": ["wednesday"],
+            "available_days": ["thursday"],
             "tiers": {
                 "1": {
                     "price": 499,
@@ -5073,11 +5073,11 @@
         "ravens_might": {
             "name": {
                 "en": "Raven's Might",
-                "de": ""
+                "de": "Rabenmacht"
             },
             "image": "ravens_might",
             "category": "value_event",
-            "limit_type": "weekly",
+            "limit_type": "biweekly",
             "tiers": {
                 "1": {
                     "price": 999,
@@ -5093,7 +5093,7 @@
                 }
             },
             "seasonal": true,
-            "delivery_days": 7
+            "delivery_days": 14
         },
         "recluse_coin_deluxe_pack": {
             "name": {
@@ -8502,6 +8502,10 @@
             {
                 "start": "2026-10-31",
                 "end": "2026-10-31"
+            },
+            {
+                "start": "2026-11-04",
+                "end": "2026-11-04"
             }
         ],
         "dwarven_mine": [
@@ -8606,6 +8610,12 @@
                 "end": "2026-11-01"
             }
         ],
+        "ravens_might": [
+            {
+                "start": "2026-11-04",
+                "end": "2026-11-17"
+            }
+        ],
         "recluse_merchant": [
             {
                 "start": "2026-09-28",
@@ -8644,6 +8654,10 @@
             {
                 "start": "2026-10-21",
                 "end": "2026-10-23"
+            },
+            {
+                "start": "2026-11-04",
+                "end": "2026-11-06"
             }
         ],
         "wandering_phantom": [
