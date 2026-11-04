@@ -123,7 +123,7 @@ own — they're worth only what their shop offers buy (at most the best offer wi
 reached bonus tiers don't make a coin worth what its packs cost); an item that opens into a currency (a Magic Hat Lucky Box,
 the Diamond Golden Egg) is worth that currency at its marginal value too (`itemPoints` in `planner.js`).
 
-- The user's item priorities (Don't care / Low / Normal / High = 0 / 50 / 100 / 150 %) multiply values after the
+- The user's item priorities (Don't care / Low / Normal / High = 0 / 50 / 100 / 200 %) multiply values after the
   fit. Alliance chests, ... start at Don't care but stay in the fit; VIP points are fixed at 0 in the fit itself
   (`zeroItems`, everywhere) unless the Settings page's "Count VIP points" setting (default off) is on. Moon Coins and Star Moon Sigils are
   deliberately unmodelled (`UNMODELLED_ITEMS`).

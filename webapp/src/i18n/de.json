@@ -727,7 +727,7 @@
     "items": {
         "heading": "Gegenstandsprioritäten",
         "description": "Wie wichtig dir jeder Gegenstand ist.",
-        "details": "„Egal“ zählt ihn als wertlos, „Niedrig“ zur Hälfte, „Hoch“ mit dem 1,5-Fachen seines üblichen Werts. Aufgelistet sind nur Basisgegenstände: Truhen, Vorräte, Wahltruhen und Omni-Splitter folgen den Gegenständen, die sie enthalten (z. B. folgen Gegengift-Level-Vorräte dem Gegengift). Eine Herstellungskette wird einmal unter ihrem obersten Gegenstand aufgelistet: Gehärteter Stahl legt auch Verfeinertes Eisen, Messing, Leder und Stoff fest. Alles folgt automatisch, auf jeder Seite.",
+        "details": "„Egal“ zählt ihn als wertlos, „Niedrig“ zur Hälfte, „Hoch“ mit dem Doppelten seines üblichen Werts. Aufgelistet sind nur Basisgegenstände: Truhen, Vorräte, Wahltruhen und Omni-Splitter folgen den Gegenständen, die sie enthalten (z. B. folgen Gegengift-Level-Vorräte dem Gegengift). Eine Herstellungskette wird einmal unter ihrem obersten Gegenstand aufgelistet: Gehärteter Stahl legt auch Verfeinertes Eisen, Messing, Leder und Stoff fest. Alles folgt automatisch, auf jeder Seite.",
         "searchLabel": "Suche",
         "searchPlaceholder": "Nach Name oder Kategorie filtern",
         "showLabel": "Anzeigen",
