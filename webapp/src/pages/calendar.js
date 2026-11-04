@@ -298,7 +298,7 @@ function dayHeadersHtml(from) {
             const label =
                 index < 2
                     ? t(index === 0 ? 'calendar.rotation.today' : 'calendar.rotation.tomorrow')
-                    : formatDay(day, { weekday: 'short' });
+                    : formatDay(day, { weekday: 'long' });
             return `
                 <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
                     <strong>${escapeHtml(label)}</strong>
@@ -326,7 +326,7 @@ function localDayHeadersHtml(boundaries) {
             const label =
                 index < 2
                     ? t(index === 0 ? 'calendar.rotation.today' : 'calendar.rotation.tomorrow')
-                    : date.toLocaleDateString(locale, { weekday: 'short' });
+                    : date.toLocaleDateString(locale, { weekday: 'long' });
             return `
                 <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
                     <strong>${escapeHtml(label)}</strong>
