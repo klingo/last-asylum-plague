@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-03"
+        "last_updated": "2026-11-04"
     },
     "items": {
         "alliance_coins": {
@@ -7873,7 +7873,14 @@
                         {
                             "text": {
                                 "en": "Use 1m Training Boost: +10",
-                                "de": ""
+                                "de": "Benutze 1 Min. Trainingsboost: +10"
+                            },
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Train 1 Lv.10 soldier: +31",
+                                "de": "Trainiere 1 Lv.10 Soldat: +31"
                             },
                             "item_id": "training_speedup"
                         },
