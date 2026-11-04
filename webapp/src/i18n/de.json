@@ -166,9 +166,9 @@
             "groupTracks": "Ausgabenbelohnungen",
             "oneDay": "1 Tag",
             "days": "{count} Tage",
-            "forecastBasis": "Prognose: etwa alle {interval} Tage, zuletzt {last}",
-            "forecastPattern": "Prognose: wiederholt sich alle {days} Tage ({weekdays}), zuletzt {last}",
-            "guessNote": "Grobe Schätzung: erst {count} Durchläufe erfasst, noch kein wiederkehrendes Muster",
+            "forecastBasis": "Prognose: etwa alle {interval} Tage",
+            "forecastPattern": "Prognose: wiederholt sich alle {days} Tage ({weekdays})",
+            "forecastGuessBasis": "Grobe Schätzung: etwa alle {interval} Tage",
             "staleNote": "Zuletzt vor über 8 Wochen erfasst: erfasse den letzten Durchlauf, damit das Muster wieder gilt",
             "empty": "Für diese Wochen ist noch nichts erfasst."
         },

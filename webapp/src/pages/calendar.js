@@ -68,7 +68,7 @@ function rangeText(start, end) {
 
 /**
  * A bar's hover card: "Strange Bazaar", the event's own line if it has one (`description`, e.g. its bonus),
- * "Mon, 12 Oct – Sun, 18 Oct (7 days)", "Ends in 3 days" (forecasts with their basis), and "Click to open its plan"
+ * "Mon, 12 Oct – Sun, 18 Oct (7 days)", "Ends in 3 days" (forecasts with their rhythm), and "Click to open its plan"
  * when it links to one.
  */
 function scheduleTooltip(bar, row, today) {
@@ -79,23 +79,22 @@ function scheduleTooltip(bar, row, today) {
         runStatusText(runStatus([bar], today)),
     ];
     if (bar.forecast) {
-        const last = rangeText(bar.last.start, bar.last.end);
-        // A weekday pattern ("every 7 days (Tue, Thu)"), else the usual gap ("about every 28 days").
-        lines.push(
-            bar.pattern
-                ? t('calendar.schedule.forecastPattern', {
-                      days: bar.pattern.days,
-                      weekdays: formatDays(bar.pattern.weekdays),
-                      last,
-                  })
-                : t('calendar.schedule.forecastBasis', { interval: bar.intervalDays, last }),
-        );
+        // A proven pattern: its weekdays ("every 7 days (Tue, Thu)") or the usual gap ("about every 28 days"); else a
+        // rough guess (no repeating pattern yet), with why when its last record is too old to trust.
         if (!bar.proven) {
+            lines.push(t('calendar.schedule.forecastGuessBasis', { interval: bar.intervalDays }));
+            if (bar.stale) {
+                lines.push(t('calendar.schedule.staleNote'));
+            }
+        } else if (bar.pattern) {
             lines.push(
-                bar.stale
-                    ? t('calendar.schedule.staleNote')
-                    : t('calendar.schedule.guessNote', { count: bar.runCount }),
+                t('calendar.schedule.forecastPattern', {
+                    days: bar.pattern.days,
+                    weekdays: formatDays(bar.pattern.weekdays),
+                }),
             );
+        } else {
+            lines.push(t('calendar.schedule.forecastBasis', { interval: bar.intervalDays }));
         }
     }
     if (row.href) {
