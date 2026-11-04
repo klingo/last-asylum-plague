@@ -387,6 +387,7 @@
         "minePickaxes": "Spitzhacken im Besitz",
         "mineFloor": "Erreichte Etage in diesem Lauf",
         "extra": "von anderswo (freies Einkommen, deine Eingabe)",
+        "costBanknotesInfo": "Was diese Münzen beim nächstbesten Angebot wert wären: der Preis mal der Wert einer Münze, der sinkt, je mehr Münzen du hast.",
         "lock": "Festlegen, wie oft der Plan dieses Angebot pro Woche kauft (0 = nie)",
         "lockCount": "Anzahl pro Woche (0 = nie)",
         "onlyHere": "Nur hier",

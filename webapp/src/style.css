@@ -2281,6 +2281,11 @@ a.today-entry:hover {
     letter-spacing: 0.03em;
 }
 
+/* An info icon in front of the header text: its gap goes on the text's side. */
+.ranking-grid__cell--header > .info-icon:first-child {
+    margin: 0 6px 0 0;
+}
+
 /* Heading of an unranked group (bonus tiers, unknown worth) inside the ranking grid. */
 .ranking-grid__section {
     grid-column: 1 / -1;

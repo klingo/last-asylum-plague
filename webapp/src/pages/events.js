@@ -127,12 +127,27 @@ function exceeding() {
     return exceedTicked(eventId) && isExceedable(eventId);
 }
 
-/** A shop without event (VIP Shop, Alliance Shop) is selected: its currency can also come from outside the packs. */
-const isStandingShop = (selected) => Boolean(selected?.shop && !selected.shop.event_id);
+/**
+ * A shop whose currency also comes from outside the packs is selected: one without event (VIP Shop, Alliance Shop), or
+ * of an event none of whose packs gives the shop's currency (Thief Hunt: lion coins come from killing thieves). The
+ * user enters how much of it they get.
+ */
+const hasOutsideCurrency = (selected) => {
+    const shop = selected?.shop;
+    if (!shop) {
+        return false;
+    }
+    return (
+        !shop.event_id ||
+        !Object.values(data.packages).some(
+            (pkg) => pkg.event_id === shop.event_id && pkg.contains?.[shop.currency_item_id] > 0,
+        )
+    );
+};
 
-/** Units per week of the selected standing shop's currency from outside the packs. */
+/** Units per week of the selected shop's currency from outside the packs (the user's input). */
 const extraCurrencyOf = (selected) =>
-    (isStandingShop(selected) && settings.extraCurrency?.[selected.shop.currency_item_id]) || 0;
+    (hasOutsideCurrency(selected) && settings.extraCurrency?.[selected.shop.currency_item_id]) || 0;
 
 /** Extra Banknotes per week the user puts only into this event's packs (remembered per event). */
 const extraFor = (eventId) => (eventId && settings.extraEventBanknotes?.[eventId]) || 0;
@@ -697,7 +712,11 @@ function renderShop({ shopId, shop }) {
         headerCell('offer'),
         headerCell('limit', true, true),
         headerCell('cost', true),
-        headerCell('costBanknotes', true, true),
+        // The Banknote cost is derived (coins × what a coin is worth), not a price: say so.
+        gridHeader(`${infoIconHtml(t('events.costBanknotesInfo'))}${t('events.table.costBanknotes')}`, {
+            num: true,
+            wide: true,
+        }),
         headerCell('worth', true, true),
         headerCell('ratio', true),
         lockable ? headerCell('mustBuy', true) : '',
@@ -1415,12 +1434,14 @@ function render() {
     planCard.hidden = !selected;
     exceedLimits.disabled = !isExceedable(selected?.eventId);
     exceedLimits.checked = exceedTicked(selected?.eventId);
-    extraCurrencyField.hidden = !isStandingShop(selected);
-    if (isStandingShop(selected)) {
+    extraCurrencyField.hidden = !hasOutsideCurrency(selected);
+    if (hasOutsideCurrency(selected)) {
         const currencyId = selected.shop.currency_item_id;
         extraCurrencyLabel.textContent = t('events.extraCurrency', {
             currency: localizedName(data.items[currencyId]?.name) || currencyId,
         });
+        // Diamonds come in thousands; an event's coins are counted one by one.
+        extraCurrencyInput.step = selected.shop.event_id ? '1' : '1000';
         extraCurrencyInput.value = String(extraCurrencyOf(selected));
     }
     extraBanknotesField.hidden = !(selected?.eventId && eventMaxSpend(selected.eventId) > 0);
@@ -1550,7 +1571,7 @@ startPage('events', {
         renderExceedInfo();
         extraCurrencyInput.addEventListener('change', () => {
             const selected = selection();
-            if (!isStandingShop(selected)) {
+            if (!hasOutsideCurrency(selected)) {
                 return;
             }
             const amount = Math.max(0, Number(extraCurrencyInput.value) || 0);

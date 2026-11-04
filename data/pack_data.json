@@ -7414,6 +7414,128 @@
                 "points": 10
             }
         },
+        "thief_hunt_shop": {
+            "name": {
+                "en": "Thief Hunt Exchange Shop",
+                "de": "Diebesjagd Tausch Shop"
+            },
+            "event_id": "thief_hunt",
+            "currency_item_id": "lion_coin",
+            "offers": {
+                "construction_speedup": {
+                    "item_id": "construction_speedup",
+                    "currency_cost": 4,
+                    "quantity": 5,
+                    "purchase_limit": 50,
+                    "limit_type": "event"
+                },
+                "gearstone": {
+                    "item_id": "gearstone",
+                    "currency_cost": 100,
+                    "quantity": 50,
+                    "purchase_limit": 100,
+                    "limit_type": "event"
+                },
+                "grain_level_supply_ssr": {
+                    "item_id": "grain_level_supply_ssr",
+                    "currency_cost": 160,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "event"
+                },
+                "herb_level_supply_ssr": {
+                    "item_id": "herb_level_supply_ssr",
+                    "currency_cost": 160,
+                    "quantity": 1,
+                    "purchase_limit": 100,
+                    "limit_type": "event"
+                },
+                "hero_awaken_omni_shard": {
+                    "item_id": "hero_awaken_omni_shard",
+                    "currency_cost": 120,
+                    "quantity": 1,
+                    "purchase_limit": 10,
+                    "limit_type": "event"
+                },
+                "lv3_raven_gear_chest": {
+                    "item_id": "lv3_raven_gear_chest",
+                    "currency_cost": 360,
+                    "quantity": 1,
+                    "purchase_limit": 3,
+                    "limit_type": "event"
+                },
+                "raven_essence": {
+                    "item_id": "raven_essence",
+                    "currency_cost": 200,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "event"
+                },
+                "recruit_ticket": {
+                    "item_id": "recruit_ticket",
+                    "currency_cost": 80,
+                    "quantity": 1,
+                    "purchase_limit": 10,
+                    "limit_type": "event"
+                },
+                "refined_iron": {
+                    "item_id": "refined_iron",
+                    "currency_cost": 8,
+                    "quantity": 1,
+                    "purchase_limit": 300,
+                    "limit_type": "event"
+                },
+                "research_speedup": {
+                    "item_id": "research_speedup",
+                    "currency_cost": 4,
+                    "quantity": 5,
+                    "purchase_limit": 100,
+                    "limit_type": "event"
+                },
+                "sr_epigraph_chest": {
+                    "item_id": "sr_epigraph_chest",
+                    "currency_cost": 120,
+                    "quantity": 1,
+                    "purchase_limit": 3,
+                    "limit_type": "event"
+                },
+                "ssr_epigraph_chest": {
+                    "item_id": "ssr_epigraph_chest",
+                    "currency_cost": 400,
+                    "quantity": 1,
+                    "purchase_limit": 1,
+                    "limit_type": "event"
+                },
+                "stamina": {
+                    "item_id": "stamina",
+                    "currency_cost": 10,
+                    "quantity": 50,
+                    "purchase_limit": 3,
+                    "limit_type": "event"
+                },
+                "study_scroll": {
+                    "item_id": "study_scroll",
+                    "currency_cost": 200,
+                    "quantity": 10,
+                    "purchase_limit": 50,
+                    "limit_type": "event"
+                },
+                "survivor_recruit_ticket": {
+                    "item_id": "survivor_recruit_ticket",
+                    "currency_cost": 80,
+                    "quantity": 1,
+                    "purchase_limit": 30,
+                    "limit_type": "event"
+                },
+                "timber_level_supply_ssr": {
+                    "item_id": "timber_level_supply_ssr",
+                    "currency_cost": 160,
+                    "quantity": 1,
+                    "purchase_limit": 50,
+                    "limit_type": "event"
+                }
+            }
+        },
         "vip_shop": {
             "name": {
                 "en": "VIP Shop",
