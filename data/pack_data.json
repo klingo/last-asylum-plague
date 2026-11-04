@@ -8007,6 +8007,7 @@
                 "de": "Wanderndes Phantom"
             },
             "category": "ingame_event",
+            "calendar_group": "alliance",
             "image": "wandering_phantom"
         },
         "weekly_special": {
