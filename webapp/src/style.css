@@ -937,7 +937,8 @@ tbody tr.choice-details:hover {
     border-radius: 6px;
     object-fit: cover;
     background: var(--panel-alt);
-    border: 1px solid var(--border);
+    /* The neutral border of an item without rarity: a visible grey (the panel's own border would vanish into it). */
+    border: 1px solid #6b7385;
     flex-shrink: 0;
 }
 
