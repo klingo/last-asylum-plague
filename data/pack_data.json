@@ -177,6 +177,59 @@
             },
             "reversible": true
         },
+        "chiefs_count_chest": {
+            "name": {
+                "en": "Chief's Coin Chest",
+                "de": "Leiter-Münztruhe"
+            },
+            "category": "chest",
+            "rarity": "mr",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "lion_coin": 1000
+                    },
+                    "probability": 0.001
+                },
+                {
+                    "contains": {
+                        "lion_coin": 100
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "contains": {
+                        "lion_coin": 50
+                    },
+                    "probability": 0.154
+                },
+                {
+                    "contains": {
+                        "research_speedup": 60
+                    },
+                    "probability": 0.002
+                },
+                {
+                    "contains": {
+                        "research_speedup": 15
+                    },
+                    "probability": 0.008
+                },
+                {
+                    "contains": {
+                        "research_speedup": 5
+                    },
+                    "probability": 0.08
+                },
+                {
+                    "contains": {
+                        "research_speedup": 1
+                    },
+                    "probability": 0.705
+                }
+            ]
+        },
         "cloth": {
             "name": {
                 "en": "Cloth",
@@ -666,6 +719,18 @@
                 "cloth": 4
             },
             "reversible": true
+        },
+        "lion_coin": {
+            "name": {
+                "en": "Lion Coin",
+                "de": "Löwenmünze"
+            },
+            "description": {
+                "en": "A rare coin! Use it in the Exchange Shop during the Thief Hunt event for abundant rewards.",
+                "de": "Eine seltene Münze! Benutze sie während des Diebesjag-Events im Tausch-Shop für reichliche Belohnungen."
+            },
+            "category": "event_item",
+            "rarity": "ur"
         },
         "lv1_alliance_chest": {
             "name": {
@@ -2878,7 +2943,7 @@
         "ur_hero_choice_chest": {
             "name": {
                 "en": "UR Hero Choice Chest",
-                "de": ""
+                "de": "UR Helden-Wahltruhe"
             },
             "category": "chest",
             "rarity": "ur",

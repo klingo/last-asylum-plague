@@ -234,6 +234,10 @@
                 "name": {
                     "$ref": "#/definitions/localizedString"
                 },
+                "description": {
+                    "$ref": "#/definitions/localizedString",
+                    "description": "Optional text about the item, as the game describes it (what it does or is used for), per language."
+                },
                 "category": {
                     "$ref": "#/definitions/itemCategory"
                 },
@@ -289,6 +293,10 @@
             "properties": {
                 "name": {
                     "$ref": "#/definitions/localizedString"
+                },
+                "description": {
+                    "$ref": "#/definitions/localizedString",
+                    "description": "Optional text about the item, as the game describes it (what it does or is used for), per language."
                 },
                 "category": {
                     "$ref": "#/definitions/itemCategory"
