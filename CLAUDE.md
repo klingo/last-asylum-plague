@@ -90,11 +90,11 @@ One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitH
   shown fainter). `scheduleRuns(data, today)` adds the proven forecast runs up to today, so they count as runs
   everywhere (Calendar, Today, Follow the calendar, skips); without `today` it is the recorded runs only (`record-run`).
   8 weeks after an id's last recorded run its pattern is `stale`: a rough guess again until recorded (`record-run --show`
-  lists those). Events with `"category": "ingame_event"` have no packs or shop. "Today" is always the game day,
+  lists those). Shop events are the ones with packs or a shop; gameplay events (`"category": "ingame_event"`) have none; an event's optional `calendar_group` (`spend_rewards`, `alliance`) moves it to another Calendar group. "Today" is always the game day,
   which starts at 02:00 UTC (`gameDay` in `core/schedule.js`). The setup bar's "Follow the calendar" switch (default on) sets the
   selected events and passes to today's on every page load (`ui/calendar-sync.js`, called in `startPage`); a manual
   event / pass change turns it off.
-- `event_rotations` holds in-game events that run through a fixed list of slots on a fixed clock (Survival Battle: 42
+- `event_rotations` holds gameplay events (`ingame_event`) that run through a fixed list of slots on a fixed clock (Survival Battle: 42
   slots of 4 hours from Sunday's reset, the same week every week): `phases` (id, name, an optional `image` and optional
   `earn_points`: the game's rule as text, `item_id` for the item the rule is about) and `week`, the phase of every slot. The
   sequence is as the game runs it, not a loop (a round of five, Territory > Heroes, then seven rounds of five), so

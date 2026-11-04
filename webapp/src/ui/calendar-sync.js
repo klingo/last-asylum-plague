@@ -19,7 +19,7 @@ function runningToday(data) {
 }
 
 /**
- * What the calendar selects today: `{ activeEvents, seasonalPasses }`. In-game events (no packs, no shop) aren't
+ * What the calendar selects today: `{ activeEvents, seasonalPasses }`. Gameplay events (no packs, no shop) aren't
  * selectable; seasonal passes by package family.
  */
 function calendarSelection(data) {

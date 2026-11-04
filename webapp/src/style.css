@@ -2485,6 +2485,10 @@ a.today-entry:hover {
     --bar-color: var(--gold);
 }
 
+.schedule__row--alliance {
+    --bar-color: var(--series-a);
+}
+
 .schedule__row--pass {
     --bar-color: var(--purple);
 }

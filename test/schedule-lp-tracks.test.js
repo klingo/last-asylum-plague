@@ -14,11 +14,16 @@ import { cheapestCostForPoints, trackTiers, trackPointsForPrice } from '../webap
 
 test('schedule: runs per id and their kind', () => {
     const runs = scheduleRuns({
-        events: { bazaar: {}, raid: { category: 'ingame_event' } },
+        events: {
+            bazaar: {},
+            raid: { category: 'ingame_event' },
+            canyon: { category: 'ingame_event', calendar_group: 'alliance' },
+        },
         spend_reward_tracks: { recipe: {} },
         schedule: {
             bazaar: [{ start: '2026-10-12', end: '2026-10-18' }],
             raid: [],
+            canyon: [],
             recipe: [],
             gear_pass: [],
         },
@@ -28,6 +33,7 @@ test('schedule: runs per id and their kind', () => {
         [
             ['bazaar', 'event'],
             ['raid', 'ingame'],
+            ['canyon', 'alliance'],
             ['recipe', 'track'],
             ['gear_pass', 'pass'],
         ],

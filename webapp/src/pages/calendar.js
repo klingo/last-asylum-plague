@@ -37,6 +37,7 @@ const WEEKS = 4;
 const GROUPS = [
     ['event', 'calendar.schedule.groupEvents'],
     ['ingame', 'calendar.schedule.groupIngame'],
+    ['alliance', 'calendar.schedule.groupAlliance'],
     ['pass', 'calendar.schedule.groupPasses'],
     ['track', 'calendar.schedule.groupTracks'],
 ];

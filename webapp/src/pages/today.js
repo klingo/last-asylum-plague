@@ -50,10 +50,11 @@ const ENDING_MS = 24 * 3600000;
 // What starts within this many days is listed under "Starting soon".
 const SOON_DAYS = 3;
 // The order of the schedule's kinds (as on the Calendar) and their labels.
-const KINDS = ['event', 'ingame', 'pass', 'track'];
+const KINDS = ['event', 'ingame', 'alliance', 'pass', 'track'];
 const KIND_LABELS = {
     event: 'calendar.schedule.groupEvents',
     ingame: 'calendar.schedule.groupIngame',
+    alliance: 'calendar.schedule.groupAlliance',
     pass: 'calendar.schedule.groupPasses',
     track: 'calendar.schedule.groupTracks',
 };

@@ -141,8 +141,8 @@ tests), `webapp/src/ui/` (browser helpers) and `webapp/src/pages/` (one script p
 
 `record-run` fills the `schedule` section of `pack_data.json`: per event, seasonal pass and spend reward track the
 start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;
-the end is computed from the number of days). Recording the same start again corrects the length. Events without
-packs (`"category": "ingame_event"` in `events`) can be tracked this way too. The Calendar page shows it as the Event
+the end is computed from the number of days). Recording the same start again corrects the length. Gameplay
+events, those without packs (`"category": "ingame_event"` in `events`), can be tracked this way too. The Calendar page shows it as the Event
 Schedule timeline (this week and the next three) with a simple forecast: an entry recorded at least twice
 repeats its usual rhythm (median days between starts, median length). Once the gaps between its runs repeat (a proven
 pattern) its forecast runs count as runs, also today and in the past (Follow the calendar, Running now, ...), so they

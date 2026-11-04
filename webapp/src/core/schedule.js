@@ -48,8 +48,8 @@ function isoWeekNumber(day) {
 
 /**
  * id -> { kind, runs: [{ start, end }] } (inclusive day numbers, oldest first). kind: 'event', 'ingame' (events
- * with category "ingame_event"), 'pass' (seasonal pass families) or 'track' (spend reward tracks, and events with
- * `calendar_group: "spend_rewards"`).
+ * with category "ingame_event"), 'alliance' (events with `calendar_group: "alliance"`), 'pass' (seasonal pass families) or 'track' (spend
+ * reward tracks, and events with `calendar_group: "spend_rewards"`).
  * With `today` (a game day) the runs of a proven forecast that started by today are in too (`forecast: true`, with
  * what `forecastRuns` gives): a pattern that has held counts as running without being recorded. Without it: the
  * recorded runs only.
@@ -62,6 +62,8 @@ function scheduleRuns(data, today) {
             const event = data.events[id];
             if (event.calendar_group === 'spend_rewards') {
                 kind = 'track';
+            } else if (event.calendar_group === 'alliance') {
+                kind = 'alliance';
             } else {
                 kind = event.category === 'ingame_event' ? 'ingame' : 'event';
             }

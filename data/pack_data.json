@@ -7830,6 +7830,7 @@
                 "de": "Schluchteroberung"
             },
             "category": "ingame_event",
+            "calendar_group": "alliance",
             "image": "canyon_conquest"
         },
         "claires_inner_demon": {
@@ -7837,7 +7838,8 @@
                 "en": "Claire's Inner Demon",
                 "de": "Claires innerer Dämon"
             },
-            "category": "ingame_event"
+            "category": "ingame_event",
+            "calendar_group": "alliance"
         },
         "crystal_cluster_valley": {
             "name": {
@@ -7922,6 +7924,7 @@
                 "de": "Jagd-Kampf"
             },
             "category": "ingame_event",
+            "calendar_group": "alliance",
             "image": "hunt_battle"
         },
         "mystic_cabinet": {
@@ -7937,6 +7940,7 @@
                 "de": "Pandemieerfahrung"
             },
             "category": "ingame_event",
+            "calendar_group": "alliance",
             "image": "pandemic_experience"
         },
         "quiz_of_wisdom": {

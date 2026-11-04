@@ -754,8 +754,8 @@
                 },
                 "calendar_group": {
                     "type": "string",
-                    "enum": ["spend_rewards"],
-                    "description": "Show the event in this group of the Calendar's schedule instead of the one its category gives. For reward ladders that count something other than Banknotes (e.g. materials used on gear) and so aren't `spend_reward_tracks`."
+                    "enum": ["spend_rewards", "alliance"],
+                    "description": "Show the event in this group of the Calendar's schedule instead of the one its category gives. `spend_rewards`: reward ladders that count something other than Banknotes (e.g. materials used on gear) and so aren't `spend_reward_tracks`. `alliance`: gameplay events you primarily play with your alliance (or can only play with it, e.g. by joining rallies)."
                 }
             }
         },
