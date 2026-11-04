@@ -2508,7 +2508,9 @@ a.today-entry:hover {
 /* A proven forecast: the kind's colour as a light fill (a recorded run is solid, a rough guess striped and dashed). */
 .schedule__swatch--forecast,
 .schedule__bar.schedule__bar--forecast {
-    background: color-mix(in srgb, var(--bar-color) 30%, transparent);
+    background:
+        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.22) 0 1.5px, transparent 1.5px 5px),
+        color-mix(in srgb, var(--bar-color) 52%, transparent);
 }
 
 /* A run that ended before today: grey, whatever its kind. */
