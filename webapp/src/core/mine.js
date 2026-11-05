@@ -174,13 +174,4 @@ function normalRewardBundle(mine, normalDigs) {
     return bundle;
 }
 
-export {
-    targetFloor,
-    freeCurrency,
-    digsDistribution,
-    expectedDigs,
-    pickaxeOdds,
-    floorsFor,
-    mineSegments,
-    normalRewardBundle,
-};
+export { targetFloor, freeCurrency, expectedDigs, pickaxeOdds, floorsFor, mineSegments, normalRewardBundle };

@@ -53,7 +53,7 @@ function starIcons(step) {
 
 /** 'craft' (`{ item, slot }`: one piece), 'level' or 'stars'. */
 function stepKind(step) {
-    if (step.item !== undefined || step.craft) {
+    if (step.item !== undefined) {
         return 'craft';
     }
     return step.level !== undefined ? 'level' : 'stars';
@@ -72,8 +72,7 @@ function stepItems(gearSet, step) {
     if (step.item) {
         return [step.item];
     }
-    const items = step.craft ?? step.items;
-    return items === 'all' ? gearSet.items : items || [];
+    return step.items === 'all' ? gearSet.items : step.items || [];
 }
 
 /** Nothing crafted yet: slot -> itemId -> { crafted, level, starStep }. */
@@ -295,7 +294,8 @@ function mergePaths(guide, gearSet) {
  * What each level and star step needs from the other of the two, with each path taken in its own order (not the
  * merged one, so a step the other path never makes possible is caught too): `{ level: [...], stars: [...] }`, one
  * entry per step, null if it needs nothing (Lv 44 and below, ...).
- * - a level step above the cap at 0 stars needs whole stars: `{ path: 'stars', n, stars }`;
+ * - a level step above the cap at 0 stars needs whole stars: `{ path: 'stars', n, stars }` (a level not even 4 stars
+ *   allow: `stars: 4` and `n: null`);
  * - a star step needs the minimum level of the highest star it works toward: `{ path: 'level', n, level }`.
  * `n` is the first step of the other path after which all of the step's pieces meet that (that path's steps up to
  * there done, on a fully crafted squad), or null if none ever does.
@@ -323,8 +323,12 @@ function crossNeeds(guide, gearSet) {
     return {
         level: paths.level.map((step) => {
             const stars = [0, 1, 2, 3, 4].find((s) => levelCap(gearSet, s * 5) >= step.level);
-            if (!stars) {
-                return null;
+            if (stars === 0) {
+                return null; // the cap with no stars already allows it
+            }
+            if (stars === undefined) {
+                // Not even 4 stars allow this level (above the cap or the maximum): no star step ever unlocks it.
+                return { path: 'stars', n: null, stars: 4 };
             }
             const n = firstMeeting(afterStars, step, (piece) => wholeStars(piece?.starStep ?? 0) >= stars);
             return { path: 'stars', n, stars };
@@ -400,15 +404,11 @@ export {
     MR_STEP,
     starStep,
     starsOfStep,
-    wholeStars,
     starIcons,
-    stepKind,
     stepSlots,
     stepItems,
     initialState,
-    checkStep,
     applyStep,
-    guidePaths,
     mergePaths,
     crossNeeds,
     stepCost,

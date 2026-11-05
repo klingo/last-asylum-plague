@@ -19,7 +19,7 @@
  *   (picked again after each round, starting from the average option).
  * - The robust (Huber) loss keeps outliers like the weekly passes from dragging everything else.
  *   The weak ridge toward a naive prior (each pack's non-diamond value split evenly over its
- *   contents) only decides items the packs can't tell apart; those get a high `uncertainty`.
+ *   contents) only decides items the packs can't tell apart; those are flagged `uncertain`.
  * - A `crafted_from` recipe caps an item at its ingredients' worth (strongly: an item is never
  *   worth more than crafting it) and weakly ties it to them (the ratio fills in where the packs say
  *   little, e.g. Lv.1 raven gear; where they're clear, the packs win).
@@ -121,8 +121,8 @@ function createExpander(items, pinned, groupOf, choicePick) {
         }
     }
 
-    function addOptions(acc, key, options, selectCount, factor, visiting) {
-        const picked = choicePick(key, options, selectCount);
+    function addOptions(acc, options, selectCount, factor, visiting) {
+        const picked = choicePick(options, selectCount);
         if (picked === null) {
             for (const option of options) {
                 expandInto(acc, option, (factor * selectCount) / options.length, visiting);
@@ -158,14 +158,14 @@ function createExpander(items, pinned, groupOf, choicePick) {
                 }
                 break;
             case 'choice':
-                addOptions(acc, id, item.choice.choices || [], item.choice.select_count || 1, qty, visiting);
+                addOptions(acc, item.choice.choices || [], item.choice.select_count || 1, qty, visiting);
                 break;
             case 'contains':
                 expandInto(acc, item.contains, qty, visiting);
                 break;
             case 'substitute': {
                 const options = substituteTargets(item).map(([targetId, n]) => ({ [targetId]: n }));
-                addOptions(acc, id, options, 1, qty, visiting);
+                addOptions(acc, options, 1, qty, visiting);
                 break;
             }
             default: {
@@ -178,12 +178,12 @@ function createExpander(items, pinned, groupOf, choicePick) {
     }
 
     /** Expands `{ contains, choice }` (a package, or a plain `{ itemId: qty }` via `contains`). */
-    return function expand({ contains, choice } = {}, key = null) {
+    return function expand({ contains, choice } = {}) {
         const acc = { terms: new Map(), constant: 0, skip: false };
         const visiting = new Set();
         expandInto(acc, contains, 1, visiting);
         if (choice) {
-            addOptions(acc, key, choice.choices || [], choice.select_count || 1, 1, visiting);
+            addOptions(acc, choice.choices || [], choice.select_count || 1, 1, visiting);
         }
         return acc;
     };
@@ -209,7 +209,7 @@ function buildEquations(data, packages, expand, currencyIds, excludeFamilies = n
         if (pkg.deal_percentage == null || !(pkg.price > 0) || excludeFamilies?.has(packageFamilyId(id, pkg))) {
             continue;
         }
-        const lhs = expand(pkg, `package:${id}`);
+        const lhs = expand(pkg);
         const target = (pkg.price * pkg.deal_percentage) / 100;
         if (lhs.skip || lhs.terms.size === 0) {
             continue;
@@ -348,8 +348,9 @@ function huber(r) {
 }
 
 /**
- * Levenberg-Marquardt on log values. Returns `{ theta, normal }` where `normal` is the final
- * weighted normal matrix (for standard errors).
+ * Levenberg-Marquardt on log values. Returns `{ theta, state, normal }`: the log values, the final evaluation
+ * (`state`: cost and the residual of every equation) and the final weighted normal matrix `normal` (for standard
+ * errors).
  */
 function solveLogFit(params, equations, prior, initial = null) {
     const n = params.length;
@@ -458,8 +459,10 @@ function solveLogFit(params, equations, prior, initial = null) {
  * - `initialValues`: Map parameter -> value to start from (a previous fit's `paramValues`).
  * - `zeroItems`: Set of item ids worth 0 points (left out of what a pack's deal % pays for).
  * Returns `{ points, diagnostics, paramValues, zeroItems }` (`zeroItems` as given, for the refits):
- * - `points`: Map itemId -> `{ value, source: 'fit'|'reversible', uncertainty?, support? }`
- *   (pass it to item-values.js as `basePoints`); currencies are not included.
+ * - `points`: Map itemId -> `{ value, source }` (pass it to item-values.js as `basePoints`); currencies are not
+ *   included. `source` is 'fit' (with `uncertain`: poorly determined, its log-space standard error above
+ *   UNCERTAIN_ABOVE), 'reversible' (an item of a reversible chain, valued through its neighbour) or 'excluded'
+ *   (one of `zeroItems`, 0 points).
  * - `diagnostics`: `{ packages: [{ id, ratio }], medianError, p90Error, parameters, equations }`
  *   where ratio = fitted contents / what the deal % says (1 = exact). With `excludeFamilies` also `heldOut`:
  *   the same ratio for those packages, predicted by the fit without them (see fitHoldOut).
@@ -479,7 +482,7 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
     const groupOf = tieGroups(items, pinned, currencyIds);
 
     let values = initialValues;
-    const choicePick = (key, options, selectCount) => {
+    const choicePick = (options, selectCount) => {
         if (values === null) {
             return null;
         }
@@ -514,23 +517,16 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
     const packageResiduals = fit.state.residuals.filter((_, j) => equations[j].kind === 'package');
     const sigma = Math.max(1.4826 * median(packageResiduals.map((r) => Math.abs(r.residual))), 0.05);
     const factor = params.length ? cholesky(fit.normal) : null;
-    const uncertainty = new Map();
+    const standardError = new Map();
     params.forEach((param, i) => {
         if (!factor) {
-            uncertainty.set(param, Infinity);
+            standardError.set(param, Infinity);
             return;
         }
         const unit = new Float64Array(params.length);
         unit[i] = 1;
-        uncertainty.set(param, Math.sqrt(Math.max(choleskySolve(factor, unit)[i], 0)) * sigma);
+        standardError.set(param, Math.sqrt(Math.max(choleskySolve(factor, unit)[i], 0)) * sigma);
     });
-    // Equations per parameter: packages (deal %) vs. weak hints (shop offers, recipes).
-    const support = new Map(params.map((p) => [p, { packages: 0, hints: 0 }]));
-    for (const eq of equations) {
-        for (const param of new Set([...eq.lhs.terms.keys(), ...eq.rhs.terms.keys()])) {
-            support.get(param)[eq.kind === 'package' ? 'packages' : 'hints']++;
-        }
-    }
 
     const points = new Map();
     for (const [id, entry] of pinned) {
@@ -543,13 +539,10 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
         if (points.has(id) || currencyIds.has(id) || !values.has(param) || !isLeaf(items[id])) {
             continue;
         }
-        const se = uncertainty.get(param);
         points.set(id, {
             value: values.get(param),
             source: 'fit',
-            uncertainty: se,
-            uncertain: !(se <= UNCERTAIN_ABOVE),
-            support: support.get(param),
+            uncertain: !(standardError.get(param) <= UNCERTAIN_ABOVE),
         });
     }
 
@@ -566,7 +559,7 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
         if (!excludeFamilies?.has(packageFamilyId(id, pkg)) || pkg.deal_percentage == null || !(pkg.price > 0)) {
             continue;
         }
-        const side = expand(pkg, `package:${id}`);
+        const side = expand(pkg);
         if (side.skip || side.terms.size === 0 || [...side.terms.keys()].some((param) => !values.has(param))) {
             continue;
         }
@@ -648,4 +641,4 @@ function isDependent(sensitivity) {
     return Boolean(sensitivity) && sensitivity.factor > DEPENDENCE_ABOVE;
 }
 
-export { fitItemPoints, fitSensitivity, fitHoldOut, sensitivityFamilies, isDependent, UNMODELLED_ITEMS };
+export { fitItemPoints, fitSensitivity, fitHoldOut, sensitivityFamilies, isDependent };

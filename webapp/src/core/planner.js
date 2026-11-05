@@ -12,17 +12,25 @@
  *              a mine floor only after the ones below it (pickaxes at the expected digs per floor, mine.js),
  *              and only in a run that reaches the mine's last progress reward, never past it (unused pickaxes
  *              carry over: better saved for the next run than spent on floors without a progress reward)
+ *              offers the user locked (`lockedOffers`) bought exactly as often as set, as far as the spend allows
+ *              packages the user skipped (`skippedPackages`) and the higher tiers that need them not bought
  *
  * Items are worth their points (item-values.js); currencies (diamonds, event coins, pickaxes) have no
  * points of their own — they are only worth what the offers they buy are worth, capped by those
- * offers' weekly limits, so leftover currency is worth 0.
+ * offers' weekly limits, so leftover currency is worth 0. A shop's currency also comes for free where the data
+ * says so (`income_per_hour`) or the page says so (`extraCurrency`).
  *
- * Two solves: the integer program gives the actual weekly shopping list (whole purchases);
- * its continuous relaxation (bonus tiers fixed to the integer result) gives the marginal rates:
- * - lambda = points the last Banknote of the budget buys;
- * - mu[c]  = points one more unit of currency c would buy (at most what its best shop offer with room left
- *            gives, see capCurrencyRates).
- * Worth of an item = points / lambda Banknotes; of a currency = mu / lambda.
+ * The solves, in this order:
+ * - with an event's extra Banknotes (`eventBudget`) first a plan without them: what a Banknote buys then is the bar
+ *   an extra one has to clear;
+ * - with locked offers (`fixLocks`) first a solve that buys them as far as the spend allows, then they are fixed;
+ * - the integer program gives the actual weekly shopping list (whole purchases);
+ * - its continuous relaxation (bonus tiers fixed to the integer result) gives the marginal rates:
+ *   - lambda = points the last Banknote of the budget buys;
+ *   - mu[c]  = points one more unit of currency c would buy (at most what its best shop offer with room left
+ *              gives, see capCurrencyRates).
+ * Worth of an item = points / lambda Banknotes; of a currency = mu / lambda. The result also answers for any
+ * bundle or item afterwards (`worth`, `itemPoints`, `bundlePoints`).
  *
  * Pure module: callers pass an initialized HiGHS instance and the normalized data (pack-data.js).
  */

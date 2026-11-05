@@ -1,3 +1,7 @@
+/**
+ * Best Pick: the options of a choice chest, of a package with options, or of a group of packages you can only buy one
+ * of (`exclusive_group`, e.g. calendar packs), ranked by worth. The pick is in the URL (`?item=`).
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';

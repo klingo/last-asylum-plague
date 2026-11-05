@@ -26,15 +26,6 @@ function words(text) {
     return String(text).split(/\s+/).map(compact).filter(Boolean);
 }
 
-/**
- * @param {HTMLButtonElement} trigger - the (empty) button that shows the selection; the panel is
- *   added next to it, inside its parent (which becomes the positioning box).
- * @param {(itemId: string) => void} [onChange] - called when the user picks (or clears) an item.
- * @param {string} [placeholderKey] - i18n key of the text shown while nothing is selected.
- * @param {boolean} [clearable=false] - offer a "Clear selection" row (where no item is a valid state).
- * @param {boolean} [icons=true] - show item images (off for lists that aren't items, e.g. events).
- * @param {string} [searchPlaceholderKey] - i18n key of the search box's placeholder.
- */
 /** The green "running now" dot (as on the setup bar's chips), with its text for hover and screen readers. */
 function nowDot() {
     const dot = document.createElement('span');
@@ -47,6 +38,16 @@ function nowDot() {
     return dot;
 }
 
+/**
+ * Turns an (empty) button into the picker. Options:
+ * - `trigger` (HTMLButtonElement): the button that shows the selection; the panel is added next to it, inside its
+ *   parent (which becomes the positioning box);
+ * - `onChange(itemId)`: called when the user picks (or clears) an item;
+ * - `placeholderKey`: i18n key of the text shown while nothing is selected;
+ * - `clearable` (default false): offer a "Clear selection" row (where no item is a valid state);
+ * - `icons` (default true): show item images (off for lists that aren't items, e.g. events);
+ * - `searchPlaceholderKey`: i18n key of the search box's placeholder.
+ */
 function createItemPicker({
     trigger,
     onChange,

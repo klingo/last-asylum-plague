@@ -193,16 +193,4 @@ function applyStaticTranslations(root = document) {
     document.documentElement.lang = currentLocale;
 }
 
-export {
-    LOCALES,
-    SUPPORTED_LOCALES,
-    DEFAULT_LOCALE,
-    getLocale,
-    setLocale,
-    t,
-    tHtml,
-    enumLabel,
-    localizedName,
-    formatDays,
-    applyStaticTranslations,
-};
+export { LOCALES, getLocale, setLocale, t, tHtml, enumLabel, localizedName, formatDays, applyStaticTranslations };

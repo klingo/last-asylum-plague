@@ -1,3 +1,9 @@
+/**
+ * The page header and footer, drawn by `renderNav(pageId)` (see page.js): Today, Calendar and the menus of the other
+ * pages (`NAV_GROUPS`, below), the settings cogwheel and the language switcher; on phones a ☰ button shows the menus
+ * stacked. The footer gets two stamps: when the data was last updated and when the site last changed. Both are
+ * translated again on a language switch.
+ */
 import { t, getLocale, setLocale, LOCALES } from './i18n.js';
 import { escapeAttr } from './html.js';
 

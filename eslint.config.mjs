@@ -4,6 +4,10 @@ import js from '@eslint/js';
 
 export default defineConfig([
     {
+        // Not linted: build output, dependencies, coverage reports and the separate Python tooling in tools/.
+        ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', 'tools/**'],
+    },
+    {
         extends: [js.configs.recommended],
 
         languageOptions: {
@@ -48,8 +52,6 @@ export default defineConfig([
             'no-duplicate-imports': 'warn',
             'no-useless-rename': 'warn',
         },
-
-        ignores: ['**/dist/**/*', '**/node_modules/**', '**/coverage/**/*'],
     },
     {
         // The webapp's pages and UI helpers run in the browser.

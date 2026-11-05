@@ -1,3 +1,9 @@
+/**
+ * Deal Ranking: every package and pass on sale this week, ranked by worth ÷ price, with what the weekly plan buys of
+ * it ("Buy / week", bundles and picks, packs bought for a shop's bonus tiers). "Plan only" shows just the shopping
+ * list, the Type pills filter by kind; a pack the plan buys can be skipped for now (`skippedPackages`, core/skips.js:
+ * the plan is solved again without it, on every page).
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation } from '../ui/valuation.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';

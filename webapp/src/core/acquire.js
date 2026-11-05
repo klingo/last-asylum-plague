@@ -9,7 +9,8 @@
  *
  * Everything obtained can be converted for free: containers opened (`contains`), choice chests picked
  * (whole picks), omni items substituted, `reversible` items crafted back up from their contents,
- * `crafted_from` recipes crafted, and coins/diamonds spent in exchange shops (including the VIP shop).
+ * `crafted_from` recipes crafted, and coins/diamonds spent in exchange shops (including the VIP shop). A shop's
+ * currency that comes for free (`income_per_hour` in the data) is there for the whole window, as in the weekly plan.
  * Random chests only count with what they GUARANTEE (the smallest amount any drop gives).
  *
  * A second solve keeps the minimum cost and maximizes the worth of what's left over (by-products,
@@ -23,6 +24,7 @@ import { addPackageRules } from './package-rows.js';
 import { createModel, addTerm, solveModel, varName } from './lp.js';
 
 const EPS = 1e-7;
+const HOURS_PER_DAY = 24;
 // Tiny cost per conversion / exchange so the cheapest plan also prefers the simplest path.
 const CONVERSION_COST = 1e-6;
 
@@ -129,9 +131,14 @@ function solveNeeds(highs, data, needs, options = {}) {
     addPackageRules(model, packageVars, packages);
 
     const offerVars = new Map();
+    const freeSupply = new Map(); // itemId -> currency that comes for free within the window (`income_per_hour`)
     for (const [shopId, shop] of Object.entries(data.exchange_shops || {})) {
         if (shop.event_id && activeEventIds && !activeEventIds.has(shop.event_id)) {
             continue;
+        }
+        const income = (shop.income_per_hour || 0) * HOURS_PER_DAY * days;
+        if (income > 0) {
+            freeSupply.set(shop.currency_item_id, (freeSupply.get(shop.currency_item_id) || 0) + income);
         }
         for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
             const capacity = capacityInWindow(offer.purchase_limit, offer.limit_type, {
@@ -207,12 +214,15 @@ function solveNeeds(highs, data, needs, options = {}) {
     }
 
     for (const [itemId, quantity] of needs) {
-        if (quantity > 0 && !balances.has(itemId)) {
+        // Nothing makes or takes the item: only a currency that comes for free can still cover the need.
+        if (quantity > 0 && !balances.has(itemId) && !((freeSupply.get(itemId) || 0) >= quantity)) {
             return unreachable('no-source');
         }
     }
     for (const [itemId, terms] of balances) {
-        model.rows.push({ name: varName('bal', itemId), terms, op: '>=', rhs: needs.get(itemId) || 0 });
+        // What comes for free counts as supply: the rest has to come from purchases and conversions.
+        const rhs = (needs.get(itemId) || 0) - (freeSupply.get(itemId) || 0);
+        model.rows.push({ name: varName('bal', itemId), terms, op: '>=', rhs });
     }
 
     let result = solveModel(highs, model);
@@ -285,6 +295,10 @@ function solveNeeds(highs, data, needs, options = {}) {
         let net = 0;
         for (const [name, coefficient] of balances.get(itemId) || []) {
             net += coefficient * value(name);
+        }
+        // Free currency covers a shortfall at no cost; unused, it is no leftover of the plan.
+        if (net < 0) {
+            net += Math.min(-net, freeSupply.get(itemId) || 0);
         }
         const need = needs.get(itemId) || 0;
         const left = net - need;

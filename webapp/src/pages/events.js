@@ -1,3 +1,11 @@
+/**
+ * Event Shops: one tab per ticked event (and the VIP Shop, `?event=`) with the event's banner and when it runs, and
+ * its slice of the weekly plan (planner.js): which event packs to buy, the coins they give, which shop offers to buy
+ * with them (in unlock order, with Encounters and bonus tiers; offers can be locked to a count), and a step table of
+ * how much spending more on the event still pays off. Shops whose coin no pack gives take an "Extra coins per week"
+ * amount; dig events (`mines`, core/mine.js) take the pickaxes you own and the floor you've reached and get a verdict
+ * card (dig this run or not), a floor table and the mine's rules.
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation, planOptions } from '../ui/valuation.js';
 import { solveWeeklyPlan } from '../core/planner.js';
@@ -541,7 +549,7 @@ function packDetailsHtml(key, pkg) {
     const blocks = [];
     const fixed = itemRows(valuation.bundle({ contains: pkg.contains }, 0).parts);
     if (fixed.length > 0) {
-        blocks.push((pkg.choice ? intro(t('events.packDetails.always')) : '') + fixed.join(''));
+        blocks.push((pkg.choice ? intro(t('events.packDetails.contents')) : '') + fixed.join(''));
     }
     if (pkg.choice) {
         const picked = valuation.bundle(pkg, 0).picked || [];
@@ -1237,7 +1245,7 @@ function renderMineRules(mine) {
     const chips = (bundles) =>
         `<div class="mine-rules__chips">${bundles.map((bundle) => bundleIconsHtml(bundle)).join('')}</div>`;
     // The currency as icon and full name ("Dwarven Pickaxe") wherever the rules mention it.
-    const pickaxe = `${iconHtml(mine.currency_item_id)}${escapeHtml(itemDisplayName(data.items, mine.currency_item_id, getLocale()))}`;
+    const pickaxe = `${iconHtml(mine.currency_item_id)}${itemDisplayName(data.items, mine.currency_item_id, getLocale())}`;
     const line = (key, vars = {}) => `<li>${tHtml(`events.mineRules.${key}`, { ...vars, pickaxe })}`;
     const header = ['lastDigit', 'pityAfter', 'mostDigs', 'averageDigs']
         .map((key) => `<th>${escapeHtml(t(`events.mineRules.${key}`))}</th>`)

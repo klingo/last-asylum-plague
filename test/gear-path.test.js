@@ -30,6 +30,14 @@ test('merged order of the default guide', () => {
     });
 });
 
+test('a level no star count unlocks is blocked for good, not "needs nothing"', () => {
+    const tooHigh = { level: gearSet.max_level + 10, slots: 'all', items: 'all' };
+    const needs = crossNeeds({ ...guide, level_path: [...guide.level_path, tooHigh] }, gearSet);
+    assert.deepEqual(needs.level.at(-1), { path: 'stars', n: null, stars: 4 });
+    // The steps of the real guide are unchanged.
+    assert.deepEqual(needs.level.slice(0, -1), crossNeeds(guide, gearSet).level);
+});
+
 test('a level path the star path never unlocks is reported', () => {
     const merged = mergePaths({ ...guide, star_path: [] }, gearSet);
     const blocked = merged.filter((entry) => entry.problems.length > 0);

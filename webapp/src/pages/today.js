@@ -1,3 +1,9 @@
+/**
+ * Today (the home page, `index.html`): what runs today (art, name, countdown, linking to its page) and what starts in
+ * the next few days (recorded runs and proven forecasts), the phase on now of each event rotation (Survival Battle),
+ * the weekly plan by when to buy it (daily packs, weekly and longer packs, each event's packs and shop offers) and
+ * today's weekday offers with their ratio.
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation } from '../ui/valuation.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';

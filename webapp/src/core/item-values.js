@@ -94,6 +94,8 @@ function bestChoices(choice, valueOf) {
  * - `basePoints`: Map `itemId -> { value, source, ... }` of the items valued directly (point-fit.js).
  * - `currencyValues`: `{ itemId: points | null }` for every currency item; a currency missing
  *   from it (or null) is unknown.
+ * - `currencyIds`: Set of the currency item ids (default: the keys of `currencyValues`), for callers that leave
+ *   the currencies out of `currencyValues` and want them unknown.
  * - `weights`: `{ itemId: factor }`, how much an item matters to the user (1 = as valued). Applied
  *   after everything else, so containers pick up their weighted contents and a weight on a
  *   container multiplies on top.
@@ -200,4 +202,4 @@ function bundleValue({ contains, choice } = {}, values) {
     return { value, incomplete, parts, picked };
 }
 
-export { resolveItemValues, bundleValue, sumContents, bestChoices, lendReversible };
+export { resolveItemValues, bundleValue, lendReversible };

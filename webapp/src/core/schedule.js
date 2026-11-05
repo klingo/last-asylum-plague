@@ -1,8 +1,16 @@
 /**
- * The recorded schedule (`schedule` in pack_data.json: per id its runs as inclusive start/end dates) as day
- * numbers, plus a simple forecast for ids that ran at least twice; the runs of a proven pattern up to today count as
- * runs (`scheduleRuns` with `today`). Days are whole numbers (days since 1970-01-01),
- * so time zones and daylight saving can't shift them.
+ * Everything about time in the game. Days are whole numbers (days since 1970-01-01), so time zones and daylight
+ * saving can't shift them; "today" is the game day, which starts at 02:00 UTC (`gameDay`).
+ * - the recorded schedule (`schedule` in pack_data.json: per id its runs as inclusive start/end dates) as day
+ *   numbers (`scheduleRuns`), plus a simple forecast for ids that ran at least twice (`forecastRuns`); with `today`
+ *   the runs of a proven pattern up to today count as runs;
+ * - where an id's runs stand (`runStatus`) and the exact moments a run starts and ends (`runMoments`);
+ * - weekday offers (packs on sale on certain weekdays): where one stands in the game week (`weekdayOfferTiming`)
+ *   and the runs of days it is on sale (`weekdayRuns`);
+ * - event rotations (`event_rotations`: gameplay events running through a fixed list of slots on a fixed clock):
+ *   the phase on now and the next (`rotationSlots`), every slot of a window (`rotationWindow`);
+ * - the calendar helpers `dayDate`, `weekdayIndex` and `isoWeekNumber`.
+ * Pure module: no clock of its own, callers pass `today` / `nowMs`.
  */
 
 const DAY_MS = 86400000;

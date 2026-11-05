@@ -1,3 +1,8 @@
+/**
+ * Spend Rewards: pick a spend reward track (`?track=`; the one running today is pre-selected) to see its banner and
+ * when it runs and, per tier (`trackTiers`, core/spend-tracks.js), what the extra Banknotes buy (the weekly plan solved
+ * again at that total spend) plus the tier's reward, as a step ratio: spend more while it is 1.0 or more.
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation, planOptions } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';

@@ -1,3 +1,10 @@
+/**
+ * Calendar: the Event Schedule (recorded runs and their forecast, `scheduleRuns` / `forecastRuns` in core/schedule.js;
+ * each entry with the game's art and a hover card), the Weekday Offers of the next 7 days (`weekly_rotation` packs by
+ * their `available_days`, coloured by their ratio) and, for each event rotation (Survival Battle), a chart of today and
+ * the next 6 days: one row per phase, a bar per slot. Times are shown in the local time zone; the game's day starts at
+ * 02:00 UTC.
+ */
 import { startPage } from '../ui/page.js';
 import { formatDays, getLocale, localizedName, t } from '../ui/i18n.js';
 import { formatThousands } from '../ui/format.js';

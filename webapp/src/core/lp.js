@@ -91,8 +91,7 @@ function toLpText(model) {
  * Duals are only meaningful for pure LPs (no integers/binaries).
  */
 function solveModel(highs, model) {
-    const text = toLpText(model);
-    const result = highs.solve(text, { output_flag: false });
+    const result = highs.solve(toLpText(model), { output_flag: false });
     const values = new Map();
     for (const [name, column] of Object.entries(result.Columns || {})) {
         values.set(name, column.Primal);
@@ -101,7 +100,7 @@ function solveModel(highs, model) {
     for (const row of result.Rows || []) {
         duals.set(row.Name, row.Dual);
     }
-    return { status: result.Status, objective: result.ObjectiveValue, values, duals, text };
+    return { status: result.Status, objective: result.ObjectiveValue, values, duals };
 }
 
 /** Creates an empty model description. */

@@ -86,7 +86,7 @@ quality (how well the fitted worths reproduce the packs' deal %).
 - **Best Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.
 - **Compare Items** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get
-  it within N days (crafting, choices and shops included; weekly limits reset on Monday).
+  it within N days (crafting, choices and shops included, with a shop's free coins; weekly limits reset on Monday).
 - **Spend Rewards** (`spend-rewards.html`) — the track's banner and when it runs, and per tier of a spend track, what
   the extra Banknotes buy (the best packs
   still available at that total spend) plus the tier reward, as a step ratio: spend more while it's 1.0 or more.

@@ -39,7 +39,6 @@
         }
     },
     "common": {
-        "unlimited": "Unlimited",
         "unknown": "Unknown",
         "notAvailable": "N/A",
         "details": "Details",

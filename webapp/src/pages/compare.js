@@ -1,3 +1,8 @@
+/**
+ * Compare Items: two items with amounts (`?a=&an=&b=&bn=&days=`): the worth of each, and the cheapest guaranteed way to
+ * get each within N days (`solveNeeds` in core/acquire.js: crafting, choices and shops included; weekly limits reset
+ * on Monday). Unlike the other pages it does not use the weekly plan for what to buy.
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';

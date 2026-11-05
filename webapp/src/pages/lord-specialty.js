@@ -339,7 +339,6 @@ function renderDetail() {
         ${effects}`;
 }
 
-/** "Requires Legion Commander Lv 31" (plus the skill book points only when the levels aren't enough). */
 /** "Legion Commander: Lv.31": the level the build uses (Lv.0 while it's empty). */
 function requiresHtml({ level }) {
     return tHtml('lord.requires', {

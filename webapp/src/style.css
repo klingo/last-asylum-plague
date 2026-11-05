@@ -1196,8 +1196,8 @@ tbody tr.choice-details:hover {
 
 .text-right {
     text-align: right;
-    /* For flex-based "cells" (e.g. .plan-grid__cell) where text-align alone won't move the
-       flex-laid-out content (icon + span) to the right edge. No effect on plain table cells. */
+    /* For flex-based "cells" (an icon + a span) where text-align alone won't move the
+       flex-laid-out content to the right edge. No effect on plain table cells. */
     justify-content: flex-end;
 }
 
@@ -2198,10 +2198,6 @@ a.today-entry:hover {
     width: 100%;
 }
 
-.ratio-display__note {
-    font-size: 0.72rem;
-}
-
 .ratio-bar {
     width: 100%;
     max-width: 70px;
@@ -3045,28 +3041,6 @@ a.schedule__bar {
     font-size: 0.85rem;
 }
 
-.gear-lane {
-    align-self: flex-start;
-    padding: 0 6px;
-    border: 1px solid currentColor;
-    border-radius: 999px;
-    font-size: 0.66rem;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-}
-
-.gear-lane--craft {
-    color: var(--gold);
-}
-
-.gear-lane--level {
-    color: var(--teal);
-}
-
-.gear-lane--stars {
-    color: var(--purple);
-}
-
 .gear-cost {
     display: flex;
     flex-wrap: wrap;
@@ -3108,13 +3082,6 @@ a.schedule__bar {
 .gear-help p {
     margin: 6px 0 0;
     color: var(--text-dim);
-}
-
-.gear-help__squad {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 16px 32px;
 }
 
 .gear-help__formation {
@@ -3171,10 +3138,6 @@ a.schedule__bar {
     border-top: 3px solid var(--border);
     border-radius: var(--radius);
     background: var(--panel-alt);
-}
-
-.gear-help__card--craft {
-    border-top-color: var(--gold);
 }
 
 .gear-help__card--level {
@@ -3441,10 +3404,6 @@ a.schedule__bar {
     align-items: center;
     gap: 6px;
     color: var(--text);
-}
-
-.gear-help__card--upgrades {
-    border-top-color: var(--purple);
 }
 
 /* "No Gear Blueprint (MR) yet": the switch on the star card, the note while steps wait, the ⏸ marks. */

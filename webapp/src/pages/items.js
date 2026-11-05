@@ -1,3 +1,9 @@
+/**
+ * Item Priorities: every base item (containers follow their contents, `isContainerItem` in core/item-sources.js) with
+ * its worth at the user's weekly spend, how sure that number is (`fitSensitivity`: "uncertain", depends on a single
+ * pack) and its priority (Don't care / Low / Normal / High), which multiplies the item's worth on every page. The
+ * priorities can be exported to and imported from a file.
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation, modelSummaryText } from '../ui/valuation.js';
 import { withLoading } from '../ui/loading.js';

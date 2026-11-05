@@ -1,3 +1,8 @@
+/**
+ * Seasonal Passes: pick a pass (`?pass=<family id>`; the one running today is pre-selected) to see its banner and when
+ * it runs, its price, everything the whole pass gives (all tiers) with each item's worth, the pass's worth against its
+ * price as a ratio, and the tiers the weekly plan buys.
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';

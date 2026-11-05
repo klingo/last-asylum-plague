@@ -1,11 +1,16 @@
 /**
- * How many units of one item a purchase gives, nested at any depth (Item Sources page):
+ * How many units of one item a purchase gives, nested at any depth (`createUnitCounter`: Item Sources, Event
+ * Shops):
  * - contents count in full (a Tempered Steel breaks down into 4 Refined Iron, ... = 256 Cloth);
  * - a pick-one chest counts as picking this item (its best `select_count` options);
  * - a random chest counts at its expected amount (flagged `random`);
  * - a generic item counts where it can be used (1 generic Speedup = 1 Construction Speedup).
  * Recipes (`crafted_from`) and `value_equivalent` aren't contents, so they don't count (a Lv.3 Sharp
  * Beak is worth 9 Lv.1 but can't be turned into them).
+ *
+ * Also which items the pages list at all: only base items, since containers stand for their contents and a crafting
+ * chain shows as its top item (`isContainerItem`, `itemChainTops`: Item Priorities; `sourcesListing`: Item Sources and
+ * the item links of labels.js).
  *
  * Pure module (no DOM/i18n), shared with Node scripts.
  */

@@ -1,6 +1,7 @@
 /**
  * Cumulative spend-reward tracks (`spend_reward_tracks` in pack_data.json): the Banknote cost of
- * each tier step. Valuing the rewards is up to the caller (see valuation.js).
+ * each tier step, and the track points a purchase earns. Valuing the rewards is up to the caller: the weekly plan buys
+ * a tier once its points are reached (`addTracks` in planner.js), the Spend Rewards page re-solves it per tier.
  */
 
 /**

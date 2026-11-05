@@ -286,10 +286,8 @@ function packageCapacityForDays(pkg, days, { activeEventIds = null, includeExclu
 
 export {
     DAYS_PER_WEEK,
-    isPass,
     purchaseType,
     PURCHASE_TYPES,
-    isLifetimeLimited,
     bundledPairs,
     isSeasonalOff,
     isOnSale,

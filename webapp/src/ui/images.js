@@ -95,12 +95,4 @@ function createItemImage(itemId, altText, className = 'item-icon') {
     return img;
 }
 
-export {
-    setItemImageSrc,
-    setItemImageAliases,
-    rarityClass,
-    createItemImage,
-    PLACEHOLDER_ICON,
-    banknoteIconHtml,
-    BANKNOTE_ICON_URL,
-};
+export { setItemImageSrc, setItemImageAliases, rarityClass, createItemImage, banknoteIconHtml };

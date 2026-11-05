@@ -61,4 +61,4 @@ function ratioBarHtml(ratio, maxRatio, { digits = 2, label = null } = {}) {
         </div>`;
 }
 
-export { ratioBarHtml, ratioColor, shareColor };
+export { ratioBarHtml, ratioColor };

@@ -1,3 +1,8 @@
+/**
+ * Item Sources: pick one item (`?item=`) to see every pack and shop offer on sale this week that gives it, nested at
+ * any depth (`createUnitCounter`, core/item-sources.js), ranked by Banknotes per unit, with how much each gives and
+ * an item ratio (the worth of the item alone ÷ price).
+ */
 import { startPage } from '../ui/page.js';
 import { buildValuation } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';

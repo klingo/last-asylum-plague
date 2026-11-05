@@ -1,3 +1,8 @@
+/**
+ * Settings (the cogwheel in the header): the settings that shape every value (Count VIP points in the worth) and the
+ * model quality: how well the fitted worths reproduce the packs' deal % (`fitItemPoints` diagnostics, the packs
+ * furthest off, and how well each pack is predicted from the others: `fitHoldOut`, computed in the background).
+ */
 import { startPage } from '../ui/page.js';
 import { getSettings, updateSettings, zeroFitItems } from '../ui/settings.js';
 import { hydrateItemIcons } from '../ui/html.js';
@@ -8,8 +13,6 @@ import { formatThousands } from '../ui/format.js';
 import { infoIconHtml } from '../ui/info-icon.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { t } from '../ui/i18n.js';
-
-// Settings (the cogwheel in the header): the settings that shape every value and how well the fit matches the packs.
 
 let data = null;
 const PERCENT = '&nbsp;%';
