@@ -166,6 +166,21 @@ function createUnitCounter(items, targetId) {
 }
 
 /**
+ * Whether the item can also be had other than from this shop's offers: from any pack (nested) or from another
+ * shop's offer. (Event Shops marks an offer whose item has no other source as "Only here".)
+ */
+function hasOtherSource(data, shopId, itemId) {
+    const counter = createUnitCounter(data.items, itemId);
+    const fromPacks = Object.values(data.packages).some((pkg) => counter.ofBundle(pkg).units > 0);
+    const fromShops = Object.entries(data.exchange_shops || {}).some(
+        ([otherId, other]) =>
+            otherId !== shopId &&
+            Object.values(other.offers || {}).some((offer) => counter.ofItem(offer.item_id).units > 0),
+    );
+    return fromPacks || fromShops;
+}
+
+/**
  * The items Item Sources lists, and which one to open for any item. Only base items: a container (e.g. Herb
  * Level Supply) just stands for what it contains, and its contents are found through it anyway. Crafting
  * chains appear once, as their top item (Tempered Steel, not Cloth), counted in their base. Value levels
@@ -186,4 +201,4 @@ function sourcesListing(items) {
     return { listed, chainBaseOf, sourcesItemFor };
 }
 
-export { createUnitCounter, isContainerItem, isValueLevel, itemChainTops, sourcesListing };
+export { createUnitCounter, hasOtherSource, isContainerItem, isValueLevel, itemChainTops, sourcesListing };

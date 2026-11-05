@@ -3,58 +3,15 @@
  * this week, seasonal passes on sale, and the user's item priorities.
  *
  * The page's one copy: `getSettings()` reads it, `updateSettings(patch)` changes and saves it and tells
- * every `onSettingsChange` listener (the setup panel, the page's recalculation).
+ * every `onSettingsChange` listener (the setup panel, the page's recalculation). Their defaults and what the model
+ * reads from them are in core/settings-model.js.
  */
 import { gameDay } from '../core/schedule.js';
+import { DEFAULT_SETTINGS, MINE_SAFETY_LEVELS, PRIORITY_LEVELS } from '../core/settings-model.js';
 
 const STORAGE_KEY = 'lasps_valuation';
 // Bumped when the stored shape changes (see loadSettings for the migrations).
 const SETTINGS_VERSION = 3;
-
-// How much an item matters to the user, as a factor on its worth (after the deal % fit).
-const PRIORITY_WEIGHTS = { none: 0, low: 0.5, normal: 1, high: 2 };
-const PRIORITY_LEVELS = ['none', 'low', 'normal', 'high'];
-// How sure the pickaxes planned for a mine's target floor are: the share of runs they suffice in.
-const MINE_SAFETY_LEVELS = [0.5, 0.9, 0.99, 1];
-
-// Worth nothing to a typical player, so "Don't care" unless changed. They still count in the
-// deal % fit (the game counts them), see point-fit.js.
-const DEFAULT_NONE_ITEMS = [
-    'vip_points',
-    'lv1_alliance_chest',
-    'lv2_alliance_chest',
-    'lv3_alliance_chest',
-    'lv4_alliance_chest',
-    'lv5_alliance_chest',
-    'lv6_alliance_chest',
-    'top_up_exp',
-    'stamina',
-    'direct_relocate',
-];
-
-const DEFAULT_SETTINGS = {
-    budget: 20000, // Banknotes per week
-    // VIP points count in the deal % fit (false: worth 0, the rest of a pack carries its price) (Home). Stored
-    // under this name since the default became false, so a `countVipPoints: true` saved before doesn't stick.
-    vipPointsInWorth: false,
-    // Events and passes follow the calendar on every page load (setup bar switch; a change by hand turns it off).
-    // Stored under this name since the default became on, so a `followCalendar: false` saved before doesn't stick.
-    followsCalendar: true,
-    extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
-    extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
-    skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Deal Ranking's "Skip", core/skips.js)
-    lockedOffers: {}, // "<shopId>:<offerKey>" -> exact count the plan buys per week, 0 = never (Events page)
-    mineProgress: {}, // mineId -> { pickaxes owned, floor reached, run: start day of the run the floor is from } (Events page)
-    minePlanSafety: 1, // share of runs the planned pickaxes suffice in: 0.5 (average), 0.9, 0.99, 1 (worst case) (Events page)
-    activeEvents: [], // event ids running this week
-    seasonalPasses: [], // family ids of the seasonal passes on sale right now; other passes are always on sale
-    priorities: Object.fromEntries(DEFAULT_NONE_ITEMS.map((id) => [id, 'none'])), // itemId -> level ('normal' omitted)
-};
-
-/** Items worth 0 points in the deal % fit by the settings (point-fit.js `zeroItems`): VIP points, if not counted. */
-function zeroFitItems(settings) {
-    return settings.vipPointsInWorth ? [] : ['vip_points'];
-}
 
 /** Nearest priority level for an old weight factor. */
 function levelForWeight(weight) {
@@ -191,22 +148,4 @@ function onSettingsChange(listener) {
     listeners.add(listener);
 }
 
-/** `{ itemId: factor }` for the valuation (items at "normal" are left out). */
-function priorityWeights(settings) {
-    return Object.fromEntries(
-        Object.entries(settings.priorities || {}).map(([id, level]) => [id, PRIORITY_WEIGHTS[level] ?? 1]),
-    );
-}
-
-export {
-    STORAGE_KEY as SETTINGS_KEY,
-    getSettings,
-    updateSettings,
-    onSettingsChange,
-    priorityWeights,
-    DEFAULT_SETTINGS,
-    DEFAULT_NONE_ITEMS,
-    PRIORITY_LEVELS,
-    MINE_SAFETY_LEVELS,
-    zeroFitItems,
-};
+export { STORAGE_KEY as SETTINGS_KEY, getSettings, updateSettings, onSettingsChange };

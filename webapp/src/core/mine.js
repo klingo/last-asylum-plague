@@ -174,4 +174,103 @@ function normalRewardBundle(mine, normalDigs) {
     return bundle;
 }
 
-export { targetFloor, freeCurrency, expectedDigs, pickaxeOdds, floorsFor, mineSegments, normalRewardBundle };
+/**
+ * The pickaxes owned and the floor reached, from what the user stored for the mine (`{ pickaxes, floor, run }`):
+ * the floor only counts for the run it was entered for (`run`: the run's start day; the floors start again).
+ */
+function mineProgressFor(stored, run) {
+    return {
+        owned: stored?.pickaxes || 0,
+        floor: stored && run && stored.run === run.start ? stored.floor || 0 : 0,
+    };
+}
+
+/**
+ * The last digits of a floor number grouped by their pity (digs after which the special tile is sure), as the
+ * mine's rules list them (…1 / …6: 5 digs): `[{ pity, digits, averageDigs }]` in the order of first appearance
+ * (1 to 9, then 0).
+ */
+function pityGroups(mine) {
+    const normals = mine.tiles_per_floor - 1;
+    const byPity = new Map();
+    for (const digit of [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]) {
+        const pity = mine.pity?.[String(digit)] ?? normals;
+        byPity.set(pity, [...(byPity.get(pity) || []), digit]);
+    }
+    return [...byPity].map(([pity, digits]) => ({
+        pity,
+        digits,
+        averageDigs: expectedDigs(mine, digits[0] || 10).digs,
+    }));
+}
+
+/**
+ * What the mine's floors cost and give from the floor reached: one row per stretch up to a progress reward (worth = a
+ * wish per floor (the best for you), the normal loot and the progress reward; cost = what its pickaxes cost in the
+ * packs on sale, floor by floor from the bottom: the owned and free pickaxes first, then the cheapest pack per
+ * pickaxe within the limits of the days left, whole pack prices (see catalog.js `currencyCost`), else at their
+ * worth). The floors above the target floor follow (`segment.aboveTarget`: never dug, no progress reward). Also the
+ * pickaxes this run (`have`: owned, free, from the plan's packs), what the target floor needs (on average, and
+ * `odds`: how safe that is, see pickaxeOdds) and what the packs could still give.
+ * `dug`: the mine's entry of the plan; `pricing`: `pickaxeWorth` (Banknote worth of one pickaxe), `bundleWorth(contents)`
+ * (Banknote worth of an item bundle), `coin` (the plan's `currencies` entry of the pickaxes) and `packCost(bought)`
+ * (`currencyCost` of that many pickaxes from the packs on sale, or null).
+ */
+function mineEconomics(dug, { pickaxeWorth, bundleWorth, coin, packCost }) {
+    const { mine } = dug;
+    const wishWorths = mine.wish_rewards.map((reward) => bundleWorth(reward));
+    const bestWish = Math.max(0, ...wishWorths);
+    // Banknotes for the first `pickaxes` pickaxes from the floor reached (the owned and free ones cost nothing).
+    const costUpTo = (pickaxes) => {
+        const bought = Math.max(0, pickaxes - dug.owned - dug.free.total);
+        const cost = packCost(bought);
+        return cost ? cost.banknotes : bought * pickaxeWorth;
+    };
+    // The floors above the target floor: listed with their worth and ratio, but never dug (planner.js).
+    const above =
+        dug.target > 0
+            ? mineSegments(mine, Math.max(dug.startFloor, dug.target)).map((segment) => ({
+                  ...segment,
+                  cleared: 0,
+                  aboveTarget: true,
+              }))
+            : [];
+    let pickaxesBelow = 0;
+    const rows = [...dug.segments, ...above].map((segment) => {
+        const loot = bundleWorth(normalRewardBundle(mine, segment.normalDigs));
+        const reward = segment.reward ? bundleWorth(segment.reward) : 0;
+        const worth = loot + segment.floors * bestWish + reward;
+        const cost = costUpTo(pickaxesBelow + segment.pickaxes) - costUpTo(pickaxesBelow);
+        pickaxesBelow += segment.pickaxes;
+        return { segment, worth, cost, ratio: cost > 0 ? worth / cost : null };
+    });
+    const toTarget = rows.filter(({ segment }) => segment.to <= dug.target);
+    const have = (coin?.received ?? 0) + (coin?.extra ?? 0);
+    const needed = toTarget.reduce((sum, { segment }) => sum + segment.pickaxes, 0);
+    return {
+        rows,
+        wishWorths,
+        have,
+        odds: dug.target > dug.startFloor ? pickaxeOdds(mine, dug.startFloor + 1, dug.target) : null,
+        fromPacks: coin?.received ?? 0,
+        spent: coin?.spent ?? 0,
+        needed,
+        worthToTarget: toTarget.reduce((sum, row) => sum + row.worth, 0),
+        costToTarget: costUpTo(needed) - costUpTo(have),
+        // Most pickaxes the packs give this run within their limits for the days left.
+        available: packCost(0)?.available ?? 0,
+    };
+}
+
+export {
+    targetFloor,
+    freeCurrency,
+    expectedDigs,
+    pickaxeOdds,
+    floorsFor,
+    mineSegments,
+    normalRewardBundle,
+    mineProgressFor,
+    pityGroups,
+    mineEconomics,
+};

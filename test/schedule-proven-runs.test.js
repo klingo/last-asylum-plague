@@ -1,7 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { forecastRuns, scheduleRuns } from '../webapp/src/core/schedule.js';
-import { calendarSelection } from '../webapp/src/ui/calendar-sync.js';
+import { calendarSelection, forecastRuns, scheduleRuns } from '../webapp/src/core/schedule.js';
 
 // Day numbers (days since 1970-01-01) as the schedule's dates.
 const MONDAY = Date.UTC(2026, 10, 2) / 86400000;
@@ -76,11 +75,9 @@ test('proven forecast: a pattern not yet repeated stays a guess and counts for n
 });
 
 test('proven forecast: Follow the calendar selects an event whose pattern runs today', () => {
-    // Event with 3 recorded weekly runs, today (what gameDay says) is not controllable here, so check the selection
-    // function through its data: a run of the pattern covering today selects the event.
-    const now = Math.floor((Date.now() - 2 * 3600000) / 86400000);
-    const monday = now - ((new Date(now * 86400000).getUTCDay() + 6) % 7);
-    const runs = [-21, -14, -7].map((back) => ({ start: iso(monday + back), end: iso(monday + back + 6) }));
+    // An event with 3 recorded weekly runs: the run its pattern continues with, the week from MONDAY on, covers
+    // the Thursday of that week, so the event is selected then.
+    const runs = [-21, -14, -7].map((back) => ({ start: iso(MONDAY + back), end: iso(MONDAY + back + 6) }));
     const data = { ...dataWith(runs), packages: {} };
-    assert.deepEqual(calendarSelection(data).activeEvents, ['weekly_event']);
+    assert.deepEqual(calendarSelection(data, MONDAY + 3).activeEvents, ['weekly_event']);
 });

@@ -10,10 +10,25 @@ import { startPage } from '../ui/page.js';
 import { buildValuation, planOptions } from '../ui/valuation.js';
 import { solveWeeklyPlan } from '../core/planner.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, updateSettings, onSettingsChange, MINE_SAFETY_LEVELS } from '../ui/settings.js';
+import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
+import { MINE_SAFETY_LEVELS } from '../core/settings-model.js';
 import { withLoading } from '../ui/loading.js';
-import { packageWeeklyCapacity, offerWeeklyCapacity, isOnSale, currencyCost } from '../core/catalog.js';
-import { createUnitCounter } from '../core/item-sources.js';
+import {
+    cheapestEventPackPrice,
+    currencyCost,
+    eventMaxSpend,
+    eventPacksOnSale,
+    offerWeeklyCapacity,
+} from '../core/catalog.js';
+import { hasOtherSource as itemHasOtherSource } from '../core/item-sources.js';
+import {
+    activeLocks,
+    eventItemTotals,
+    eventSelection,
+    hasOutsideCurrency as hasOutsideCurrencyIn,
+    withLock,
+} from '../core/event-plan.js';
+import { analyseEventSteps, eventPackSpend, eventPurchases } from '../core/step-analysis.js';
 import { selectCount } from '../core/items.js';
 import { urlParam, setUrlParams } from '../ui/url.js';
 import { packageDisplayName, itemDisplayName, itemLinkName, bundleLabel } from '../ui/labels.js';
@@ -35,8 +50,15 @@ import { infoIconHtml } from '../ui/info-icon.js';
 import { t, tHtml, getLocale, localizedName } from '../ui/i18n.js';
 import { formatThousands, formatSignificant } from '../ui/format.js';
 import { ratioBarHtml } from '../ui/ratio-bar.js';
-import { targetFloor, expectedDigs, floorsFor, pickaxeOdds, mineSegments, normalRewardBundle } from '../core/mine.js';
-import { scheduleRuns, runStatus, forecastRuns, gameDay } from '../core/schedule.js';
+import {
+    targetFloor,
+    floorsFor,
+    normalRewardBundle,
+    mineEconomics as computeMineEconomics,
+    mineProgressFor,
+    pityGroups,
+} from '../core/mine.js';
+import { planningRun, gameDay } from '../core/schedule.js';
 import { eventBannerHtml, eventImageUrl, scheduleTiming, startCountdowns } from '../ui/event-banner.js';
 
 // One tab per ticked event and per shop without event (VIP Shop): usually only a few, so one click each.
@@ -70,9 +92,6 @@ const stepsCard = document.getElementById('steps-card');
 const stepsTable = document.getElementById('steps-table');
 const stepsNote = document.getElementById('steps-note');
 
-// Event pack spend levels of the "how much to spend" table (beyond what your plan already spends).
-const STEP_LEVELS = [1000, 2000, 5000, 10000, 20000, 50000];
-
 let data = null;
 let settings = null;
 let valuation = null;
@@ -102,41 +121,11 @@ const headerCell = (key, num = false, wide = false) => gridHeader(t(`events.tabl
  * The selection: an event (`event:<id>`, with its shop and mine if any) or a shop without event (`shop:<id>`).
  */
 function selection() {
-    const [kind, id] = selectedKey.split(':');
-    if (kind === 'event' && data.events?.[id]) {
-        const shopEntry = Object.entries(data.exchange_shops || {}).find(([, shop]) => shop.event_id === id);
-        const mineEntry = Object.entries(data.mines || {}).find(([, mine]) => mine.event_id === id);
-        return {
-            eventId: id,
-            shopId: shopEntry?.[0] ?? null,
-            shop: shopEntry?.[1] ?? null,
-            mineId: mineEntry?.[0] ?? null,
-            mine: mineEntry?.[1] ?? null,
-        };
-    }
-    if (kind === 'shop' && data.exchange_shops?.[id]) {
-        return { eventId: null, shopId: id, shop: data.exchange_shops[id] };
-    }
-    return null;
+    return eventSelection(data, selectedKey);
 }
 
-/**
- * A shop whose currency also comes from outside the packs is selected: one without event (VIP Shop, Alliance Shop), or
- * of an event none of whose packs gives the shop's currency (Thief Hunt: lion coins come from killing thieves). The
- * user enters how much of it they get.
- */
-const hasOutsideCurrency = (selected) => {
-    const shop = selected?.shop;
-    if (!shop) {
-        return false;
-    }
-    return (
-        !shop.event_id ||
-        !Object.values(data.packages).some(
-            (pkg) => pkg.event_id === shop.event_id && pkg.contains?.[shop.currency_item_id] > 0,
-        )
-    );
-};
+/** Whether the selected shop's currency also comes from outside the packs (the user enters how much). */
+const hasOutsideCurrency = (selected) => hasOutsideCurrencyIn(data.packages, selected?.shop);
 
 /** Units per week of the selected shop's currency from outside the packs (the user's input). */
 const extraCurrencyOf = (selected) =>
@@ -145,30 +134,8 @@ const extraCurrencyOf = (selected) =>
 /** Extra Banknotes per week the user puts only into this event's packs (remembered per event). */
 const extraFor = (eventId) => (eventId && settings.extraEventBanknotes?.[eventId]) || 0;
 
-/**
- * The run a mine's inputs are about: the one on now (`days` left, today included), else the next one (all its
- * days; recorded or forecast). `{ state: 'running' | 'next', start, days }`, or null without a schedule.
- */
-function mineRun(eventId) {
-    const today = gameDay(new Date()).day;
-    const runs = scheduleRuns(data, today).get(eventId)?.runs || [];
-    const status = runStatus(runs, today);
-    if (status?.state === 'running') {
-        return { state: 'running', start: status.run.start, days: status.days + 1 };
-    }
-    const next =
-        status?.state === 'upcoming' ? status.run : forecastRuns(runs, { from: today, to: today + 366, today })[0];
-    return next ? { state: 'next', start: next.start, days: next.end - next.start + 1 } : null;
-}
-
-/** The pickaxes owned and the floor reached (only for the run it was entered for: the floors start again). */
-function mineProgressFor(mineId, run) {
-    const stored = settings.mineProgress?.[mineId];
-    return {
-        owned: stored?.pickaxes || 0,
-        floor: stored && run && stored.run === run.start ? stored.floor || 0 : 0,
-    };
-}
+/** The run a mine's inputs are about (schedule.js `planningRun`). */
+const mineRun = (eventId) => planningRun(data, eventId, gameDay(new Date()).day);
 
 /**
  * Planner options of this page: the selected event's extra Banknotes on top of the weekly spend; for a mine, the
@@ -186,7 +153,7 @@ function pageOverrides() {
         if (run) {
             overrides.eventDaysLeft = { [selected.eventId]: run.days };
         }
-        overrides.mineProgress = { [selected.mineId]: mineProgressFor(selected.mineId, run) };
+        overrides.mineProgress = { [selected.mineId]: mineProgressFor(settings.mineProgress?.[selected.mineId], run) };
         overrides.mineSafety = settings.minePlanSafety;
     }
     return overrides;
@@ -195,33 +162,19 @@ function pageOverrides() {
 /** The page overrides as a string, to tell whether the plan has to be solved again. */
 const overridesKey = () => JSON.stringify(pageOverrides());
 
-const eventPurchases = (plan, eventId) => plan.purchases.filter((p) => p.pkg.event_id === eventId);
-const eventPackSpend = (plan, eventId) => eventPurchases(plan, eventId).reduce((sum, p) => sum + p.spend, 0);
-
 /** Most Banknotes the event's packages can take per week. */
-function eventMaxSpend(eventId) {
-    const rules = { activeEventIds: new Set([eventId]), eventDaysLeft: pageOverrides().eventDaysLeft };
-    const packages = Object.entries(data.packages)
-        .filter(
-            ([id, pkg]) =>
-                pkg.event_id === eventId && isOnSale(id, pkg, rules) && packageWeeklyCapacity(pkg, rules) > 0,
-        )
-        .map(([, pkg]) => pkg);
-    return packages.reduce((sum, pkg) => sum + packageWeeklyCapacity(pkg, rules) * pkg.price, 0);
-}
+const maxSpendOf = (eventId) => eventMaxSpend(data.packages, eventId, { eventDaysLeft: pageOverrides().eventDaysLeft });
 
 /** Every pack of the event on sale (also the ones the plan skips), best ratio (worth ÷ price) first. */
 function eventPacks(eventId) {
-    const rules = { activeEventIds: new Set([eventId]), eventDaysLeft: pageOverrides().eventDaysLeft };
     const bought = new Map(eventPurchases(valuation.plan, eventId).map((p) => [p.id, p.count]));
-    return Object.entries(data.packages)
-        .filter(([id, pkg]) => pkg.event_id === eventId && isOnSale(id, pkg, rules))
-        .map(([id, pkg]) => {
+    return eventPacksOnSale(data.packages, eventId, { eventDaysLeft: pageOverrides().eventDaysLeft })
+        .map(({ id, pkg, limit }) => {
             const b = valuation.bundle(pkg, pkg.price);
             return {
                 id,
                 pkg,
-                limit: packageWeeklyCapacity(pkg, rules),
+                limit,
                 count: bought.get(id) || 0,
                 worth: b.worth,
                 ratio: b.incomplete ? null : b.ratio,
@@ -230,69 +183,19 @@ function eventPacks(eventId) {
         .sort((a, b) => (b.ratio ?? -1) - (a.ratio ?? -1));
 }
 
-/** Price of the event's cheapest pack (whole packs rarely hit a spend level exactly). */
-function cheapestEventPack(eventId) {
-    const prices = Object.entries(data.packages)
-        .filter(([id, pkg]) => pkg.event_id === eventId && isOnSale(id, pkg))
-        .map(([, pkg]) => pkg.price);
-    return prices.length > 0 ? Math.min(...prices) : 0;
-}
-
-/**
- * How much spending on the event is worth it: the weekly plan re-solved with the event's pack spend
- * at 0, at your plan's own spend E₀ and at round levels above it, the rest of your weekly spend
- * unchanged (budget = weekly spend + the event's extra Banknotes − E₀ + level). Step ratio = the step's extra points (in Banknotes
- * at your weekly spend) ÷ its extra Banknotes: at least 1 = still as good as your last Banknote.
- * Above E₀ a level only has to be reached within one cheapest pack (whole packs rarely hit it
- * exactly); levels the event can't reach, or that change nothing, are left out.
- */
+/** How much spending on the event is worth it (step-analysis.js `analyseEventSteps`). */
 function stepAnalysis(eventId) {
-    const base = valuation.plan;
-    const e0 = eventPackSpend(base, eventId);
-    const max = eventMaxSpend(eventId);
-    const levels = [...new Set([0, e0, ...STEP_LEVELS.filter((level) => level > e0 && level <= max)])].sort(
-        (a, b) => a - b,
-    );
-    const slack = cheapestEventPack(eventId) - 1;
-    const solveLevel = (level) => {
-        if (level === e0) {
-            return base;
-        }
-        try {
-            return solveWeeklyPlan(
-                valuation.highs,
-                data,
-                planOptions(data, settings, {
-                    ...pageOverrides(),
-                    // The level pins the event's spend; the extra Banknotes are part of the total here.
-                    eventBudget: null,
-                    budget: settings.budget + extraFor(eventId) - e0 + level,
-                    eventSpend: level < e0 ? { eventId, max: level } : { eventId, min: Math.max(e0, level - slack) },
-                }),
-            );
-        } catch {
-            return null; // level out of reach
-        }
-    };
-    let previous = null;
-    const steps = [];
-    for (const level of levels) {
-        const plan = solveLevel(level);
-        if (!plan || (previous && eventPackSpend(plan, eventId) === eventPackSpend(previous, eventId))) {
-            continue;
-        }
-        const step = {
-            isPlan: level === e0,
-            eventSpend: eventPackSpend(plan, eventId),
-            packs: eventPurchases(plan, eventId).map((p) => ({ pkg: p.pkg, count: p.count })),
-            stepCost: previous ? plan.spent - previous.spent : null,
-            stepWorth: previous ? (plan.totalPoints - previous.totalPoints) / valuation.rate : null,
-        };
-        step.ratio = step.stepCost > 0 ? step.stepWorth / step.stepCost : null;
-        previous = plan;
-        steps.push(step);
-    }
-    return steps;
+    return analyseEventSteps({
+        eventId,
+        base: valuation.plan,
+        rate: valuation.rate,
+        maxSpend: maxSpendOf(eventId),
+        cheapestPrice: cheapestEventPackPrice(data.packages, eventId),
+        budget: settings.budget,
+        extraBanknotes: extraFor(eventId),
+        solve: (overrides) =>
+            solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { ...pageOverrides(), ...overrides })),
+    });
 }
 
 const tileHtml = (label, body, wide = false) =>
@@ -422,58 +325,13 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
     enableInfoTooltips(eventSummary);
 }
 
-/**
- * Every item the plan gets from the event: the bought packs' contents (incl. the picked choice
- * options), the shop offers bought and the bonus tiers reached, minus what Encounters cost (diamonds),
- * and the mine's expected loot, wishes and progress rewards. The shop's coins and the mine's pickaxes are
- * left out (they're spent there). Sorted by worth.
- */
+/** Every item the plan gets from the event, sorted by worth (event-plan.js `eventItemTotals`). */
 function itemTotals({ eventId, shopId, shop, mineId, mine }) {
-    const plan = valuation.plan;
-    const totals = new Map();
-    const add = (id, qty) => totals.set(id, (totals.get(id) || 0) + qty);
-    if (eventId) {
-        for (const p of eventPurchases(plan, eventId)) {
-            for (const part of valuation.bundle(p.pkg, 0).parts) {
-                add(part.id, part.qty * p.count);
-            }
-        }
-    }
-    if (shop) {
-        for (const e of plan.exchanges.filter((x) => x.shopId === shopId)) {
-            add(e.offer.item_id, e.offer.quantity * e.count);
-        }
-        for (const tier of plan.tiersReached.filter((x) => x.shopId === shopId)) {
-            for (const [id, qty] of Object.entries(tier.reward)) {
-                add(id, qty);
-            }
-        }
-        const pointPurchase = plan.pointPurchases.find((p) => p.shopId === shopId);
-        if (shop.point_purchase && pointPurchase) {
-            add(shop.point_purchase.currency_item_id, -pointPurchase.count * shop.point_purchase.currency_cost);
-        }
-        totals.delete(shop.currency_item_id);
-    }
-    const dug = mine ? minePlan(mineId) : null;
-    if (dug) {
-        const bundles = [
-            dug.normalRewards,
-            ...dug.wishes.flatMap(({ reward, count }) =>
-                count > 0 ? [Object.fromEntries(Object.entries(reward).map(([id, qty]) => [id, qty * count]))] : [],
-            ),
-            ...dug.progressReached.map((floor) => mine.progress_rewards[String(floor)]),
-        ];
-        for (const bundle of bundles) {
-            for (const [id, qty] of Object.entries(bundle)) {
-                add(id, qty);
-            }
-        }
-        totals.delete(mine.currency_item_id);
-    }
-    return [...totals]
-        .filter(([, qty]) => Math.abs(qty) > 1e-9)
-        .map(([id, qty]) => ({ id, qty, worth: qty * (valuation.worth(id) ?? 0) }))
-        .sort((a, b) => b.worth - a.worth);
+    return eventItemTotals(
+        valuation.plan,
+        { eventId, shopId, shop, mine, dug: mine ? minePlan(mineId) : null },
+        { partsOf: (pkg) => valuation.bundle(pkg, 0).parts, worthOf: (id) => valuation.worth(id) },
+    );
 }
 
 /** Every pack of the event on sale, like the shop's offers: the ones the plan buys stand out. */
@@ -729,66 +587,20 @@ const minePlan = (mineId) => valuation.plan.mines.find((m) => m.mineId === mineI
 const floorPercent = (mine, floor) =>
     `${((100 * Math.min(Math.max(floor, 0), mine.floors)) / mine.floors).toFixed(2)}%`;
 
-/**
- * What the mine's floors cost and give from the floor reached: one row per stretch up to a progress reward
- * (worth = a wish per floor (the best for you), the normal loot and the progress reward; cost = what its
- * pickaxes cost in the packs on sale, floor by floor from the bottom: the owned and free pickaxes first, then
- * the cheapest pack per pickaxe within the limits of the days left, whole pack prices (see currencyCost), else
- * at their worth). The floors above the target floor follow (`segment.aboveTarget`: never dug, no progress reward). Also the pickaxes this run (`have`: owned, free, from the plan's packs), what the target
- * floor needs (on average, and `odds`: how safe that is, see pickaxeOdds) and what the packs could still give.
- */
+/** What the mine's floors cost and give from the floor reached (mine.js `mineEconomics`). */
 function mineEconomics(dug) {
     const { mine } = dug;
-    const pickaxeWorth = valuation.worth(mine.currency_item_id);
-    const wishWorths = mine.wish_rewards.map((reward) => valuation.bundle({ contains: reward }, 0).worth);
-    const bestWish = Math.max(0, ...wishWorths);
-    const packCost = (bought) =>
-        currencyCost(data.packages, mine.currency_item_id, bought, {
-            activeEventIds: new Set(settings.activeEvents),
-            seasonalPasses: settings.seasonalPasses,
-            eventDaysLeft: pageOverrides().eventDaysLeft,
-        });
-    // Banknotes for the first `pickaxes` pickaxes from the floor reached (the owned and free ones cost nothing).
-    const costUpTo = (pickaxes) => {
-        const bought = Math.max(0, pickaxes - dug.owned - dug.free.total);
-        const cost = packCost(bought);
-        return cost ? cost.banknotes : bought * pickaxeWorth;
-    };
-    // The floors above the target floor: listed with their worth and ratio, but never dug (planner.js).
-    const above =
-        dug.target > 0
-            ? mineSegments(mine, Math.max(dug.startFloor, dug.target)).map((segment) => ({
-                  ...segment,
-                  cleared: 0,
-                  aboveTarget: true,
-              }))
-            : [];
-    let pickaxesBelow = 0;
-    const rows = [...dug.segments, ...above].map((segment) => {
-        const loot = valuation.bundle({ contains: normalRewardBundle(mine, segment.normalDigs) }, 0).worth;
-        const reward = segment.reward ? valuation.bundle({ contains: segment.reward }, 0).worth : 0;
-        const worth = loot + segment.floors * bestWish + reward;
-        const cost = costUpTo(pickaxesBelow + segment.pickaxes) - costUpTo(pickaxesBelow);
-        pickaxesBelow += segment.pickaxes;
-        return { segment, worth, cost, ratio: cost > 0 ? worth / cost : null };
+    return computeMineEconomics(dug, {
+        pickaxeWorth: valuation.worth(mine.currency_item_id),
+        bundleWorth: (contents) => valuation.bundle({ contains: contents }, 0).worth,
+        coin: valuation.plan.currencies.get(mine.currency_item_id),
+        packCost: (bought) =>
+            currencyCost(data.packages, mine.currency_item_id, bought, {
+                activeEventIds: new Set(settings.activeEvents),
+                seasonalPasses: settings.seasonalPasses,
+                eventDaysLeft: pageOverrides().eventDaysLeft,
+            }),
     });
-    const toTarget = rows.filter(({ segment }) => segment.to <= dug.target);
-    const coin = valuation.plan.currencies.get(mine.currency_item_id);
-    const have = (coin?.received ?? 0) + (coin?.extra ?? 0);
-    const needed = toTarget.reduce((sum, { segment }) => sum + segment.pickaxes, 0);
-    return {
-        rows,
-        wishWorths,
-        have,
-        odds: dug.target > dug.startFloor ? pickaxeOdds(mine, dug.startFloor + 1, dug.target) : null,
-        fromPacks: coin?.received ?? 0,
-        spent: coin?.spent ?? 0,
-        needed,
-        worthToTarget: toTarget.reduce((sum, row) => sum + row.worth, 0),
-        costToTarget: costUpTo(needed) - costUpTo(have),
-        // Most pickaxes the packs give this run within their limits for the days left.
-        available: packCost(0)?.available ?? 0,
-    };
 }
 
 /** A key number of the verdict card: label above, value below. */
@@ -1229,18 +1041,13 @@ function renderMineRules(mine) {
         )
         .join(', ');
     // Last digits with the same pity side by side (…1 / …6: 5 digs).
-    const byPity = new Map();
-    for (const digit of [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]) {
-        const pity = mine.pity?.[String(digit)] ?? normals;
-        byPity.set(pity, [...(byPity.get(pity) || []), digit]);
-    }
     const cellText = (text) => `<td>${escapeHtml(text)}</td>`;
-    const pityRows = [...byPity]
+    const pityRows = pityGroups(mine)
         .map(
-            ([pity, digits]) =>
+            ({ pity, digits, averageDigs }) =>
                 `<tr>${cellText(digits.map((digit) => `…${digit}`).join(' / '))}${cellText(formatThousands(pity))}${cellText(
                     formatThousands(pity + 1),
-                )}${cellText(`≈ ${expectedDigs(mine, digits[0] || 10).digs.toFixed(1)}`)}</tr>`,
+                )}${cellText(`≈ ${averageDigs.toFixed(1)}`)}</tr>`,
         )
         .join('');
     const chips = (bundles) =>
@@ -1276,15 +1083,8 @@ function renderMineRules(mine) {
 /** Saves the "Must buy" locks of the shop table (the whole weekly plan follows them). */
 function wireLocks(shopId, shop) {
     // `count` null = unlock; 0 = never buy; otherwise exactly that many per week.
-    const save = (offerKey, count) => {
-        const lockedOffers = { ...settings.lockedOffers };
-        if (count === null) {
-            delete lockedOffers[`${shopId}:${offerKey}`];
-        } else {
-            lockedOffers[`${shopId}:${offerKey}`] = count;
-        }
-        updateSettings({ lockedOffers });
-    };
+    const save = (offerKey, count) =>
+        updateSettings({ lockedOffers: withLock(settings.lockedOffers, shopId, offerKey, count) });
     shopTable.querySelectorAll('[data-lock]').forEach((button) => {
         button.addEventListener('click', () => {
             const offerKey = button.dataset.lock;
@@ -1302,18 +1102,11 @@ function wireLocks(shopId, shop) {
     });
 }
 
-/** Whether any pack (nested) or another shop's offer gives the item (no "Only here" badge then). */
+/** Whether any pack (nested) or another shop's offer gives the item (no "Only here" badge then), per shop. */
 function hasOtherSource(shopId, itemId) {
     const cacheKey = `${shopId}:${itemId}`;
     if (!otherSourceCache.has(cacheKey)) {
-        const counter = createUnitCounter(data.items, itemId);
-        const fromPacks = Object.values(data.packages).some((pkg) => counter.ofBundle(pkg).units > 0);
-        const fromShops = Object.entries(data.exchange_shops || {}).some(
-            ([otherId, other]) =>
-                otherId !== shopId &&
-                Object.values(other.offers || {}).some((offer) => counter.ofItem(offer.item_id).units > 0),
-        );
-        otherSourceCache.set(cacheKey, fromPacks || fromShops);
+        otherSourceCache.set(cacheKey, itemHasOtherSource(data, shopId, itemId));
     }
     return otherSourceCache.get(cacheKey);
 }
@@ -1325,10 +1118,7 @@ function hasOtherSource(shopId, itemId) {
  */
 function renderLockNote() {
     const shops = data.exchange_shops || {};
-    const active = Object.keys(settings.lockedOffers || {}).filter((key) => {
-        const shop = shops[key.split(':')[0]];
-        return shop && (!shop.event_id || settings.activeEvents.includes(shop.event_id));
-    });
+    const active = activeLocks(settings.lockedOffers, shops, settings.activeEvents);
     lockNote.hidden = active.length === 0;
     if (active.length === 0) {
         return;
@@ -1377,7 +1167,7 @@ function renderLockNote() {
 
 function renderSteps({ eventId }) {
     // Only events with packages on sale have something to spend Banknotes on.
-    stepsCard.hidden = !eventId || !(eventMaxSpend(eventId) > 0);
+    stepsCard.hidden = !eventId || !(maxSpendOf(eventId) > 0);
     if (stepsCard.hidden) {
         return;
     }
@@ -1431,12 +1221,12 @@ function render() {
         extraCurrencyInput.step = selected.shop.event_id ? '1' : '1000';
         extraCurrencyInput.value = String(extraCurrencyOf(selected));
     }
-    extraBanknotesField.hidden = !(selected?.eventId && eventMaxSpend(selected.eventId) > 0);
+    extraBanknotesField.hidden = !(selected?.eventId && maxSpendOf(selected.eventId) > 0);
     extraBanknotesInput.value = String(extraFor(selected?.eventId));
     minePickaxesField.hidden = !selected?.mine;
     mineFloorField.hidden = !selected?.mine;
     if (selected?.mine) {
-        const progress = mineProgressFor(selected.mineId, mineRun(selected.eventId));
+        const progress = mineProgressFor(settings.mineProgress?.[selected.mineId], mineRun(selected.eventId));
         minePickaxesInput.value = String(progress.owned);
         mineFloorInput.value = String(progress.floor);
         mineFloorInput.max = String(selected.mine.floors);

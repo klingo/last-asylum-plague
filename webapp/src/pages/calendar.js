@@ -28,13 +28,12 @@ import { packageFamilyId } from '../core/pack-data.js';
 import {
     GAME_DAY_START_MS,
     dayDate,
-    forecastRuns,
     gameDay,
     isoWeekNumber,
     rotationSlots,
     rotationWindow,
     runStatus,
-    scheduleRuns,
+    scheduleBars,
     weekdayRuns,
     weekStart,
 } from '../core/schedule.js';
@@ -168,25 +167,15 @@ function renderSchedule() {
     const total = to - from + 1;
     scheduleWindow = { from, total };
 
-    const rows = [];
-    for (const [id, { kind, runs }] of scheduleRuns(packData, today)) {
-        const bars = [
-            // Runs that ended before today are greyed out (the proven forecast's too).
-            ...runs.map((run) => ({ ...run, past: run.end < today })),
-            ...forecastRuns(runs, { from, to, today }).map((run) => ({ ...run, forecast: true })),
-        ].filter((bar) => bar.end >= from && bar.start <= to);
-        if (bars.length > 0) {
-            rows.push({
-                kind,
-                name: scheduleName(packData, id),
-                description: localizedName(packData.events?.[id]?.description) || null,
-                bars,
-                first: bars[0].start,
-                image: eventImageUrl(scheduleImage(packData, id)),
-                href: scheduleHref(packData, id, getSettings().activeEvents),
-            });
-        }
-    }
+    const rows = scheduleBars(packData, today, from, to).map(({ id, kind, bars }) => ({
+        kind,
+        name: scheduleName(packData, id),
+        description: localizedName(packData.events?.[id]?.description) || null,
+        bars,
+        first: bars[0].start,
+        image: eventImageUrl(scheduleImage(packData, id)),
+        href: scheduleHref(packData, id, getSettings().activeEvents),
+    }));
 
     const body = section.querySelector('.schedule__body');
     section.hidden = false;

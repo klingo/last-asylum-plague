@@ -10,7 +10,7 @@ import { solveWeeklyPlan } from '../core/planner.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
-import { trackTiers, trackPointsForPrice } from '../core/spend-tracks.js';
+import { analyseTrackTiers } from '../core/step-analysis.js';
 import { gameDay, runContains, scheduleRuns } from '../core/schedule.js';
 import { banknotesHtml, hydrateItemIcons } from '../ui/html.js';
 import {
@@ -84,82 +84,16 @@ function detailsHtml(key, tier) {
     return gridDetails(key, expandedKeys, header + rows.join(''));
 }
 
-/**
- * Whether pushing past your weekly spend for the next tiers pays off. Starting point: your weekly
- * plan with the track running; tiers it already reaches are marked as such (no step). Each further
- * tier: the weekly plan at the tier's total spend minus the plan of the step before (your weekly
- * plan for the first one), i.e. the best packs the extra Banknotes still buy plus the tier reward,
- * in Banknotes at your weekly spend. Ratio = that ÷ the step's Banknotes: at least 1 = the step is
- * as good as your last Banknote at your weekly spend.
- */
+/** Whether pushing past the weekly spend for the next tiers pays off (step-analysis.js `analyseTrackTiers`). */
 function stepAnalysis(track, trackId) {
-    const activeTrackIds = new Set([trackId]);
-    const reachedTier = (plan, tier) =>
-        plan.trackTiersReached.some((r) => r.trackId === trackId && r.threshold === tier.threshold);
-    // The plan at about the threshold's worth of Banknotes (track points per Banknote ~1, rounded down by
-    // the pack prices), at least `floor`, a little more if the packs on sale can't quite reach it.
-    const solveTier = (tier, floor) => {
-        let budget = Math.max(floor, tier.cumulativeCost, trackPointsBudget(track, tier.threshold));
-        let plan = null;
-        for (let attempt = 0; attempt < 4; attempt++) {
-            plan = solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { budget, activeTrackIds }));
-            if (reachedTier(plan, tier)) {
-                break;
-            }
-            budget = Math.ceil(budget * 1.02);
-        }
-        return plan;
-    };
-    const base = solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { activeTrackIds }));
-    let previousPoints = base.totalPoints;
-    let previousSpent = base.spent;
-    // Tiers your weekly spend already reaches still show what each takes on its own (total spend and step
-    // ratio from the tier before, the first one from 0).
-    let reachedPoints = 0;
-    let reachedSpent = 0;
-    return trackTiers(track).map((tier) => {
-        const reward = valuation.bundle({ contains: tier.rewards }, 0);
-        if (reachedTier(base, tier)) {
-            const plan = solveTier(tier, 0);
-            const stepCost = plan.spent - reachedSpent;
-            const stepWorth = (plan.totalPoints - reachedPoints) / valuation.rate;
-            reachedPoints = plan.totalPoints;
-            reachedSpent = plan.spent;
-            return {
-                ...tier,
-                cumulativeCost: plan.spent,
-                stepCost,
-                reward,
-                reached: true,
-                atWeeklySpend: true,
-                stepWorth,
-                packsWorth: stepWorth - reward.worth,
-                ratio: stepCost > 0 ? stepWorth / stepCost : null,
-            };
-        }
-        const plan = solveTier(tier, settings.budget);
-        const stepCost = plan.spent - previousSpent;
-        const stepWorth = (plan.totalPoints - previousPoints) / valuation.rate;
-        previousPoints = plan.totalPoints;
-        previousSpent = plan.spent;
-        const reached = reachedTier(plan, tier);
-        return {
-            ...tier,
-            cumulativeCost: plan.spent,
-            stepCost,
-            reward,
-            reached,
-            stepWorth,
-            packsWorth: stepWorth - (reached ? reward.worth : 0),
-            ratio: stepCost > 0 ? stepWorth / stepCost : null,
-        };
+    return analyseTrackTiers({
+        track,
+        trackId,
+        rate: valuation.rate,
+        budget: settings.budget,
+        rewardOf: (tier) => valuation.bundle({ contains: tier.rewards }, 0),
+        solve: (overrides) => solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, overrides)),
     });
-}
-
-/** Banknotes that earn `points` track points at the track's typical rate. */
-function trackPointsBudget(track, points) {
-    const perBanknote = trackPointsForPrice(track, 1000) / 1000;
-    return Math.ceil(points / perBanknote);
 }
 
 let stepCache = { key: null, tiers: null };

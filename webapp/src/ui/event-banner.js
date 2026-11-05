@@ -6,8 +6,8 @@
  */
 import { getLocale, localizedName, t } from './i18n.js';
 import { escapeHtml } from './html.js';
-import { packageFamilyId } from '../core/pack-data.js';
-import { dayDate, forecastRuns, gameDay, runMoments, runStatus, scheduleRuns } from '../core/schedule.js';
+import { packageFamilyId, seasonalPassFamilies } from '../core/pack-data.js';
+import { dayDate, gameDay, nextRun, runMoments, runStatus, scheduleRuns } from '../core/schedule.js';
 
 const EVENT_IMAGES_URL = `${import.meta.env.BASE_URL}assets/events/`;
 // How far ahead a forecast is looked for ("next expected around …").
@@ -44,10 +44,7 @@ function scheduleName(data, id) {
  * Rewards, a seasonal pass on Seasonal Passes (in-game events have no page of their own); null otherwise.
  */
 function scheduleHref(data, id, activeEvents) {
-    const isSeasonalPass = Object.entries(data.packages || {}).some(
-        ([pkgId, pkg]) => pkg.seasonal && packageFamilyId(pkgId, pkg) === id,
-    );
-    if (isSeasonalPass) {
+    if (seasonalPassFamilies(data.packages).has(id)) {
         return `seasonal-passes.html?pass=${encodeURIComponent(id)}`;
     }
     if (data.events?.[id]?.category !== 'ingame_event' && activeEvents?.includes(id)) {
@@ -144,7 +141,7 @@ function scheduleTiming(data, id) {
         };
     }
     // The next forecast run still to come, said how sure it is.
-    const next = forecastRuns(runs, { from: today, to: today + FORECAST_DAYS, today })[0];
+    const next = nextRun(runs, today, FORECAST_DAYS);
     const expected = next
         ? ` · ${t(next.proven ? 'calendar.status.expected' : 'calendar.status.expectedGuess', { date: formatGameDay(next.start) })}`
         : '';

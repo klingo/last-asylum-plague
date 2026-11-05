@@ -10,9 +10,10 @@ import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
 import { gameDay } from '../core/schedule.js';
 import { skipUntilDay, activeSkips, expandSkips } from '../core/skips.js';
+import { notBoughtReasons } from '../core/plan-view.js';
 import { formatGameDay } from '../ui/event-banner.js';
 import { withLoading } from '../ui/loading.js';
-import { packageWeeklyCapacity, isOnSale, purchaseType, bundledPairs } from '../core/catalog.js';
+import { packageWeeklyCapacity, isOnSale, purchaseType } from '../core/catalog.js';
 import { packageDisplayName, packageDisplayText } from '../ui/labels.js';
 import { banknotesHtml, escapeHtml, hydrateItemIcons } from '../ui/html.js';
 import {
@@ -126,30 +127,17 @@ function skipCellHtml(entry) {
 }
 
 /**
- * Why the plan leaves packages out although they're on sale, beyond the spend: package id ->
- * `{ kind: 'bundle' | 'group', name }` (the bundle that includes it / the member of its group bought instead).
+ * Why the plan leaves packages out although they're on sale, beyond the spend (plan-view.js `notBoughtReasons`):
+ * package id -> `{ kind: 'bundle' | 'group', name }` (the bundle that includes it / the member of its group bought
+ * instead).
  */
-function notBoughtReasons(planned, locale) {
-    const reasons = new Map();
-    for (const [bundleId, includedId] of bundledPairs(data.packages)) {
-        if (planned.has(bundleId)) {
-            reasons.set(includedId, { kind: 'bundle', name: packageDisplayName(data.packages[bundleId], locale) });
-        }
-    }
-    const boughtInGroup = new Map();
-    for (const id of planned.keys()) {
-        const group = data.packages[id]?.exclusive_group;
-        if (group) {
-            boughtInGroup.set(group, id);
-        }
-    }
-    for (const [id, pkg] of Object.entries(data.packages)) {
-        const boughtId = pkg.exclusive_group && boughtInGroup.get(pkg.exclusive_group);
-        if (boughtId && boughtId !== id && !reasons.has(id)) {
-            reasons.set(id, { kind: 'group', name: packageDisplayName(data.packages[boughtId], locale) });
-        }
-    }
-    return reasons;
+function notBoughtNames(planned, locale) {
+    return new Map(
+        [...notBoughtReasons(data.packages, planned)].map(([id, { kind, causeId }]) => [
+            id,
+            { kind, name: packageDisplayName(data.packages[causeId], locale) },
+        ]),
+    );
 }
 
 /**
@@ -164,7 +152,7 @@ function buildEntries() {
     const activeEventIds = new Set(settings.activeEvents);
     const capacityRules = { activeEventIds, includePasses: true, includeExclusives: true };
     const planned = new Map(valuation.plan.purchases.map((p) => [p.id, p.count]));
-    const reasons = notBoughtReasons(planned, locale);
+    const reasons = notBoughtNames(planned, locale);
     // The packs skipped (still running), and the higher tiers the skip takes along: package id -> the one that causes it.
     const skipCauses = expandSkips(activeSkips(settings.skippedPackages, gameDay(new Date()).day), data.packages);
     const result = [];

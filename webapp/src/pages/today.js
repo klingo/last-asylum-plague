@@ -37,19 +37,10 @@ import {
     slotRangeText,
     startCountdowns,
 } from '../ui/event-banner.js';
-import { isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
+import { isOnSale } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
-import {
-    WEEKDAYS,
-    forecastRuns,
-    gameDay,
-    rotationSlots,
-    runContains,
-    runMoments,
-    scheduleRuns,
-    weekdayIndex,
-    weekdayOfferTiming,
-} from '../core/schedule.js';
+import { groupPlanByWhen } from '../core/plan-view.js';
+import { WEEKDAYS, gameDay, listRuns, rotationSlots, runMoments, weekdayIndex } from '../core/schedule.js';
 
 // An upcoming entry's fill grows over the last hours before it starts (the same for all, whatever it is).
 const SOON_FILL_MS = 4 * 3600000;
@@ -218,24 +209,9 @@ function updateProgress() {
 function renderSchedule() {
     const today = gameDay(new Date()).day;
     renderedDay = today;
-    const running = [];
-    const soon = [];
-    for (const [id, { kind, runs }] of scheduleRuns(data, today)) {
-        const current = runs.find((run) => runContains(run, today));
-        if (current) {
-            running.push(runEntry(id, kind, current, 'running', Boolean(current.forecast)));
-        }
-        // Forecasts only where the pattern has proven itself; a guess would be noise in a list of what's next.
-        const upcoming = [
-            ...runs.filter((run) => run.start > today),
-            ...forecastRuns(runs, { from: today + 1, to: today + SOON_DAYS, today })
-                .filter((run) => run.proven)
-                .map((run) => ({ ...run, forecast: true })),
-        ].filter((run) => run.start > today && run.start <= today + SOON_DAYS);
-        for (const run of upcoming) {
-            soon.push(runEntry(id, kind, run, 'upcoming', Boolean(run.forecast)));
-        }
-    }
+    const listed = listRuns(data, today, SOON_DAYS);
+    const running = listed.running.map(({ id, kind, run, forecast }) => runEntry(id, kind, run, 'running', forecast));
+    const soon = listed.soon.map(({ id, kind, run, forecast }) => runEntry(id, kind, run, 'upcoming', forecast));
     const now = Date.now();
     for (const rotation of Object.values(data.event_rotations || {})) {
         const { current, next } = rotationSlots(rotation, now);
@@ -344,12 +320,6 @@ function offerDetailsHtml(key, bundle) {
     return gridDetails(key, offerExpanded, rows.join(''));
 }
 
-/** The purchases a plan line asks for: whole ones, per period for monthly and biweekly packs. */
-function plannedPurchases(pkg, count) {
-    const periodic = pkg.limit_type === 'monthly' || pkg.limit_type === 'biweekly';
-    return Math.max(1, Math.round(periodic ? count / packageWeeklyCapacity(pkg) : count));
-}
-
 /** "×3 / week", "×1 / month": what the plan buys of a package in the unit its limit counts in. */
 function countText(pkg, planned) {
     if (pkg.limit_type === 'monthly' || pkg.limit_type === 'biweekly') {
@@ -368,49 +338,22 @@ const shoppingPlanHref = (shopId, shop) =>
 function renderPlan() {
     const plan = valuation.plan;
     const locale = getLocale();
-    const daily = [];
-    const weekly = [];
-    const rotation = [];
-    const byEvent = new Map();
-    const eventTile = (eventId) => {
-        if (!byEvent.has(eventId)) {
-            byEvent.set(eventId, { packs: [], offers: 0 });
-        }
-        return byEvent.get(eventId);
-    };
+    const grouped = groupPlanByWhen(plan, data, renderedDay);
     const line = (label, value, className = '') =>
         `<li${className ? ` class="${className}"` : ''}><span>${label}</span><span>${value}</span></li>`;
-    for (const { pkg, count, spend } of plan.purchases) {
-        const entry = [
-            packageDisplayName(pkg, locale),
-            countText(pkg, plannedPurchases(pkg, count)),
-            gold(formatThousands(spend, 0)),
-        ];
-        if (pkg.event_id) {
-            eventTile(pkg.event_id).packs.push(entry);
-        } else if (pkg.category === 'weekly_rotation') {
-            rotation.push([
-                ...entry,
-                `<span class="text-dim">${escapeHtml(formatDays(pkg.available_days))}</span>`,
-                weekdayOfferTiming(pkg.available_days, renderedDay),
-            ]);
-        } else if (pkg.limit_type === 'daily') {
-            daily.push(entry);
-        } else {
-            weekly.push(entry);
-        }
-    }
-    // Shop offers (how many different ones the plan buys, not how often): of an event's shop in that event's tile,
-    // the others (VIP Shop, ...) in one tile of their own.
-    const standing = new Map();
-    for (const { shopId } of plan.exchanges) {
-        const shop = data.exchange_shops[shopId];
-        if (shop.event_id) {
-            eventTile(shop.event_id).offers += 1;
-        } else {
-            standing.set(shopId, (standing.get(shopId) || 0) + 1);
-        }
-    }
+    const entryOf = ({ pkg, planned, spend }) => [
+        packageDisplayName(pkg, locale),
+        countText(pkg, planned),
+        gold(formatThousands(spend, 0)),
+    ];
+    const daily = grouped.daily.map(entryOf);
+    const weekly = grouped.weekly.map(entryOf);
+    const rotation = grouped.rotation.map((offer) => [
+        ...entryOf(offer),
+        `<span class="text-dim">${escapeHtml(formatDays(offer.pkg.available_days))}</span>`,
+        offer.timing,
+    ]);
+    const { byEvent, standing } = grouped;
 
     const packList = (entries) =>
         `<ul class="plan-list">${entries
@@ -447,7 +390,7 @@ function renderPlan() {
         tiles.push(
             tileHtml(
                 escapeHtml(localizedName(data.events[eventId].name)),
-                `${packs.length > 0 ? packList(packs) : ''}${offersLine}<div class="plan-stat"><a href="${href}">${t('today.openPlan')}</a></div>`,
+                `${packs.length > 0 ? packList(packs.map(entryOf)) : ''}${offersLine}<div class="plan-stat"><a href="${href}">${t('today.openPlan')}</a></div>`,
             ),
         );
     }

@@ -1,0 +1,84 @@
+[
+    {
+        "threshold": 1000,
+        "stepPoints": 1000,
+        "stepCost": 998,
+        "cumulativeCost": 998,
+        "reward": {
+            "worth": 225.376831
+        },
+        "reached": true,
+        "atWeeklySpend": true,
+        "stepWorth": 1825.90138,
+        "packsWorth": 1600.52455,
+        "ratio": 1.8295605
+    },
+    {
+        "threshold": 3000,
+        "stepPoints": 2000,
+        "stepCost": 2083.09917,
+        "cumulativeCost": 3081.09917,
+        "reward": {
+            "worth": 225.376831
+        },
+        "reached": true,
+        "atWeeklySpend": true,
+        "stepWorth": 3546.88403,
+        "packsWorth": 3321.5072,
+        "ratio": 1.70269572
+    },
+    {
+        "threshold": 10000,
+        "stepPoints": 7000,
+        "stepCost": 7074.09917,
+        "cumulativeCost": 10155.1983,
+        "reward": {
+            "worth": 450.753661
+        },
+        "reached": true,
+        "atWeeklySpend": true,
+        "stepWorth": 9161.61389,
+        "packsWorth": 8710.86023,
+        "ratio": 1.29509266
+    },
+    {
+        "threshold": 20000,
+        "stepPoints": 10000,
+        "stepCost": 10097,
+        "cumulativeCost": 20252.1983,
+        "reward": {
+            "worth": 901.507323
+        },
+        "reached": true,
+        "atWeeklySpend": true,
+        "stepWorth": 11327.7584,
+        "packsWorth": 10426.2511,
+        "ratio": 1.12189348
+    },
+    {
+        "threshold": 30000,
+        "stepPoints": 10000,
+        "stepCost": 10260.1983,
+        "cumulativeCost": 30250.1983,
+        "reward": {
+            "worth": 901.507323
+        },
+        "reached": true,
+        "stepWorth": 12102.1031,
+        "packsWorth": 11200.5957,
+        "ratio": 1.17951941
+    },
+    {
+        "threshold": 50000,
+        "stepPoints": 20000,
+        "stepCost": 20495,
+        "cumulativeCost": 50745.1983,
+        "reward": {
+            "worth": 1352.26098
+        },
+        "reached": true,
+        "stepWorth": 21540.9173,
+        "packsWorth": 20188.6563,
+        "ratio": 1.0510328
+    }
+]

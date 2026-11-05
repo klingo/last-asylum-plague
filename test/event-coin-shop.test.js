@@ -3,8 +3,7 @@ import assert from 'node:assert/strict';
 import { solveWeeklyPlan } from '../webapp/src/core/planner.js';
 import { fitItemPoints } from '../webapp/src/core/point-fit.js';
 import { loadHighs } from '../webapp/src/core/lp.js';
-import { DEFAULT_SETTINGS, priorityWeights } from '../webapp/src/ui/settings.js';
-import { loadFixture } from './helpers.js';
+import { loadFixture, defaultPlanOptions } from './helpers.js';
 
 // An event with no packs whose shop coin only comes from outside (Thief Hunt's lion coins: earned by killing thieves),
 // on the frozen fixture. The shop sells the same item at two prices, so the cheaper one has to be bought first.
@@ -23,17 +22,11 @@ data.exchange_shops.coin_hunt_shop = {
 const highs = await loadHighs();
 const fit = fitItemPoints(data);
 const plan = (coins) =>
-    solveWeeklyPlan(highs, data, {
-        budget: DEFAULT_SETTINGS.budget,
-        activeEventIds: new Set(['coin_hunt']),
-        seasonalPasses: [],
-        lockedOffers: {},
-        includePasses: true,
-        includeExclusives: false,
-        weights: priorityWeights(DEFAULT_SETTINGS),
-        basePoints: fit.points,
-        extraCurrency: { lion_coin: coins },
-    });
+    solveWeeklyPlan(
+        highs,
+        data,
+        defaultPlanOptions(fit, { activeEventIds: new Set(['coin_hunt']), extraCurrency: { lion_coin: coins } }),
+    );
 const shopBuys = (result) =>
     result.exchanges.filter(({ shopId }) => shopId === 'coin_hunt_shop').map(({ offer }) => offer.currency_cost);
 

@@ -7,8 +7,8 @@ import { fitItemPoints, fitSensitivity } from '../webapp/src/core/point-fit.js';
 import { solveWeeklyPlan } from '../webapp/src/core/planner.js';
 import { solveNeeds } from '../webapp/src/core/acquire.js';
 import { loadHighs } from '../webapp/src/core/lp.js';
-import { DEFAULT_SETTINGS, priorityWeights, zeroFitItems } from '../webapp/src/ui/settings.js';
-import { loadFixture, expectGolden } from './helpers.js';
+import { DEFAULT_SETTINGS, zeroFitItems } from '../webapp/src/core/settings-model.js';
+import { loadFixture, expectGolden, defaultPlanOptions } from './helpers.js';
 
 const data = loadFixture();
 const fit = fitItemPoints(data);
@@ -17,22 +17,10 @@ const defaultFit = fitItemPoints(data, { zeroItems: new Set(zeroFitItems(DEFAULT
 const highs = await loadHighs();
 
 /**
- * Planner options as valuation.js `planOptions` builds them from the default settings, but on the fit with VIP
- * points counted (the model as the game prices it); `plan-default-no-vip` pins the pages' default fit.
+ * Planner options of the default settings, but on the fit with VIP points counted (the model as the game prices
+ * it); `plan-default-no-vip` pins the pages' default fit.
  */
-function planOptions(overrides = {}) {
-    return {
-        budget: DEFAULT_SETTINGS.budget,
-        activeEventIds: new Set(),
-        seasonalPasses: [],
-        lockedOffers: {},
-        includePasses: true,
-        includeExclusives: false,
-        weights: priorityWeights(DEFAULT_SETTINGS),
-        basePoints: fit.points,
-        ...overrides,
-    };
-}
+const planOptions = (overrides = {}) => defaultPlanOptions(fit, overrides);
 
 /** Everything the pages read from a weekly plan. */
 function planSummary(plan) {

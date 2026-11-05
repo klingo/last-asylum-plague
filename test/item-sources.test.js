@@ -1,5 +1,12 @@
 import { test } from 'node:test';
-import { createUnitCounter, isContainerItem, isValueLevel, itemChainTops } from '../webapp/src/core/item-sources.js';
+import assert from 'node:assert/strict';
+import {
+    createUnitCounter,
+    hasOtherSource,
+    isContainerItem,
+    isValueLevel,
+    itemChainTops,
+} from '../webapp/src/core/item-sources.js';
 import { loadFixture, expectGolden } from './helpers.js';
 
 const data = loadFixture();
@@ -33,4 +40,18 @@ test('units of an item per purchase (Item Sources, "Only here")', () => {
         chainTops: itemChainTops(data.items),
         convertibleChainTops: itemChainTops(data.items, { convertibleOnly: true }),
     });
+});
+
+test('an item with another source than one shop ("Only here" otherwise)', () => {
+    const shop = (itemId) => ({ offers: { o: { item_id: itemId } } });
+    const base = {
+        items: { gem: {}, ore: {}, chest: { type: 'random', drop_table: [{ probability: 1, contains: { ore: 1 } }] } },
+        packages: { pack: { contains: { chest: 1 } } },
+        exchange_shops: { a: shop('gem'), b: shop('gem'), c: shop('ore') },
+    };
+    // Gems only come from the shops: another shop (b) is another source for a, but not for itself alone.
+    assert.equal(hasOtherSource(base, 'a', 'gem'), true);
+    assert.equal(hasOtherSource({ ...base, exchange_shops: { a: shop('gem') } }, 'a', 'gem'), false);
+    // Ore comes from a pack (inside a random chest) too.
+    assert.equal(hasOtherSource({ ...base, exchange_shops: { c: shop('ore') } }, 'c', 'ore'), true);
 });

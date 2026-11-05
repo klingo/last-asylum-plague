@@ -209,6 +209,32 @@ function currencyCost(
     return { banknotes, packIds, available: packs.reduce((sum, pack) => sum + pack.coinsPerWeek, 0) };
 }
 
+/**
+ * The (flattened) packages of an event on sale while it runs, `[{ id, pkg, limit }]` (`limit`: purchases per week,
+ * also the ones the plan skips). `eventDaysLeft` as in packageWeeklyCapacity.
+ */
+function eventPacksOnSale(packages, eventId, { eventDaysLeft = null } = {}) {
+    const rules = { activeEventIds: new Set([eventId]), eventDaysLeft };
+    return Object.entries(packages)
+        .filter(([id, pkg]) => pkg.event_id === eventId && isOnSale(id, pkg, rules))
+        .map(([id, pkg]) => ({ id, pkg, limit: packageWeeklyCapacity(pkg, rules) }));
+}
+
+/** Most Banknotes the event's packages can take per week. */
+function eventMaxSpend(packages, eventId, options) {
+    return eventPacksOnSale(packages, eventId, options)
+        .filter(({ limit }) => limit > 0)
+        .reduce((sum, { pkg, limit }) => sum + limit * pkg.price, 0);
+}
+
+/** Price of the event's cheapest pack on sale (whole packs rarely hit a spend level exactly); 0 without one. */
+function cheapestEventPackPrice(packages, eventId) {
+    const prices = Object.entries(packages)
+        .filter(([id, pkg]) => pkg.event_id === eventId && isOnSale(id, pkg))
+        .map(([, pkg]) => pkg.price);
+    return prices.length > 0 ? Math.min(...prices) : 0;
+}
+
 /** Purchases per week of an exchange-shop offer; 0 if the shop's event isn't active. */
 function offerWeeklyCapacity(offer, shop, { activeEventIds = null } = {}) {
     if (shop.event_id && !isEventActive(shop.event_id, activeEventIds)) {
@@ -290,6 +316,9 @@ export {
     isOnSale,
     currencyItemIds,
     packageWeeklyCapacity,
+    eventPacksOnSale,
+    eventMaxSpend,
+    cheapestEventPackPrice,
     offerWeeklyCapacity,
     currencyCost,
     deliveryPeriod,

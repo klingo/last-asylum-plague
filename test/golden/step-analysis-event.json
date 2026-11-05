@@ -1,0 +1,67 @@
+[
+    {
+        "isPlan": false,
+        "eventSpend": 0,
+        "packs": {},
+        "stepCost": null,
+        "stepWorth": null,
+        "ratio": null
+    },
+    {
+        "isPlan": true,
+        "eventSpend": 2495,
+        "packs": {
+            "Strange Bazaar Select Pack": 5
+        },
+        "stepCost": 2495,
+        "stepWorth": 3471.64432,
+        "ratio": 1.39144061
+    },
+    {
+        "isPlan": false,
+        "eventSpend": 5492,
+        "packs": {
+            "Strange Bazaar Rare Pack": 1,
+            "Strange Bazaar Select Pack": 7
+        },
+        "stepCost": 2498,
+        "stepWorth": 1967.02275,
+        "ratio": 0.787439051
+    },
+    {
+        "isPlan": false,
+        "eventSpend": 9990,
+        "packs": {
+            "Strange Bazaar Exquisite Pack": 1,
+            "Strange Bazaar Rare Pack": 3,
+            "Strange Bazaar Select Pack": 6
+        },
+        "stepCost": 4997,
+        "stepWorth": 3438.23841,
+        "ratio": 0.688060518
+    },
+    {
+        "isPlan": false,
+        "eventSpend": 19990,
+        "packs": {
+            "Strange Bazaar Premium Pack": 3,
+            "Strange Bazaar Rare Pack": 1,
+            "Strange Bazaar Select Pack": 6
+        },
+        "stepCost": 10000,
+        "stepWorth": 5303.39083,
+        "ratio": 0.530339083
+    },
+    {
+        "isPlan": false,
+        "eventSpend": 49983,
+        "packs": {
+            "Strange Bazaar Exquisite Pack": 2,
+            "Strange Bazaar Premium Pack": 9,
+            "Strange Bazaar Select Pack": 6
+        },
+        "stepCost": 29993,
+        "stepWorth": 16387.0704,
+        "ratio": 0.546363165
+    }
+]

@@ -6,8 +6,11 @@ import {
     expectedDigs,
     pickaxeOdds,
     floorsFor,
+    mineEconomics,
+    mineProgressFor,
     mineSegments,
     normalRewardBundle,
+    pityGroups,
 } from '../webapp/src/core/mine.js';
 import { solveWeeklyPlan } from '../webapp/src/core/planner.js';
 import { loadHighs } from '../webapp/src/core/lp.js';
@@ -205,4 +208,74 @@ test('mine: the weekly plan digs a run only if it reaches the last progress rewa
     const past = plan(0, { eventDaysLeft: { dig: 1 }, mineProgress: { dig_mine: { owned: 20, floor: 10 } } });
     assert.equal(past.digs, false);
     assert.equal(past.floorReached, 10);
+});
+
+test('mine: the floor reached only counts for the run it was entered for', () => {
+    const stored = { pickaxes: 12, floor: 40, run: 100 };
+    assert.deepEqual(mineProgressFor(stored, { start: 100 }), { owned: 12, floor: 40 });
+    assert.deepEqual(mineProgressFor(stored, { start: 107 }), { owned: 12, floor: 0 }, 'a later run starts over');
+    assert.deepEqual(mineProgressFor(stored, null), { owned: 12, floor: 0 });
+    assert.deepEqual(mineProgressFor(undefined, { start: 100 }), { owned: 0, floor: 0 });
+});
+
+test('mine: last digits with the same pity are listed together', () => {
+    const groups = pityGroups({ ...RULES, floors: 200 });
+    assert.deepEqual(
+        groups.map(({ pity, digits }) => [pity, digits]),
+        [
+            [5, [1, 4, 6, 9]],
+            [6, [2, 7]],
+            [8, [3, 8]],
+            [10, [5, 0]],
+        ],
+    );
+    near(groups[0].averageDigs, 5.708);
+    near(groups[3].averageDigs, 8.226, 3);
+    // A last digit without a pity needs every normal tile first.
+    assert.deepEqual(
+        pityGroups({ ...RULES, floors: 200, pity: {} }).map(({ pity }) => pity),
+        [11],
+    );
+});
+
+test('mine: what the floors cost and give, with the pickaxes bought from the packs', () => {
+    const mine = {
+        ...RULES,
+        floors: 10,
+        progress_rewards: { 5: { gem: 1 } },
+        normal_rewards: [{ gem: 11 }],
+        wish_rewards: [{ wish: 1 }, { wish: 3 }],
+    };
+    const segments = mineSegments(mine).filter((segment) => segment.to <= 5);
+    const dug = { mine, owned: 0, free: { total: 0 }, startFloor: 0, target: 5, segments };
+    // Every item is worth 2 Banknotes, a pickaxe 3 (when no pack sells them); the packs sell them at 4 each.
+    const bundleWorth = (contents) => 2 * Object.values(contents).reduce((sum, qty) => sum + qty, 0);
+    const pricing = {
+        pickaxeWorth: 3,
+        bundleWorth,
+        coin: { received: 10, extra: 0, spent: 4 },
+        packCost: (bought) => ({ banknotes: 4 * bought, available: 50 }),
+    };
+    const economics = mineEconomics(dug, pricing);
+    // The stretch to the progress reward, then the floors above the target (never dug).
+    assert.deepEqual(
+        economics.rows.map(({ segment }) => [segment.from, segment.to, Boolean(segment.aboveTarget)]),
+        [
+            [1, 5, false],
+            [6, 10, true],
+        ],
+    );
+    const first = economics.rows[0];
+    const loot = bundleWorth(normalRewardBundle(mine, first.segment.normalDigs));
+    near(first.worth, loot + 5 * 6 + 2, 6); // loot + 5 wishes at the best (3 x 2) + the progress reward (1 x 2)
+    near(first.cost, 4 * first.segment.pickaxes, 6);
+    near(first.ratio, first.worth / first.cost, 9);
+    assert.deepEqual(economics.wishWorths, [2, 6]);
+    assert.equal(economics.have, 10);
+    assert.equal(economics.fromPacks, 10);
+    assert.equal(economics.spent, 4);
+    assert.equal(economics.available, 50);
+    near(economics.needed, first.segment.pickaxes, 9);
+    near(economics.costToTarget, 4 * (economics.needed - 10), 6);
+    assert.ok(economics.odds.mean > 0);
 });

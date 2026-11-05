@@ -10,7 +10,7 @@ import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { packageWeeklyCapacity } from '../core/catalog.js';
-import { packageFamilyId } from '../core/pack-data.js';
+import { packageFamilyId, seasonalPassFamilies } from '../core/pack-data.js';
 import { gameDay, runContains, scheduleRuns } from '../core/schedule.js';
 import { banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
 import { itemLinkName, packageDisplayName } from '../ui/labels.js';
@@ -64,19 +64,7 @@ const tileHtml = (label, body, wide = false) =>
     `<div class="plan-tile${wide ? ' plan-tile--wide' : ''}"><div class="plan-tile__label">${label}</div><div class="plan-tile__body">${body}</div></div>`;
 
 /** The seasonal pass families: familyId -> its tiers `[{ id, pkg }]`, lowest tier first. */
-function passFamilies() {
-    const families = new Map();
-    for (const [id, pkg] of Object.entries(data.packages || {})) {
-        if (pkg.seasonal) {
-            const familyId = packageFamilyId(id, pkg);
-            families.set(familyId, [...(families.get(familyId) || []), { id, pkg }]);
-        }
-    }
-    for (const tiers of families.values()) {
-        tiers.sort((a, b) => (a.pkg.tier ?? 0) - (b.pkg.tier ?? 0));
-    }
-    return families;
-}
+const passFamilies = () => seasonalPassFamilies(data.packages);
 
 /** The pass's name: its first tier's, without the tier suffix. */
 const passName = (tiers) => localizedName(tiers[0].pkg.name);

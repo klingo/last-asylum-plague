@@ -9,10 +9,9 @@
  */
 import { fitItemPoints } from '../core/point-fit.js';
 import { gameDay } from '../core/schedule.js';
-import { activeSkips } from '../core/skips.js';
 import { solveWeeklyPlan } from '../core/planner.js';
+import { planOptions as corePlanOptions, zeroFitItems } from '../core/settings-model.js';
 import { loadBrowserHighs } from './highs-browser.js';
-import { priorityWeights, zeroFitItems } from './settings.js';
 import { t } from './i18n.js';
 import { formatThousands } from './format.js';
 
@@ -28,24 +27,10 @@ function pointFit(data, settings) {
     return fitCache.fit;
 }
 
-/** Solver options for the weekly plan of `settings` (also used for what-if budgets). */
+/** Solver options for the weekly plan of `settings` today (also used for what-if budgets), see settings-model.js. */
 function planOptions(data, settings, overrides = {}) {
-    return {
-        budget: settings.budget,
-        activeEventIds: new Set(settings.activeEvents),
-        seasonalPasses: settings.seasonalPasses,
-        // "Must buy" shop offers shape the one plan on every page.
-        lockedOffers: settings.lockedOffers,
-        // Packs the user skipped on the Deal Ranking (not bought, nor the higher tiers that need them).
-        skippedPackages: activeSkips(settings.skippedPackages, gameDay(new Date()).day),
-        // Currency from outside the packs ("Extra ... per week" of a shop without event, Events page).
-        extraCurrency: settings.extraCurrency,
-        includePasses: true,
-        includeExclusives: false,
-        weights: priorityWeights(settings),
-        basePoints: pointFit(data, settings).points,
-        ...overrides,
-    };
+    const context = { today: gameDay(new Date()).day, basePoints: pointFit(data, settings).points };
+    return corePlanOptions(settings, context, overrides);
 }
 
 /** `overrides`: extra planner options for a what-if valuation (e.g. the Events page's extra Banknotes). */

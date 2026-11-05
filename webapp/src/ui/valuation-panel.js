@@ -14,7 +14,7 @@
  */
 import { localizedName, applyStaticTranslations, t, tHtml } from './i18n.js';
 import { getSettings, updateSettings, onSettingsChange, SETTINGS_KEY } from './settings.js';
-import { packageFamilyId } from '../core/pack-data.js';
+import { seasonalPassFamilies } from '../core/pack-data.js';
 import { runningToday, calendarSelection } from './calendar-sync.js';
 import { escapeHtml, escapeAttr } from './html.js';
 import { banknoteIconHtml } from './images.js';
@@ -27,13 +27,7 @@ const OPEN_KEY = 'lasps_setup_open';
 
 /** Seasonal package families (one entry per tier ladder): [familyId, { name }]. */
 function passFamilies(packages) {
-    const families = new Map();
-    for (const [id, pkg] of Object.entries(packages || {})) {
-        if (pkg.seasonal && !families.has(packageFamilyId(id, pkg))) {
-            families.set(packageFamilyId(id, pkg), { name: pkg.name });
-        }
-    }
-    return [...families];
+    return [...seasonalPassFamilies(packages)].map(([familyId, tiers]) => [familyId, { name: tiers[0].pkg.name }]);
 }
 
 const ALL_FIELDS = ['budget', 'events', 'passes'];

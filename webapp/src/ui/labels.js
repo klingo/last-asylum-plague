@@ -6,7 +6,7 @@
 import { localizedName, t } from './i18n.js';
 import { formatThousands } from './format.js';
 import { escapeHtml } from './html.js';
-import { DEFAULT_NONE_ITEMS } from './settings.js';
+import { DEFAULT_NONE_ITEMS } from '../core/settings-model.js';
 import { itemSourcesHref } from './url.js';
 import { sourcesListing } from '../core/item-sources.js';
 import { gameDay, weekdayIndex } from '../core/schedule.js';

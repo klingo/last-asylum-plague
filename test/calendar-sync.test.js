@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { calendarSelection, followCalendar } from '../webapp/src/ui/calendar-sync.js';
+import { calendarSelection, gameDay } from '../webapp/src/core/schedule.js';
+import { followCalendar } from '../webapp/src/ui/calendar-sync.js';
 import { getSettings, updateSettings } from '../webapp/src/ui/settings.js';
 
 // One event and one seasonal pass running now, one event that ended, one in-game event (not selectable).
@@ -20,7 +21,10 @@ const data = {
 };
 
 test('calendar: what runs today is selected, in-game events are not', () => {
-    assert.deepEqual(calendarSelection(data), { activeEvents: ['mine'], seasonalPasses: ['gear_pass'] });
+    assert.deepEqual(calendarSelection(data, gameDay(new Date()).day), {
+        activeEvents: ['mine'],
+        seasonalPasses: ['gear_pass'],
+    });
 });
 
 test('calendar: while following, every page load applies the calendar; off, the selection is left alone', () => {

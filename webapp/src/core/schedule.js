@@ -13,6 +13,7 @@
  * Pure module: no clock of its own, callers pass `today` / `nowMs`.
  */
 
+import { seasonalPassFamilies } from './pack-data.js';
 import { median } from './stats.js';
 
 const HOUR_MS = 3600000;
@@ -104,6 +105,77 @@ function scheduleRuns(data, today) {
         result.set(id, { kind, runs: days });
     }
     return result;
+}
+
+/**
+ * Ids (events, pass families, tracks) with a run on game day `today`: recorded, or a proven pattern.
+ */
+function runningToday(data, today) {
+    return new Set(
+        [...scheduleRuns(data, today)]
+            .filter(([, { runs }]) => runs.some((run) => runContains(run, today)))
+            .map(([id]) => id),
+    );
+}
+
+/**
+ * What the calendar selects on game day `today`: `{ activeEvents, seasonalPasses }`. Gameplay events (no packs, no
+ * shop) aren't selectable; seasonal passes by package family.
+ */
+function calendarSelection(data, today) {
+    const running = runningToday(data, today);
+    const passFamilies = seasonalPassFamilies(data.packages).keys();
+    return {
+        activeEvents: Object.entries(data.events || {})
+            .filter(([id, event]) => event.category !== 'ingame_event' && running.has(id))
+            .map(([id]) => id),
+        seasonalPasses: [...passFamilies].filter((id) => running.has(id)),
+    };
+}
+
+/**
+ * What runs on game day `today` and what starts within the next `soonDays` days: `{ running, soon }`, each a list of
+ * `{ id, kind, run, forecast }` (the run is `{ start, end }`, `forecast` true for a run of a proven pattern that isn't
+ * recorded). Forecasts only where the pattern has proven itself; a guess would be noise in a list of what's next.
+ */
+function listRuns(data, today, soonDays) {
+    const running = [];
+    const soon = [];
+    for (const [id, { kind, runs }] of scheduleRuns(data, today)) {
+        const current = runs.find((run) => runContains(run, today));
+        if (current) {
+            running.push({ id, kind, run: current, forecast: Boolean(current.forecast) });
+        }
+        const upcoming = [
+            ...runs.filter((run) => run.start > today),
+            ...forecastRuns(runs, { from: today + 1, to: today + soonDays, today })
+                .filter((run) => run.proven)
+                .map((run) => ({ ...run, forecast: true })),
+        ].filter((run) => run.start > today && run.start <= today + soonDays);
+        for (const run of upcoming) {
+            soon.push({ id, kind, run, forecast: Boolean(run.forecast) });
+        }
+    }
+    return { running, soon };
+}
+
+/**
+ * The schedule between game days `from` and `to` as timeline bars: per id with a run in that window
+ * `{ id, kind, bars }`, the bars `{ start, end, past, forecast?, ... }` oldest first: the recorded runs (`past`: ended
+ * before `today`, the proven forecast's too) and the forecast to come (forecastRuns).
+ */
+function scheduleBars(data, today, from, to) {
+    const rows = [];
+    for (const [id, { kind, runs }] of scheduleRuns(data, today)) {
+        const bars = [
+            ...runs.map((run) => ({ ...run, past: run.end < today })),
+            ...forecastRuns(runs, { from, to, today }).map((run) => ({ ...run, forecast: true })),
+        ].filter((bar) => bar.end >= from && bar.start <= to);
+        if (bars.length > 0) {
+            rows.push({ id, kind, bars });
+        }
+    }
+    return rows;
 }
 
 /**
@@ -253,6 +325,30 @@ function runStatus(runs, today) {
 }
 
 /**
+ * The next run to come after `today`: the recorded (or proven) one that starts first, else the first forecast run
+ * within `horizon` days (see forecastRuns); null if there is none.
+ */
+function nextRun(runs, today, horizon = 366) {
+    const upcoming = runs.filter((run) => run.start > today).sort((a, b) => a.start - b.start)[0];
+    return upcoming ?? forecastRuns(runs, { from: today, to: today + horizon, today })[0] ?? null;
+}
+
+/**
+ * The run a plan for schedule id `id` is about (a mine's inputs): the one on now (`days` left, today included), else
+ * the next one (all its days; recorded or forecast). `{ state: 'running' | 'next', start, days }`, or null without a
+ * schedule.
+ */
+function planningRun(data, id, today) {
+    const runs = scheduleRuns(data, today).get(id)?.runs || [];
+    const status = runStatus(runs, today);
+    if (status?.state === 'running') {
+        return { state: 'running', start: status.run.start, days: status.days + 1 };
+    }
+    const next = nextRun(runs, today);
+    return next ? { state: 'next', start: next.start, days: next.end - next.start + 1 } : null;
+}
+
+/**
  * The exact moments (ms timestamps) a run starts and ends: runs start and end at the game day's reset, so it starts
  * at 02:00 UTC on its first day and ends at 02:00 UTC after its last one.
  */
@@ -313,12 +409,9 @@ function rotationWindow(rotation, fromMs, toMs) {
 }
 
 export {
-    DAY_MS,
     DAYS_PER_WEEK,
     HOUR_MS,
-    STALE_DAYS,
     WEEKDAYS,
-    dayNumber,
     dayDate,
     gameDay,
     GAME_DAY_START_MS,
@@ -326,11 +419,17 @@ export {
     weekStart,
     isoWeekNumber,
     runContains,
+    runningToday,
+    calendarSelection,
+    listRuns,
+    scheduleBars,
     scheduleRuns,
     forecastRuns,
     weekdayRuns,
     weekdayOfferTiming,
     runStatus,
+    nextRun,
+    planningRun,
     runMoments,
     rotationSlots,
     rotationWindow,

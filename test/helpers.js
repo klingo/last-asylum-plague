@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { normalizePackData } from '../webapp/src/core/pack-data.js';
+import { DEFAULT_SETTINGS, planOptions } from '../webapp/src/core/settings-model.js';
 
 const FIXTURE_PATH = path.join(import.meta.dirname, 'fixtures', 'pack_data.json');
 const GOLDEN_DIR = path.join(import.meta.dirname, 'golden');
@@ -74,4 +75,12 @@ function expectGolden(name, value) {
     compare(actual, JSON.parse(fs.readFileSync(file, 'utf8')), name);
 }
 
-export { loadFixture, expectGolden };
+/**
+ * Planner options as the pages build them from the default settings (plus `settings`), on the points of `fit`;
+ * `overrides` win (settings-model.js `planOptions`).
+ */
+function defaultPlanOptions(fit, overrides = {}, settings = {}) {
+    return planOptions({ ...DEFAULT_SETTINGS, ...settings }, { today: 0, basePoints: fit.points }, overrides);
+}
+
+export { loadFixture, expectGolden, defaultPlanOptions };

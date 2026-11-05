@@ -16,9 +16,7 @@ import { formatThousands } from '../ui/format.js';
 import {
     MR_STEP,
     applyStep,
-    crossNeeds,
     initialState,
-    mergePaths,
     starIcons,
     starStep,
     starsOfStep,
@@ -26,11 +24,11 @@ import {
     stepItems,
     stepSlots,
 } from '../core/gear-path.js';
+import { createProgress } from '../core/gear-progress.js';
 
 const ASSETS = `${import.meta.env.BASE_URL}assets/`;
 const STORAGE_KEY = 'lasps_gear_progress';
 const PATHS = ['craft', 'level', 'stars'];
-const UPGRADES = ['level', 'stars'];
 // In this order on the faction switch.
 const FACTIONS = ['warrior', 'ranger', 'warlock'];
 // The page's icons: the same in the guide and in "How it works". Factions and classes have the game's images
@@ -51,14 +49,8 @@ let gearSet = null;
 // The factions with a hero in every slot, and the one shown.
 let factions = [];
 let shownFaction = null;
-// The three paths merged (mergePaths: crafting first, levels and stars in an order that keeps their
-// dependencies), and per path its entries in its own order.
-let merged = [];
-let entriesOf = {};
-// The progress: per queue the steps done (by their position n in that queue), in the order they were done (for
-// Undo). Steps can be done out of order: the 5 ★ steps wait while there's no Gear Blueprint (MR) (`mrOnHold`).
-const done = { craft: [], level: [], stars: [] };
-let mrOnHold = false;
+// The progress of the faction shown (core/gear-progress.js): the three paths merged, what is done, what is next.
+let progress = null;
 // Which full step lists are open ("Show all steps"), kept across re-renders.
 const openLists = new Set();
 
@@ -76,65 +68,6 @@ const classIcon = (heroClass) => `<img class="gear-badge" src="${ASSETS}classes/
 const laneName = (path) => `${LANE_ICONS[path]} ${t(`gear.lane.${path}`)}`;
 // Stars as written in the game (2.6, 4), one decimal at most, in the app's number style in every language.
 const formatStars = (stars) => formatThousands(Number(stars.toFixed(1)));
-const isDone = (entry) => done[entry.path].includes(entry.n);
-const doneCount = (path) => done[path].length;
-const craftComplete = () => doneCount('craft') >= entriesOf.craft.length;
-// A 5 ★ step: it uses the gear set's MR blueprint.
-const isMrStep = (entry) => entry.path === 'stars' && entry.step.stars === 5;
-const isHeld = (entry) => mrOnHold && isMrStep(entry) && !isDone(entry);
-
-/**
- * Per level / star entry: the step of the other queue it needs done first (`needs`: { path, n, stars | level }), from
- * crossNeeds (Lv 60 needs 4 stars, stars need their minimum level); null if none.
- */
-function addRequirements() {
-    // Each path in its own order (crossNeeds): a step the other path never makes possible gets `n: null` and
-    // stays blocked.
-    const cross = crossNeeds(guide, gearSet);
-    for (const entry of merged) {
-        entry.needs = entry.kind === 'craft' ? null : cross[entry.path][entry.n];
-    }
-}
-
-/** A queue's next step: its first step not done yet (and not on hold). */
-function nextOf(path) {
-    return entriesOf[path].find((entry) => !isDone(entry) && !isHeld(entry)) || null;
-}
-
-/** A step can be done now: crafting is complete (for upgrades) and the step it needs from the other queue is done. */
-function canDo(entry) {
-    if (entry.kind === 'craft') {
-        return true;
-    }
-    return (
-        craftComplete() && (!entry.needs || (entry.needs.n !== null && done[entry.needs.path].includes(entry.needs.n)))
-    );
-}
-
-/** A done step can be undone: crafting only while nothing is upgraded; an upgrade only while no done step needs it. */
-function canUndoEntry(entry) {
-    if (entry.kind === 'craft') {
-        return doneCount('level') === 0 && doneCount('stars') === 0;
-    }
-    return !merged.some((other) => isDone(other) && other.needs?.path === entry.path && other.needs.n === entry.n);
-}
-
-function canAdvance(path) {
-    const next = nextOf(path);
-    return Boolean(next) && canDo(next);
-}
-
-/** The step Undo takes back: the queue's last done one. */
-function lastDone(path) {
-    const n = done[path].at(-1);
-    return n === undefined ? null : entriesOf[path][n];
-}
-
-function canUndo(path) {
-    const last = lastDone(path);
-    return Boolean(last) && canUndoEntry(last);
-}
-
 /**
  * This guide's saved progress: `{ faction, warrior: { craft, level, stars, mrOnHold }, ranger: …, warlock: … }`
  * (the faction shown last, and per faction its progress). Older saves held one squad's progress directly: the warriors'.
@@ -151,34 +84,7 @@ function savedProgress() {
 
 /** The progress of the faction shown (none saved yet: nothing done). */
 function loadProgress() {
-    const saved = savedProgress()[shownFaction] || {};
-    for (const path of PATHS) {
-        // Saved as a list of done steps; older saves stored a count (the first n steps).
-        const list = Array.isArray(saved[path])
-            ? saved[path]
-            : Array.from({ length: Number(saved[path]) || 0 }, (_, n) => n);
-        done[path] = [...new Set(list.filter((n) => Number.isInteger(n) && n >= 0 && n < entriesOf[path].length))];
-    }
-    mrOnHold = Boolean(saved.mrOnHold);
-    // The guide may have changed since: keep only progress that is still possible.
-    if (!craftComplete()) {
-        done.level = [];
-        done.stars = [];
-    }
-    let changed = true;
-    while (changed) {
-        changed = false;
-        for (const path of UPGRADES) {
-            const keep = done[path].filter((n) => {
-                const needs = entriesOf[path][n].needs;
-                return !needs || done[needs.path].includes(needs.n);
-            });
-            if (keep.length !== done[path].length) {
-                done[path] = keep;
-                changed = true;
-            }
-        }
-    }
+    progress.load(savedProgress()[shownFaction]);
 }
 
 function saveProgress() {
@@ -187,7 +93,7 @@ function saveProgress() {
         all[guideId] = {
             ...savedProgress(),
             faction: shownFaction,
-            [shownFaction]: { craft: done.craft, level: done.level, stars: done.stars, mrOnHold },
+            [shownFaction]: progress.snapshot(),
         };
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
     } catch {
@@ -202,64 +108,31 @@ function commit() {
 
 /** Done (+1: the queue's next step) or Undo (-1: its last done step). */
 function advance(path, direction) {
-    if (direction > 0) {
-        if (canAdvance(path)) {
-            done[path].push(nextOf(path).n);
-        }
-    } else if (canUndo(path)) {
-        done[path].pop();
-    }
+    progress.advance(path, direction);
     commit();
 }
 
-/**
- * A click on a step in a full list: the steps before it done (as far as allowed; steps on hold stay out), the step
- * itself and those after it undone (as far as allowed).
- */
+/** A click on a step in a full list: the steps before it done, the step itself and those after it undone. */
 function jumpTo(path, position) {
-    const entries = entriesOf[path];
-    let undone = true;
-    while (undone) {
-        undone = false;
-        const latest = [...done[path]].reverse().find((n) => n >= position);
-        if (latest !== undefined && canUndoEntry(entries[latest])) {
-            done[path] = done[path].filter((n) => n !== latest);
-            undone = true;
-        }
-    }
-    for (const entry of entries.slice(0, position)) {
-        if (isDone(entry) || isHeld(entry)) {
-            continue;
-        }
-        if (!canDo(entry)) {
-            break;
-        }
-        done[path].push(entry.n);
-    }
+    progress.jumpTo(path, position);
     commit();
 }
 
 /** The "no Gear Blueprint (MR) yet" switch: the 5 ★ steps wait (or come back, in their order). */
 function setMrOnHold(value) {
-    mrOnHold = value;
+    progress.setMrOnHold(value);
     commit();
 }
 
 /** "All crafted": every crafting step not done yet, in the path's order. */
 function craftAll() {
-    for (const entry of entriesOf.craft) {
-        if (!isDone(entry)) {
-            done.craft.push(entry.n);
-        }
-    }
+    progress.craftAll();
     commit();
 }
 
 /** Start over: the faction shown only. */
 function startOver() {
-    done.craft = [];
-    done.level = [];
-    done.stars = [];
+    progress.startOver();
     commit();
 }
 
@@ -289,15 +162,15 @@ function previewText(entry) {
  */
 function shownState() {
     let state = initialState(guide, gearSet);
-    for (const entry of merged) {
-        if (isDone(entry)) {
+    for (const entry of progress.merged) {
+        if (progress.isDone(entry)) {
             state = applyStep(state, entry.step, guide, gearSet);
         }
     }
     const upcoming = new Map();
     for (const path of PATHS) {
-        const next = nextOf(path);
-        if (!next || !canDo(next)) {
+        const next = progress.nextOf(path);
+        if (!next || !progress.canDo(next)) {
             continue;
         }
         for (const slot of stepSlots(guide, next.step)) {
@@ -466,7 +339,7 @@ function needOf(entry) {
         return null;
     }
     const { path, n, stars, level } = entry.needs;
-    const source = n === null ? null : entriesOf[path][n];
+    const source = n === null ? null : progress.entriesOf[path][n];
     if (stars) {
         const params = {
             level: entry.step.level,
@@ -514,7 +387,7 @@ function progressBarHtml(done, total) {
 
 /** The full list of a queue, behind "Show all steps"; clicking a step marks everything up to it done. */
 function listHtml(path) {
-    const entries = entriesOf[path];
+    const entries = progress.entriesOf[path];
     const steps = entries
         .map((entry, i) => {
             const need = path === 'craft' ? null : needOf(entry);
@@ -522,20 +395,20 @@ function listHtml(path) {
             if (need && !need.source) {
                 needHtml = `<span class="gear-gate gear-gate--never">${ACTION_ICONS.blocked} ${escapeHtml(need.blocked)}</span>`;
             } else if (need) {
-                const met = isDone(need.source);
+                const met = progress.isDone(need.source);
                 needHtml = `<span class="gear-gate${met ? ' gear-gate--done' : ''}">${met ? '✓' : '○'} ${escapeHtml(need.gate)}</span>`;
             }
             const problem = entry.problems.length
                 ? `<span class="gear-path__problem text-bad">${escapeHtml(t('gear.problem'))}</span>`
                 : '';
             return `
-                <li class="gear-path__step${isDone(entry) ? ' is-done' : ''}${entry === nextOf(path) ? ' is-next' : ''}${isHeld(entry) ? ' is-held' : ''}" data-path="${path}" data-position="${i + 1}">
+                <li class="gear-path__step${progress.isDone(entry) ? ' is-done' : ''}${entry === progress.nextOf(path) ? ' is-next' : ''}${progress.isHeld(entry) ? ' is-held' : ''}" data-path="${path}" data-position="${i + 1}">
                     <button type="button" class="gear-path__button">
                         <span class="gear-path__number">${i + 1}</span>
                         <span class="gear-path__check" aria-hidden="true"></span>
                         <span class="gear-path__body">
                             <span class="gear-path__text">${stepHtml(entry)}</span>
-                            ${isHeld(entry) ? `<span class="gear-path__held">${ACTION_ICONS.hold} ${escapeHtml(t('gear.onHold'))}</span>` : ''}${needHtml}${costHtml(entry)}${problem}
+                            ${progress.isHeld(entry) ? `<span class="gear-path__held">${ACTION_ICONS.hold} ${escapeHtml(t('gear.onHold'))}</span>` : ''}${needHtml}${costHtml(entry)}${problem}
                         </span>
                     </button>
                 </li>`;
@@ -550,14 +423,14 @@ function listHtml(path) {
 
 /** "No Gear Blueprint (MR) yet": puts the 5 ★ steps on hold (shown while any is still open). */
 function holdSwitchHtml() {
-    const open = entriesOf.stars.filter((entry) => isMrStep(entry) && !isDone(entry)).length;
+    const open = progress.entriesOf.stars.filter((entry) => progress.isMrStep(entry) && !progress.isDone(entry)).length;
     const blueprint = gearSet.blueprints?.mr;
     if (!open || !blueprint) {
         return '';
     }
     return `
         <label class="gear-hold">
-            <input type="checkbox" data-action="hold"${mrOnHold ? ' checked' : ''} />
+            <input type="checkbox" data-action="hold"${progress.mrOnHold ? ' checked' : ''} />
             <span data-item-id="${blueprint}"></span>
             <span>${escapeHtml(t('gear.holdMr', { item: itemName(blueprint) }))}</span>
         </label>`;
@@ -576,10 +449,10 @@ const actionLabel = (action) => `${icon(ACTION_ICONS[action])} ${escapeHtml(t(`g
  * below the buttons (so they stay put) what it needs first and the stars card's MR switch.
  */
 function nextCardHtml(path, titleKey) {
-    const entries = entriesOf[path];
-    const next = nextOf(path);
-    const locked = path !== 'craft' && !craftComplete();
-    const held = path === 'stars' ? entries.filter(isHeld).length : 0;
+    const entries = progress.entriesOf[path];
+    const next = progress.nextOf(path);
+    const locked = path !== 'craft' && !progress.craftComplete();
+    const held = path === 'stars' ? entries.filter(progress.isHeld).length : 0;
     let body;
     let blocked = '';
     if (!next) {
@@ -591,27 +464,27 @@ function nextCardHtml(path, titleKey) {
         const uses = blueprint
             ? `<p class="gear-next__uses">${escapeHtml(t('gear.uses'))} <span data-item-id="${blueprint}"></span> ${blueprintLink(blueprint)}</p>`
             : '';
-        const need = path === 'craft' || locked || canAdvance(path) ? null : needOf(next);
+        const need = path === 'craft' || locked || progress.canAdvance(path) ? null : needOf(next);
         blocked = need ? blockedHtml(need) : '';
         body = `
             <p class="gear-next__step">${stepHtml(next)}</p>
             ${uses}${costHtml(next)}`;
     }
     const craftAllButton =
-        path === 'craft' && !craftComplete()
+        path === 'craft' && !progress.craftComplete()
             ? `<button type="button" class="gear-next__secondary" data-action="craft-all">${actionLabel('craftAll')}</button>`
             : '';
     return `
         <div class="gear-next gear-next--${path}${locked ? ' is-locked' : ''}">
             <div class="gear-next__head">
                 <h4>${icon(LANE_ICONS[path])} ${escapeHtml(t(titleKey))}</h4>
-                <span class="gear-next__count">${escapeHtml(t('gear.count', { done: doneCount(path), total: entries.length }))}</span>
+                <span class="gear-next__count">${escapeHtml(t('gear.count', { done: progress.doneCount(path), total: entries.length }))}</span>
             </div>
-            ${progressBarHtml(doneCount(path), entries.length)}
+            ${progressBarHtml(progress.doneCount(path), entries.length)}
             ${body}
             <div class="gear-next__actions">
-                <button type="button" class="gear-next__done-button" data-action="done" data-path="${path}"${canAdvance(path) ? '' : ' disabled'}>${actionLabel('done')}</button>
-                <button type="button" class="gear-next__secondary" data-action="undo" data-path="${path}"${canUndo(path) ? '' : ' disabled'} title="${escapeHtml(path === 'craft' && doneCount(path) > 0 && !canUndo(path) ? t('gear.undoCraftBlocked') : '')}">${actionLabel('undo')}</button>
+                <button type="button" class="gear-next__done-button" data-action="done" data-path="${path}"${progress.canAdvance(path) ? '' : ' disabled'}>${actionLabel('done')}</button>
+                <button type="button" class="gear-next__secondary" data-action="undo" data-path="${path}"${progress.canUndo(path) ? '' : ' disabled'} title="${escapeHtml(path === 'craft' && progress.doneCount(path) > 0 && !progress.canUndo(path) ? t('gear.undoCraftBlocked') : '')}">${actionLabel('undo')}</button>
                 ${craftAllButton}
             </div>
             ${blocked}
@@ -621,7 +494,7 @@ function nextCardHtml(path, titleKey) {
 
 /** While the 5 ★ steps are on hold: how many wait, for which blueprint. */
 function heldNoteHtml() {
-    const held = entriesOf.stars.filter(isHeld).length;
+    const held = progress.entriesOf.stars.filter(progress.isHeld).length;
     const blueprint = gearSet.blueprints?.mr;
     if (!held || !blueprint) {
         return '';
@@ -630,20 +503,20 @@ function heldNoteHtml() {
 }
 
 function renderGuide() {
-    const locked = !craftComplete();
+    const locked = !progress.craftComplete();
     guidePanel.innerHTML = `
         <div class="gear-guide__head">
             <h3>${escapeHtml(t('gear.progressTitle'))}</h3>
-            <button type="button" class="gear-guide__reset" data-action="reset"${doneCount('craft') + doneCount('level') + doneCount('stars') === 0 ? ' disabled' : ''}>${actionLabel('startOver')}</button>
+            <button type="button" class="gear-guide__reset" data-action="reset"${progress.doneCount('craft') + progress.doneCount('level') + progress.doneCount('stars') === 0 ? ' disabled' : ''}>${actionLabel('startOver')}</button>
         </div>
-        <section class="gear-phase${craftComplete() ? ' is-complete' : ''}">
+        <section class="gear-phase${progress.craftComplete() ? ' is-complete' : ''}">
             <h3 class="gear-phase__title"><span class="gear-phase__number">1</span>${escapeHtml(t('gear.phaseCraft'))}</h3>
             ${nextCardHtml('craft', 'gear.nextCraft')}
             ${listHtml('craft')}
         </section>
         <section class="gear-phase${locked ? ' is-locked' : ''}">
             <h3 class="gear-phase__title"><span class="gear-phase__number">2</span>${escapeHtml(t('gear.phaseUpgrades'))}</h3>
-            <p class="gear-phase__hint">${escapeHtml(locked ? t('gear.locked', { count: entriesOf.craft.length }) : t('gear.choiceHint'))}</p>
+            <p class="gear-phase__hint">${escapeHtml(locked ? t('gear.locked', { count: progress.entriesOf.craft.length }) : t('gear.choiceHint'))}</p>
             <div class="gear-choices">
                 ${nextCardHtml('level', 'gear.nextLevel')}
                 ${nextCardHtml('stars', 'gear.nextStar')}
@@ -763,7 +636,7 @@ function renderHelp() {
             </tr>`;
         })
         .join('');
-    const example = entriesOf.level.find((entry) => entry.needs && entry.needs.n !== null);
+    const example = progress.entriesOf.level.find((entry) => entry.needs && entry.needs.n !== null);
     const exampleHtml = example
         ? `
         <div class="gear-help__example">
@@ -796,7 +669,7 @@ function renderHelp() {
         section(
             LANE_ICONS.craft,
             'gear.help.craftTitle',
-            p('gear.help.craftText', { done: chipHtml('done') }, { count: entriesOf.craft.length }) +
+            p('gear.help.craftText', { done: chipHtml('done') }, { count: progress.entriesOf.craft.length }) +
                 p('gear.help.craftAllText', { craftAll: chipHtml('craftAll') }) +
                 p('gear.help.craftUnlock'),
         ),
@@ -866,13 +739,7 @@ async function init(loaded) {
         document.getElementById('gear-empty').hidden = false;
         return;
     }
-    merged = mergePaths(guide, gearSet);
-    entriesOf = {
-        craft: merged.filter((entry) => entry.path === 'craft').sort((a, b) => a.n - b.n),
-        level: merged.filter((entry) => entry.path === 'level').sort((a, b) => a.n - b.n),
-        stars: merged.filter((entry) => entry.path === 'stars').sort((a, b) => a.n - b.n),
-    };
-    addRequirements();
+    progress = createProgress(guide, gearSet);
     // The faction shown last (the first one the first time).
     const { faction: lastFaction } = savedProgress();
     shownFaction = factions.includes(lastFaction) ? lastFaction : factions[0];

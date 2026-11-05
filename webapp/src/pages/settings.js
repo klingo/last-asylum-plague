@@ -4,7 +4,8 @@
  * furthest off, and how well each pack is predicted from the others: `fitHoldOut`, computed in the background).
  */
 import { startPage } from '../ui/page.js';
-import { getSettings, updateSettings, zeroFitItems } from '../ui/settings.js';
+import { getSettings, updateSettings } from '../ui/settings.js';
+import { zeroFitItems } from '../core/settings-model.js';
 import { hydrateItemIcons } from '../ui/html.js';
 import { pointFit } from '../ui/valuation.js';
 import { fitHoldOut, sensitivityFamilies } from '../core/point-fit.js';

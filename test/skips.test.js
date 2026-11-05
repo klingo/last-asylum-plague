@@ -5,8 +5,7 @@ import { weekdayIndex } from '../webapp/src/core/schedule.js';
 import { solveWeeklyPlan } from '../webapp/src/core/planner.js';
 import { fitItemPoints } from '../webapp/src/core/point-fit.js';
 import { loadHighs } from '../webapp/src/core/lp.js';
-import { DEFAULT_SETTINGS, priorityWeights } from '../webapp/src/ui/settings.js';
-import { loadFixture } from './helpers.js';
+import { loadFixture, defaultPlanOptions } from './helpers.js';
 
 // Game day numbers (days since 1970-01-01): 2026-11-02 is a Monday.
 const MONDAY = Date.UTC(2026, 10, 2) / 86400000;
@@ -100,17 +99,7 @@ test('skips: a package skipped itself and above a skipped one keeps itself as th
 const data = loadFixture();
 const highs = await loadHighs();
 const fit = fitItemPoints(data);
-const planOptions = (overrides = {}) => ({
-    budget: DEFAULT_SETTINGS.budget,
-    activeEventIds: new Set(),
-    seasonalPasses: [],
-    lockedOffers: {},
-    includePasses: true,
-    includeExclusives: false,
-    weights: priorityWeights(DEFAULT_SETTINGS),
-    basePoints: fit.points,
-    ...overrides,
-});
+const planOptions = (overrides = {}) => defaultPlanOptions(fit, overrides);
 const bought = (plan) => new Map(plan.purchases.map((purchase) => [purchase.id, purchase.count]));
 
 test('skips: the plan without a skipped pack buys others and fills the spend up', () => {
