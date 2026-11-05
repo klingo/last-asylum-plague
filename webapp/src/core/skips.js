@@ -6,9 +6,8 @@
  * - a higher tier of a ladder requires the lower one, so skipping a tier skips every tier above it too, `expandSkips`.
  */
 import { packageFamilyId } from './pack-data.js';
-import { scheduleRuns, weekdayIndex } from './schedule.js';
+import { DAYS_PER_WEEK, runContains, scheduleRuns, weekStart } from './schedule.js';
 
-const DAYS_PER_WEEK = 7;
 // A ladder never gets this long; stops a (broken) requires cycle.
 const MAX_LADDER = 20;
 
@@ -18,10 +17,10 @@ const MAX_LADDER = 20;
  * run, the week's end.
  */
 function skipUntilDay(id, pkg, today, data) {
-    const weekEnd = today - weekdayIndex(today) + DAYS_PER_WEEK;
+    const weekEnd = weekStart(today) + DAYS_PER_WEEK;
     const scheduleId = pkg.event_id || (pkg.seasonal ? packageFamilyId(id, pkg) : null);
     const runs = scheduleId ? scheduleRuns(data, today).get(scheduleId)?.runs : null;
-    const run = runs?.find((candidate) => candidate.start <= today && today <= candidate.end);
+    const run = runs?.find((candidate) => runContains(candidate, today));
     return run ? Math.min(weekEnd, run.end + 1) : weekEnd;
 }
 

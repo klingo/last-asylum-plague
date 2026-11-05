@@ -20,6 +20,11 @@ function isChoiceItem(item) {
     return item?.type === 'choice' && Boolean(item.choice);
 }
 
+/** How many options of a choice pool (`{ choices, select_count }`) are picked: `select_count`, default 1. */
+function selectCount(choice) {
+    return choice?.select_count || 1;
+}
+
 /** `[[targetId, qty], ...]` of an item's `substitutes_for` (a plain list means 1 each). */
 function substituteTargets(item) {
     return Array.isArray(item.substitutes_for)
@@ -50,4 +55,4 @@ function itemKind(item) {
     return item.crafted_from ? 'recipe' : 'leaf';
 }
 
-export { isRandomItem, isChoiceItem, substituteTargets, itemKind };
+export { isRandomItem, isChoiceItem, selectCount, substituteTargets, itemKind };

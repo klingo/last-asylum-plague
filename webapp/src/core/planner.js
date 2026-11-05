@@ -36,16 +36,17 @@
  */
 import { resolveItemValues, bundleValue } from './item-values.js';
 import { fitItemPoints } from './point-fit.js';
-import { DAYS_PER_WEEK, currencyItemIds, packageWeeklyCapacity, offerWeeklyCapacity, isOnSale } from './catalog.js';
+import { currencyItemIds, isEventActive, packageWeeklyCapacity, offerWeeklyCapacity, isOnSale } from './catalog.js';
+import { DAYS_PER_WEEK } from './schedule.js';
 import { isRandomItem } from './items.js';
 import { addPackageRules } from './package-rows.js';
 import { expandSkips } from './skips.js';
-import { createModel, addTerm, solveModel, varName } from './lp.js';
+import { createModel, addTerm, linkRow, solutionValue, solveModel, varName } from './lp.js';
 import { trackPointsForPrice } from './spend-tracks.js';
 import { targetFloor, freeCurrency, pickaxeOdds, mineSegments, normalRewardBundle } from './mine.js';
 
 const EPS = 1e-9;
-const HOURS_PER_WEEK = 7 * 24;
+const HOURS_PER_WEEK = DAYS_PER_WEEK * 24;
 // Variable of the extra Banknotes for one event the plan uses (see addEventRows).
 const EXTRA_USED = 'extra_used';
 
@@ -83,7 +84,7 @@ function currencyFlows(contents, items, values, currencyIds, out = new Map(), fa
 function createContext(data, options) {
     const items = data.items || {};
     const shops = data.exchange_shops || {};
-    const currencyIds = currencyItemIds(shops, data.mines);
+    const currencyIds = currencyItemIds(data);
     // Currencies carry no points of their own here: their value comes only through the balance rows.
     const zeroCurrencies = Object.fromEntries([...currencyIds].map((id) => [id, 0]));
     const values = resolveItemValues(items, {
@@ -213,7 +214,7 @@ function addShops(ctx, { activeEventIds, lockedOffers }) {
     const pointPurchaseVars = new Map(); // name -> shopId
     const fixedVars = new Map(); // offer variable -> { key, wanted } of offers fixed by the user
     for (const [shopId, shop] of Object.entries(shops)) {
-        if (shop.event_id && !activeEventIds.has(shop.event_id)) {
+        if (shop.event_id && !isEventActive(shop.event_id, activeEventIds)) {
             continue;
         }
         // Progress points this run (bonus tiers, offer unlocks): `points_per_currency` per coin spent
@@ -283,15 +284,7 @@ function addShops(ctx, { activeEventIds, lockedOffers }) {
             progressRow(varName('ut', shopId, String(threshold)), unlock, threshold, (points) => points < threshold);
             for (const [name, , unlockPoints] of offerProgress) {
                 if (unlockPoints === threshold) {
-                    model.rows.push({
-                        name: varName('ul', name),
-                        terms: new Map([
-                            [name, 1],
-                            [unlock, -model.bounds.get(name).upper],
-                        ]),
-                        op: '<=',
-                        rhs: 0,
-                    });
+                    model.rows.push(linkRow(varName('ul', name), name, unlock, 1, model.bounds.get(name).upper));
                 }
             }
         }
@@ -339,108 +332,91 @@ function addTracks(ctx, packageVars, { activeTrackIds }) {
  * Returns Map mineId -> `{ mine, startFloor, target, free, owned, dig, segments: [{ ...segment, name, done }],
  * wishVars: [name] }`.
  */
-function addMines(ctx, { activeEventIds, budget, mineProgress, eventDaysLeft, mineSafety }) {
-    const { model, data } = ctx;
+function addMines(ctx, options) {
     const mineVars = new Map();
-    for (const [mineId, mine] of Object.entries(data.mines || {})) {
-        if (!activeEventIds.has(mine.event_id)) {
-            continue;
+    for (const [mineId, mine] of Object.entries(ctx.data.mines || {})) {
+        if (isEventActive(mine.event_id, options.activeEventIds)) {
+            mineVars.set(mineId, addMine(ctx, mineId, mine, options));
         }
-        const progress = mineProgress?.[mineId] || {};
-        const startFloor = Math.min(Math.max(0, progress.floor || 0), mine.floors);
-        const owned = Math.max(0, progress.owned || 0);
-        // The purchase bonus needs a pack every day: the weekly spend covers the event's cheapest pack daily.
-        const prices = Object.values(ctx.packages)
-            .filter((pkg) => pkg.event_id === mine.event_id && pkg.price > 0)
-            .map((pkg) => pkg.price);
-        const free = freeCurrency(mine, {
-            days: eventDaysLeft?.[mine.event_id] ?? DAYS_PER_WEEK,
-            withBonus: prices.length > 0 && budget + ctx.extraForEvent >= DAYS_PER_WEEK * Math.min(...prices),
-        });
-        const balance = ctx.balance(mine.currency_item_id);
-        ctx.balanceRows.get(mine.currency_item_id).rhs += free.total + owned;
-        const target = targetFloor(mine);
-        const dig = target > startFloor ? varName('md', mineId) : null;
-        const wishRow = new Map();
-        // The safety the user plans with: the pickaxes that suffice in that share of runs, spread over the floors.
-        const odds = mineSafety > 0.5 && target > startFloor ? pickaxeOdds(mine, startFloor + 1, target) : null;
-        const factor = odds ? (mineSafety >= 1 ? odds.max : odds.atLeast(mineSafety)) / odds.mean : 1;
-        const segments = mineSegments(mine, startFloor)
-            .filter((segment) => target === 0 || segment.to <= target)
-            .map((segment) => ({ ...segment, pickaxes: segment.pickaxes * factor }))
-            .map((segment, index) => {
-                const name = varName('mf', mineId, String(index));
-                addTerm(balance, name, segment.pickaxes / segment.floors);
-                ctx.reward(name, normalRewardBundle(mine, segment.normalDigs / segment.floors));
-                model.bounds.set(name, { upper: segment.floors });
-                model.integers.add(name);
-                addTerm(wishRow, name, -1);
-                return { ...segment, name, done: varName('mc', mineId, String(index)) };
-            });
-        segments.forEach((segment, index) => {
-            const next = segments[index + 1];
-            if (!segment.reward && !next) {
-                return;
-            }
-            // Cleared only with all its floors; the next segment only once this one is cleared.
-            model.binaries.add(segment.done);
-            model.rows.push({
-                name: varName('mcf', mineId, String(index)),
-                terms: new Map([
-                    [segment.done, segment.floors],
-                    [segment.name, -1],
-                ]),
-                op: '<=',
-                rhs: 0,
-            });
-            if (next) {
-                model.rows.push({
-                    name: varName('mcn', mineId, String(index)),
-                    terms: new Map([
-                        [next.name, 1],
-                        [segment.done, -next.floors],
-                    ]),
-                    op: '<=',
-                    rhs: 0,
-                });
-            }
-            if (segment.reward) {
-                ctx.reward(segment.done, segment.reward);
-            }
-        });
-        if (dig) {
-            // Any floor only with "dig", and "dig" only with the target floor's segment cleared.
-            model.binaries.add(dig);
-            model.rows.push({
-                name: varName('mds', mineId),
-                terms: new Map([
-                    [segments[0].name, 1],
-                    [dig, -segments[0].floors],
-                ]),
-                op: '<=',
-                rhs: 0,
-            });
-            model.rows.push({
-                name: varName('mdt', mineId),
-                terms: new Map([
-                    [dig, 1],
-                    [segments.find((segment) => segment.to === target).done, -1],
-                ]),
-                op: '<=',
-                rhs: 0,
-            });
-        }
-        // One wish reward per cleared floor.
-        const wishVars = (mine.wish_rewards || []).map((reward, index) => {
-            const name = varName('mw', mineId, String(index));
-            ctx.reward(name, reward);
-            addTerm(wishRow, name, 1);
-            return name;
-        });
-        model.rows.push({ name: varName('mwr', mineId), terms: wishRow, op: '=', rhs: 0 });
-        mineVars.set(mineId, { mine, startFloor, target, free, owned, dig, segments, wishVars });
     }
     return mineVars;
+}
+
+/** The rows between a mine's segments: cleared only with all floors, the next only once this one is cleared. */
+function addSegmentRows(ctx, mineId, segments) {
+    const { model } = ctx;
+    segments.forEach((segment, index) => {
+        const next = segments[index + 1];
+        if (!segment.reward && !next) {
+            return;
+        }
+        model.binaries.add(segment.done);
+        model.rows.push(linkRow(varName('mcf', mineId, String(index)), segment.done, segment.name, segment.floors));
+        if (next) {
+            model.rows.push(linkRow(varName('mcn', mineId, String(index)), next.name, segment.done, 1, next.floors));
+        }
+        if (segment.reward) {
+            ctx.reward(segment.done, segment.reward);
+        }
+    });
+}
+
+/** The rows of a mine's "dig" variable: any floor only with "dig", and "dig" only with the target floor cleared. */
+function addDigRows(ctx, mineId, dig, segments, target) {
+    const { model } = ctx;
+    model.binaries.add(dig);
+    model.rows.push(linkRow(varName('mds', mineId), segments[0].name, dig, 1, segments[0].floors));
+    const targetSegment = segments.find((segment) => segment.to === target);
+    model.rows.push(linkRow(varName('mdt', mineId), dig, targetSegment.done));
+}
+
+/** One running mine's variables and rows; returns its entry of the `addMines` map. */
+function addMine(ctx, mineId, mine, { budget, mineProgress, eventDaysLeft, mineSafety }) {
+    const { model } = ctx;
+    const progress = mineProgress?.[mineId] || {};
+    const startFloor = Math.min(Math.max(0, progress.floor || 0), mine.floors);
+    const owned = Math.max(0, progress.owned || 0);
+    // The purchase bonus needs a pack every day: the weekly spend covers the event's cheapest pack daily.
+    const prices = Object.values(ctx.packages)
+        .filter((pkg) => pkg.event_id === mine.event_id && pkg.price > 0)
+        .map((pkg) => pkg.price);
+    const free = freeCurrency(mine, {
+        days: eventDaysLeft?.[mine.event_id] ?? DAYS_PER_WEEK,
+        withBonus: prices.length > 0 && budget + ctx.extraForEvent >= DAYS_PER_WEEK * Math.min(...prices),
+    });
+    const balance = ctx.balance(mine.currency_item_id);
+    ctx.balanceRows.get(mine.currency_item_id).rhs += free.total + owned;
+    const target = targetFloor(mine);
+    const dig = target > startFloor ? varName('md', mineId) : null;
+    const wishRow = new Map();
+    // The safety the user plans with: the pickaxes that suffice in that share of runs, spread over the floors.
+    const odds = mineSafety > 0.5 && target > startFloor ? pickaxeOdds(mine, startFloor + 1, target) : null;
+    const factor = odds ? (mineSafety >= 1 ? odds.max : odds.atLeast(mineSafety)) / odds.mean : 1;
+    const segments = mineSegments(mine, startFloor)
+        .filter((segment) => target === 0 || segment.to <= target)
+        .map((segment) => ({ ...segment, pickaxes: segment.pickaxes * factor }))
+        .map((segment, index) => {
+            const name = varName('mf', mineId, String(index));
+            addTerm(balance, name, segment.pickaxes / segment.floors);
+            ctx.reward(name, normalRewardBundle(mine, segment.normalDigs / segment.floors));
+            model.bounds.set(name, { upper: segment.floors });
+            model.integers.add(name);
+            addTerm(wishRow, name, -1);
+            return { ...segment, name, done: varName('mc', mineId, String(index)) };
+        });
+    addSegmentRows(ctx, mineId, segments);
+    if (dig) {
+        addDigRows(ctx, mineId, dig, segments, target);
+    }
+    // One wish reward per cleared floor.
+    const wishVars = (mine.wish_rewards || []).map((reward, index) => {
+        const name = varName('mw', mineId, String(index));
+        ctx.reward(name, reward);
+        addTerm(wishRow, name, 1);
+        return name;
+    });
+    model.rows.push({ name: varName('mwr', mineId), terms: wishRow, op: '=', rhs: 0 });
+    return { mine, startFloor, target, free, owned, dig, segments, wishVars };
 }
 
 /**
@@ -458,7 +434,7 @@ function fixLocks(highs, model, fixedVars) {
         objective: new Map([...fixedVars].map(([name, { wanted }]) => [name, 1 / wanted])),
     });
     for (const [name, { key, wanted }] of fixedVars) {
-        const got = reach.status === 'Optimal' ? Math.round(reach.values.get(name) || 0) : 0;
+        const got = reach.status === 'Optimal' ? Math.round(solutionValue(reach, name)) : 0;
         model.bounds.set(name, { lower: got, upper: got });
         if (got < wanted) {
             shortfalls.push({ key, wanted, got });
@@ -475,7 +451,7 @@ function fixLocks(highs, model, fixedVars) {
 function marginalRates(highs, model, plan, balanceRows) {
     const relaxed = { ...model, integers: new Set(), binaries: new Set(), bounds: new Map(model.bounds) };
     for (const name of model.binaries) {
-        const reached = Math.round(plan.values.get(name) || 0);
+        const reached = Math.round(solutionValue(plan, name));
         relaxed.bounds.set(name, { lower: reached, upper: reached });
     }
     const rates = solveModel(highs, relaxed);
@@ -496,10 +472,9 @@ function marginalRates(highs, model, plan, balanceRows) {
 function capCurrencyRates(mu, offerVars, shops, model, plan) {
     const useValue = new Map();
     for (const [name, { shopId, offer, points }] of offerVars) {
-        const count = plan.values.get(name) || 0;
+        const count = solutionValue(plan, name);
         const unlocked =
-            !(offer.unlock_points > 0) ||
-            (plan.values.get(varName('u', shopId, String(offer.unlock_points))) || 0) > 0.5;
+            !(offer.unlock_points > 0) || solutionValue(plan, varName('u', shopId, String(offer.unlock_points))) > 0.5;
         if (!unlocked || count >= (model.bounds.get(name)?.upper ?? Infinity) - 1e-6) {
             continue;
         }
@@ -513,121 +488,86 @@ function capCurrencyRates(mu, offerVars, shops, model, plan) {
     }
 }
 
-/**
- * Solves the weekly plan (`data`: normalized, see pack-data.js).
- * options: `budget` (Banknotes/week), `activeEventIds` (Set; events running this week),
- * `includePasses`, `includeExclusives`, `weights` (the user's priorities as factors), `basePoints`
- * (point-fit.js; fitted here if not given), `activeTrackIds` (Set of spend reward tracks running this
- * week), `seasonalPasses` (family ids of the seasonal passes on sale; undefined = all), `eventSpend`
- * (`{ eventId, min, max }`: Banknotes spent on that event's packages, for the Events page's what-if steps),
- * `extraCurrency` (`{ currencyId: qty }` obtained outside the packs this week, e.g. diamonds for the VIP
- * Shop; on top of the free income of the shops' currencies, `income_per_hour` in the data), `eventBudget` (`{ eventId, extra }`: up to `extra` Banknotes on top of `budget` that only that event's
- * packages may use, spent only where worth it; see `eventExtraUsed` in the result), `lockedOffers` (`{ "<shopId>:<offerKey>": count }`: shop offers the user fixed to
- * `count` per week, 0 = never; if the spend can't afford them all, as many as possible are bought — see
- * `lockShortfalls` in the result), `eventDaysLeft` (`{ eventId: days }`: days left of the event's run, for its
- * daily pack limits and a mine's free pickaxes; default a whole week), `mineProgress` (`{ mineId: { owned,
- * floor } }`: pickaxes owned and the floor reached this run, Events page), `mineSafety` (the share of runs the
- * pickaxes for the target floor should suffice in: 0.5 = the average (default), 0.9, 0.99, 1 = the worst case),
- * `skippedPackages` (package ids the user skipped, core/skips.js: not bought, nor the higher tiers that need them).
- */
-function solveWeeklyPlan(highs, data, options = {}) {
-    const opts = {
-        budget: 0,
-        activeEventIds: new Set(),
-        includePasses: true,
-        includeExclusives: false,
-        weights: null,
-        activeTrackIds: new Set(),
-        seasonalPasses: undefined,
-        eventSpend: null,
-        extraCurrency: null,
-        eventBudget: null,
-        lockedOffers: null,
-        skippedPackages: null,
-        eventDaysLeft: null,
-        mineProgress: null,
-        mineSafety: 0.5,
-    };
-    // Like destructuring defaults: an option passed as undefined keeps its default.
+const DEFAULT_OPTIONS = {
+    budget: 0,
+    activeEventIds: new Set(),
+    includePasses: true,
+    includeExclusives: false,
+    weights: null,
+    activeTrackIds: new Set(),
+    seasonalPasses: undefined,
+    eventSpend: null,
+    extraCurrency: null,
+    eventBudget: null,
+    lockedOffers: null,
+    skippedPackages: null,
+    eventDaysLeft: null,
+    mineProgress: null,
+    mineSafety: 0.5,
+};
+
+/** The options with their defaults; like destructuring defaults, an option passed as undefined keeps its default. */
+function withDefaults(options) {
+    const opts = { ...DEFAULT_OPTIONS };
     for (const [key, value] of Object.entries(options)) {
         if (value !== undefined) {
             opts[key] = value;
         }
     }
-    opts.basePoints ??= fitItemPoints(data).points;
-    // What a Banknote buys without the event's extra Banknotes: the bar an extra one has to clear.
-    if (opts.eventBudget?.extra > 0 && opts.extraBanknoteRate == null) {
-        const base = solveWeeklyPlan(highs, data, { ...opts, eventBudget: null });
-        opts.extraBanknoteRate = Number.isFinite(base.rate) ? base.rate : 0;
-    }
-    const ctx = createContext(data, opts);
-    const { model, items, values, currencyIds, balanceRows } = ctx;
+    return opts;
+}
 
-    const packageVars = addPackages(ctx, opts);
-    addEventRows(ctx, packageVars, opts);
-    addPackageRules(model, packageVars, ctx.packages);
-    const { offerVars, tierVars, pointPurchaseVars, fixedVars } = addShops(ctx, opts);
-    const trackTierVars = addTracks(ctx, packageVars, opts);
-    const mineVars = addMines(ctx, opts);
-    // Currency from outside the packs (the page's extra amount, a shop's free income): spent may exceed received
-    // by that much.
-    const outside = Object.entries(opts.extraCurrency || {});
-    for (const shop of Object.values(data.exchange_shops || {})) {
+/**
+ * Currency from outside the packs (the page's extra amount, a shop's free income): spent may exceed received by
+ * that much.
+ */
+function addOutsideCurrency(ctx, { extraCurrency }) {
+    const outside = Object.entries(extraCurrency || {});
+    for (const shop of Object.values(ctx.shops)) {
         outside.push([shop.currency_item_id, (shop.income_per_hour || 0) * HOURS_PER_WEEK]);
     }
     for (const [currencyId, qty] of outside) {
         if (qty > 0) {
             ctx.balance(currencyId);
-            balanceRows.get(currencyId).rhs += qty;
+            ctx.balanceRows.get(currencyId).rhs += qty;
         }
     }
-    model.rows.push(ctx.budgetRow, ...balanceRows.values());
+}
 
-    // 1) Integer plan: whole purchases.
-    for (const name of [...packageVars.values()]
-        .map((v) => v.name)
-        .concat([...offerVars.keys()], [...pointPurchaseVars.keys()])) {
-        model.integers.add(name);
-    }
-    const lockShortfalls = fixLocks(highs, model, fixedVars);
-    const plan = solveModel(highs, model);
-    if (plan.status !== 'Optimal') {
-        throw new Error(`Weekly plan solve failed: ${plan.status}`);
-    }
-
-    // 2) Marginal rates.
-    const { lambda, mu } = marginalRates(highs, model, plan, balanceRows);
-    capCurrencyRates(mu, offerVars, ctx.shops, model, plan);
-
-    // 3) The plan as the pages read it.
+/** The package purchases of the plan, `{ purchases: [{ id, pkg, count, spend, points }], spent }`. */
+function readPurchases(plan, packageVars) {
     const purchases = [];
     let spent = 0;
     for (const [id, v] of packageVars) {
-        const count = Math.round((plan.values.get(v.name) || 0) * v.scale * 1e6) / 1e6;
+        const count = Math.round(solutionValue(plan, v.name) * v.scale * 1e6) / 1e6;
         if (count > EPS) {
             spent += count * v.pkg.price;
             purchases.push({ id, pkg: v.pkg, count, spend: count * v.pkg.price, points: count * v.points.value });
         }
     }
+    return { purchases, spent };
+}
+
+/** The shop offers the plan buys. */
+function readExchanges(plan, offerVars) {
     const exchanges = [];
     for (const [name, v] of offerVars) {
-        const count = Math.round((plan.values.get(name) || 0) * 1e6) / 1e6;
+        const count = Math.round(solutionValue(plan, name) * 1e6) / 1e6;
         if (count > EPS) {
             exchanges.push({ ...v, count, coins: count * v.offer.currency_cost, totalPoints: count * v.points });
         }
     }
-    // Progress points bought outside the shop offers (Surprise Encounters).
-    const pointPurchases = [...pointPurchaseVars]
-        .map(([name, shopId]) => ({ shopId, count: Math.round(plan.values.get(name) || 0) }))
-        .filter((p) => p.count > 0);
-    const reachedOf = (vars) =>
-        [...vars].filter(([name]) => (plan.values.get(name) || 0) > 0.5).map(([, tier]) => tier);
+    return exchanges;
+}
+
+/** Per currency what the plan receives, spends and has from outside the packs (`extra`), with its marginal `mu`. */
+function readCurrencies(plan, balanceRows, mu) {
     const currencies = new Map();
     for (const [currencyId, row] of balanceRows) {
         let received = 0;
         let spentCoins = 0;
         for (const [name, coefficient] of row.terms) {
-            const amount = coefficient * (plan.values.get(name) || 0);
+            const amount = coefficient * solutionValue(plan, name);
             if (amount < 0) {
                 received -= amount;
             } else {
@@ -642,14 +582,17 @@ function solveWeeklyPlan(highs, data, options = {}) {
             mu: mu.get(currencyId),
         });
     }
+    return currencies;
+}
 
-    // Mines: floors cleared per segment, the wishes picked and the expected loot.
-    const mines = [...mineVars].map(([mineId, { mine, startFloor, target, free, owned, dig, segments, wishVars }]) => {
+/** Mines: floors cleared per segment, the wishes picked and the expected loot. */
+function readMines(plan, mineVars) {
+    return [...mineVars].map(([mineId, { mine, startFloor, target, free, owned, dig, segments, wishVars }]) => {
         const loot = {};
         let floorsCleared = 0;
         let pickaxes = 0;
         const cleared = segments.map((segment) => {
-            const floors = Math.round(plan.values.get(segment.name) || 0);
+            const floors = Math.round(solutionValue(plan, segment.name));
             floorsCleared += floors;
             pickaxes += (floors * segment.pickaxes) / segment.floors;
             for (const [id, qty] of Object.entries(
@@ -662,7 +605,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
         const wishes = wishVars.map((name, index) => ({
             index,
             reward: mine.wish_rewards[index],
-            count: Math.round((plan.values.get(name) || 0) * 1e6) / 1e6,
+            count: Math.round(solutionValue(plan, name) * 1e6) / 1e6,
         }));
         return {
             mineId,
@@ -672,7 +615,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
             free,
             owned,
             // Whether the run is dug at all (below the target floor: only if the plan reaches it).
-            digs: dig ? (plan.values.get(dig) || 0) > 0.5 : floorsCleared > 0,
+            digs: dig ? solutionValue(plan, dig) > 0.5 : floorsCleared > 0,
             floorsCleared,
             floorReached: startFloor + floorsCleared,
             pickaxes,
@@ -682,14 +625,14 @@ function solveWeeklyPlan(highs, data, options = {}) {
             normalRewards: loot,
         };
     });
+}
 
-    const budgetBinding = lambda > EPS;
-    // Budget not binding (everything worthwhile already bought): fall back to the weakest bought pack.
-    const packageRatePoints = (v) => v.points.value + [...v.flows].reduce((s, [c, q]) => s + q * (mu.get(c) || 0), 0);
-    const boughtRates = purchases
-        .map((p) => packageRatePoints(packageVars.get(p.id)) / p.pkg.price)
-        .filter((r) => r > EPS);
-    const rate = budgetBinding ? lambda : boughtRates.length ? Math.min(...boughtRates) : NaN;
+/**
+ * What the pages ask of a solved plan afterwards: points and Banknote worth of a unit (`itemPoints`, `worth`) and of
+ * a bundle (`bundlePoints`), with currencies at their marginal value `mu`; `rate` = points per Banknote.
+ */
+function createPricing(ctx, mu, rate) {
+    const { items, values, currencyIds } = ctx;
 
     /**
      * Points of one unit, or null: a currency at its marginal value; any other item at its points (currencies at 0)
@@ -712,35 +655,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
     }
 
     return {
-        values,
-        rate,
-        lambda,
-        budgetBinding,
-        mu,
-        budget: opts.budget,
-        spent,
-        totalPoints: plan.objective,
-        purchases,
-        exchanges,
-        tiersReached: reachedOf(tierVars),
-        pointPurchases,
-        trackTiersReached: reachedOf(trackTierVars),
-        mines,
-        // Of the event's extra Banknotes (`eventBudget`), how many the plan spends.
-        eventExtraUsed: ctx.extraForEvent > 0 ? Math.max(0, plan.values.get(EXTRA_USED) || 0) : 0,
-        lockShortfalls,
-        currencies,
         itemPoints,
-        /**
-         * Whether the package gives the currency of a shop whose bonus tiers the plan reaches: then it can be worth
-         * buying for those tiers' rewards even below ratio 1.0 on its own (see capCurrencyRates).
-         */
-        forBonusTiers(pkg) {
-            const tierCurrencies = new Set(reachedOf(tierVars).map((tier) => ctx.shops[tier.shopId].currency_item_id));
-            return [...currencyFlows(pkg.contains, items, values, currencyIds).keys()].some((id) =>
-                tierCurrencies.has(id),
-            );
-        },
         /** Banknote worth of one unit (see itemPoints), or null. */
         worth(itemId) {
             const points = itemPoints(itemId);
@@ -754,6 +669,108 @@ function solveWeeklyPlan(highs, data, options = {}) {
                 total += qty * (mu.get(currencyId) || 0);
             }
             return { ...b, value: total };
+        },
+    };
+}
+
+/**
+ * Solves the weekly plan (`data`: normalized, see pack-data.js).
+ * options: `budget` (Banknotes/week), `activeEventIds` (Set; events running this week),
+ * `includePasses`, `includeExclusives`, `weights` (the user's priorities as factors), `basePoints`
+ * (point-fit.js; fitted here if not given), `activeTrackIds` (Set of spend reward tracks running this
+ * week), `seasonalPasses` (family ids of the seasonal passes on sale; undefined = all), `eventSpend`
+ * (`{ eventId, min, max }`: Banknotes spent on that event's packages, for the Events page's what-if steps),
+ * `extraCurrency` (`{ currencyId: qty }` obtained outside the packs this week, e.g. diamonds for the VIP
+ * Shop; on top of the free income of the shops' currencies, `income_per_hour` in the data), `eventBudget` (`{ eventId, extra }`: up to `extra` Banknotes on top of `budget` that only that event's
+ * packages may use, spent only where worth it; see `eventExtraUsed` in the result), `lockedOffers` (`{ "<shopId>:<offerKey>": count }`: shop offers the user fixed to
+ * `count` per week, 0 = never; if the spend can't afford them all, as many as possible are bought — see
+ * `lockShortfalls` in the result), `eventDaysLeft` (`{ eventId: days }`: days left of the event's run, for its
+ * daily pack limits and a mine's free pickaxes; default a whole week), `mineProgress` (`{ mineId: { owned,
+ * floor } }`: pickaxes owned and the floor reached this run, Events page), `mineSafety` (the share of runs the
+ * pickaxes for the target floor should suffice in: 0.5 = the average (default), 0.9, 0.99, 1 = the worst case),
+ * `skippedPackages` (package ids the user skipped, core/skips.js: not bought, nor the higher tiers that need them).
+ */
+function solveWeeklyPlan(highs, data, options = {}) {
+    const opts = withDefaults(options);
+    opts.basePoints ??= fitItemPoints(data).points;
+    // What a Banknote buys without the event's extra Banknotes: the bar an extra one has to clear.
+    if (opts.eventBudget?.extra > 0 && opts.extraBanknoteRate == null) {
+        const base = solveWeeklyPlan(highs, data, { ...opts, eventBudget: null });
+        opts.extraBanknoteRate = Number.isFinite(base.rate) ? base.rate : 0;
+    }
+    const ctx = createContext(data, opts);
+    const { model, balanceRows } = ctx;
+
+    const packageVars = addPackages(ctx, opts);
+    addEventRows(ctx, packageVars, opts);
+    addPackageRules(model, packageVars, ctx.packages);
+    const { offerVars, tierVars, pointPurchaseVars, fixedVars } = addShops(ctx, opts);
+    const trackTierVars = addTracks(ctx, packageVars, opts);
+    const mineVars = addMines(ctx, opts);
+    addOutsideCurrency(ctx, opts);
+    model.rows.push(ctx.budgetRow, ...balanceRows.values());
+
+    // 1) Integer plan: whole purchases.
+    for (const name of [...packageVars.values()]
+        .map((v) => v.name)
+        .concat([...offerVars.keys()], [...pointPurchaseVars.keys()])) {
+        model.integers.add(name);
+    }
+    const lockShortfalls = fixLocks(highs, model, fixedVars);
+    const plan = solveModel(highs, model);
+    if (plan.status !== 'Optimal') {
+        throw new Error(`Weekly plan solve failed: ${plan.status}`);
+    }
+
+    // 2) Marginal rates.
+    const { lambda, mu } = marginalRates(highs, model, plan, balanceRows);
+    capCurrencyRates(mu, offerVars, ctx.shops, model, plan);
+
+    // 3) The plan as the pages read it.
+    const { purchases, spent } = readPurchases(plan, packageVars);
+    // Progress points bought outside the shop offers (Surprise Encounters).
+    const pointPurchases = [...pointPurchaseVars]
+        .map(([name, shopId]) => ({ shopId, count: Math.round(solutionValue(plan, name)) }))
+        .filter((p) => p.count > 0);
+    const reachedOf = (vars) => [...vars].filter(([name]) => solutionValue(plan, name) > 0.5).map(([, tier]) => tier);
+
+    const budgetBinding = lambda > EPS;
+    // Budget not binding (everything worthwhile already bought): fall back to the weakest bought pack.
+    const packageRatePoints = (v) => v.points.value + [...v.flows].reduce((s, [c, q]) => s + q * (mu.get(c) || 0), 0);
+    const boughtRates = purchases
+        .map((p) => packageRatePoints(packageVars.get(p.id)) / p.pkg.price)
+        .filter((r) => r > EPS);
+    const rate = budgetBinding ? lambda : boughtRates.length ? Math.min(...boughtRates) : NaN;
+
+    return {
+        values: ctx.values,
+        rate,
+        lambda,
+        budgetBinding,
+        mu,
+        budget: opts.budget,
+        spent,
+        totalPoints: plan.objective,
+        purchases,
+        exchanges: readExchanges(plan, offerVars),
+        tiersReached: reachedOf(tierVars),
+        pointPurchases,
+        trackTiersReached: reachedOf(trackTierVars),
+        mines: readMines(plan, mineVars),
+        // Of the event's extra Banknotes (`eventBudget`), how many the plan spends.
+        eventExtraUsed: ctx.extraForEvent > 0 ? Math.max(0, solutionValue(plan, EXTRA_USED)) : 0,
+        lockShortfalls,
+        currencies: readCurrencies(plan, balanceRows, mu),
+        ...createPricing(ctx, mu, rate),
+        /**
+         * Whether the package gives the currency of a shop whose bonus tiers the plan reaches: then it can be worth
+         * buying for those tiers' rewards even below ratio 1.0 on its own (see capCurrencyRates).
+         */
+        forBonusTiers(pkg) {
+            const tierCurrencies = new Set(reachedOf(tierVars).map((tier) => ctx.shops[tier.shopId].currency_item_id));
+            return [...currencyFlows(pkg.contains, ctx.items, ctx.values, ctx.currencyIds).keys()].some((id) =>
+                tierCurrencies.has(id),
+            );
         },
     };
 }

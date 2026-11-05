@@ -4,7 +4,7 @@
  * loads, so the selection keeps up with the calendar. Selecting or unselecting an event or pass by hand turns it off
  * (valuation-panel.js), until the switch is turned on again.
  */
-import { gameDay, scheduleRuns } from '../core/schedule.js';
+import { gameDay, runContains, scheduleRuns } from '../core/schedule.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { getSettings, updateSettings } from './settings.js';
 
@@ -13,7 +13,7 @@ function runningToday(data) {
     const today = gameDay(new Date()).day;
     return new Set(
         [...scheduleRuns(data, today)]
-            .filter(([, { runs }]) => runs.some((run) => run.start <= today && today <= run.end))
+            .filter(([, { runs }]) => runs.some((run) => runContains(run, today)))
             .map(([id]) => id),
     );
 }

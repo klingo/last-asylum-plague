@@ -33,7 +33,8 @@
 import { currencyItemIds } from './catalog.js';
 import { packageFamilyId } from './pack-data.js';
 import { lendReversible } from './item-values.js';
-import { itemKind, isRandomItem, substituteTargets } from './items.js';
+import { itemKind, isRandomItem, selectCount, substituteTargets } from './items.js';
+import { median, quantile } from './stats.js';
 
 // Obtained through event mechanics the data doesn't model (Moon Coin machine): left out of the
 // fit, so they stay unknown.
@@ -51,17 +52,6 @@ const MAX_ITERATIONS = 300;
 const UNCERTAIN_ABOVE = 0.5;
 // Leave-one-out: a value that moves more than this factor without one pack depends on that pack.
 const DEPENDENCE_ABOVE = 1.5;
-
-function median(values) {
-    const sorted = [...values].sort((a, b) => a - b);
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length === 0 ? NaN : sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-}
-
-function quantile(values, q) {
-    const sorted = [...values].sort((a, b) => a - b);
-    return sorted.length === 0 ? NaN : sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * q))];
-}
 
 /** A fit parameter: nothing to derive the item from (a recipe only caps and hints, see buildEquations). */
 function isLeaf(item) {
@@ -158,7 +148,7 @@ function createExpander(items, pinned, groupOf, choicePick) {
                 }
                 break;
             case 'choice':
-                addOptions(acc, item.choice.choices || [], item.choice.select_count || 1, qty, visiting);
+                addOptions(acc, item.choice.choices || [], selectCount(item.choice), qty, visiting);
                 break;
             case 'contains':
                 expandInto(acc, item.contains, qty, visiting);
@@ -183,7 +173,7 @@ function createExpander(items, pinned, groupOf, choicePick) {
         const visiting = new Set();
         expandInto(acc, contains, 1, visiting);
         if (choice) {
-            addOptions(acc, choice.choices || [], choice.select_count || 1, 1, visiting);
+            addOptions(acc, choice.choices || [], selectCount(choice), 1, visiting);
         }
         return acc;
     };
@@ -454,6 +444,71 @@ function solveLogFit(params, equations, prior, initial = null) {
 }
 
 /**
+ * Standard error of every fit parameter (in log space): the diagonal of the inverse normal matrix, scaled by the
+ * residual spread of the package equations. Map param -> error (Infinity if the matrix can't be inverted).
+ */
+function standardErrors(params, fit, equations) {
+    const packageResiduals = fit.state.residuals.filter((_, j) => equations[j].kind === 'package');
+    const sigma = Math.max(1.4826 * median(packageResiduals.map((r) => Math.abs(r.residual))), 0.05);
+    const factor = params.length ? cholesky(fit.normal) : null;
+    const errors = new Map();
+    params.forEach((param, i) => {
+        if (!factor) {
+            errors.set(param, Infinity);
+            return;
+        }
+        const unit = new Float64Array(params.length);
+        unit[i] = 1;
+        errors.set(param, Math.sqrt(Math.max(choleskySolve(factor, unit)[i], 0)) * sigma);
+    });
+    return errors;
+}
+
+/**
+ * The points of the items the fit settled: the pinned ones (items worth 0, reversible chains) and every fitted leaf
+ * item, flagged `uncertain` where its standard error is large. Currencies are left out.
+ */
+function fittedPoints({ items, pinned, groupOf, currencyIds, values, standardError }) {
+    const points = new Map();
+    for (const [id, entry] of pinned) {
+        if (id !== ANCHOR_ID) {
+            points.set(id, entry);
+        }
+    }
+    for (const id of Object.keys(items)) {
+        const param = groupOf(id);
+        if (points.has(id) || currencyIds.has(id) || !values.has(param) || !isLeaf(items[id])) {
+            continue;
+        }
+        points.set(id, {
+            value: values.get(param),
+            source: 'fit',
+            uncertain: !(standardError.get(param) <= UNCERTAIN_ABOVE),
+        });
+    }
+    return points;
+}
+
+/**
+ * The packages of the families left out of the fit: what the rest predicts for them, `[{ id, ratio }]` (fitted
+ * contents / what the deal % says). A package with an item no other package contains can't be predicted.
+ */
+function heldOutRatios(packages, excludeFamilies, expand, values) {
+    const heldOut = [];
+    for (const [id, pkg] of Object.entries(packages)) {
+        if (!excludeFamilies?.has(packageFamilyId(id, pkg)) || pkg.deal_percentage == null || !(pkg.price > 0)) {
+            continue;
+        }
+        const side = expand(pkg);
+        if (side.skip || side.terms.size === 0 || [...side.terms.keys()].some((param) => !values.has(param))) {
+            continue;
+        }
+        heldOut.push({ id, ratio: sideValue(side, values) / ((pkg.price * pkg.deal_percentage) / 100) });
+    }
+    return heldOut;
+}
+
+/**
  * Fits the base points of all leaf items (`data`: normalized, see pack-data.js).
  * - `excludeFamilies`: Set of package family ids left out (fitSensitivity).
  * - `initialValues`: Map parameter -> value to start from (a previous fit's `paramValues`).
@@ -470,7 +525,7 @@ function solveLogFit(params, equations, prior, initial = null) {
 function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zeroItems = null } = {}) {
     const items = data.items || {};
     const packages = data.packages || {};
-    const currencyIds = currencyItemIds(data.exchange_shops, data.mines);
+    const currencyIds = currencyItemIds(data);
 
     const pinned = new Map([[ANCHOR_ID, { value: 1, source: 'anchor' }]]);
     for (const id of zeroItems || []) {
@@ -513,38 +568,8 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
         values = new Map(params.map((p, i) => [p, Math.exp(fit.theta[i])]));
     }
 
-    // Standard errors: diagonal of the inverse normal matrix, scaled by the residual spread.
-    const packageResiduals = fit.state.residuals.filter((_, j) => equations[j].kind === 'package');
-    const sigma = Math.max(1.4826 * median(packageResiduals.map((r) => Math.abs(r.residual))), 0.05);
-    const factor = params.length ? cholesky(fit.normal) : null;
-    const standardError = new Map();
-    params.forEach((param, i) => {
-        if (!factor) {
-            standardError.set(param, Infinity);
-            return;
-        }
-        const unit = new Float64Array(params.length);
-        unit[i] = 1;
-        standardError.set(param, Math.sqrt(Math.max(choleskySolve(factor, unit)[i], 0)) * sigma);
-    });
-
-    const points = new Map();
-    for (const [id, entry] of pinned) {
-        if (id !== ANCHOR_ID) {
-            points.set(id, entry);
-        }
-    }
-    for (const id of Object.keys(items)) {
-        const param = groupOf(id);
-        if (points.has(id) || currencyIds.has(id) || !values.has(param) || !isLeaf(items[id])) {
-            continue;
-        }
-        points.set(id, {
-            value: values.get(param),
-            source: 'fit',
-            uncertain: !(standardError.get(param) <= UNCERTAIN_ABOVE),
-        });
-    }
+    const standardError = standardErrors(params, fit, equations);
+    const points = fittedPoints({ items, pinned, groupOf, currencyIds, values, standardError });
 
     const packageRatios = [];
     equations.forEach((eq, j) => {
@@ -552,19 +577,6 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
             packageRatios.push({ id: eq.id, ratio: Math.exp(fit.state.residuals[j].residual) });
         }
     });
-    // The packages left out of the fit: what the rest predicts for them. A package with an item no other
-    // package contains can't be predicted.
-    const heldOut = [];
-    for (const [id, pkg] of Object.entries(packages)) {
-        if (!excludeFamilies?.has(packageFamilyId(id, pkg)) || pkg.deal_percentage == null || !(pkg.price > 0)) {
-            continue;
-        }
-        const side = expand(pkg);
-        if (side.skip || side.terms.size === 0 || [...side.terms.keys()].some((param) => !values.has(param))) {
-            continue;
-        }
-        heldOut.push({ id, ratio: sideValue(side, values) / ((pkg.price * pkg.deal_percentage) / 100) });
-    }
     const errors = packageRatios.map((p) => Math.abs(p.ratio - 1));
     return {
         points,
@@ -577,7 +589,7 @@ function fitItemPoints(data, { excludeFamilies = null, initialValues = null, zer
             p90Error: quantile(errors, 0.9),
             parameters: params.length,
             equations: equations.length,
-            ...(excludeFamilies ? { heldOut } : {}),
+            ...(excludeFamilies ? { heldOut: heldOutRatios(packages, excludeFamilies, expand, values) } : {}),
         },
     };
 }

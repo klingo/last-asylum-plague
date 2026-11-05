@@ -37,12 +37,14 @@ import {
     slotRangeText,
     startCountdowns,
 } from '../ui/event-banner.js';
-import { WEEKDAYS, isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
+import { isOnSale, packageWeeklyCapacity } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import {
+    WEEKDAYS,
     forecastRuns,
     gameDay,
     rotationSlots,
+    runContains,
     runMoments,
     scheduleRuns,
     weekdayIndex,
@@ -219,7 +221,7 @@ function renderSchedule() {
     const running = [];
     const soon = [];
     for (const [id, { kind, runs }] of scheduleRuns(data, today)) {
-        const current = runs.find((run) => run.start <= today && today <= run.end);
+        const current = runs.find((run) => runContains(run, today));
         if (current) {
             running.push(runEntry(id, kind, current, 'running', Boolean(current.forecast)));
         }

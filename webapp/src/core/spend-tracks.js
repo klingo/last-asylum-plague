@@ -60,6 +60,8 @@ function trackPointsForPrice(track, price) {
     if (exact) {
         return exact.points;
     }
+    // The upper middle rate (not the mean of the two middle ones): deliberately not stats.js `median`, which would
+    // change the rate of tracks with an even number of conversions.
     const rates = conversions.map((conversion) => conversion.points / conversion.price).sort((a, b) => a - b);
     return price * rates[Math.floor(rates.length / 2)];
 }

@@ -8,6 +8,7 @@ import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
+import { selectCount } from '../core/items.js';
 import { packageDisplayName, packageDisplayText, bundleLabel } from '../ui/labels.js';
 import { createItemPicker } from '../ui/item-picker.js';
 import { banknotesHtml, escapeHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
@@ -115,7 +116,7 @@ function render() {
         })
         .sort((a, b) => b.worth - a.worth);
     optionsEmpty.hidden = rows.length > 0;
-    renderSelectCountHint(source.choice.select_count || 1, rows.length);
+    renderSelectCountHint(selectCount(source.choice), rows.length);
 
     const best = rows[0]?.worth || 0;
     const tieFlags = computeTieFlags(rows.map((row) => row.worth.toFixed(4)));

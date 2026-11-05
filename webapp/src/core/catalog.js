@@ -15,12 +15,23 @@
  */
 
 import { packageFamilyId } from './pack-data.js';
+import { DAYS_PER_WEEK, WEEKDAYS } from './schedule.js';
 
-const DAYS_PER_WEEK = 7;
-const DAYS_PER_MONTH = 30;
-const DAYS_PER_TWO_WEEKS = 14;
-// Monday first: weekly limits reset on Monday, so a weekday's index is its offset into the week.
-const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+// The days a biweekly / monthly limit covers (a pass delivers its contents over that long).
+const LIMIT_PERIOD_DAYS = { biweekly: 14, monthly: 30 };
+
+/** Whether an event is running: `activeEventIds` is the Set of running events (null = every event runs). */
+function isEventActive(eventId, activeEventIds) {
+    return !activeEventIds || activeEventIds.has(eventId);
+}
+
+/**
+ * Whether a (flattened) package can't be bought at all under the toggles: its event isn't running, or it's a
+ * lifetime-limited pack without an event while `includeExclusives` is off.
+ */
+function isBlocked(pkg, { activeEventIds, includeExclusives }) {
+    return pkg.event_id ? !isEventActive(pkg.event_id, activeEventIds) : isLifetimeLimited(pkg) && !includeExclusives;
+}
 
 /** A pass: delivers its rewards over several days (`delivery_days`) and isn't tied to an event. */
 function isPass(pkg) {
@@ -79,7 +90,7 @@ function isSeasonalOff(id, pkg, seasonalPasses) {
  * (undefined = every seasonal pass, see isSeasonalOff).
  */
 function isOnSale(id, pkg, { activeEventIds = null, seasonalPasses } = {}) {
-    if (!(pkg.price > 0) || (pkg.event_id && activeEventIds && !activeEventIds.has(pkg.event_id))) {
+    if (!(pkg.price > 0) || (pkg.event_id && !isEventActive(pkg.event_id, activeEventIds))) {
         return false;
     }
     return !isSeasonalOff(id, pkg, seasonalPasses);
@@ -104,10 +115,12 @@ function bundledPairs(packages) {
     return pairs;
 }
 
-/** Every item used as an exchange-shop or mine currency (diamonds, event coins, pickaxes, ...). */
-function currencyItemIds(exchangeShops, mines) {
+/** Every item used as an exchange-shop or mine currency (diamonds, event coins, pickaxes, ...) in the pack data. */
+function currencyItemIds(data) {
     return new Set(
-        [...Object.values(exchangeShops || {}), ...Object.values(mines || {})].map((owner) => owner.currency_item_id),
+        [...Object.values(data.exchange_shops || {}), ...Object.values(data.mines || {})].map(
+            (owner) => owner.currency_item_id,
+        ),
     );
 }
 
@@ -116,17 +129,14 @@ function perWeek(purchaseLimit, limitType, availableDays) {
     if (purchaseLimit == null) {
         return Infinity;
     }
-    switch (limitType) {
-        case 'daily':
-            return purchaseLimit * (availableDays?.length || DAYS_PER_WEEK);
-        case 'biweekly':
-            return (purchaseLimit * DAYS_PER_WEEK) / DAYS_PER_TWO_WEEKS;
-        case 'monthly':
-            return (purchaseLimit * DAYS_PER_WEEK) / DAYS_PER_MONTH;
-        default:
-            // weekly, lifetime, event
-            return purchaseLimit;
+    if (limitType === 'daily') {
+        return purchaseLimit * (availableDays?.length || DAYS_PER_WEEK);
     }
+    if (LIMIT_PERIOD_DAYS[limitType]) {
+        return (purchaseLimit * DAYS_PER_WEEK) / LIMIT_PERIOD_DAYS[limitType];
+    }
+    // weekly, lifetime, event
+    return purchaseLimit;
 }
 
 /**
@@ -153,14 +163,7 @@ function packageWeeklyCapacity(
             }),
         );
     }
-    if (pkg.event_id) {
-        if (activeEventIds && !activeEventIds.has(pkg.event_id)) {
-            return 0;
-        }
-    } else if (isLifetimeLimited(pkg) && !includeExclusives) {
-        return 0;
-    }
-    if (isPass(pkg) && !includePasses) {
+    if (isBlocked(pkg, { activeEventIds, includeExclusives }) || (isPass(pkg) && !includePasses)) {
         return 0;
     }
     return perWeek(pkg.purchase_limit, pkg.limit_type, pkg.available_days);
@@ -208,7 +211,7 @@ function currencyCost(
 
 /** Purchases per week of an exchange-shop offer; 0 if the shop's event isn't active. */
 function offerWeeklyCapacity(offer, shop, { activeEventIds = null } = {}) {
-    if (shop.event_id && activeEventIds && !activeEventIds.has(shop.event_id)) {
+    if (shop.event_id && !isEventActive(shop.event_id, activeEventIds)) {
         return 0;
     }
     return perWeek(offer.purchase_limit, offer.limit_type, null);
@@ -232,11 +235,8 @@ function capacityInWindow(
         return Infinity;
     }
     const horizon = eventTied ? Math.min(days, DAYS_PER_WEEK) : days;
-    if (limitType === 'biweekly') {
-        return purchaseLimit * Math.ceil(horizon / DAYS_PER_TWO_WEEKS);
-    }
-    if (limitType === 'monthly') {
-        return purchaseLimit * Math.ceil(horizon / DAYS_PER_MONTH);
+    if (LIMIT_PERIOD_DAYS[limitType]) {
+        return purchaseLimit * Math.ceil(horizon / LIMIT_PERIOD_DAYS[limitType]);
     }
     if (limitType !== 'daily' && limitType !== 'weekly') {
         return purchaseLimit;
@@ -266,14 +266,11 @@ function capacityInWindow(
 /**
  * Purchases of a (flattened) package possible within `days` (see capacityInWindow).
  * - Event-tied packages need their event in `activeEventIds` (null = all).
- * - Lifetime-limited packages without an event need `includeExclusives`.
+ * - Lifetime-limited packages without an event need `includeExclusives` (on by default here, unlike in
+ *   packageWeeklyCapacity: Compare counts what can be had at all).
  */
 function packageCapacityForDays(pkg, days, { activeEventIds = null, includeExclusives = true, startDay = null } = {}) {
-    if (pkg.event_id) {
-        if (activeEventIds && !activeEventIds.has(pkg.event_id)) {
-            return 0;
-        }
-    } else if (isLifetimeLimited(pkg) && !includeExclusives) {
+    if (isBlocked(pkg, { activeEventIds, includeExclusives })) {
         return 0;
     }
     return capacityInWindow(pkg.purchase_limit, pkg.limit_type, {
@@ -285,17 +282,16 @@ function packageCapacityForDays(pkg, days, { activeEventIds = null, includeExclu
 }
 
 export {
-    DAYS_PER_WEEK,
     purchaseType,
     PURCHASE_TYPES,
     bundledPairs,
+    isEventActive,
     isSeasonalOff,
     isOnSale,
     currencyItemIds,
     packageWeeklyCapacity,
     offerWeeklyCapacity,
     currencyCost,
-    WEEKDAYS,
     deliveryPeriod,
     capacityInWindow,
     packageCapacityForDays,

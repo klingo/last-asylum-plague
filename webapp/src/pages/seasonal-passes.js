@@ -11,7 +11,7 @@ import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { packageWeeklyCapacity } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
-import { gameDay, scheduleRuns } from '../core/schedule.js';
+import { gameDay, runContains, scheduleRuns } from '../core/schedule.js';
 import { banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
 import { itemLinkName, packageDisplayName } from '../ui/labels.js';
 import {
@@ -241,7 +241,7 @@ function runningPassIds() {
     return [...scheduleRuns(data, today)]
         .filter(
             ([id, { kind, runs }]) =>
-                kind === 'pass' && families.has(id) && runs.some((run) => run.start <= today && today <= run.end),
+                kind === 'pass' && families.has(id) && runs.some((run) => runContains(run, today)),
         )
         .map(([id]) => id);
 }

@@ -11,7 +11,7 @@ import { mountValuationPanel } from '../ui/valuation-panel.js';
 import { getSettings, onSettingsChange } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { trackTiers, trackPointsForPrice } from '../core/spend-tracks.js';
-import { gameDay, scheduleRuns } from '../core/schedule.js';
+import { gameDay, runContains, scheduleRuns } from '../core/schedule.js';
 import { banknotesHtml, hydrateItemIcons } from '../ui/html.js';
 import {
     gridCell,
@@ -275,9 +275,7 @@ function runningTrackIds() {
     return [...scheduleRuns(data, today)]
         .filter(
             ([id, { kind, runs }]) =>
-                kind === 'track' &&
-                data.spend_reward_tracks?.[id] &&
-                runs.some((run) => run.start <= today && today <= run.end),
+                kind === 'track' && data.spend_reward_tracks?.[id] && runs.some((run) => runContains(run, today)),
         )
         .map(([id]) => id);
 }

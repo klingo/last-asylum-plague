@@ -12,7 +12,7 @@
  *
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
-import { varName } from './lp.js';
+import { linkRow, varName } from './lp.js';
 import { bundledPairs } from './catalog.js';
 
 function addPackageRules(model, vars, packages) {
@@ -56,15 +56,7 @@ function addPackageRules(model, vars, packages) {
         }
         const lower = vars.get(pkg.requires);
         if (lower) {
-            model.rows.push({
-                name: varName('req', id),
-                terms: new Map([
-                    [name, 1],
-                    [lower.name, -1],
-                ]),
-                op: '<=',
-                rhs: 0,
-            });
+            model.rows.push(linkRow(varName('req', id), name, lower.name));
         } else if (packages[pkg.requires]?.price > 0) {
             model.bounds.set(name, { ...model.bounds.get(name), lower: 0, upper: 0 });
         }

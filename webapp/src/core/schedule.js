@@ -13,9 +13,15 @@
  * Pure module: no clock of its own, callers pass `today` / `nowMs`.
  */
 
-const DAY_MS = 86400000;
+import { median } from './stats.js';
+
+const HOUR_MS = 3600000;
+const DAY_MS = 24 * HOUR_MS;
+const DAYS_PER_WEEK = 7;
+const WEEK_MS = DAYS_PER_WEEK * DAY_MS;
 // A proven pattern is only trusted this long after its last recorded run (8 weeks); then it is a rough guess again.
-const STALE_DAYS = 56;
+const STALE_DAYS = 8 * DAYS_PER_WEEK;
+// Monday first: weekly limits reset on Monday, so a weekday's index is its offset into the week.
 const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 /** "2026-10-12" -> day number. */
@@ -30,7 +36,7 @@ function dayDate(day) {
 }
 
 // The game's day starts (and ends) at 02:00 UTC, whatever the local time zone or daylight saving.
-const GAME_DAY_START_MS = 2 * 3600000;
+const GAME_DAY_START_MS = 2 * HOUR_MS;
 
 /**
  * The game day a moment falls in: its day number (the date it started on) and how far into it the moment is
@@ -47,11 +53,21 @@ function weekdayIndex(day) {
     return (dayDate(day).getUTCDay() + 6) % 7;
 }
 
+/** The Monday of a day's week (a day number). */
+function weekStart(day) {
+    return day - weekdayIndex(day);
+}
+
 /** ISO week number of a day (the week's Thursday decides its year). */
 function isoWeekNumber(day) {
-    const thursday = day - weekdayIndex(day) + 3;
+    const thursday = weekStart(day) + 3;
     const year = dayDate(thursday).getUTCFullYear();
-    return Math.floor((thursday - dayNumber(`${year}-01-01`)) / 7) + 1;
+    return Math.floor((thursday - dayNumber(`${year}-01-01`)) / DAYS_PER_WEEK) + 1;
+}
+
+/** Whether a run (inclusive `start` / `end` day numbers) is on on this day. */
+function runContains(run, day) {
+    return run.start <= day && day <= run.end;
 }
 
 /**
@@ -122,12 +138,6 @@ function weekdayRuns(availableDays, from, to) {
     return runs;
 }
 
-function median(values) {
-    const sorted = [...values].sort((a, b) => a - b);
-    const middle = Math.floor(sorted.length / 2);
-    return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
-}
-
 /**
  * The shortest cycle of gaps (days between run starts) that explains every recorded gap (gaps[i] = gaps[i - k]),
  * once it has proven itself: seen twice (n ≥ 2k), or whole weeks long with at least one gap repeated (n ≥ k + 1;
@@ -141,7 +151,7 @@ function gapCycle(gaps) {
             continue;
         }
         const days = gaps.slice(0, k).reduce((sum, gap) => sum + gap, 0);
-        if (days > 0 && (n >= 2 * k || days % 7 === 0)) {
+        if (days > 0 && (n >= 2 * k || days % DAYS_PER_WEEK === 0)) {
             return gaps.slice(n - k);
         }
     }
@@ -230,7 +240,7 @@ function forecastRuns(allRuns, { from, to, today }) {
  * runs. Forecasts aren't runs: pass them in to count them too.
  */
 function runStatus(runs, today) {
-    const running = runs.find((run) => run.start <= today && today <= run.end);
+    const running = runs.find((run) => runContains(run, today));
     if (running) {
         return { state: 'running', run: running, days: running.end - today };
     }
@@ -253,13 +263,11 @@ function runMoments(run) {
     };
 }
 
-const HOUR_MS = 3600000;
-const WEEK_MS = 7 * DAY_MS;
-
 /** The moment (ms) the rotation's week that `ms` falls in started: the daily reset (02:00 UTC) of `week_starts`. */
 function rotationWeekStart(rotation, ms) {
     const today = gameDay(new Date(ms)).day;
-    const weekStartDay = today - ((weekdayIndex(today) - WEEKDAYS.indexOf(rotation.week_starts) + 7) % 7);
+    const weekStartDay =
+        today - ((weekdayIndex(today) - WEEKDAYS.indexOf(rotation.week_starts) + DAYS_PER_WEEK) % DAYS_PER_WEEK);
     return dayDate(weekStartDay).getTime() + GAME_DAY_START_MS;
 }
 
@@ -305,11 +313,19 @@ function rotationWindow(rotation, fromMs, toMs) {
 }
 
 export {
+    DAY_MS,
+    DAYS_PER_WEEK,
+    HOUR_MS,
+    STALE_DAYS,
+    WEEKDAYS,
+    dayNumber,
     dayDate,
     gameDay,
     GAME_DAY_START_MS,
     weekdayIndex,
+    weekStart,
     isoWeekNumber,
+    runContains,
     scheduleRuns,
     forecastRuns,
     weekdayRuns,

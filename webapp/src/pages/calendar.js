@@ -35,8 +35,8 @@ import {
     rotationWindow,
     runStatus,
     scheduleRuns,
-    weekdayIndex,
     weekdayRuns,
+    weekStart,
 } from '../core/schedule.js';
 
 // The schedule timeline: the current week and the 3 weeks ahead (Monday to Sunday).
@@ -163,7 +163,7 @@ function renderSchedule() {
     // Today is the game day (it starts at 02:00 UTC), as in the weekday offers.
     const now = gameDay(new Date());
     const today = now.day;
-    const from = today - weekdayIndex(today);
+    const from = weekStart(today);
     const to = from + WEEKS * 7 - 1;
     const total = to - from + 1;
     scheduleWindow = { from, total };
@@ -242,7 +242,7 @@ function renderSchedule() {
             ${rowsHtml}`;
     }).join('');
 
-    const currentWeek = (today - weekdayIndex(today) - from) / total;
+    const currentWeek = (weekStart(today) - from) / total;
     body.innerHTML = `
         <div class="schedule__legend">
             <span><i class="schedule__swatch"></i>${escapeHtml(t('calendar.schedule.recorded'))}</span>

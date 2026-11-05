@@ -14,6 +14,7 @@ import { getSettings, updateSettings, onSettingsChange, MINE_SAFETY_LEVELS } fro
 import { withLoading } from '../ui/loading.js';
 import { packageWeeklyCapacity, offerWeeklyCapacity, isOnSale, currencyCost } from '../core/catalog.js';
 import { createUnitCounter } from '../core/item-sources.js';
+import { selectCount } from '../core/items.js';
 import { urlParam, setUrlParams } from '../ui/url.js';
 import { packageDisplayName, itemDisplayName, itemLinkName, bundleLabel } from '../ui/labels.js';
 import { banknotesHtml, escapeAttr, escapeHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
@@ -557,7 +558,7 @@ function packDetailsHtml(key, pkg) {
         blocks.push(
             intro(
                 t('events.packDetails.picks', {
-                    count: formatThousands(pkg.choice.select_count || 1),
+                    count: formatThousands(selectCount(pkg.choice)),
                     total: formatThousands(pkg.choice.choices.length),
                 }),
             ) + itemRows(optionParts(picked)).join(''),

@@ -20,6 +20,7 @@ import {
     initialState,
     mergePaths,
     starIcons,
+    starStep,
     starsOfStep,
     stepCost,
     stepItems,
@@ -307,7 +308,7 @@ function shownState() {
                         ? !piece?.crafted
                         : next.kind === 'level'
                           ? piece?.level < next.step.level
-                          : piece?.starStep < (next.step.stars === 5 ? MR_STEP : Math.round(next.step.stars * 5));
+                          : piece?.starStep < starStep(next.step.stars);
                 if (changes) {
                     const key = `${slot}:${item}`;
                     upcoming.set(key, [...(upcoming.get(key) || []), { path, text: previewText(next) }]);
@@ -418,8 +419,7 @@ function whoText(step) {
 
 /** The 5 star icons for a star step's target, or for a number of whole stars (5 = MR). */
 function starStripHtml(stars, className = 'gear-stars') {
-    const step = stars === 5 ? MR_STEP : Math.round(stars * 5);
-    return `<span class="${className}" aria-hidden="true">${starIcons(step)
+    return `<span class="${className}" aria-hidden="true">${starIcons(starStep(stars))
         .map((name) => `<img src="${ASSETS}stars/${name}.png" alt="" />`)
         .join('')}</span>`;
 }

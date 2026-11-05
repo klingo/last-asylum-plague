@@ -115,9 +115,27 @@ function addTerm(terms, name, coefficient) {
     }
 }
 
+/** A row `a * aCoefficient <= b * bCoefficient` between two variables (e.g. a tier only as often as the one below). */
+function linkRow(name, a, b, aCoefficient = 1, bCoefficient = 1) {
+    return {
+        name,
+        terms: new Map([
+            [a, aCoefficient],
+            [b, -bCoefficient],
+        ]),
+        op: '<=',
+        rhs: 0,
+    };
+}
+
+/** The solved value of variable `name` in a `solveModel` result (0 for a variable the solver left out). */
+function solutionValue(result, name) {
+    return result.values.get(name) || 0;
+}
+
 /** LP-safe name from a prefix and a pack_data id (ids are already [a-z0-9_]). */
 function varName(prefix, ...ids) {
     return [prefix, ...ids].join('__').replace(/[^a-zA-Z0-9_]/g, '_');
 }
 
-export { loadHighs, solveModel, createModel, addTerm, varName, toLpText };
+export { loadHighs, solveModel, createModel, addTerm, linkRow, solutionValue, varName, toLpText };

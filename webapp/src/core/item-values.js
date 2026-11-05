@@ -16,7 +16,7 @@
  * Unknown parts count as 0 and mark the result `incomplete`; a result with no known part at all
  * stays unknown. Pure module (no DOM/i18n), shared with Node scripts.
  */
-import { itemKind, substituteTargets } from './items.js';
+import { itemKind, selectCount, substituteTargets } from './items.js';
 
 /**
  * Extends `explicit` (Map itemId -> `{ value, source }`) with the values lent down reversible
@@ -71,18 +71,18 @@ function sumContents(contents, valueOf, factor = 1) {
 
 /** Best `select_count` options of a choice pool (each option picked at most once). */
 function bestChoices(choice, valueOf) {
-    const selectCount = choice.select_count || 1;
+    const count = selectCount(choice);
     const options = (choice.choices || [])
         .map((option, index) => ({ index, ...sumContents(option, valueOf) }))
         .filter((option) => option.value !== null)
         .sort((a, b) => b.value - a.value);
-    const picked = options.slice(0, selectCount);
+    const picked = options.slice(0, count);
     if (picked.length === 0) {
         return { value: null, incomplete: true, parts: [], picked: [] };
     }
     return {
         value: picked.reduce((sum, option) => sum + option.value, 0),
-        incomplete: picked.length < selectCount || picked.some((option) => option.incomplete),
+        incomplete: picked.length < count || picked.some((option) => option.incomplete),
         parts: picked.flatMap((option) => option.parts),
         picked: picked.map((option) => option.index),
     };

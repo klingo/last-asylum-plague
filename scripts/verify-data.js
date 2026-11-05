@@ -885,7 +885,7 @@ async function verifyData() {
         );
     console.log(`  - Depends on a single pack: ${dependent.join(', ') || 'none'}\n`);
 
-    const currencyIds = currencyItemIds(exchangeShops, data.mines);
+    const currencyIds = currencyItemIds(data);
     const zeroCurrencies = Object.fromEntries([...currencyIds].map((id) => [id, 0]));
     const resolved = resolveItemValues(items, { basePoints: fit.points, currencyIds, currencyValues: zeroCurrencies });
     checkCategory('Item Worth', ({ reportWarning }) => {

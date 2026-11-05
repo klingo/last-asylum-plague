@@ -18,10 +18,10 @@
  *
  * Pure module: callers pass an initialized HiGHS instance and the normalized data (pack-data.js).
  */
-import { capacityInWindow, packageCapacityForDays, deliveryPeriod, isOnSale } from './catalog.js';
-import { isRandomItem, isChoiceItem, substituteTargets } from './items.js';
+import { capacityInWindow, deliveryPeriod, isEventActive, isOnSale, packageCapacityForDays } from './catalog.js';
+import { isRandomItem, isChoiceItem, selectCount, substituteTargets } from './items.js';
 import { addPackageRules } from './package-rows.js';
-import { createModel, addTerm, solveModel, varName } from './lp.js';
+import { createModel, addTerm, linkRow, solutionValue, solveModel, varName } from './lp.js';
 
 const EPS = 1e-7;
 const HOURS_PER_DAY = 24;
@@ -60,29 +60,10 @@ function unreachable(status = null) {
     };
 }
 
-/**
- * Solves the cheapest plan for `needs` (Map itemId -> quantity).
- * options:
- * - `days`, `startDay` (weekday index, 0 = Monday; null = no calendar), `activeEventIds` (Set;
- *   null = all), `seasonalPasses` (family ids on sale; undefined = all), `includeExclusives`;
- * - `worthOf(itemId)`: Banknote worth of one unit, for the by-product tie-break and the result's
- *   `byproductWorth` (null = skip).
- * Returns `{ reachable, totalCost, packages, offers, conversions, byproductWorth }`: `byproductWorth` =
- * the worth of everything obtained beyond the needs.
- */
-function solveNeeds(highs, data, needs, options = {}) {
-    const {
-        days = 7,
-        startDay = null,
-        activeEventIds = null,
-        seasonalPasses = undefined,
-        includeExclusives = true,
-        worthOf = null,
-    } = options;
-    const items = data.items || {};
-    const packages = data.packages || {};
+/** The model and the balance of every item (itemId -> terms: produced - consumed) the steps below add to. */
+function createBuilder() {
     const model = createModel('min');
-    const balances = new Map(); // itemId -> terms (produced - consumed)
+    const balances = new Map();
     const produce = (itemId, name, qty) => {
         if (!balances.has(itemId)) {
             balances.set(itemId, new Map());
@@ -94,7 +75,12 @@ function solveNeeds(highs, data, needs, options = {}) {
             produce(id, name, qty * factor);
         }
     };
+    return { model, balances, produce, produceAll };
+}
 
+/** One integer variable per package on sale (cost in the objective), and a choice package's picks. */
+function addPackageVars(builder, packages, { days, startDay, activeEventIds, seasonalPasses, includeExclusives }) {
+    const { model, produceAll } = builder;
     const packageVars = new Map();
     for (const [id, pkg] of Object.entries(packages)) {
         const capacity = packageCapacityForDays(pkg, days, { activeEventIds, includeExclusives, startDay });
@@ -111,29 +97,29 @@ function solveNeeds(highs, data, needs, options = {}) {
                 const pick = varName('pc', id, String(index));
                 produceAll(option, pick);
                 model.integers.add(pick);
-                model.rows.push({
-                    name: varName('pcx', id, String(index)),
-                    terms: new Map([
-                        [pick, 1],
-                        [name, -1],
-                    ]),
-                    op: '<=',
-                    rhs: 0,
-                });
+                model.rows.push(linkRow(varName('pcx', id, String(index)), pick, name));
                 return pick;
             });
             const terms = new Map(pickNames.map((pick) => [pick, 1]));
-            terms.set(name, -(pkg.choice.select_count || 1));
+            terms.set(name, -selectCount(pkg.choice));
             model.rows.push({ name: varName('pcs', id), terms, op: '<=', rhs: 0 });
         }
         packageVars.set(id, { name, pkg, capacity, coefficient: 1 });
     }
     addPackageRules(model, packageVars, packages);
+    return packageVars;
+}
 
+/**
+ * One integer variable per exchange-shop offer of the shops that are available, and the currency that comes for
+ * free within the window (`income_per_hour`). Returns `{ offerVars, freeSupply }` (freeSupply: itemId -> amount).
+ */
+function addOfferVars(builder, shops, { days, startDay, activeEventIds }) {
+    const { model, produce } = builder;
     const offerVars = new Map();
-    const freeSupply = new Map(); // itemId -> currency that comes for free within the window (`income_per_hour`)
-    for (const [shopId, shop] of Object.entries(data.exchange_shops || {})) {
-        if (shop.event_id && activeEventIds && !activeEventIds.has(shop.event_id)) {
+    const freeSupply = new Map();
+    for (const [shopId, shop] of Object.entries(shops)) {
+        if (shop.event_id && !isEventActive(shop.event_id, activeEventIds)) {
             continue;
         }
         const income = (shop.income_per_hour || 0) * HOURS_PER_DAY * days;
@@ -158,8 +144,15 @@ function solveNeeds(highs, data, needs, options = {}) {
             offerVars.set(name, { shopId, shop, offerKey, offer });
         }
     }
+    return { offerVars, freeSupply };
+}
 
-    // Free conversions between items.
+/**
+ * The free conversions between items: containers opened, choices picked, reversible items crafted back up,
+ * omni items substituted and recipes crafted. Returns Map variable name -> `{ kind, itemId, ... }`.
+ */
+function addConversions(builder, items) {
+    const { model, produce, produceAll } = builder;
     const conversions = new Map();
     const convert = (name, kind, itemId, detail = {}, integer = false) => {
         conversions.set(name, { kind, itemId, ...detail });
@@ -212,6 +205,106 @@ function solveNeeds(highs, data, needs, options = {}) {
             convert(name, 'craft', id, { ingredients: item.crafted_from }, true);
         }
     }
+    return conversions;
+}
+
+/**
+ * The second solve: same cost, most valuable leftovers (by `worthOf`). Shop purchases stay limited to what the
+ * cheapest plan needed: spending leftover currency on "slightly better than average" offers isn't part of getting the
+ * needs. Returns the solution, or null if it isn't optimal.
+ */
+function solveByproducts(highs, builder, first, { packageVars, offerVars, conversions, worthOf }) {
+    const { model, balances } = builder;
+    const minCost = [...packageVars.values()].reduce(
+        (sum, v) => sum + Math.round(solutionValue(first, v.name)) * v.pkg.price,
+        0,
+    );
+    const objective = new Map();
+    for (const [itemId, terms] of balances) {
+        const worth = worthOf(itemId);
+        if (!Number.isFinite(worth) || worth === 0) {
+            continue;
+        }
+        for (const [name, qty] of terms) {
+            addTerm(objective, name, worth * qty);
+        }
+    }
+    for (const name of [...conversions.keys(), ...offerVars.keys()]) {
+        addTerm(objective, name, -CONVERSION_COST);
+    }
+    const costTerms = new Map([...packageVars.values()].map((v) => [v.name, v.pkg.price]));
+    const bounds = new Map(model.bounds);
+    for (const name of offerVars.keys()) {
+        bounds.set(name, { ...bounds.get(name), upper: Math.round(solutionValue(first, name)) });
+    }
+    const second = solveModel(highs, {
+        ...model,
+        sense: 'max',
+        objective,
+        bounds,
+        rows: [...model.rows, { name: 'cost_cap', terms: costTerms, op: '<=', rhs: minCost + 0.5 }],
+    });
+    return second.status === 'Optimal' ? second : null;
+}
+
+/**
+ * Worth of what's left beyond the needs (a needed item counts only with its surplus). Free currency covers a
+ * shortfall at no cost; unused, it is no leftover of the plan.
+ */
+function byproductWorthOf(result, balances, needs, freeSupply, worthOf) {
+    let total = 0;
+    for (const itemId of new Set([...balances.keys(), ...needs.keys()])) {
+        let net = 0;
+        for (const [name, coefficient] of balances.get(itemId) || []) {
+            net += coefficient * solutionValue(result, name);
+        }
+        if (net < 0) {
+            net += Math.min(-net, freeSupply.get(itemId) || 0);
+        }
+        const need = needs.get(itemId) || 0;
+        const left = net - need;
+        const change = need > 0 ? Math.max(0, left) : left;
+        if (Math.abs(change) > 1e-6) {
+            total += change * (worthOf?.(itemId) ?? 0);
+        }
+    }
+    return total;
+}
+
+/**
+ * Solves the cheapest plan for `needs` (Map itemId -> quantity).
+ * options:
+ * - `days`, `startDay` (weekday index, 0 = Monday; null = no calendar), `activeEventIds` (Set;
+ *   null = all), `seasonalPasses` (family ids on sale; undefined = all), `includeExclusives`;
+ * - `worthOf(itemId)`: Banknote worth of one unit, for the by-product tie-break and the result's
+ *   `byproductWorth` (null = skip).
+ * Returns `{ reachable, totalCost, packages, offers, conversions, byproductWorth }`: `byproductWorth` =
+ * the worth of everything obtained beyond the needs.
+ */
+function solveNeeds(highs, data, needs, options = {}) {
+    const {
+        days = 7,
+        startDay = null,
+        activeEventIds = null,
+        seasonalPasses = undefined,
+        includeExclusives = true,
+        worthOf = null,
+    } = options;
+    const builder = createBuilder();
+    const { model, balances } = builder;
+    const packageVars = addPackageVars(builder, data.packages || {}, {
+        days,
+        startDay,
+        activeEventIds,
+        seasonalPasses,
+        includeExclusives,
+    });
+    const { offerVars, freeSupply } = addOfferVars(builder, data.exchange_shops || {}, {
+        days,
+        startDay,
+        activeEventIds,
+    });
+    const conversions = addConversions(builder, data.items || {});
 
     for (const [itemId, quantity] of needs) {
         // Nothing makes or takes the item: only a currency that comes for free can still cover the need.
@@ -229,84 +322,29 @@ function solveNeeds(highs, data, needs, options = {}) {
     if (result.status !== 'Optimal') {
         return unreachable(result.status);
     }
-    const minCost = [...packageVars.values()].reduce(
-        (sum, v) => sum + Math.round(result.values.get(v.name) || 0) * v.pkg.price,
-        0,
-    );
-
-    // Tie-break: same cost, most valuable leftovers.
     if (worthOf) {
-        const objective = new Map();
-        for (const [itemId, terms] of balances) {
-            const worth = worthOf(itemId);
-            if (!Number.isFinite(worth) || worth === 0) {
-                continue;
-            }
-            for (const [name, qty] of terms) {
-                addTerm(objective, name, worth * qty);
-            }
-        }
-        for (const name of [...conversions.keys(), ...offerVars.keys()]) {
-            addTerm(objective, name, -CONVERSION_COST);
-        }
-        const costTerms = new Map([...packageVars.values()].map((v) => [v.name, v.pkg.price]));
-        // Shop purchases stay limited to what the cheapest plan needed: spending leftover currency
-        // on "slightly better than average" offers isn't part of getting the needs.
-        const bounds = new Map(model.bounds);
-        for (const name of offerVars.keys()) {
-            bounds.set(name, { ...bounds.get(name), upper: Math.round(result.values.get(name) || 0) });
-        }
-        const second = solveModel(highs, {
-            ...model,
-            sense: 'max',
-            objective,
-            bounds,
-            rows: [...model.rows, { name: 'cost_cap', terms: costTerms, op: '<=', rhs: minCost + 0.5 }],
-        });
-        if (second.status === 'Optimal') {
-            result = second;
-        }
+        result = solveByproducts(highs, builder, result, { packageVars, offerVars, conversions, worthOf }) ?? result;
     }
 
-    const value = (name) => result.values.get(name) || 0;
     const boughtPackages = [...packageVars]
-        .filter(([, v]) => value(v.name) > EPS)
+        .filter(([, v]) => solutionValue(result, v.name) > EPS)
         .map(([id, v]) => ({
             id,
             pkg: v.pkg,
-            count: Math.round(value(v.name)),
-            spend: Math.round(value(v.name)) * v.pkg.price,
+            count: Math.round(solutionValue(result, v.name)),
+            spend: Math.round(solutionValue(result, v.name)) * v.pkg.price,
             share: deliveredShare(v.pkg, days),
         }));
     const boughtOffers = [...offerVars]
-        .filter(([name]) => value(name) > EPS)
+        .filter(([name]) => solutionValue(result, name) > EPS)
         .map(([name, v]) => ({
             ...v,
-            count: Math.round(value(name)),
-            coins: Math.round(value(name)) * v.offer.currency_cost,
+            count: Math.round(solutionValue(result, name)),
+            coins: Math.round(solutionValue(result, name)) * v.offer.currency_cost,
         }));
     const usedConversions = [...conversions]
-        .filter(([name]) => value(name) > EPS)
-        .map(([name, c]) => ({ ...c, count: value(name) }));
-
-    // Worth of what's left beyond the needs (a needed item counts only with its surplus).
-    let byproductWorth = 0;
-    for (const itemId of new Set([...balances.keys(), ...needs.keys()])) {
-        let net = 0;
-        for (const [name, coefficient] of balances.get(itemId) || []) {
-            net += coefficient * value(name);
-        }
-        // Free currency covers a shortfall at no cost; unused, it is no leftover of the plan.
-        if (net < 0) {
-            net += Math.min(-net, freeSupply.get(itemId) || 0);
-        }
-        const need = needs.get(itemId) || 0;
-        const left = net - need;
-        const change = need > 0 ? Math.max(0, left) : left;
-        if (Math.abs(change) > 1e-6) {
-            byproductWorth += change * (worthOf?.(itemId) ?? 0);
-        }
-    }
+        .filter(([name]) => solutionValue(result, name) > EPS)
+        .map(([name, c]) => ({ ...c, count: solutionValue(result, name) }));
 
     return {
         reachable: true,
@@ -314,7 +352,7 @@ function solveNeeds(highs, data, needs, options = {}) {
         packages: boughtPackages,
         offers: boughtOffers,
         conversions: usedConversions,
-        byproductWorth,
+        byproductWorth: byproductWorthOf(result, balances, needs, freeSupply, worthOf),
     };
 }
 

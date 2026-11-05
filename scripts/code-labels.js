@@ -4,7 +4,8 @@
  * every weekday and purchase type, and the item picker's own groups. Used by `i18n:missing` (per language)
  * and `verify-data` (English).
  */
-import { PURCHASE_TYPES, WEEKDAYS } from '../webapp/src/core/catalog.js';
+import { PURCHASE_TYPES } from '../webapp/src/core/catalog.js';
+import { WEEKDAYS } from '../webapp/src/core/schedule.js';
 
 // Groups the pages put into the item picker themselves (events.js, spend-rewards.js, seasonal-passes.js, item-picker.js).
 const PICKER_GROUPS = ['shop', 'spend_track', 'seasonal_pass', 'other'];

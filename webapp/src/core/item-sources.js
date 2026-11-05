@@ -15,7 +15,7 @@
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
 
-import { itemKind, substituteTargets } from './items.js';
+import { itemKind, selectCount, substituteTargets } from './items.js';
 
 const NONE = Object.freeze({ units: 0, random: false });
 
@@ -106,7 +106,7 @@ function createUnitCounter(items, targetId) {
         const options = (choice?.choices || [])
             .map((option) => ofContents(option, visiting))
             .sort((a, b) => b.units - a.units)
-            .slice(0, choice?.select_count || 1);
+            .slice(0, selectCount(choice));
         return {
             units: options.reduce((sum, o) => sum + o.units, 0),
             random: options.some((o) => o.random && o.units > 0),
