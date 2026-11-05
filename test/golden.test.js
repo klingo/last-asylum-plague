@@ -98,10 +98,9 @@ const scenarios = {
         seasonalPasses: ['gear_pass'],
         activeTrackIds: new Set(['ancient_recipe_antitoxin']),
     },
-    // The Events page's what-ifs: exceeded limits, extra Banknotes / diamonds, locked offers.
+    // The Events page's what-ifs: extra Banknotes / diamonds, locked offers.
     'plan-events-page': {
         activeEventIds: new Set(['surprise_encounter']),
-        exceedEventPackLimits: new Set(['surprise_encounter']),
         eventBudget: { eventId: 'surprise_encounter', extra: 5000 },
         extraCurrency: { diamonds: 3000 },
         lockedOffers: {
@@ -114,10 +113,9 @@ const scenarios = {
         eventDaysLeft: { dwarven_mine: 3 },
         mineProgress: { dwarven_mine: { owned: 150, floor: 0 } },
     },
-    // The mine from floor 12 with exceeded pack limits and extra Banknotes: dug to floor 100 and on.
+    // The mine from floor 12 with extra Banknotes: dug to floor 100.
     'plan-mine-dig': {
         activeEventIds: new Set(['dwarven_mine']),
-        exceedEventPackLimits: new Set(['dwarven_mine']),
         eventBudget: { eventId: 'dwarven_mine', extra: 30000 },
         eventDaysLeft: { dwarven_mine: 3 },
         mineProgress: { dwarven_mine: { owned: 150, floor: 12 } },

@@ -361,10 +361,6 @@
         "stepsHeading": "How much to spend on this event",
         "yourPlan": "(your plan)",
         "stepsNote": "Each row is the best plan with that much spent on the event's packs, the rest of your weekly spend unchanged. Step ratio 1.0 or more = the step is at least as good as your last Banknote; below 1.0 = better spent elsewhere.",
-        "optionsLabel": "Options",
-        "exceedLimits": "Exceed event pack limits",
-        "exceedLimitsHint": "Lets the plan buy the selected event's packs as often as it likes instead of their daily limit (usually once per day), e.g. to see how far the best currency pack is worth repeating. Only possible for events whose packs can be bought beyond their limit in the game: {events}.",
-        "exceedNote": "Event pack limits exceeded: this plan differs from the Deal Ranking (which keeps the limits).",
         "tiles": {
             "packs": "Buy these packs",
             "encounters": "Encounters",

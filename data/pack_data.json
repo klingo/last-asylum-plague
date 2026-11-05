@@ -7891,7 +7891,6 @@
                 "de": "Zwergenmine"
             },
             "category": "special_event",
-            "exceedable_pack_limits": true,
             "image": "dwarven_mine"
         },
         "full_moon_night": {
@@ -7973,7 +7972,6 @@
                 "de": "Seltsamer Basar"
             },
             "category": "special_event",
-            "exceedable_pack_limits": true,
             "image": "strange_bazaar"
         },
         "surprise_encounter": {
@@ -7982,7 +7980,6 @@
                 "de": "Überraschende Begegnung"
             },
             "category": "special_event",
-            "exceedable_pack_limits": true,
             "image": "surprise_encounter"
         },
         "survival_battle": {
@@ -8676,6 +8673,10 @@
             {
                 "start": "2026-11-02",
                 "end": "2026-11-02"
+            },
+            {
+                "start": "2026-11-05",
+                "end": "2026-11-05"
             }
         ],
         "demon_king_warrior_blight": [

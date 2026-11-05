@@ -33,9 +33,6 @@ import { eventBannerHtml, eventImageUrl, scheduleTiming, startCountdowns } from 
 // One tab per ticked event and per shop without event (VIP Shop): usually only a few, so one click each.
 const eventTabs = document.getElementById('event-tabs');
 const chooseEvents = document.getElementById('choose-events');
-const exceedLimits = document.getElementById('exceed-limits');
-const exceedLimitsInfo = document.getElementById('exceed-limits-info');
-const exceedField = document.getElementById('exceed-field');
 const extraCurrencyField = document.getElementById('extra-currency-field');
 const extraCurrencyLabel = document.getElementById('extra-currency-label');
 const extraCurrencyInput = document.getElementById('extra-currency');
@@ -48,7 +45,6 @@ const mineFloorInput = document.getElementById('mine-floor');
 const promptCard = document.getElementById('event-prompt-card');
 const planCard = document.getElementById('plan-card');
 const eventBanner = document.getElementById('event-banner');
-const exceedNote = document.getElementById('exceed-note');
 const lockNote = document.getElementById('lock-note');
 const eventSummary = document.getElementById('event-summary');
 const packsSection = document.getElementById('packs-section');
@@ -115,18 +111,6 @@ function selection() {
     return null;
 }
 
-/** Whether the event's pack limits can be exceeded in the game (`exceedable_pack_limits` in the data). */
-const isExceedable = (eventId) => Boolean(eventId && data.events?.[eventId]?.exceedable_pack_limits);
-
-/** Whether the box is ticked for this event (remembered per event in the settings). */
-const exceedTicked = (eventId) => Boolean(eventId && settings.exceedEventLimits?.includes(eventId));
-
-/** Whether this page lifts the selected event's pack limits: box ticked and the event allows it. */
-function exceeding() {
-    const eventId = selection()?.eventId;
-    return exceedTicked(eventId) && isExceedable(eventId);
-}
-
 /**
  * A shop whose currency also comes from outside the packs is selected: one without event (VIP Shop, Alliance Shop), or
  * of an event none of whose packs gives the shop's currency (Thief Hunt: lion coins come from killing thieves). The
@@ -178,13 +162,13 @@ function mineProgressFor(mineId, run) {
 }
 
 /**
- * Planner options of this page: the selected event's pack limits lifted when exceeding, its extra
- * Banknotes on top of the weekly spend; for a mine, the days left of its run (daily pack limits, free
- * pickaxes), the pickaxes owned, the floor reached and how sure the planned pickaxes should be.
+ * Planner options of this page: the selected event's extra Banknotes on top of the weekly spend; for a mine, the
+ * days left of its run (daily pack limits, free pickaxes), the pickaxes owned, the floor reached and how sure the
+ * planned pickaxes should be.
  */
 function pageOverrides() {
     const selected = selection();
-    const overrides = exceeding() ? { exceedEventPackLimits: new Set([selected.eventId]) } : {};
+    const overrides = {};
     if (extraFor(selected?.eventId) > 0) {
         overrides.eventBudget = { eventId: selected.eventId, extra: extraFor(selected.eventId) };
     }
@@ -199,13 +183,13 @@ function pageOverrides() {
     return overrides;
 }
 
-/** The page overrides as a string (Sets as arrays), to tell whether the plan has to be solved again. */
-const overridesKey = () => JSON.stringify(pageOverrides(), (key, value) => (value instanceof Set ? [...value] : value));
+/** The page overrides as a string, to tell whether the plan has to be solved again. */
+const overridesKey = () => JSON.stringify(pageOverrides());
 
 const eventPurchases = (plan, eventId) => plan.purchases.filter((p) => p.pkg.event_id === eventId);
 const eventPackSpend = (plan, eventId) => eventPurchases(plan, eventId).reduce((sum, p) => sum + p.spend, 0);
 
-/** Most Banknotes the event's packages can take per week (unlimited with exceeded limits). */
+/** Most Banknotes the event's packages can take per week. */
 function eventMaxSpend(eventId) {
     const rules = { activeEventIds: new Set([eventId]), eventDaysLeft: pageOverrides().eventDaysLeft };
     const packages = Object.entries(data.packages)
@@ -214,9 +198,6 @@ function eventMaxSpend(eventId) {
                 pkg.event_id === eventId && isOnSale(id, pkg, rules) && packageWeeklyCapacity(pkg, rules) > 0,
         )
         .map(([, pkg]) => pkg);
-    if (exceeding() && packages.length > 0) {
-        return Infinity;
-    }
     return packages.reduce((sum, pkg) => sum + packageWeeklyCapacity(pkg, rules) * pkg.price, 0);
 }
 
@@ -756,7 +737,6 @@ function mineEconomics(dug) {
         currencyCost(data.packages, mine.currency_item_id, bought, {
             activeEventIds: new Set(settings.activeEvents),
             seasonalPasses: settings.seasonalPasses,
-            exceedEventPackLimits: exceeding() ? new Set([mine.event_id]) : null,
             eventDaysLeft: pageOverrides().eventDaysLeft,
         });
     // Banknotes for the first `pickaxes` pickaxes from the floor reached (the owned and free ones cost nothing).
@@ -1432,8 +1412,6 @@ function render() {
     const selected = selection();
     promptCard.hidden = Boolean(selected);
     planCard.hidden = !selected;
-    exceedLimits.disabled = !isExceedable(selected?.eventId);
-    exceedLimits.checked = exceedTicked(selected?.eventId);
     extraCurrencyField.hidden = !hasOutsideCurrency(selected);
     if (hasOutsideCurrency(selected)) {
         const currencyId = selected.shop.currency_item_id;
@@ -1445,7 +1423,6 @@ function render() {
         extraCurrencyInput.value = String(extraCurrencyOf(selected));
     }
     extraBanknotesField.hidden = !(selected?.eventId && eventMaxSpend(selected.eventId) > 0);
-    exceedField.hidden = extraBanknotesField.hidden;
     extraBanknotesInput.value = String(extraFor(selected?.eventId));
     minePickaxesField.hidden = !selected?.mine;
     mineFloorField.hidden = !selected?.mine;
@@ -1455,7 +1432,6 @@ function render() {
         mineFloorInput.value = String(progress.floor);
         mineFloorInput.max = String(selected.mine.floors);
     }
-    exceedNote.hidden = !exceeding();
     if (!selected) {
         stepsCard.hidden = true;
         return;
@@ -1509,10 +1485,9 @@ function populateSelect() {
         .join('');
 }
 
-/** With exceeded limits, locks or extra currency / Banknotes the plan depends on the selection. */
+/** With locks or extra currency / Banknotes the plan depends on the selection. */
 function onEventChange() {
     if (
-        settings.exceedEventLimits?.length > 0 ||
         Object.keys(settings.lockedOffers || {}).length > 0 ||
         Object.keys(settings.extraCurrency || {}).length > 0 ||
         Object.keys(settings.extraEventBanknotes || {}).length > 0 ||
@@ -1522,16 +1497,6 @@ function onEventChange() {
     } else {
         void withLoading(render);
     }
-}
-
-function renderExceedInfo() {
-    const exceedable = Object.keys(data.events || {})
-        .filter(isExceedable)
-        .map((id) => localizedName(data.events[id].name));
-    exceedLimitsInfo.innerHTML = infoIconHtml(
-        t('events.exceedLimitsHint', { events: exceedable.join(', ') || t('common.dash') }),
-    );
-    enableInfoTooltips(exceedLimitsInfo);
 }
 
 async function recompute() {
@@ -1568,7 +1533,6 @@ startPage('events', {
             settings = next;
             recompute();
         });
-        renderExceedInfo();
         extraCurrencyInput.addEventListener('change', () => {
             const selected = selection();
             if (!hasOutsideCurrency(selected)) {
@@ -1618,18 +1582,9 @@ startPage('events', {
             }
         });
         mineFloorInput.addEventListener('change', saveMineProgress);
-        exceedLimits.addEventListener('change', () => {
-            const eventId = selection()?.eventId;
-            if (!eventId) {
-                return;
-            }
-            const others = (settings.exceedEventLimits || []).filter((id) => id !== eventId);
-            updateSettings({ exceedEventLimits: exceedLimits.checked ? [...others, eventId] : others });
-        });
         await recompute();
     },
     onLocaleChange() {
-        renderExceedInfo();
         populateSelect();
         render();
     },

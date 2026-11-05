@@ -748,10 +748,6 @@
                 "category": {
                     "$ref": "#/definitions/packageCategory"
                 },
-                "exceedable_pack_limits": {
-                    "type": "boolean",
-                    "description": "The event's packs can be bought beyond their purchase limit (Events page: \"Exceed event pack limits\")."
-                },
                 "calendar_group": {
                     "type": "string",
                     "enum": ["spend_rewards", "alliance"],

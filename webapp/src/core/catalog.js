@@ -169,25 +169,21 @@ function packageWeeklyCapacity(
 /**
  * Banknotes that `amount` coins (or diamonds, pickaxes) cost: bought from the (flattened) packages on sale that
  * give them, the cheapest per coin first, each only as often as it can be bought per week (its whole price
- * counted for the coins); more than all of them give per week at the dearest pack's rate. Packs of the events in
- * `exceedEventPackLimits` (Set) have no limit; `eventDaysLeft` as in packageWeeklyCapacity. `{ banknotes, packIds,
- * available }` (available = the most coins the packs give within their limits), or null if no pack on sale gives them.
+ * counted for the coins); more than all of them give per week at the dearest pack's rate. `eventDaysLeft` as in
+ * packageWeeklyCapacity. `{ banknotes, packIds, available }` (available = the most coins the packs give within their limits), or null if no pack on sale gives them.
  */
 function currencyCost(
     packages,
     currencyId,
     amount,
-    { activeEventIds = null, seasonalPasses, exceedEventPackLimits = null, eventDaysLeft = null } = {},
+    { activeEventIds = null, seasonalPasses, eventDaysLeft = null } = {},
 ) {
     const packs = Object.entries(packages)
         .filter(([id, pkg]) => pkg.contains?.[currencyId] > 0 && isOnSale(id, pkg, { activeEventIds, seasonalPasses }))
         .map(([id, pkg]) => ({
             id,
             rate: pkg.price / pkg.contains[currencyId],
-            coinsPerWeek:
-                (pkg.event_id && exceedEventPackLimits?.has(pkg.event_id)
-                    ? Infinity
-                    : packageWeeklyCapacity(pkg, { activeEventIds, eventDaysLeft })) * pkg.contains[currencyId],
+            coinsPerWeek: packageWeeklyCapacity(pkg, { activeEventIds, eventDaysLeft }) * pkg.contains[currencyId],
         }))
         .filter((pack) => pack.coinsPerWeek > 0)
         .sort((a, b) => a.rate - b.rate);

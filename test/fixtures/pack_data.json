@@ -6183,7 +6183,6 @@
                 "de": "Zwergenmine"
             },
             "category": "special_event",
-            "exceedable_pack_limits": true,
             "image": "dwarven_mine"
         },
         "full_moon_night": {
@@ -6226,16 +6225,14 @@
                 "en": "Strange Bazaar",
                 "de": "Seltsamer Basar"
             },
-            "category": "special_event",
-            "exceedable_pack_limits": true
+            "category": "special_event"
         },
         "surprise_encounter": {
             "name": {
                 "en": "Surprise Encounter",
                 "de": "Überraschende Begegnung"
             },
-            "category": "special_event",
-            "exceedable_pack_limits": true
+            "category": "special_event"
         },
         "weekly_special": {
             "name": {

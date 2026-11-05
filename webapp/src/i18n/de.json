@@ -361,10 +361,6 @@
         "stepsHeading": "Wie viel für dieses Event ausgeben",
         "yourPlan": "(dein Plan)",
         "stepsNote": "Jede Zeile ist der beste Plan, wenn so viel für die Pakete des Events ausgegeben wird und die übrigen wöchentlichen Ausgaben unverändert bleiben. Stufen-Ratio 1,0 oder mehr = die Stufe ist mindestens so gut wie deine letzte Banknote; unter 1,0 = anderswo besser ausgegeben.",
-        "optionsLabel": "Optionen",
-        "exceedLimits": "Event-Paketlimits überschreiten",
-        "exceedLimitsHint": "Lässt den Plan die Pakete des gewählten Events so oft kaufen, wie er möchte, statt nur bis zu ihrem Tageslimit (meist einmal pro Tag), z. B. um zu sehen, wie oft sich das beste Währungspaket zu wiederholen lohnt. Nur möglich für Events, deren Pakete im Spiel über ihr Limit hinaus gekauft werden können: {events}.",
-        "exceedNote": "Event-Paketlimits überschritten: Dieser Plan weicht von der Deal-Rangliste ab (die die Limits einhält).",
         "tiles": {
             "packs": "Diese Pakete kaufen",
             "encounters": "Begegnungen",

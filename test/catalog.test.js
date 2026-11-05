@@ -101,12 +101,6 @@ test('currency cost: cheapest pack per coin first, within its weekly limit', () 
     assert.ok(Math.abs(more.banknotes - (3500 + (14 * 1000) / 12)) < 1e-9);
     assert.deepEqual(more.packIds, ['cheap', 'dear']);
     assert.equal(currencyCost(packages, 'coin', 10, rules), null, 'no pack gives it');
-    const unlimited = currencyCost(packages, 'pick', 84, { ...rules, exceedEventPackLimits: new Set(['mine']) });
-    assert.deepEqual(
-        unlimited,
-        { banknotes: 84 * 50, packIds: ['cheap'], available: Infinity },
-        'limits lifted: all from the cheap pack',
-    );
     // 2 days of the run left: 20 + 24 pickaxes within the limits, the other 40 at the dearest rate.
     const late = currencyCost(packages, 'pick', 84, { ...rules, eventDaysLeft: { mine: 2 } });
     assert.equal(late.available, 44);

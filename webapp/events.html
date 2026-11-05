@@ -51,7 +51,7 @@
                             <input id="extra-currency" type="number" min="0" step="1000" />
                         </div>
                     </div>
-                    <!-- Events with packs: extra Banknotes only for this event, and exceeding its pack limits. -->
+                    <!-- Events with packs: extra Banknotes only for this event. -->
                     <div id="extra-banknotes-field" hidden>
                         <div class="field field--narrow">
                             <label for="extra-banknotes" data-i18n="events.extraBanknotes"></label>
@@ -71,20 +71,7 @@
                             <input id="mine-floor" type="number" min="0" step="1" />
                         </div>
                     </div>
-                    <div id="exceed-field" hidden>
-                        <div class="field">
-                            <span class="field-label" data-i18n="events.optionsLabel"></span>
-                            <div class="checkbox-group">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="exceed-limits" />
-                                    <span data-i18n="events.exceedLimits"></span>
-                                    <span id="exceed-limits-info"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <p class="text-warn" id="exceed-note" hidden data-i18n="events.exceedNote"></p>
                 <p id="lock-note" hidden></p>
                 <div id="event-summary" class="plan-tiles"></div>
                 <div id="packs-section" hidden>

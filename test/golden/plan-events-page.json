@@ -2,30 +2,28 @@
     "rate": 41.5076392,
     "lambda": 41.5076392,
     "budgetBinding": true,
-    "spent": 21246.1983,
-    "totalPoints": 1022092.19,
+    "spent": 20747.1983,
+    "totalPoints": 1020764.61,
     "purchases": {
         "calendar_gift_gear_pack": 0.233333,
         "hero_shard_t1": 7,
         "login_rewards": 1,
         "premium_monthly_pass": 0.233333,
         "raven_epigraph": 2,
-        "surprise_encounter_select_pack": 8,
+        "surprise_encounter_select_pack": 7,
         "twin_dragon_brooch_pack_t1": 1,
         "weekly_pass": 1
     },
     "exchanges": {
         "surprise_encounter_shop:n_raven_essence": 1,
         "surprise_encounter_shop:n_speedup": 1,
-        "surprise_encounter_shop:r_skill_badge": 1,
         "surprise_encounter_shop:r_speedup": 1,
         "surprise_encounter_shop:sr_speedup": 1,
         "surprise_encounter_shop:sr_study_scroll": 1,
-        "vip_shop:antitoxin_level_supply_ssr": 34,
+        "vip_shop:antitoxin_level_supply_ssr": 18,
         "vip_shop:exclusive_weapon_omni_shard": 10,
-        "vip_shop:gearstone": 1,
         "vip_shop:speedup_3h": 25,
-        "vip_shop:speedup_5m": 185,
+        "vip_shop:speedup_5m": 189,
         "vip_shop:speedup_60m": 50,
         "vip_shop:speedup_8h": 10
     },
@@ -37,25 +35,25 @@
     ],
     "trackTiersReached": [],
     "pointPurchases": {
-        "surprise_encounter_shop": 40
+        "surprise_encounter_shop": 60
     },
     "lockShortfalls": [],
-    "eventExtraUsed": 1246.2,
+    "eventExtraUsed": 747.2,
     "mu": {
         "diamonds": 2.74600008,
         "surprise_emblem": 382.522963
     },
     "currencies": {
         "diamonds": {
-            "received": 24016.6667,
+            "received": 23516.6667,
             "extra": 3000,
-            "spent": 27016,
+            "spent": 26516,
             "mu": 2.74600008
         },
         "surprise_emblem": {
-            "received": 320,
+            "received": 280,
             "extra": 0,
-            "spent": 320,
+            "spent": 280,
             "mu": 382.522963
         }
     },

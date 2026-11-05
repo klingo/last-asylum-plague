@@ -123,15 +123,7 @@ function createContext(data, options) {
  */
 function addPackages(
     ctx,
-    {
-        activeEventIds,
-        includePasses,
-        includeExclusives,
-        seasonalPasses,
-        exceedEventPackLimits,
-        eventDaysLeft,
-        skippedPackages,
-    },
+    { activeEventIds, includePasses, includeExclusives, seasonalPasses, eventDaysLeft, skippedPackages },
 ) {
     const { model, packages, items, values, currencyIds } = ctx;
     const availability = { activeEventIds, includePasses, includeExclusives, eventDaysLeft };
@@ -142,10 +134,7 @@ function addPackages(
         if (skipped.has(id)) {
             continue;
         }
-        let capacity = packageWeeklyCapacity(pkg, availability);
-        if (capacity > 0 && pkg.event_id && exceedEventPackLimits?.has(pkg.event_id)) {
-            capacity = Infinity;
-        }
+        const capacity = packageWeeklyCapacity(pkg, availability);
         // Plain diamond top-ups are the worst deal in the game (diamonds only feed the VIP shop);
         // left out so leftover budget isn't "filled" with them.
         if (!(capacity > 0) || pkg.category === 'diamond' || !isOnSale(id, pkg, { activeEventIds, seasonalPasses })) {
@@ -523,7 +512,6 @@ function capCurrencyRates(mu, offerVars, shops, model, plan) {
  * (point-fit.js; fitted here if not given), `activeTrackIds` (Set of spend reward tracks running this
  * week), `seasonalPasses` (family ids of the seasonal passes on sale; undefined = all), `eventSpend`
  * (`{ eventId, min, max }`: Banknotes spent on that event's packages, for the Events page's what-if steps),
- * `exceedEventPackLimits` (Set of event ids whose packages may be bought without their purchase limit),
  * `extraCurrency` (`{ currencyId: qty }` obtained outside the packs this week, e.g. diamonds for the VIP
  * Shop; on top of the free income of the shops' currencies, `income_per_hour` in the data), `eventBudget` (`{ eventId, extra }`: up to `extra` Banknotes on top of `budget` that only that event's
  * packages may use, spent only where worth it; see `eventExtraUsed` in the result), `lockedOffers` (`{ "<shopId>:<offerKey>": count }`: shop offers the user fixed to
@@ -544,7 +532,6 @@ function solveWeeklyPlan(highs, data, options = {}) {
         activeTrackIds: new Set(),
         seasonalPasses: undefined,
         eventSpend: null,
-        exceedEventPackLimits: null,
         extraCurrency: null,
         eventBudget: null,
         lockedOffers: null,

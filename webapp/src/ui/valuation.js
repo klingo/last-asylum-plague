@@ -48,7 +48,7 @@ function planOptions(data, settings, overrides = {}) {
     };
 }
 
-/** `overrides`: extra planner options for a what-if valuation (e.g. the Events page's exceeded pack limits). */
+/** `overrides`: extra planner options for a what-if valuation (e.g. the Events page's extra Banknotes). */
 async function buildValuation(data, settings, overrides = {}) {
     const fit = pointFit(data, settings);
     const highs = await loadBrowserHighs();
