@@ -7928,6 +7928,15 @@
             "category": "special_event",
             "image": "dwarven_mine"
         },
+        "elixir_scramble": {
+            "name": {
+                "en": "Elixir Scramble",
+                "de": "Elixir-Gerangle"
+            },
+            "category": "ingame_event",
+            "calendar_group": "alliance",
+            "image": "elixir_scramble"
+        },
         "full_moon_night": {
             "name": {
                 "en": "Full Moon Night",
@@ -8690,6 +8699,10 @@
             {
                 "start": "2026-11-03",
                 "end": "2026-11-03"
+            },
+            {
+                "start": "2026-11-06",
+                "end": "2026-11-06"
             }
         ],
         "demon_king_warlock_blight": [
@@ -8740,6 +8753,12 @@
             {
                 "start": "2026-10-20",
                 "end": "2026-10-25"
+            }
+        ],
+        "elixir_scramble": [
+            {
+                "start": "2026-11-06",
+                "end": "2026-11-06"
             }
         ],
         "epigraph_pass": [
