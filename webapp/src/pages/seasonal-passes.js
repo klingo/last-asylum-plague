@@ -4,15 +4,13 @@
  * price as a ratio, and the tiers the weekly plan buys.
  */
 import { startPage } from '../ui/page.js';
-import { buildValuation } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';
-import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, onSettingsChange } from '../ui/settings.js';
-import { withLoading } from '../ui/loading.js';
+import { mountValuationPage } from '../ui/valuation-page.js';
+import { getSettings } from '../ui/settings.js';
 import { packageWeeklyCapacity } from '../core/catalog.js';
 import { packageFamilyId, seasonalPassFamilies } from '../core/pack-data.js';
 import { gameDay, runContains, scheduleRuns } from '../core/schedule.js';
-import { banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { banknotesAmount, buyBadge, hydrateItemIcons, itemIconSlot, tileHtml } from '../ui/html.js';
 import { itemLinkName, packageDisplayName } from '../ui/labels.js';
 import {
     gridCell,
@@ -24,25 +22,14 @@ import {
     detailsToggleHtml,
     wireDetailsToggles,
     breakdownParts,
+    packPartRowHtml,
 } from '../ui/grid.js';
-import { getLocale, localizedName, t } from '../ui/i18n.js';
-import { formatThousands, formatSignificant } from '../ui/format.js';
-import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { getLocale, localizedName, t, tHtml } from '../ui/i18n.js';
+import { formatAmount, formatThousands } from '../ui/format.js';
+import { ratioCellHtml, ratioScale } from '../ui/ratio-bar.js';
 import { createItemPicker } from '../ui/item-picker.js';
-import { eventBannerHtml, scheduleImage, scheduleTiming, startCountdowns } from '../ui/event-banner.js';
+import { mountBanner, scheduleImage } from '../ui/event-banner.js';
 
-// The app's own picker (as on the other pages), not a native <select>.
-const passPicker = createItemPicker({
-    trigger: document.getElementById('pass-select'),
-    placeholderKey: 'seasonalPasses.passPlaceholder',
-    searchPlaceholderKey: 'seasonalPasses.passSearch',
-    icons: false,
-    onChange: () => {
-        expandedKeys.clear();
-        setUrlParams({ pass: passPicker.getValue() });
-        render();
-    },
-});
 const passBanner = document.getElementById('pass-banner');
 const passPrompt = document.getElementById('pass-prompt');
 const passEmpty = document.getElementById('pass-empty');
@@ -52,16 +39,12 @@ const passTable = document.getElementById('pass-table');
 const passNote = document.getElementById('pass-note');
 
 let data = null;
-let settings = null;
+let passPicker = null;
 let valuation = null;
-let panel = null;
+let recompute = null;
 const expandedKeys = new Set();
 
-const gold = banknotesHtml;
-const headerCell = (key, num = false, wide = false) => gridHeader(t(`events.table.${key}`), { num, wide });
-
-const tileHtml = (label, body, wide = false) =>
-    `<div class="plan-tile${wide ? ' plan-tile--wide' : ''}"><div class="plan-tile__label">${label}</div><div class="plan-tile__body">${body}</div></div>`;
+const headerCell = (key, num = false, wide = false) => gridHeader(tHtml(key), { num, wide });
 
 /** The seasonal pass families: familyId -> its tiers `[{ id, pkg }]`, lowest tier first. */
 const passFamilies = () => seasonalPassFamilies(data.packages);
@@ -84,18 +67,7 @@ function itemTotals(bundles) {
 
 /** The Details block of a tier: its items in the table's columns. */
 function detailsHtml(key, bundle) {
-    const rows = breakdownParts(bundle.parts, data, valuation).map((part) =>
-        gridRow([
-            gridCell(part.item, { className: 'item-cell' }),
-            gridNum('', { wide: true }),
-            // On phones the Worth column is hidden: the item's worth moves to the Price column.
-            gridNum(`<span class="phone-only">${part.worth}</span>`),
-            gridNum(part.worth, { wide: true }),
-            gridNum(''),
-            gridNum(''),
-            gridNum(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
-        ]),
-    );
+    const rows = breakdownParts(bundle.parts, data, valuation).map((part) => packPartRowHtml(part));
     return gridDetails(key, expandedKeys, rows.join(''));
 }
 
@@ -106,16 +78,13 @@ function render() {
     passEmpty.hidden = passFamilies().size > 0;
     passContent.hidden = !tiers;
     // The pass's art and when it runs: it only counts while it does.
-    passBanner.hidden = !tiers;
-    passBanner.innerHTML = tiers
-        ? eventBannerHtml({
-              image: scheduleImage(data, familyId),
-              name: passName(tiers),
-              timing: scheduleTiming(data, familyId),
-          })
-        : '';
-    // The countdown ticks; once it runs out (the pass ended or started) the banner shows the new state.
-    startCountdowns(passBanner, render);
+    mountBanner(
+        passBanner,
+        data,
+        familyId,
+        tiers && { image: scheduleImage(data, familyId), name: passName(tiers) },
+        render,
+    );
     if (!tiers) {
         return;
     }
@@ -128,8 +97,8 @@ function render() {
     const bought = new Map(
         valuation.plan.purchases.filter((p) => packageFamilyId(p.id, p.pkg) === familyId).map((p) => [p.id, p.count]),
     );
-    const onSale = settings.seasonalPasses.includes(familyId);
-    const maxRatio = Math.max(1, ...bundles.map((b) => b.ratio).filter(Number.isFinite), ratio ?? 0);
+    const onSale = getSettings().seasonalPasses.includes(familyId);
+    const maxRatio = ratioScale([...bundles.map((b) => b.ratio), ratio]);
 
     // What it costs: each tier, and all of them together.
     const priceTile = tileHtml(
@@ -137,11 +106,11 @@ function render() {
         `<ul class="plan-list">${tiers
             .map(
                 ({ pkg }) =>
-                    `<li><span>${packageDisplayName(pkg, locale)}</span><span>${gold(formatThousands(pkg.price, 0))}</span></li>`,
+                    `<li><span>${packageDisplayName(pkg, locale)}</span><span>${banknotesAmount(pkg.price)}</span></li>`,
             )
             .join('')}</ul>${
             tiers.length > 1
-                ? `<div class="plan-tile__total">${t('events.total')} ${gold(formatThousands(price, 0))}</div>`
+                ? `<div class="plan-tile__total">${tHtml('common.total')} ${banknotesAmount(price)}</div>`
                 : ''
         }`,
     );
@@ -159,24 +128,24 @@ function render() {
               });
     const worthTile = tileHtml(
         t('seasonalPasses.tiles.worth'),
-        `<div class="plan-stat"><strong>${gold(formatThousands(worth, 0))}</strong> ${t('seasonalPasses.worthFor', { price: formatThousands(price, 0) })}</div>
-        ${ratio === null ? `<div class="plan-stat text-bad">${t('rankings.table.incomplete')}</div>` : `<div class="plan-stat">${ratioBarHtml(ratio, maxRatio, { digits: 3 })}</div>`}
-        ${verdictKey ? `<div class="plan-tile__note">${t(verdictKey)}</div>` : ''}
+        `<div class="plan-stat"><strong>${banknotesAmount(worth)}</strong> ${tHtml('seasonalPasses.worthFor', { price: formatThousands(price, 0) })}</div>
+        ${ratio === null ? `<div class="plan-stat text-bad">${tHtml('common.table.incomplete')}</div>` : `<div class="plan-stat">${ratioCellHtml(ratio, maxRatio)}</div>`}
+        ${verdictKey ? `<div class="plan-tile__note">${tHtml(verdictKey)}</div>` : ''}
         <div class="plan-tile__note text-dim">${boughtText}</div>
-        ${onSale ? '' : `<div class="plan-tile__note text-warn">${t('seasonalPasses.notOnSale')}</div>`}`,
+        ${onSale ? '' : `<div class="plan-tile__note text-warn">${tHtml('seasonalPasses.notOnSale')}</div>`}`,
     );
 
     // Everything the whole pass gives.
     const totals = itemTotals(bundles);
     const everythingTile = tileHtml(
-        t('events.tiles.everything'),
+        t('common.everything'),
         `<ul class="item-list">${totals
             .map(
                 ({ id, qty, worth: itemWorth }) =>
-                    `<li><span class="item-chip">${itemIconSlot(id)}${itemLinkName(data.items, id, locale)}</span><strong>×${Number.isInteger(qty) ? formatThousands(qty) : formatSignificant(qty)}</strong><span>${gold(formatThousands(itemWorth, 0))}</span></li>`,
+                    `<li><span class="item-chip">${itemIconSlot(id)}${itemLinkName(data.items, id, locale)}</span><strong>×${formatAmount(qty)}</strong><span>${banknotesAmount(itemWorth)}</span></li>`,
             )
             .join('')}</ul>
-        <div class="plan-tile__total">${t('events.totalWorth')} ${gold(formatThousands(worth, 0))}</div>`,
+        <div class="plan-tile__total">${tHtml('common.totalWorth')} ${banknotesAmount(worth)}</div>`,
         true,
     );
     passSummary.innerHTML = [priceTile, worthTile, everythingTile].join('');
@@ -189,14 +158,10 @@ function render() {
                 [
                     gridCell(packageDisplayName(pkg, locale)),
                     gridNum(formatThousands(packageWeeklyCapacity(pkg)), { wide: true }),
-                    gridNum(gold(formatThousands(pkg.price, 0))),
-                    gridNum(gold(formatThousands(b.worth, 0)), { wide: true }),
-                    gridNum(
-                        b.incomplete || b.ratio === null
-                            ? t('common.dash')
-                            : ratioBarHtml(b.ratio, maxRatio, { digits: 3 }),
-                    ),
-                    gridNum(count ? `<span class="buy-badge">×${formatThousands(count)}</span>` : ''),
+                    gridNum(banknotesAmount(pkg.price)),
+                    gridNum(banknotesAmount(b.worth), { wide: true }),
+                    gridNum(ratioCellHtml(b.incomplete ? null : b.ratio, maxRatio)),
+                    gridNum(count ? buyBadge(`×${formatThousands(count)}`) : ''),
                     gridNum(detailsToggleHtml(id, expandedKeys)),
                 ],
                 { buy: count > 0 },
@@ -205,12 +170,12 @@ function render() {
         })
         .join('');
     const header = gridRow([
-        headerCell('pack'),
-        headerCell('limit', true, true),
-        headerCell('price', true),
-        headerCell('worth', true, true),
-        headerCell('ratio', true),
-        headerCell('buy', true),
+        headerCell('common.table.pack'),
+        headerCell('common.table.limit', true, true),
+        headerCell('common.table.price', true),
+        headerCell('common.table.worth', true, true),
+        headerCell('common.table.ratio', true),
+        headerCell('common.table.buy', true),
         gridHeader(),
     ]);
     passTable.innerHTML = gridTable(header, rows);
@@ -247,25 +212,28 @@ function populatePassSelect() {
     );
 }
 
-async function recompute() {
-    await withLoading(async () => {
-        valuation = await buildValuation(data, settings);
-        panel.showRate(valuation);
-        render();
-    });
-}
-
 startPage('seasonal-passes', {
     async init(loaded) {
         data = loaded;
-        settings = getSettings();
-        panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        // The app's own picker (as on the other pages), not a native <select>.
+        passPicker = createItemPicker({
+            trigger: document.getElementById('pass-select'),
+            placeholderKey: 'seasonalPasses.passPlaceholder',
+            searchPlaceholderKey: 'seasonalPasses.passSearch',
+            icons: false,
+            onChange: () => {
+                expandedKeys.clear();
+                setUrlParams({ pass: passPicker.getValue() });
+                render();
+            },
+        });
+        ({ recompute } = mountValuationPage(data, {
             fields: ['budget', 'events', 'passes'],
-        });
-        onSettingsChange((next) => {
-            settings = next;
-            recompute();
-        });
+            render: (next) => {
+                valuation = next;
+                render();
+            },
+        }));
         populatePassSelect();
         // Pre-select the pass running today (the first, should there be several); a pass in the URL (a shared link,
         // a reload, the Calendar) wins over today's.

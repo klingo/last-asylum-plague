@@ -24,9 +24,20 @@ function setUrlParams(params) {
     window.history.replaceState(null, '', `${url.pathname}${query.size ? `?${query}` : ''}${url.hash}`);
 }
 
-/** Link to Item Sources for `itemId`. */
-function itemSourcesHref(itemId) {
-    return `${import.meta.env.BASE_URL}sources.html?item=${encodeURIComponent(itemId)}`;
+/** Link to the page `page` (e.g. 'events') with the selection `params` in its query. */
+function pageHref(page, params) {
+    const query = Object.entries(params).map(([name, value]) => `${name}=${encodeURIComponent(value)}`);
+    return `${import.meta.env.BASE_URL}${page}.html?${query.join('&')}`;
 }
 
-export { urlParam, setUrlParams, itemSourcesHref };
+/** Link to Item Sources for `itemId`. */
+function itemSourcesHref(itemId) {
+    return pageHref('sources', { item: itemId });
+}
+
+/** Link to the Event Shops tab of `eventId`. */
+function eventPlanHref(eventId) {
+    return pageHref('events', { event: `event:${eventId}` });
+}
+
+export { urlParam, setUrlParams, pageHref, itemSourcesHref, eventPlanHref };

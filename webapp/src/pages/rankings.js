@@ -5,17 +5,15 @@
  * the plan is solved again without it, on every page).
  */
 import { startPage } from '../ui/page.js';
-import { buildValuation } from '../ui/valuation.js';
-import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
+import { mountValuationPage } from '../ui/valuation-page.js';
+import { getSettings, updateSettings } from '../ui/settings.js';
 import { gameDay } from '../core/schedule.js';
 import { skipUntilDay, activeSkips, expandSkips } from '../core/skips.js';
 import { notBoughtReasons } from '../core/plan-view.js';
-import { formatGameDay } from '../ui/event-banner.js';
-import { withLoading } from '../ui/loading.js';
+import { formatGameDay } from '../ui/datetime.js';
 import { packageWeeklyCapacity, isOnSale, purchaseType } from '../core/catalog.js';
 import { packageDisplayName, packageDisplayText } from '../ui/labels.js';
-import { banknotesHtml, escapeHtml, hydrateItemIcons } from '../ui/html.js';
+import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons } from '../ui/html.js';
 import {
     gridCell,
     gridNum,
@@ -24,15 +22,16 @@ import {
     gridTable,
     gridSection,
     gridDetails,
+    buyForTiersHtml,
     detailsToggleHtml,
     wireDetailsToggles,
     breakdownParts,
 } from '../ui/grid.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { requiresIconHtml, infoIconHtml } from '../ui/info-icon.js';
-import { t, getLocale, enumLabel, formatDays } from '../ui/i18n.js';
+import { t, getLocale, enumLabel, formatDays, tHtml } from '../ui/i18n.js';
 import { formatThousands, computeTieFlags } from '../ui/format.js';
-import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { ratioBarHtml, ratioScale } from '../ui/ratio-bar.js';
 
 const searchInput = document.getElementById('search-input');
 const showMode = document.getElementById('show-mode');
@@ -42,18 +41,12 @@ const rankingTable = document.getElementById('ranking-table');
 const rankingEmpty = document.getElementById('ranking-empty');
 
 let data = null;
-let settings = null;
 let valuation = null;
-let panel = null;
 let entries = [];
 const expandedKeys = new Set();
 // Filters of this page (not saved): everything or only what the plan buys, and the Type pills shown (none = all).
 let planOnly = false;
 const shownTypes = new Set();
-
-/** The Buy cell with "for the bonus tiers" on a second line. */
-const withTiersNote = (html) =>
-    `<span class="buy-stack"><span>${html}</span><span class="buy-note text-dim">${t('rankings.buyForTiers')}${infoIconHtml(t('rankings.buyForTiersTip'))}</span></span>`;
 
 /**
  * "Buy" cell: how many the best plan for your weekly spend buys out of what's on sale this week,
@@ -79,24 +72,24 @@ function buyCountHtml(entry) {
                 : [t('rankings.buyOtherInGroup'), t('rankings.buyOtherInGroupTip', { name })];
         return `<span class="text-dim">${label}</span>${infoIconHtml(tip)}`;
     }
-    const countHtml = count > 0 ? `<span class="buy-badge">×${formatThousands(count)}</span>` : '0';
+    const countHtml = count > 0 ? buyBadge(`×${formatThousands(count)}`) : '0';
     let limit = Number.isFinite(capacity) ? formatThousands(capacity) : '∞';
     if (limitType === 'monthly') {
-        limit = t('rankings.perMonth');
+        limit = t('common.perMonth');
     } else if (limitType === 'biweekly') {
-        limit = t('rankings.perTwoWeeks');
+        limit = t('common.perTwoWeeks');
     }
     if (count === 0 && entry.rank && entry.ratio > 1.005) {
-        return `<span class="text-dim">${t('rankings.buyNoFit')}</span>`;
+        return `<span class="text-dim">${tHtml('rankings.buyNoFit')}</span>`;
     }
     const html = `${countHtml}<span class="text-dim buy-limit">&nbsp;/&nbsp;${limit}</span>`;
-    return count > 0 && entry.forTiers ? withTiersNote(html) : html;
+    return count > 0 && entry.forTiers ? buyForTiersHtml(html) : html;
 }
 
 /** The small Skip button of a pack the plan buys (the plan is made again without it, see core/skips.js). */
 function skipButtonHtml(entry) {
-    const label = escapeHtml(t('rankings.skipLabel', { name: entry.plainName }));
-    return `<button type="button" class="skip-btn" data-skip="${entry.packageId}" aria-label="${label}">${t('rankings.skip')}</button>`;
+    const label = tHtml('rankings.skipLabel', { name: escapeHtml(entry.plainName) });
+    return `<button type="button" class="skip-btn" data-skip="${entry.packageId}" aria-label="${label}">${tHtml('rankings.skip')}</button>`;
 }
 
 /**
@@ -108,7 +101,7 @@ function skippedHtml(entry) {
         entry.skipCause === entry.packageId
             ? t('rankings.skippedUntil', { date: formatGameDay(entry.skipUntil) })
             : t('rankings.skippedNeeds', { name: entry.causeName });
-    return `<span class="text-dim">${t('rankings.skipped')}</span>${infoIconHtml(note)}`;
+    return `<span class="text-dim">${tHtml('rankings.skipped')}</span>${infoIconHtml(note)}`;
 }
 
 /** The Buy cell: skipped, or how many the plan buys. */
@@ -120,7 +113,7 @@ function buyHtml(entry) {
 function skipCellHtml(entry) {
     if (entry.skipCause) {
         return entry.skipCause === entry.packageId
-            ? `<button type="button" class="skip-btn" data-unskip="${entry.packageId}">${t('rankings.undo')}</button>`
+            ? `<button type="button" class="skip-btn" data-unskip="${entry.packageId}">${tHtml('rankings.undo')}</button>`
             : '';
     }
     return entry.planned > 1e-6 ? skipButtonHtml(entry) : '';
@@ -147,6 +140,7 @@ function notBoughtNames(planned, locale) {
  */
 function buildEntries() {
     const locale = getLocale();
+    const settings = getSettings();
     // Everything on sale this week: packages of switched-off events are hidden; lifetime-limited packs
     // are listed even though they don't count toward the weekly plan.
     const activeEventIds = new Set(settings.activeEvents);
@@ -180,7 +174,7 @@ function buildEntries() {
             name: packageDisplayName(pkg, locale),
             requires: pkg.requires,
             availableDays: pkg.available_days,
-            priceHtml: `${weeklyShare}${banknotesHtml(formatThousands(pkg.price))}`,
+            priceHtml: `${weeklyShare}${banknotesAmount(pkg.price)}`,
             planned: planned.get(id) || 0,
             notBought: reasons.get(id) || null,
             // Bought below ratio 1.0 for the bonus tiers of the shop its coins go to.
@@ -215,13 +209,13 @@ function ratioHtml(entry, maxRatio) {
 function detailsHtml(entry) {
     const header = gridRow([
         gridHeader('', { wide: true }),
-        gridHeader(t('rankings.table.item')),
+        gridHeader(tHtml('common.table.item')),
         gridHeader('', { wide: true }),
-        gridHeader(t('rankings.table.category'), { wide: true }),
-        gridHeader(t('rankings.table.worthEach'), { num: true }),
+        gridHeader(tHtml('common.table.category'), { wide: true }),
+        gridHeader(tHtml('common.table.worthEach'), { num: true }),
         gridHeader('', { wide: true }),
         gridHeader(),
-        gridHeader(t('rankings.table.worth'), { num: true }),
+        gridHeader(tHtml('common.table.worth'), { num: true }),
         gridHeader(),
         gridHeader(),
     ]);
@@ -235,7 +229,7 @@ function detailsHtml(entry) {
             gridCell('', { wide: true }),
             gridCell(),
             gridNum(part.worth),
-            gridCell(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
+            gridCell(part.incomplete),
             gridCell(),
         ]),
     );
@@ -250,12 +244,12 @@ function renderTable(filtered) {
     }
     const locale = getLocale();
     const tieFlags = computeTieFlags(filtered.map((entry) => (entry.rank ? entry.ratio.toFixed(4) : entry.key)));
-    const maxRatio = Math.max(1, ...filtered.filter((entry) => entry.rank).map((entry) => entry.ratio));
+    const maxRatio = ratioScale(filtered.filter((entry) => entry.rank).map((entry) => entry.ratio));
     let lastSection = null;
     const rows = filtered.map((entry, index) => {
         const heading =
             entry.section !== lastSection && entry.section !== 'ranked'
-                ? gridSection(t(`rankings.section.${entry.section}`))
+                ? gridSection(tHtml(`rankings.section.${entry.section}`))
                 : '';
         lastSection = entry.section;
         const row = gridRow(
@@ -272,7 +266,7 @@ function renderTable(filtered) {
                 gridNum(entry.priceHtml),
                 gridNum(buyHtml(entry), { className: 'skip-cell' }),
                 gridCell(skipCellHtml(entry), { className: 'skip-cell' }),
-                gridNum(banknotesHtml(formatThousands(entry.worth, 0)), { wide: true }),
+                gridNum(banknotesAmount(entry.worth), { wide: true }),
                 gridNum(ratioHtml(entry, maxRatio)),
                 gridCell(detailsToggleHtml(entry.key, expandedKeys)),
             ],
@@ -286,15 +280,15 @@ function renderTable(filtered) {
     });
 
     const header = gridRow([
-        gridHeader(t('rankings.table.rank'), { num: true, wide: true }),
-        gridHeader(t('rankings.table.name')),
-        gridHeader(t('rankings.table.type'), { wide: true }),
-        gridHeader(t('rankings.table.category'), { wide: true }),
-        gridHeader(t('rankings.table.price'), { num: true }),
-        gridHeader(t('rankings.table.buy'), { num: true }),
+        gridHeader(tHtml('common.table.rank'), { num: true, wide: true }),
+        gridHeader(tHtml('rankings.table.name')),
+        gridHeader(tHtml('rankings.table.type'), { wide: true }),
+        gridHeader(tHtml('common.table.category'), { wide: true }),
+        gridHeader(tHtml('common.table.price'), { num: true }),
+        gridHeader(tHtml('common.table.buy'), { num: true }),
         gridHeader(),
-        gridHeader(t('rankings.table.worth'), { num: true, wide: true }),
-        gridHeader(t('rankings.table.ratio'), { num: true }),
+        gridHeader(tHtml('common.table.worth'), { num: true, wide: true }),
+        gridHeader(tHtml('common.table.ratio'), { num: true }),
         gridHeader(),
     ]);
     rankingTable.innerHTML = gridTable(header, rows.join(''));
@@ -342,26 +336,18 @@ function rebuild() {
         budget: formatThousands(plan.budget, 0),
         count: formatThousands(entries.filter((entry) => entry.rank).length),
     });
-    panel.showRate(valuation);
     renderFilters();
     applyFilters();
-}
-
-async function recompute() {
-    await withLoading(async () => {
-        valuation = await buildValuation(data, settings);
-        rebuild();
-    });
 }
 
 startPage('rankings', {
     async init(loaded) {
         data = loaded;
-        settings = getSettings();
-        panel = mountValuationPanel(document.getElementById('valuation-panel'), data);
-        onSettingsChange((next) => {
-            settings = next;
-            recompute();
+        const { recompute } = mountValuationPage(data, {
+            render: (next) => {
+                valuation = next;
+                rebuild();
+            },
         });
         // Skip / Undo: saved with the settings, which makes every page plan again (a skip lasts until the week or the
         // pack's event / pass is over).
@@ -370,7 +356,7 @@ startPage('rankings', {
             if (!button) {
                 return;
             }
-            const skipped = { ...settings.skippedPackages };
+            const skipped = { ...getSettings().skippedPackages };
             if (button.dataset.skip) {
                 const id = button.dataset.skip;
                 skipped[id] = skipUntilDay(id, data.packages[id], gameDay(new Date()).day, data);

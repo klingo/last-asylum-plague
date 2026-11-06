@@ -9,10 +9,11 @@
  * Inside a cell, `<span class="wide-only">` / `<span class="phone-only">` show their content on wide screens / phones
  * only: a Details row uses them to move a hidden column's value into a visible column.
  */
-import { t, enumLabel } from './i18n.js';
+import { t, enumLabel, tHtml } from './i18n.js';
 import { itemDisplayName, itemLinkHtml } from './labels.js';
 import { banknotesHtml, escapeHtml, itemIconSlot } from './html.js';
-import { formatSignificant, formatThousands } from './format.js';
+import { infoIconHtml } from './info-icon.js';
+import { formatAmount, formatSignificant } from './format.js';
 
 function cellClasses(base, { num = false, wide = false, className = '' }) {
     return [base, num ? 'ranking-grid__cell--num' : '', wide ? 'ranking-grid__cell--wide' : '', className]
@@ -50,10 +51,15 @@ function gridSection(label) {
     return `<div class="ranking-grid__section" role="row"><span role="cell">${label}</span></div>`;
 }
 
+/** A Buy cell's `html` with "for the bonus tiers" on a second line (a pack the plan buys for the shop's bonus tiers). */
+function buyForTiersHtml(html) {
+    return `<span class="buy-stack"><span>${html}</span><span class="buy-note text-dim">${tHtml('rankings.buyForTiers')}${infoIconHtml(t('rankings.buyForTiersTip'))}</span></span>`;
+}
+
 /** The "Details" / "Hide" button of the row `key` (see wireDetailsToggles). */
 function detailsToggleHtml(key, expandedKeys) {
     const open = expandedKeys.has(key);
-    return `<button type="button" class="expand-toggle" data-details-for="${escapeHtml(key)}" aria-expanded="${open}">${open ? t('common.hide') : t('common.details')}</button>`;
+    return `<button type="button" class="expand-toggle" data-details-for="${escapeHtml(key)}" aria-expanded="${open}">${open ? tHtml('common.hide') : tHtml('common.details')}</button>`;
 }
 
 /** The grid's Details block of the row `key`, open if it was open before the page re-rendered. */
@@ -89,7 +95,7 @@ function wireDetailsToggles(root, expandedKeys) {
 /**
  * A bundle's parts (`valuation.bundle(...).parts`), most valuable first, as the Details cells: `item` (icon,
  * name linked to Item Sources × amount), `category`, `worthEach` (one unit in Banknotes, its points as the
- * mouse-over), `worth` (all of them) and `unknown` (no worth).
+ * mouse-over), `worth` (all of them), `unknown` (no worth) and `incomplete` (the "incomplete" note when it has none, else '').
  */
 function breakdownParts(parts, data, valuation) {
     return parts
@@ -98,7 +104,7 @@ function breakdownParts(parts, data, valuation) {
         .map((part) => {
             const unitWorth = valuation.worth(part.id);
             const points = formatSignificant(valuation.points(part.id)) ?? t('common.unknown');
-            const qty = Number.isInteger(part.qty) ? formatThousands(part.qty) : formatSignificant(part.qty);
+            const qty = formatAmount(part.qty);
             return {
                 id: part.id,
                 // The name and amount in one span: in the (flex) cell they wrap together, the amount never splits.
@@ -107,11 +113,33 @@ function breakdownParts(parts, data, valuation) {
                 worthEach:
                     unitWorth === null
                         ? t('common.unknown')
-                        : `<span title="${escapeHtml(t('rankings.pointsTooltip', { points }))}">${banknotesHtml(formatSignificant(unitWorth))}</span>`,
+                        : `<span title="${tHtml('rankings.pointsTooltip', { points })}">${banknotesHtml(formatSignificant(unitWorth))}</span>`,
                 worth: banknotesHtml(formatSignificant(part.worth)),
                 unknown: unitWorth === null,
+                incomplete:
+                    unitWorth === null ? `<span class="text-bad">${tHtml('common.table.incomplete')}</span>` : '',
             };
         });
+}
+
+/**
+ * A part (see breakdownParts) as a Details row of a pack / offer table: Item, [Limit], Price, Worth, Ratio, Buy
+ * (`limitColumn: false` for a table without the Limit column; `dim`: an option the plan doesn't count).
+ */
+function packPartRowHtml(part, { limitColumn = true, dim = false } = {}) {
+    return gridRow(
+        [
+            gridCell(part.item, { className: 'item-cell' }),
+            ...(limitColumn ? [gridNum('', { wide: true })] : []),
+            // On phones the Worth column is hidden: the item's worth moves to the Price column.
+            gridNum(`<span class="phone-only">${part.worth}</span>`),
+            gridNum(part.worth, { wide: true }),
+            gridNum(''),
+            gridNum(''),
+            gridNum(part.incomplete),
+        ],
+        { dim },
+    );
 }
 
 export {
@@ -122,7 +150,9 @@ export {
     gridTable,
     gridSection,
     gridDetails,
+    buyForTiersHtml,
     detailsToggleHtml,
     wireDetailsToggles,
     breakdownParts,
+    packPartRowHtml,
 };

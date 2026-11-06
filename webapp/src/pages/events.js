@@ -7,10 +7,10 @@
  * card (dig this run or not), a floor table and the mine's rules.
  */
 import { startPage } from '../ui/page.js';
-import { buildValuation, planOptions } from '../ui/valuation.js';
+import { planOptions } from '../ui/valuation.js';
 import { solveWeeklyPlan } from '../core/planner.js';
-import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
+import { mountValuationPage } from '../ui/valuation-page.js';
+import { getSettings, updateSettings } from '../ui/settings.js';
 import { MINE_SAFETY_LEVELS } from '../core/settings-model.js';
 import { withLoading } from '../ui/loading.js';
 import {
@@ -31,8 +31,17 @@ import {
 import { analyseEventSteps, eventPackSpend, eventPurchases } from '../core/step-analysis.js';
 import { selectCount } from '../core/items.js';
 import { urlParam, setUrlParams } from '../ui/url.js';
-import { packageDisplayName, itemDisplayName, itemLinkName, bundleLabel } from '../ui/labels.js';
-import { banknotesHtml, escapeAttr, escapeHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { packageDisplayName, itemDisplayName, itemDisplayText, itemLinkName, bundleLabel } from '../ui/labels.js';
+import {
+    banknotesAmount,
+    buyBadge,
+    escapeAttr,
+    escapeHtml,
+    hydrateItemIcons,
+    itemIconSlot,
+    statHtml,
+    tileHtml,
+} from '../ui/html.js';
 import {
     gridCell,
     gridNum,
@@ -41,15 +50,17 @@ import {
     gridTable,
     gridSection,
     gridDetails,
+    buyForTiersHtml,
     detailsToggleHtml,
     wireDetailsToggles,
     breakdownParts,
+    packPartRowHtml,
 } from '../ui/grid.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { infoIconHtml } from '../ui/info-icon.js';
 import { t, tHtml, getLocale, localizedName } from '../ui/i18n.js';
-import { formatThousands, formatSignificant } from '../ui/format.js';
-import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { formatAmount, formatThousands } from '../ui/format.js';
+import { ratioCellHtml, ratioScale } from '../ui/ratio-bar.js';
 import {
     targetFloor,
     floorsFor,
@@ -59,7 +70,7 @@ import {
     pityGroups,
 } from '../core/mine.js';
 import { planningRun, gameDay } from '../core/schedule.js';
-import { eventBannerHtml, eventImageUrl, scheduleTiming, startCountdowns } from '../ui/event-banner.js';
+import { eventImageUrl, mountBanner } from '../ui/event-banner.js';
 
 // One tab per ticked event and per shop without event (VIP Shop): usually only a few, so one click each.
 const eventTabs = document.getElementById('event-tabs');
@@ -93,9 +104,8 @@ const stepsTable = document.getElementById('steps-table');
 const stepsNote = document.getElementById('steps-note');
 
 let data = null;
-let settings = null;
 let valuation = null;
-let panel = null;
+let page = null;
 // The tab shown: `event:<id>` or `shop:<id>` (from the URL first, so a link opens the same event).
 let selectedKey = urlParam('event') ?? '';
 let stepCache = { key: null, steps: null };
@@ -109,13 +119,12 @@ const packExpanded = new Set();
 // itemId -> whether any pack or another shop gives it (for the "Only here" badge), per shop.
 const otherSourceCache = new Map();
 
-const gold = banknotesHtml;
 const iconHtml = itemIconSlot;
 const cell = (html, className = '') => gridCell(html, { className });
 const numCell = gridNum;
 // `wide`: column hidden on phones (Limit, Worth, Cost in Banknotes of the packs and shop tables).
 const WIDE = { wide: true };
-const headerCell = (key, num = false, wide = false) => gridHeader(t(`events.table.${key}`), { num, wide });
+const headerCell = (key, num = false, wide = false) => gridHeader(tHtml(key), { num, wide });
 
 /**
  * The selection: an event (`event:<id>`, with its shop and mine if any) or a shop without event (`shop:<id>`).
@@ -129,10 +138,10 @@ const hasOutsideCurrency = (selected) => hasOutsideCurrencyIn(data.packages, sel
 
 /** Units per week of the selected shop's currency from outside the packs (the user's input). */
 const extraCurrencyOf = (selected) =>
-    (hasOutsideCurrency(selected) && settings.extraCurrency?.[selected.shop.currency_item_id]) || 0;
+    (hasOutsideCurrency(selected) && getSettings().extraCurrency?.[selected.shop.currency_item_id]) || 0;
 
 /** Extra Banknotes per week the user puts only into this event's packs (remembered per event). */
-const extraFor = (eventId) => (eventId && settings.extraEventBanknotes?.[eventId]) || 0;
+const extraFor = (eventId) => (eventId && getSettings().extraEventBanknotes?.[eventId]) || 0;
 
 /** The run a mine's inputs are about (schedule.js `planningRun`). */
 const mineRun = (eventId) => planningRun(data, eventId, gameDay(new Date()).day);
@@ -153,8 +162,10 @@ function pageOverrides() {
         if (run) {
             overrides.eventDaysLeft = { [selected.eventId]: run.days };
         }
-        overrides.mineProgress = { [selected.mineId]: mineProgressFor(settings.mineProgress?.[selected.mineId], run) };
-        overrides.mineSafety = settings.minePlanSafety;
+        overrides.mineProgress = {
+            [selected.mineId]: mineProgressFor(getSettings().mineProgress?.[selected.mineId], run),
+        };
+        overrides.mineSafety = getSettings().minePlanSafety;
     }
     return overrides;
 }
@@ -191,15 +202,16 @@ function stepAnalysis(eventId) {
         rate: valuation.rate,
         maxSpend: maxSpendOf(eventId),
         cheapestPrice: cheapestEventPackPrice(data.packages, eventId),
-        budget: settings.budget,
+        budget: getSettings().budget,
         extraBanknotes: extraFor(eventId),
         solve: (overrides) =>
-            solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, { ...pageOverrides(), ...overrides })),
+            solveWeeklyPlan(
+                valuation.highs,
+                data,
+                planOptions(data, getSettings(), { ...pageOverrides(), ...overrides }),
+            ),
     });
 }
-
-const tileHtml = (label, body, wide = false) =>
-    `<div class="plan-tile${wide ? ' plan-tile--wide' : ''}"><div class="plan-tile__label">${label}</div><div class="plan-tile__body">${body}</div></div>`;
 
 /**
  * A currency's tile: received from the packs (the event's packs one by one, so the total adds up), from
@@ -223,10 +235,10 @@ function currencyTile(currencyId, spentKey, { eventId = null } = {}) {
     }
     return tileHtml(
         itemDisplayName(data.items, currencyId, locale),
-        `<div class="plan-stat">${iconHtml(currencyId)}<strong>${formatThousands(received, 0)}</strong> ${t('events.received')}</div>
+        `<div class="plan-stat">${iconHtml(currencyId)}<strong>${formatThousands(received, 0)}</strong> ${tHtml('events.received')}</div>
         ${packLines.length > 0 ? `<ul class="plan-list">${packLines.map(([label, qty]) => line(label, qty)).join('')}</ul>` : ''}
-        ${coin?.extra ? `<div class="plan-stat">+ <strong>${formatThousands(coin.extra, 0)}</strong> ${t('events.extra')}</div>` : ''}
-        <div class="plan-stat text-dim">${formatThousands(coin?.spent ?? 0, 0)} ${t(spentKey)}</div>`,
+        ${coin?.extra ? `<div class="plan-stat">+ <strong>${formatThousands(coin.extra, 0)}</strong> ${tHtml('events.extra')}</div>` : ''}
+        <div class="plan-stat text-dim">${formatThousands(coin?.spent ?? 0, 0)} ${tHtml(spentKey)}</div>`,
     );
 }
 
@@ -245,7 +257,7 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
         // The event's extra Banknotes: how many the plan uses (only where they're worth it, so maybe none).
         const extraNote =
             extraFor(eventId) > 0
-                ? `<div class="plan-tile__note text-dim">${t('events.extraBanknotesNote', {
+                ? `<div class="plan-tile__note text-dim">${tHtml('events.extraBanknotesNote', {
                       used: formatThousands(plan.eventExtraUsed, 0),
                       amount: formatThousands(extraFor(eventId), 0),
                   })}</div>`
@@ -255,15 +267,15 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
                 ? `<ul class="plan-list">${purchases
                       .map(
                           (p) =>
-                              `<li><span>${packageDisplayName(p.pkg, locale)} <strong>×${formatThousands(p.count)}</strong></span><span>${gold(formatThousands(p.spend, 0))}</span></li>`,
+                              `<li><span>${packageDisplayName(p.pkg, locale)} <strong>×${formatThousands(p.count)}</strong></span><span>${banknotesAmount(p.spend)}</span></li>`,
                       )
                       .join('')}</ul>${
                       purchases.length > 1
-                          ? `<div class="plan-tile__total">${t('events.total')} ${gold(formatThousands(eventPackSpend(plan, eventId), 0))}</div>`
+                          ? `<div class="plan-tile__total">${tHtml('common.total')} ${banknotesAmount(eventPackSpend(plan, eventId))}</div>`
                           : ''
                   }${extraNote}`
-                : `<span class="text-dim">${t('events.summaryNoPacks')}</span>${extraNote}`;
-        tiles.push(tileHtml(t('events.tiles.packs'), body));
+                : `<span class="text-dim">${tHtml('events.summaryNoPacks')}</span>${extraNote}`;
+        tiles.push(tileHtml(tHtml('events.tiles.packs'), body));
     }
     if (shop) {
         tiles.push(currencyTile(shop.currency_item_id, 'events.spentInShop', { eventId }));
@@ -274,7 +286,7 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
                 tileHtml(
                     t('events.tiles.encounters'),
                     `<div class="plan-stat"><strong>×${formatThousands(pointPurchase.count)}</strong> = ${iconHtml(currencyId)}<strong class="${currencyId === 'diamonds' ? 'text-diamond' : ''}">${formatThousands(pointPurchase.count * cost)}</strong></div>
-                    <div class="plan-stat text-dim">+${formatThousands(pointPurchase.count * points)} ${t('events.points')}</div>`,
+                    <div class="plan-stat text-dim">+${formatThousands(pointPurchase.count * points)} ${tHtml('events.points')}</div>`,
                 ),
             );
         }
@@ -308,14 +320,14 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
         const totalWorth = totals.reduce((sum, item) => sum + item.worth, 0);
         tiles.push(
             tileHtml(
-                t('events.tiles.everything'),
+                t('common.everything'),
                 `<ul class="item-list">${totals
                     .map(
                         ({ id, qty, worth }) =>
-                            `<li><span class="item-chip">${iconHtml(id)}${itemLinkName(data.items, id, locale)}</span><strong class="${qty < 0 ? 'text-bad' : ''}">${qty < 0 ? '−' : '×'}${Number.isInteger(qty) ? formatThousands(Math.abs(qty)) : formatSignificant(Math.abs(qty))}</strong><span>${gold(formatThousands(worth, 0))}</span></li>`,
+                            `<li><span class="item-chip">${iconHtml(id)}${itemLinkName(data.items, id, locale)}</span><strong class="${qty < 0 ? 'text-bad' : ''}">${qty < 0 ? '−' : '×'}${formatAmount(Math.abs(qty))}</strong><span>${banknotesAmount(worth)}</span></li>`,
                     )
                     .join('')}</ul>
-                <div class="plan-tile__total">${t('events.totalWorth')} ${gold(formatThousands(totalWorth, 0))}</div>`,
+                <div class="plan-tile__total">${tHtml('common.totalWorth')} ${banknotesAmount(totalWorth)}</div>`,
                 true,
             ),
         );
@@ -342,21 +354,21 @@ function renderPacks({ eventId }) {
         return;
     }
     const locale = getLocale();
-    const maxRatio = Math.max(1, ...packs.map((p) => p.ratio).filter(Number.isFinite));
+    const maxRatio = ratioScale(packs.map((p) => p.ratio));
     const rows = packs.map(({ id, pkg, limit, count, worth, ratio }) => {
         const key = `pack:${id}`;
         const row = gridRow(
             [
                 cell(packageDisplayName(pkg, locale)),
                 numCell(formatThousands(limit), WIDE),
-                numCell(gold(formatThousands(pkg.price, 0))),
-                numCell(gold(formatThousands(worth, 0)), WIDE),
-                numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
+                numCell(banknotesAmount(pkg.price)),
+                numCell(banknotesAmount(worth), WIDE),
+                numCell(ratioCellHtml(ratio, maxRatio)),
                 numCell(
                     count
                         ? ratio !== null && ratio < 0.995 && valuation.plan.forBonusTiers(pkg)
-                            ? `<span class="buy-stack"><span class="buy-badge">×${formatThousands(count)}</span><span class="buy-note text-dim">${t('rankings.buyForTiers')}${infoIconHtml(t('rankings.buyForTiersTip'))}</span></span>`
-                            : `<span class="buy-badge">×${formatThousands(count)}</span>`
+                            ? buyForTiersHtml(buyBadge(`×${formatThousands(count)}`))
+                            : buyBadge(`×${formatThousands(count)}`)
                         : '',
                 ),
                 numCell(detailsToggleHtml(key, packExpanded)),
@@ -366,12 +378,12 @@ function renderPacks({ eventId }) {
         return row + packDetailsHtml(key, pkg);
     });
     const header = gridRow([
-        headerCell('pack'),
-        headerCell('limit', true, true),
-        headerCell('price', true),
-        headerCell('worth', true, true),
-        headerCell('ratio', true),
-        headerCell('buy', true),
+        headerCell('common.table.pack'),
+        headerCell('common.table.limit', true, true),
+        headerCell('common.table.price', true),
+        headerCell('common.table.worth', true, true),
+        headerCell('common.table.ratio', true),
+        headerCell('common.table.buy', true),
         gridHeader(),
     ]);
     packsTable.innerHTML = gridTable(header, rows.join(''));
@@ -388,21 +400,7 @@ function renderPacks({ eventId }) {
 function packDetailsHtml(key, pkg) {
     const intro = (text) => `<p class="ranking-grid__details-intro">${escapeHtml(text)}</p>`;
     const itemRows = (parts, dim = false) =>
-        breakdownParts(parts, data, valuation).map((part) =>
-            gridRow(
-                [
-                    cell(part.item, 'item-cell'),
-                    numCell('', WIDE),
-                    // On phones the Worth column is hidden: the item's worth moves to the Price column.
-                    numCell(`<span class="phone-only">${part.worth}</span>`),
-                    numCell(part.worth, WIDE),
-                    numCell(''),
-                    numCell(''),
-                    numCell(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
-                ],
-                { dim },
-            ),
-        );
+        breakdownParts(parts, data, valuation).map((part) => packPartRowHtml(part, { dim }));
     const optionParts = (indexes) =>
         indexes.flatMap((index) => valuation.bundle({ contains: pkg.choice.choices[index] }, 0).parts);
     const blocks = [];
@@ -450,16 +448,15 @@ function renderShop({ shopId, shop }) {
             ratio: coinWorth > 0 && !b.incomplete ? b.worth / (offer.currency_cost * coinWorth) : null,
         };
     });
-    const maxRatio = Math.max(1, ...offers.map((o) => o.ratio).filter(Number.isFinite));
+    const maxRatio = ratioScale(offers.map((o) => o.ratio));
     // Banknote amounts: whole numbers for event shops; the VIP Shop's are small, so 1 decimal (2 below 1).
     const smallest = Math.min(
         ...offers.flatMap((o) => [o.worth, o.offer.currency_cost * coinWorth]).filter((x) => x > 0),
     );
     const decimals = shop.event_id ? 0 : smallest < 1 ? 2 : 1;
-    const bn = (value) => gold(formatThousands(value, decimals));
+    const bn = (value) => banknotesAmount(value, decimals);
     const stages = [...new Set(offers.map((o) => o.offer.unlock_points || 0))].sort((a, b) => a - b);
     const coinIcon = iconHtml(shop.currency_item_id);
-    const buyBadge = (text) => `<span class="buy-badge">${text}</span>`;
     // Random offers (Recluse Merchant): no weekly count, just whether an offer is worth its coins when it shows up.
     const worthBuying = (o) => (shop.random_offers ? o.ratio >= 1 : o.count > 0);
     const buyCell = (o) => {
@@ -468,7 +465,7 @@ function renderShop({ shopId, shop }) {
                 ? ''
                 : o.ratio >= 1
                   ? buyBadge(t('events.buy'))
-                  : `<span class="text-dim">${t('events.skip')}</span>`;
+                  : `<span class="text-dim">${tHtml('events.skip')}</span>`;
         }
         return o.count ? buyBadge(`×${formatThousands(o.count)}`) : '';
     };
@@ -477,19 +474,19 @@ function renderShop({ shopId, shop }) {
     const limitHtml = (offer) => {
         const perWeek = formatThousands(offerWeeklyCapacity(offer, shop));
         return offer.limit_type === 'daily'
-            ? `${perWeek}&nbsp;<span class="text-dim">(${t('events.perDay', { count: formatThousands(offer.purchase_limit) })})</span>`
+            ? `${perWeek}&nbsp;<span class="text-dim">(${tHtml('events.perDay', { count: formatThousands(offer.purchase_limit) })})</span>`
             : perWeek;
     };
     // "Must buy" locks (not for random offers, which can't be planned).
     const lockable = !shop.random_offers;
     const lockCell = (offerKey, offer) => {
         const key = `${shopId}:${offerKey}`;
-        const isFixed = key in (settings.lockedOffers || {});
-        const count = isFixed ? settings.lockedOffers[key] : 0;
+        const isFixed = key in (getSettings().lockedOffers || {});
+        const count = isFixed ? getSettings().lockedOffers[key] : 0;
         const limit = offerWeeklyCapacity(offer, shop);
-        const toggle = `<button type="button" class="lock-toggle" data-lock="${offerKey}" aria-pressed="${isFixed}" title="${t('events.lock')}" aria-label="${t('events.lock')}">${isFixed ? '🔒' : '🔓'}</button>`;
+        const toggle = `<button type="button" class="lock-toggle" data-lock="${offerKey}" aria-pressed="${isFixed}" title="${tHtml('events.lock')}" aria-label="${tHtml('events.lock')}">${isFixed ? '🔒' : '🔓'}</button>`;
         const amount = isFixed
-            ? `<input type="number" class="lock-count" data-lock-count="${offerKey}" min="0" max="${limit}" step="1" value="${Math.min(count, limit)}" title="${t('events.lockCount')}" aria-label="${t('events.lockCount')}" />`
+            ? `<input type="number" class="lock-count" data-lock-count="${offerKey}" min="0" max="${limit}" step="1" value="${Math.min(count, limit)}" title="${tHtml('events.lockCount')}" aria-label="${tHtml('events.lockCount')}" />`
             : '';
         // Count first, lock on the right; right-aligned like the other number columns.
         return numCell(`<span class="lock-cell">${amount}${toggle}</span>`);
@@ -497,7 +494,7 @@ function renderShop({ shopId, shop }) {
     const onlyHereBadge = (offer) =>
         hasOtherSource(shopId, offer.item_id)
             ? ''
-            : ` <span class="only-here" title="${t('events.onlyHereHint')}">${t('events.onlyHere')}</span>`;
+            : ` <span class="only-here" title="${tHtml('events.onlyHereHint')}">${tHtml('events.onlyHere')}</span>`;
 
     const groups = stages.map((stage) => {
         const heading =
@@ -520,7 +517,7 @@ function renderShop({ shopId, shop }) {
                         numCell(`${formatThousands(offer.currency_cost)} ${coinIcon}`),
                         numCell(coinWorth > 0 ? bn(offer.currency_cost * coinWorth) : t('common.dash'), WIDE),
                         numCell(bn(worth), WIDE),
-                        numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
+                        numCell(ratioCellHtml(ratio, maxRatio)),
                         lockable ? lockCell(offerKey, offer) : '',
                         numCell(buyCell({ count, ratio })),
                     ],
@@ -541,7 +538,7 @@ function renderShop({ shopId, shop }) {
             return gridRow(
                 [
                     cell(
-                        `${iconHtml(firstItem)}${t('events.bonusTier', { threshold: formatThousands(threshold) })}: ${bundleLabel(reward, data.items, locale)}`,
+                        `${iconHtml(firstItem)}${tHtml('events.bonusTier', { threshold: formatThousands(threshold) })}: ${bundleLabel(reward, data.items, locale)}`,
                         'item-cell',
                     ),
                     numCell(t('common.dash'), WIDE),
@@ -550,29 +547,29 @@ function renderShop({ shopId, shop }) {
                     numCell(bn(b.worth), WIDE),
                     numCell(''),
                     lockable ? numCell('') : '',
-                    numCell(reached.has(threshold) ? buyBadge(`✓ ${t('events.reached')}`) : ''),
+                    numCell(reached.has(threshold) ? buyBadge(`✓ ${tHtml('events.reached')}`) : ''),
                 ],
                 { buy: reached.has(threshold) },
             );
         });
 
     const header = gridRow([
-        headerCell('offer'),
-        headerCell('limit', true, true),
-        headerCell('cost', true),
+        headerCell('events.table.offer'),
+        headerCell('common.table.limit', true, true),
+        headerCell('events.table.cost', true),
         // The Banknote cost is derived (coins × what a coin is worth), not a price: say so.
-        gridHeader(`${infoIconHtml(t('events.costBanknotesInfo'))}${t('events.table.costBanknotes')}`, {
+        gridHeader(`${infoIconHtml(t('events.costBanknotesInfo'))}${tHtml('events.table.costBanknotes')}`, {
             num: true,
             wide: true,
         }),
-        headerCell('worth', true, true),
-        headerCell('ratio', true),
-        lockable ? headerCell('mustBuy', true) : '',
-        headerCell(shop.random_offers ? 'buyIfOffered' : 'buy', true),
+        headerCell('common.table.worth', true, true),
+        headerCell('common.table.ratio', true),
+        lockable ? headerCell('events.table.mustBuy', true) : '',
+        headerCell(shop.random_offers ? 'events.table.buyIfOffered' : 'common.table.buy', true),
     ]);
     shopTable.innerHTML = gridTable(
         header,
-        `${groups.join('')}${tierRows.length > 0 ? `${gridSection(t('events.bonusSection'))}${tierRows.join('')}` : ''}`,
+        `${groups.join('')}${tierRows.length > 0 ? `${gridSection(tHtml('events.bonusSection'))}${tierRows.join('')}` : ''}`,
     );
     shopTable.classList.toggle('events-shop-grid--locks', lockable);
     hydrateItemIcons(shopTable);
@@ -596,16 +593,12 @@ function mineEconomics(dug) {
         coin: valuation.plan.currencies.get(mine.currency_item_id),
         packCost: (bought) =>
             currencyCost(data.packages, mine.currency_item_id, bought, {
-                activeEventIds: new Set(settings.activeEvents),
-                seasonalPasses: settings.seasonalPasses,
+                activeEventIds: new Set(getSettings().activeEvents),
+                seasonalPasses: getSettings().seasonalPasses,
                 eventDaysLeft: pageOverrides().eventDaysLeft,
             }),
     });
 }
-
-/** A key number of the verdict card: label above, value below. */
-const statHtml = (label, value, className = '') =>
-    `<div class="mine-stat"><div class="mine-stat__label">${label}</div><div class="mine-stat__value ${className}">${value}</div></div>`;
 
 /**
  * How sure to be about the pickaxes for the target floor (the digs are random): the average, 9 in 10, 99 in 100
@@ -622,11 +615,11 @@ function mineSafetyHtml(dug, econ) {
         } else if (level >= 1) {
             pickaxes = econ.odds.max;
         }
-        const on = settings.minePlanSafety === level;
+        const on = getSettings().minePlanSafety === level;
         return `<label class="mine-safety__option${on ? ' mine-safety__option--on' : ''}">
             <input type="radio" name="mine-safety" value="${level}" ${on ? 'checked' : ''} />
             <span class="mine-safety__amount">${icon}${level === 0.5 ? '≈' : ''}${formatThousands(pickaxes, 0)}</span>
-            <span class="mine-safety__label">${escapeHtml(t(`events.mineSafety.${keys[level]}`))}</span>
+            <span class="mine-safety__label">${tHtml(`events.mineSafety.${keys[level]}`)}</span>
         </label>`;
     });
     return `<fieldset class="mine-safety">
@@ -672,7 +665,7 @@ function floorTrackHtml(dug, reachFloor) {
         .sort((a, b) => a - b)
         .map((floor) => {
             const tip = escapeAttr(
-                `${t('events.mineTrack.floor', { floor: formatThousands(floor) })}: ${bundleLabel(mine.progress_rewards[String(floor)], data.items, locale)}`,
+                `${tHtml('events.mineTrack.floor', { floor: formatThousands(floor) })}: ${bundleLabel(mine.progress_rewards[String(floor)], data.items, locale)}`,
             );
             const on = reached.has(floor) || floor <= dug.startFloor;
             return `<span class="floor-track__tick${on ? ' floor-track__tick--on' : ''}${floor === dug.target ? ' floor-track__tick--target' : ''}" style="left: ${floorPercent(mine, floor)}" tabindex="0" data-tooltip="${tip}" aria-label="${tip}"></span>`;
@@ -680,15 +673,15 @@ function floorTrackHtml(dug, reachFloor) {
         .join('');
     const legend = [
         dug.startFloor > 0
-            ? `<span class="floor-track__key floor-track__key--before">${t('events.mineTrack.before', { floor: formatThousands(dug.startFloor) })}</span>`
+            ? `<span class="floor-track__key floor-track__key--before">${tHtml('events.mineTrack.before', { floor: formatThousands(dug.startFloor) })}</span>`
             : '',
         runEnd > dug.startFloor
-            ? `<span class="floor-track__key floor-track__key--${dug.digs ? 'dig' : 'reach'}">${t(
+            ? `<span class="floor-track__key floor-track__key--${dug.digs ? 'dig' : 'reach'}">${tHtml(
                   dug.digs ? 'events.mineTrack.dig' : 'events.mineTrack.reach',
                   { from: formatThousands(dug.startFloor + 1), to: formatThousands(runEnd) },
               )}</span>`
             : '',
-        `<span class="floor-track__key floor-track__key--tick">${t('events.mineTrack.rewards')}</span>`,
+        `<span class="floor-track__key floor-track__key--tick">${tHtml('events.mineTrack.rewards')}</span>`,
     ].join('');
     return `<div class="floor-track">
         <div class="floor-track__bar">
@@ -751,12 +744,12 @@ function mineVerdictTile(dug) {
     } else {
         state = 'save';
         verdict = t('events.mineSave');
-        const spend = settings.budget + extraFor(mine.event_id);
+        const spend = getSettings().budget + extraFor(mine.event_id);
         const unreachable = econ.needed > dug.owned + dug.free.total + econ.available;
         if (unreachable) {
             text = tHtml('events.mineSaveUnreachable', { target, available: amount(econ.available) });
         } else if (econ.costToTarget > spend) {
-            text = tHtml('events.mineSaveBudget', { target, budget: gold(amount(spend)) });
+            text = tHtml('events.mineSaveBudget', { target, budget: banknotesAmount(spend) });
         } else {
             text = tHtml('events.mineSaveText', { target });
         }
@@ -771,8 +764,8 @@ function mineVerdictTile(dug) {
             ),
             unreachable
                 ? statHtml(t('events.mineStat.available'), `${icon}${amount(econ.available)}`, 'text-bad')
-                : statHtml(t('events.mineStat.cost'), gold(amount(econ.costToTarget))),
-            statHtml(t('events.mineStat.worth', { target }), gold(amount(econ.worthToTarget))),
+                : statHtml(t('events.mineStat.cost'), banknotesAmount(econ.costToTarget)),
+            statHtml(t('events.mineStat.worth', { target }), banknotesAmount(econ.worthToTarget)),
         ];
     }
     return `<div class="plan-tile plan-tile--wide mine-verdict mine-verdict--${state}">
@@ -839,7 +832,7 @@ function pickaxeTile(dug, eventId) {
     }</div>`;
     const markLabel =
         needed > 0
-            ? `<div class="pick-bar__caption">${t('events.mineNeedMark', {
+            ? `<div class="pick-bar__caption">${tHtml('events.mineNeedMark', {
                   target: formatThousands(dug.target),
                   count: formatThousands(needed, 0),
               })}</div>`
@@ -856,7 +849,7 @@ function pickaxeTile(dug, eventId) {
         .join('')}</ul>`;
     const noBonus =
         mine.purchase_bonus_per_day > 0 && free.bonusPerDay === 0
-            ? `<div class="plan-tile__note text-dim">${t('events.mineNoBonus', {
+            ? `<div class="plan-tile__note text-dim">${tHtml('events.mineNoBonus', {
                   perDay: formatThousands(mine.purchase_bonus_per_day),
                   price: formatThousands(
                       Math.min(
@@ -874,8 +867,8 @@ function pickaxeTile(dug, eventId) {
         })}</div>
         ${bar}${markLabel}${legend}${noBonus}
         <div class="plan-tile__total pick-foot">
-            <span>${t('events.spentDigging')} <strong>${formatThousands(econ.spent, 0)}</strong></span>
-            <span>${t('events.mineStat.left')} <strong>${formatThousands(Math.max(0, total - econ.spent), 0)}</strong></span>
+            <span>${tHtml('events.spentDigging')} <strong>${formatThousands(econ.spent, 0)}</strong></span>
+            <span>${tHtml('events.mineStat.left')} <strong>${formatThousands(Math.max(0, total - econ.spent), 0)}</strong></span>
         </div>`,
     );
 }
@@ -893,10 +886,9 @@ function renderMine({ mineId, mine }) {
     const locale = getLocale();
     const pickaxeIcon = iconHtml(mine.currency_item_id);
     mineHeading.textContent = localizedName(mine.name, locale);
-    const buyBadge = (text) => `<span class="buy-badge">${text}</span>`;
     const econ = mineEconomics(dug);
     const { rows, wishWorths } = econ;
-    const maxRatio = Math.max(1, ...rows.map((row) => row.ratio).filter(Number.isFinite));
+    const maxRatio = ratioScale(rows.map((row) => row.ratio));
     const floorRows = rows.map((row) => {
         const { segment, worth, cost, ratio } = row;
         const label = t('events.mineFloors', {
@@ -907,7 +899,7 @@ function renderMine({ mineId, mine }) {
         if (segment.reward) {
             reward = ` <span class="text-dim">+ ${bundleLabel(segment.reward, data.items, locale)}</span>`;
         } else if (segment.aboveTarget) {
-            reward = ` <span class="text-dim">${escapeHtml(t('events.mineAboveTarget'))}</span>`;
+            reward = ` <span class="text-dim">${tHtml('events.mineAboveTarget')}</span>`;
         }
         const key = `mine:${mineId}:${segment.from}`;
         return (
@@ -915,9 +907,9 @@ function renderMine({ mineId, mine }) {
                 [
                     cell(`${pickaxeIcon}${escapeHtml(label)}${reward}`, 'item-cell'),
                     numCell(`≈${formatThousands(segment.pickaxes, 0)} ${pickaxeIcon}`),
-                    numCell(cost > 0 ? gold(formatThousands(cost, 0)) : t('common.dash'), WIDE),
-                    numCell(gold(formatThousands(worth, 0))),
-                    numCell(ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
+                    numCell(cost > 0 ? banknotesAmount(cost) : t('common.dash'), WIDE),
+                    numCell(banknotesAmount(worth)),
+                    numCell(ratioCellHtml(ratio, maxRatio)),
                     numCell(detailsToggleHtml(key, mineExpanded)),
                 ],
                 { buy: segment.cleared > 0 },
@@ -933,7 +925,7 @@ function renderMine({ mineId, mine }) {
                 cell(`${iconHtml(firstItem)}${bundleLabel(reward, data.items, locale)}`, 'item-cell'),
                 numCell(t('common.dash')),
                 numCell(t('common.dash'), WIDE),
-                numCell(gold(formatThousands(wishWorths[index], 0))),
+                numCell(banknotesAmount(wishWorths[index])),
                 numCell(''),
                 numCell(count > 0 ? buyBadge(`×${formatThousands(count)}`) : ''),
             ],
@@ -942,16 +934,16 @@ function renderMine({ mineId, mine }) {
     });
 
     const header = gridRow([
-        headerCell('floors'),
-        headerCell('pickaxes', true),
-        headerCell('costBanknotes', true, true),
-        headerCell('worth', true),
-        headerCell('ratio', true),
+        headerCell('events.table.floors'),
+        headerCell('events.table.pickaxes', true),
+        headerCell('events.table.costBanknotes', true, true),
+        headerCell('common.table.worth', true),
+        headerCell('common.table.ratio', true),
         gridHeader(''),
     ]);
     mineTable.innerHTML = gridTable(
         header,
-        `${floorRows.join('')}${gridSection(t('events.wishSection'))}${wishRows.join('')}`,
+        `${floorRows.join('')}${gridSection(tHtml('events.wishSection'))}${wishRows.join('')}`,
     );
     hydrateItemIcons(mineTable);
     enableInfoTooltips(mineTable);
@@ -966,7 +958,6 @@ function renderMine({ mineId, mine }) {
  */
 function mineDetailsHtml(key, dug, { segment }, { wishWorths }) {
     const { mine } = dug;
-    const buyBadge = (text) => `<span class="buy-badge">${text}</span>`;
     const intro = (text) => `<p class="ranking-grid__details-intro">${escapeHtml(text)}</p>`;
     // One row per item: icon, name × amount and its worth; `extra`: the last cell.
     const itemRow = (part, worth, extra = '') =>
@@ -997,7 +988,7 @@ function mineDetailsHtml(key, dug, { segment }, { wishWorths }) {
                     return part
                         ? itemRow(
                               part,
-                              gold(formatThousands(wishWorths[index], 0)),
+                              banknotesAmount(wishWorths[index]),
                               picked ? buyBadge(`×${formatThousands(segment.cleared)}`) : '',
                           )
                         : '';
@@ -1056,9 +1047,9 @@ function renderMineRules(mine) {
     const pickaxe = `${iconHtml(mine.currency_item_id)}${itemDisplayName(data.items, mine.currency_item_id, getLocale())}`;
     const line = (key, vars = {}) => `<li>${tHtml(`events.mineRules.${key}`, { ...vars, pickaxe })}`;
     const header = ['lastDigit', 'pityAfter', 'mostDigs', 'averageDigs']
-        .map((key) => `<th>${escapeHtml(t(`events.mineRules.${key}`))}</th>`)
+        .map((key) => `<th>${tHtml(`events.mineRules.${key}`)}</th>`)
         .join('');
-    mineRules.innerHTML = `<summary>${escapeHtml(t('events.mineRules.title'))}</summary>
+    mineRules.innerHTML = `<summary>${tHtml('events.mineRules.title')}</summary>
         <ul class="mine-rules__list">
             ${line('tiles', { tiles: formatThousands(mine.tiles_per_floor), normals: formatThousands(normals) })}</li>
             ${line('weights', { normal: formatThousands(mine.normal_weight), wish: weights })}</li>
@@ -1084,11 +1075,11 @@ function renderMineRules(mine) {
 function wireLocks(shopId, shop) {
     // `count` null = unlock; 0 = never buy; otherwise exactly that many per week.
     const save = (offerKey, count) =>
-        updateSettings({ lockedOffers: withLock(settings.lockedOffers, shopId, offerKey, count) });
+        updateSettings({ lockedOffers: withLock(getSettings().lockedOffers, shopId, offerKey, count) });
     shopTable.querySelectorAll('[data-lock]').forEach((button) => {
         button.addEventListener('click', () => {
             const offerKey = button.dataset.lock;
-            const locked = `${shopId}:${offerKey}` in (settings.lockedOffers || {});
+            const locked = `${shopId}:${offerKey}` in (getSettings().lockedOffers || {});
             // Locking starts at the weekly limit; the count field can lower it, down to 0 (never).
             save(offerKey, locked ? null : offerWeeklyCapacity(shop.offers[offerKey], shop));
         });
@@ -1118,7 +1109,7 @@ function hasOtherSource(shopId, itemId) {
  */
 function renderLockNote() {
     const shops = data.exchange_shops || {};
-    const active = activeLocks(settings.lockedOffers, shops, settings.activeEvents);
+    const active = activeLocks(getSettings().lockedOffers, shops, getSettings().activeEvents);
     lockNote.hidden = active.length === 0;
     if (active.length === 0) {
         return;
@@ -1132,17 +1123,17 @@ function renderLockNote() {
         return;
     }
     const overrides = pageOverrides();
-    const cacheKey = `${JSON.stringify(settings)}|${overridesKey()}`;
+    const cacheKey = `${JSON.stringify(getSettings())}|${overridesKey()}`;
     if (lockCostCache.key !== cacheKey) {
         const unlocked = solveWeeklyPlan(
             valuation.highs,
             data,
-            planOptions(data, settings, { ...overrides, lockedOffers: {} }),
+            planOptions(data, getSettings(), { ...overrides, lockedOffers: {} }),
         );
         lockCostCache = { key: cacheKey, cost: (unlocked.totalPoints - valuation.plan.totalPoints) / valuation.rate };
     }
     const parts = [
-        `<span class="text-dim">${t('events.lockCost', {
+        `<span class="text-dim">${tHtml('events.lockCost', {
             count: formatThousands(active.length),
             worth: formatThousands(Math.max(0, lockCostCache.cost), 0),
         })}</span>`,
@@ -1171,13 +1162,13 @@ function renderSteps({ eventId }) {
     if (stepsCard.hidden) {
         return;
     }
-    const cacheKey = `${eventId}|${overridesKey()}|${JSON.stringify(settings)}`;
+    const cacheKey = `${eventId}|${overridesKey()}|${JSON.stringify(getSettings())}`;
     if (stepCache.key !== cacheKey) {
         stepCache = { key: cacheKey, steps: stepAnalysis(eventId) };
     }
     const steps = stepCache.steps;
     const locale = getLocale();
-    const maxRatio = Math.max(1, ...steps.map((step) => step.ratio).filter(Number.isFinite));
+    const maxRatio = ratioScale(steps.map((step) => step.ratio));
     const packsHtml = (packs) =>
         packs.length > 0
             ? `<ul class="cell-list">${packs.map((p) => `<li>${packageDisplayName(p.pkg, locale)} ×${formatThousands(p.count)}</li>`).join('')}</ul>`
@@ -1186,22 +1177,22 @@ function renderSteps({ eventId }) {
         gridRow(
             [
                 numCell(
-                    `${step.isPlan ? `<span class="text-dim">${t('events.yourPlan')}</span>&nbsp;` : ''}${gold(formatThousands(step.eventSpend, 0))}`,
+                    `${step.isPlan ? `<span class="text-dim">${tHtml('events.yourPlan')}</span>&nbsp;` : ''}${banknotesAmount(step.eventSpend)}`,
                 ),
-                numCell(step.stepCost === null ? t('common.dash') : gold(formatThousands(step.stepCost, 0))),
-                numCell(step.stepWorth === null ? t('common.dash') : gold(formatThousands(step.stepWorth, 0)), WIDE),
-                numCell(step.ratio === null ? t('common.dash') : ratioBarHtml(step.ratio, maxRatio, { digits: 3 })),
+                numCell(step.stepCost === null ? t('common.dash') : banknotesAmount(step.stepCost)),
+                numCell(step.stepWorth === null ? t('common.dash') : banknotesAmount(step.stepWorth), WIDE),
+                numCell(ratioCellHtml(step.ratio, maxRatio)),
                 cell(packsHtml(step.packs)),
             ],
             { buy: step.isPlan },
         ),
     );
     const header = gridRow([
-        headerCell('eventSpend', true),
-        headerCell('stepCost', true),
-        headerCell('stepWorth', true, true),
-        headerCell('stepRatio', true),
-        headerCell('packs'),
+        headerCell('events.table.eventSpend', true),
+        headerCell('events.table.stepCost', true),
+        headerCell('events.table.stepWorth', true, true),
+        headerCell('events.table.stepRatio', true),
+        headerCell('events.table.packs'),
     ]);
     stepsTable.innerHTML = gridTable(header, rows.join(''));
     stepsNote.textContent = t('events.stepsNote');
@@ -1215,7 +1206,7 @@ function render() {
     if (hasOutsideCurrency(selected)) {
         const currencyId = selected.shop.currency_item_id;
         extraCurrencyLabel.textContent = t('events.extraCurrency', {
-            currency: localizedName(data.items[currencyId]?.name) || currencyId,
+            currency: itemDisplayText(data.items, currencyId),
         });
         // Diamonds come in thousands; an event's coins are counted one by one.
         extraCurrencyInput.step = selected.shop.event_id ? '1' : '1000';
@@ -1226,7 +1217,7 @@ function render() {
     minePickaxesField.hidden = !selected?.mine;
     mineFloorField.hidden = !selected?.mine;
     if (selected?.mine) {
-        const progress = mineProgressFor(settings.mineProgress?.[selected.mineId], mineRun(selected.eventId));
+        const progress = mineProgressFor(getSettings().mineProgress?.[selected.mineId], mineRun(selected.eventId));
         minePickaxesInput.value = String(progress.owned);
         mineFloorInput.value = String(progress.floor);
         mineFloorInput.max = String(selected.mine.floors);
@@ -1237,16 +1228,13 @@ function render() {
     }
     // The event's art and when it runs, as of today: is it on, and how long is left? (The VIP Shop has no event.)
     const event = selected.eventId ? data.events?.[selected.eventId] : null;
-    eventBanner.hidden = !event;
-    eventBanner.innerHTML = event
-        ? eventBannerHtml({
-              image: event.image,
-              name: localizedName(event.name),
-              timing: scheduleTiming(data, selected.eventId),
-          })
-        : '';
-    // The countdown ticks; once it runs out (the event ended or started) the banner shows the new state.
-    startCountdowns(eventBanner, render);
+    mountBanner(
+        eventBanner,
+        data,
+        selected.eventId,
+        event && { image: event.image, name: localizedName(event.name) },
+        render,
+    );
     renderLockNote();
     renderSummary(selected);
     renderPacks(selected);
@@ -1261,7 +1249,7 @@ function render() {
  */
 function populateSelect() {
     const entries = [];
-    for (const id of settings.activeEvents.filter((eventId) => data.events?.[eventId])) {
+    for (const id of getSettings().activeEvents.filter((eventId) => data.events?.[eventId])) {
         entries.push([`event:${id}`, data.events[id].name, eventImageUrl(data.events[id].image)]);
     }
     for (const [id, shop] of Object.entries(data.exchange_shops || {})) {
@@ -1287,33 +1275,31 @@ function populateSelect() {
 /** With locks or extra currency / Banknotes the plan depends on the selection. */
 function onEventChange() {
     if (
-        Object.keys(settings.lockedOffers || {}).length > 0 ||
-        Object.keys(settings.extraCurrency || {}).length > 0 ||
-        Object.keys(settings.extraEventBanknotes || {}).length > 0 ||
+        Object.keys(getSettings().lockedOffers || {}).length > 0 ||
+        Object.keys(getSettings().extraCurrency || {}).length > 0 ||
+        Object.keys(getSettings().extraEventBanknotes || {}).length > 0 ||
         overridesKey() !== valuationKey
     ) {
-        void recompute();
+        void page.recompute();
     } else {
         void withLoading(render);
     }
 }
 
-async function recompute() {
-    await withLoading(async () => {
-        populateSelect();
-        valuationKey = overridesKey();
-        valuation = await buildValuation(data, settings, pageOverrides());
-        panel.showRate(valuation);
-        render();
-    });
-}
-
 startPage('events', {
     async init(loaded) {
         data = loaded;
-        settings = getSettings();
-        panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        page = mountValuationPage(data, {
             fields: ['budget', 'events', 'passes'],
+            overrides: pageOverrides,
+            prepare() {
+                populateSelect();
+                valuationKey = overridesKey();
+            },
+            render: (next) => {
+                valuation = next;
+                render();
+            },
         });
         eventTabs.addEventListener('click', (event) => {
             const tab = event.target.closest('[data-tab]');
@@ -1327,18 +1313,14 @@ startPage('events', {
             setUrlParams({ event: selectedKey });
             onEventChange();
         });
-        chooseEvents.addEventListener('click', () => panel.open());
-        onSettingsChange((next) => {
-            settings = next;
-            recompute();
-        });
+        chooseEvents.addEventListener('click', () => page.panel.open());
         extraCurrencyInput.addEventListener('change', () => {
             const selected = selection();
             if (!hasOutsideCurrency(selected)) {
                 return;
             }
             const amount = Math.max(0, Number(extraCurrencyInput.value) || 0);
-            const extra = { ...settings.extraCurrency, [selected.shop.currency_item_id]: amount };
+            const extra = { ...getSettings().extraCurrency, [selected.shop.currency_item_id]: amount };
             if (amount === 0) {
                 delete extra[selected.shop.currency_item_id];
             }
@@ -1350,7 +1332,7 @@ startPage('events', {
                 return;
             }
             const amount = Math.max(0, Number(extraBanknotesInput.value) || 0);
-            const extraEventBanknotes = { ...settings.extraEventBanknotes, [eventId]: amount };
+            const extraEventBanknotes = { ...getSettings().extraEventBanknotes, [eventId]: amount };
             if (amount === 0) {
                 delete extraEventBanknotes[eventId];
             }
@@ -1364,7 +1346,7 @@ startPage('events', {
             }
             const whole = (input, max = Infinity) => Math.min(max, Math.max(0, Math.round(Number(input.value) || 0)));
             const mineProgress = {
-                ...settings.mineProgress,
+                ...getSettings().mineProgress,
                 [selected.mineId]: {
                     pickaxes: whole(minePickaxesInput),
                     floor: whole(mineFloorInput, selected.mine.floors),
@@ -1381,7 +1363,7 @@ startPage('events', {
             }
         });
         mineFloorInput.addEventListener('change', saveMineProgress);
-        await recompute();
+        await page.recompute();
     },
     onLocaleChange() {
         populateSelect();

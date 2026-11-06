@@ -4,10 +4,9 @@
  * on Monday). Unlike the other pages it does not use the weekly plan for what to buy.
  */
 import { startPage } from '../ui/page.js';
-import { buildValuation } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';
-import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, onSettingsChange } from '../ui/settings.js';
+import { mountValuationPage } from '../ui/valuation-page.js';
+import { getSettings } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { solveNeeds } from '../core/acquire.js';
 import {
@@ -18,18 +17,14 @@ import {
     conversionLabel,
 } from '../ui/labels.js';
 import { createItemPicker } from '../ui/item-picker.js';
-import { banknotesHtml } from '../ui/html.js';
-import { formatThousands, formatSignificant } from '../ui/format.js';
+import { banknotesAmount } from '../ui/html.js';
+import { formatThousands, formatSignificant, formatPercent } from '../ui/format.js';
 import { t, tHtml, getLocale } from '../ui/i18n.js';
 
+// The two items compared (the pickers are made in init).
 const sides = ['a', 'b'].map((key) => ({
     key,
-    picker: createItemPicker({
-        trigger: document.getElementById(`${key}-search`),
-        // Either side may be left empty.
-        clearable: true,
-        onChange: () => recompute(),
-    }),
+    picker: null,
     amount: document.getElementById(`${key}-amount`),
 }));
 const daysInput = document.getElementById('days-input');
@@ -40,13 +35,11 @@ const compareTable = document.getElementById('compare-table');
 const compareNote = document.getElementById('compare-note');
 
 let data = null;
-let settings = null;
 let valuation = null;
-let panel = null;
+let revalue = null;
 let runId = 0;
 
-const gold = (value, digits = 0) =>
-    Number.isFinite(value) ? banknotesHtml(formatThousands(value, digits)) : t('common.notAvailable');
+const worthHtml = (value) => (Number.isFinite(value) ? banknotesAmount(value) : tHtml('common.notAvailable'));
 
 /** Worth of the side and the cheapest guaranteed way to get it within the chosen days. */
 function evaluate(side) {
@@ -55,6 +48,7 @@ function evaluate(side) {
     if (!itemId || !(amount > 0)) {
         return null;
     }
+    const settings = getSettings();
     const unitWorth = valuation.worth(itemId);
     const plan = solveNeeds(valuation.highs, data, new Map([[itemId, amount]]), {
         days: Math.max(1, Math.floor(Number(daysInput.value) || 7)),
@@ -69,7 +63,7 @@ function evaluate(side) {
 
 function stepsHtml(plan, locale) {
     if (!plan.reachable) {
-        return `<span class="text-dim">${t('compare.unreachable')}</span>`;
+        return `<span class="text-dim">${tHtml('compare.unreachable')}</span>`;
     }
     const lines = [
         ...plan.packages.map((p) => `${formatThousands(p.count)} × ${packageDisplayName(p.pkg, locale)}`),
@@ -89,18 +83,19 @@ function valueBarHtml(a, b, name) {
         return '';
     }
     const total = a.worth + b.worth;
-    const [pctA, pctB] = [a.worth / total, b.worth / total].map((share) => (share * 100).toFixed(1));
+    const [shareA, shareB] = [a.worth / total, b.worth / total];
+    const [pctA, pctB] = [shareA, shareB].map((share) => formatPercent(share));
     return `
         <div class="compare-bar__track">
-            <div class="compare-bar__segment compare-bar__segment--a" style="width: ${pctA}%"></div>
-            <div class="compare-bar__segment compare-bar__segment--b" style="width: ${pctB}%"></div>
+            <div class="compare-bar__segment compare-bar__segment--a" style="width: ${(shareA * 100).toFixed(1)}%"></div>
+            <div class="compare-bar__segment compare-bar__segment--b" style="width: ${(shareB * 100).toFixed(1)}%"></div>
         </div>
         <div class="compare-bar__labels">
             <div class="compare-bar__label">
-                <span class="compare-bar__swatch compare-bar__swatch--a"></span>${name(a)}: ${gold(a.worth)} (${pctA}%)
+                <span class="compare-bar__swatch compare-bar__swatch--a"></span>${name(a)}: ${worthHtml(a.worth)} (${pctA})
             </div>
             <div class="compare-bar__label">
-                ${name(b)}: ${gold(b.worth)} (${pctB}%)<span class="compare-bar__swatch compare-bar__swatch--b"></span>
+                ${name(b)}: ${worthHtml(b.worth)} (${pctB})<span class="compare-bar__swatch compare-bar__swatch--b"></span>
             </div>
         </div>`;
 }
@@ -112,7 +107,8 @@ function render(results) {
     if (!a && !b) {
         return;
     }
-    const name = (r) => (r ? `${formatThousands(r.amount)} × ${itemDisplayName(data.items, r.itemId, locale)}` : '—');
+    const name = (r) =>
+        r ? `${formatThousands(r.amount)} × ${itemDisplayName(data.items, r.itemId, locale)}` : t('common.dash');
     const net = (r) => (r?.plan.reachable ? r.plan.totalCost - r.plan.byproductWorth : NaN);
     compareBar.innerHTML = valueBarHtml(a, b, name);
 
@@ -126,7 +122,7 @@ function render(results) {
         return `<tr>${cell(a, va, 'a')}<th scope="row" class="compare-table__label">${label}</th>${cell(b, vb, 'b')}</tr>`;
     };
     const reachableGold = (r, v) =>
-        r.plan.reachable ? gold(v) : `<span class="text-dim">${t('compare.unreachable')}</span>`;
+        r.plan.reachable ? worthHtml(v) : `<span class="text-dim">${tHtml('compare.unreachable')}</span>`;
     compareTable.innerHTML = `
         <thead><tr>
             <th scope="col" class="compare-table__a"><span class="compare-bar__swatch compare-bar__swatch--a"></span> ${name(a)}</th>
@@ -137,7 +133,7 @@ function render(results) {
             ${row(
                 t('compare.worth'),
                 (r) => r.worth,
-                (r, v) => gold(v),
+                (r, v) => worthHtml(v),
                 (x, y) => x > y,
             )}
             ${row(
@@ -155,7 +151,7 @@ function render(results) {
             ${row(t('compare.net'), net, reachableGold, (x, y) => x < y)}
             <tr>
                 <td class="compare-table__a">${a ? stepsHtml(a.plan, locale) : ''}</td>
-                <th scope="row" class="compare-table__label">${t('compare.how')}</th>
+                <th scope="row" class="compare-table__label">${tHtml('compare.how')}</th>
                 <td class="compare-table__b">${b ? stepsHtml(b.plan, locale) : ''}</td>
             </tr>
         </tbody>`;
@@ -221,25 +217,22 @@ async function recompute() {
     });
 }
 
-async function revalue() {
-    await withLoading(async () => {
-        valuation = await buildValuation(data, settings);
-        panel.showRate(valuation);
-    });
-    await recompute();
-}
-
 async function init(loaded) {
     data = loaded;
-    settings = getSettings();
-    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+    ({ recompute: revalue } = mountValuationPage(data, {
         fields: ['budget', 'events', 'passes'],
-    });
-    onSettingsChange((next) => {
-        settings = next;
-        revalue();
-    });
+        render: (next) => {
+            valuation = next;
+            return recompute();
+        },
+    }));
     for (const side of sides) {
+        side.picker = createItemPicker({
+            trigger: document.getElementById(`${side.key}-search`),
+            // Either side may be left empty.
+            clearable: true,
+            onChange: () => recompute(),
+        });
         side.picker.setItems(data.items);
         side.amount.addEventListener('change', () => recompute());
     }

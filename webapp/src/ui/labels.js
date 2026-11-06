@@ -30,8 +30,14 @@ function packageDisplayName(pkg, locale) {
     return escapeHtml(packageDisplayText(pkg, locale));
 }
 
+/** An item's plain-text name (its id when the data has none). */
+function itemDisplayText(items, itemId, locale) {
+    return localizedName(items?.[itemId]?.name, locale) || itemId;
+}
+
+/** itemDisplayText, HTML-escaped. */
 function itemDisplayName(items, itemId, locale) {
-    return escapeHtml(localizedName(items[itemId]?.name, locale) || itemId);
+    return escapeHtml(itemDisplayText(items, itemId, locale));
 }
 
 // The Item Sources listing per items object (computed once per page).
@@ -88,15 +94,28 @@ function conversionLabel(conversion, items, locale) {
     return t(`conversion.${conversion.kind}`, { item: name });
 }
 
+// The kinds of the schedule (core/schedule.js `scheduleRuns`) in the order the Calendar and Today list them, with their labels.
+const SCHEDULE_KIND_LABELS = {
+    event: 'calendar.schedule.groupEvents',
+    ingame: 'calendar.schedule.groupIngame',
+    alliance: 'calendar.schedule.groupAlliance',
+    pass: 'calendar.schedule.groupPasses',
+    track: 'calendar.schedule.groupTracks',
+};
+const SCHEDULE_KINDS = Object.keys(SCHEDULE_KIND_LABELS);
+
 /** Today's weekday index (of the game day), Monday = 0 (weekly limits reset on Monday). */
 function todayWeekdayIndex() {
     return weekdayIndex(gameDay(new Date()).day);
 }
 
 export {
+    SCHEDULE_KIND_LABELS,
+    SCHEDULE_KINDS,
     packageIcon,
     packageDisplayText,
     packageDisplayName,
+    itemDisplayText,
     itemDisplayName,
     itemLinkHtml,
     itemLinkName,

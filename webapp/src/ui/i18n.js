@@ -17,6 +17,7 @@
 import en from '../i18n/en.json';
 import de from '../i18n/de.json';
 import { escapeHtml } from './html.js';
+import { readText, writeText } from './storage.js';
 
 // The languages: dictionary and the short name on the language switch. A new language needs its
 // i18n/<code>.json here (and its `name.<code>` in pack_data.schema.json's localizedString).
@@ -44,13 +45,9 @@ function detectLocale() {
         // ignore
     }
 
-    try {
-        const stored = window.localStorage.getItem(STORAGE_KEY);
-        if (isSupported(stored)) {
-            return stored;
-        }
-    } catch {
-        // localStorage may be unavailable (private browsing, etc.)
+    const stored = readText(STORAGE_KEY);
+    if (isSupported(stored)) {
+        return stored;
     }
 
     const browserLocale = (navigator.language || '').slice(0, 2).toLowerCase();
@@ -163,11 +160,7 @@ function setLocale(locale) {
         return;
     }
     currentLocale = locale;
-    try {
-        window.localStorage.setItem(STORAGE_KEY, locale);
-    } catch {
-        // ignore
-    }
+    writeText(STORAGE_KEY, locale);
     try {
         const url = new URL(window.location.href);
         url.searchParams.set('lang', locale);

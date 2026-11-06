@@ -6,8 +6,10 @@
  */
 import { getLocale, localizedName, t } from './i18n.js';
 import { escapeHtml } from './html.js';
+import { formatClock, formatGameDay, formatGameDayRange, formatMoment, pad2 } from './datetime.js';
+import { eventPlanHref, pageHref } from './url.js';
 import { packageFamilyId, seasonalPassFamilies } from '../core/pack-data.js';
-import { dayDate, gameDay, nextRun, runMoments, runStatus, scheduleRuns } from '../core/schedule.js';
+import { gameDay, nextRun, runMoments, runStatus, scheduleRuns } from '../core/schedule.js';
 
 const EVENT_IMAGES_URL = `${import.meta.env.BASE_URL}assets/events/`;
 // How far ahead a forecast is looked for ("next expected around …").
@@ -45,17 +47,12 @@ function scheduleName(data, id) {
  */
 function scheduleHref(data, id, activeEvents) {
     if (seasonalPassFamilies(data.packages).has(id)) {
-        return `seasonal-passes.html?pass=${encodeURIComponent(id)}`;
+        return pageHref('seasonal-passes', { pass: id });
     }
     if (data.events?.[id]?.category !== 'ingame_event' && activeEvents?.includes(id)) {
-        return `events.html?event=${encodeURIComponent(`event:${id}`)}`;
+        return eventPlanHref(id);
     }
-    return data.spend_reward_tracks?.[id] ? `spend-rewards.html?track=${encodeURIComponent(id)}` : null;
-}
-
-/** "Mon, Oct 12" (a day number, shown as the game's date in any time zone). */
-function formatGameDay(day, options = { weekday: 'short', day: 'numeric', month: 'short' }) {
-    return dayDate(day).toLocaleDateString(getLocale(), { timeZone: 'UTC', ...options });
+    return data.spend_reward_tracks?.[id] ? pageHref('spend-rewards', { track: id }) : null;
 }
 
 /** "6d 5h" from a day on, else a clock "05:06:44" (the last 24 hours). */
@@ -67,8 +64,7 @@ function durationText(ms) {
             hours: Math.floor((seconds % 86400) / 3600),
         });
     }
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${pad(Math.floor(seconds / 3600))}:${pad(Math.floor((seconds % 3600) / 60))}:${pad(seconds % 60)}`;
+    return `${pad2(Math.floor(seconds / 3600))}:${pad2(Math.floor((seconds % 3600) / 60))}:${pad2(seconds % 60)}`;
 }
 
 /** The moment a running run ends or an upcoming one starts (runs start and end at the game day's reset). */
@@ -98,19 +94,7 @@ function runStatusText(status, now = Date.now()) {
 function slotRangeText(start, end) {
     const locale = getLocale();
     const day = new Date(start).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
-    const time = (ms) => new Date(ms).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
-    return `${day} · ${time(start)} – ${time(end)}`;
-}
-
-/** "Sun, Oct 25, 04:00" in local time. */
-function formatMoment(ms) {
-    return new Date(ms).toLocaleString(getLocale(), {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+    return `${day} · ${formatClock(start)} – ${formatClock(end)}`;
 }
 
 /**
@@ -127,7 +111,7 @@ function scheduleTiming(data, id) {
         return { state: 'none', text: t('calendar.status.none') };
     }
     if (status.state !== 'ended') {
-        const range = `${formatGameDay(status.run.start)} – ${formatGameDay(status.run.end)}`;
+        const range = formatGameDayRange(status.run.start, status.run.end);
         const until = statusMoment(status);
         return {
             state: status.state,
@@ -201,16 +185,26 @@ function startCountdowns(root, onExpire) {
     }, 1000);
 }
 
+/**
+ * Shows the banner of the schedule id `id` in `container` (`entry`: its `{ image, name }`; hidden when null) and
+ * keeps its countdown going; `render` draws the page again when the countdown runs out (the run ended or started).
+ */
+function mountBanner(container, data, id, entry, render) {
+    container.hidden = !entry;
+    container.innerHTML = entry ? eventBannerHtml({ ...entry, timing: scheduleTiming(data, id) }) : '';
+    startCountdowns(container, render);
+}
+
 export {
     eventImageUrl,
     scheduleImage,
     scheduleName,
     scheduleHref,
-    formatGameDay,
     slotRangeText,
     runStatusText,
     countdownText,
     scheduleTiming,
     eventBannerHtml,
     startCountdowns,
+    mountBanner,
 };

@@ -13,11 +13,12 @@ import { isContainerItem, itemChainTops } from '../core/item-sources.js';
 import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
 import { DEFAULT_SETTINGS, PRIORITY_LEVELS } from '../core/settings-model.js';
 import { itemDisplayName } from '../ui/labels.js';
+import { packageFamilyId } from '../core/pack-data.js';
 import { infoIconHtml } from '../ui/info-icon.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
 import { formatSignificant, formatThousands } from '../ui/format.js';
-import { t, getLocale, localizedName, enumLabel } from '../ui/i18n.js';
+import { t, getLocale, localizedName, enumLabel, tHtml } from '../ui/i18n.js';
 
 const searchInput = document.getElementById('search-input');
 const changedOnly = document.getElementById('changed-only');
@@ -123,17 +124,16 @@ function priorityHtml(id) {
         (level) => `
             <label class="priority-option ${level === current ? 'priority-option--active' : ''}">
                 <input type="radio" name="priority-${id}" value="${level}" data-priority="${id}" ${level === current ? 'checked' : ''} />
-                <span>${t(`items.priority.${level}`)}</span>
+                <span>${tHtml(`items.priority.${level}`)}</span>
             </label>`,
     ).join('');
-    return `<div class="priority-group" role="radiogroup" aria-label="${t('items.table.priority')}">${options}</div>`;
+    return `<div class="priority-group" role="radiogroup" aria-label="${tHtml('items.table.priority')}">${options}</div>`;
 }
 
 /** Display name of a package family (the unit the sensitivity check leaves out). */
 function familyName(familyId) {
-    const pkg =
-        data.packages[familyId] || Object.entries(data.packages).find(([id]) => id.startsWith(`${familyId}_t`))?.[1];
-    return localizedName(pkg?.name) || familyId;
+    const entry = Object.entries(data.packages).find(([id, pkg]) => packageFamilyId(id, pkg) === familyId);
+    return localizedName(entry?.[1].name) || familyId;
 }
 
 /** "uncertain" marker with the reason as tooltip, or ''. */
@@ -157,14 +157,14 @@ function uncertainHtml(id) {
         );
     }
     return reasons.length
-        ? ` <span class="uncertain-note"><span class="text-dim">${t('items.uncertain')}</span>${infoIconHtml(reasons.join(' '))}</span>`
+        ? ` <span class="uncertain-note"><span class="text-dim">${tHtml('items.uncertain')}</span>${infoIconHtml(reasons.join(' '))}</span>`
         : '';
 }
 
 function worthHtml(id) {
     const worth = valuation.worth(id);
     const text = formatSignificant(worth);
-    return text === null ? t('common.unknown') : banknotesHtml(text);
+    return text === null ? tHtml('common.unknown') : banknotesHtml(text);
 }
 
 function render() {
@@ -218,9 +218,9 @@ function render() {
         .join('');
     itemsTable.innerHTML = rows.length
         ? `<thead><tr>
-                <th>${t('items.table.item')}</th>
-                <th>${t('items.table.priority')}</th>
-                <th class="text-right">${t('items.table.worth')}</th>
+                <th>${tHtml('common.table.item')}</th>
+                <th>${tHtml('items.table.priority')}</th>
+                <th class="text-right">${tHtml('common.table.worth')}</th>
             </tr></thead><tbody>${[...groups]
                 .map(
                     ([category, members]) => `
@@ -229,7 +229,7 @@ function render() {
                     .map(
                         ({ id, shownId, name, level }) => `
                 <tr>
-                    <td><span class="item-cell">${itemIconSlot(shownId)}${name}${shownId === id && isContainerItem(data.items[id]) ? ` <span class="text-dim">(${t('items.derivedNote')})</span>` : ''}</span></td>
+                    <td><span class="item-cell">${itemIconSlot(shownId)}${name}${shownId === id && isContainerItem(data.items[id]) ? ` <span class="text-dim">(${tHtml('items.derivedNote')})</span>` : ''}</span></td>
                     <td>${priorityHtml(id)}</td>
                     <td class="text-right">${worthHtml(shownId)}${level ? ` <span class="text-dim">(${level})</span>` : ''}${uncertainHtml(id)}</td>
                 </tr>`,

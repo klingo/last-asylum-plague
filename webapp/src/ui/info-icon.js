@@ -2,8 +2,8 @@
  * The small "i" info icon whose text shows as a tooltip (pair with `enableInfoTooltips()` from tooltip.js,
  * once the markup is in the DOM), and its use for a package's prerequisite ("Requires: <lower tier>").
  */
-import { localizedName, t } from './i18n.js';
-import { packageDisplayName } from './labels.js';
+import { t } from './i18n.js';
+import { itemDisplayText, packageDisplayName } from './labels.js';
 import { escapeAttr, escapeHtml } from './html.js';
 
 // "i" in a circle; the button itself carries the accessible name (aria-label), so the SVG is decorative.
@@ -31,7 +31,7 @@ function requiredName(requiresId, packages, items, locale) {
     if (requiredPackage) {
         return packageDisplayName(requiredPackage, locale);
     }
-    return localizedName(items[requiresId]?.name, locale) || requiresId;
+    return itemDisplayText(items, requiresId, locale);
 }
 
 /** "Requires: …" info icon for `requiresId`, or '' when there's nothing to show. */

@@ -3,28 +3,17 @@
  * of (`exclusive_group`, e.g. calendar packs), ranked by worth. The pick is in the URL (`?item=`).
  */
 import { startPage } from '../ui/page.js';
-import { buildValuation } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';
-import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, onSettingsChange } from '../ui/settings.js';
-import { withLoading } from '../ui/loading.js';
+import { mountValuationPage } from '../ui/valuation-page.js';
 import { selectCount } from '../core/items.js';
 import { packageDisplayName, packageDisplayText, bundleLabel } from '../ui/labels.js';
 import { createItemPicker } from '../ui/item-picker.js';
-import { banknotesHtml, escapeHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { banknotesAmount, banknotesHtml, escapeHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
 import { detailsToggleHtml, wireDetailsToggles, breakdownParts } from '../ui/grid.js';
-import { formatThousands, formatSignificant, computeTieFlags } from '../ui/format.js';
-import { ratioBarHtml } from '../ui/ratio-bar.js';
-import { t, getLocale, enumLabel } from '../ui/i18n.js';
+import { formatSignificant, formatPercent, computeTieFlags } from '../ui/format.js';
+import { ratioBarHtml, ratioScale } from '../ui/ratio-bar.js';
+import { t, getLocale, enumLabel, tHtml } from '../ui/i18n.js';
 
-const itemPicker = createItemPicker({
-    trigger: document.getElementById('item-search'),
-    placeholderKey: 'choices.itemPlaceholder',
-    onChange: () => {
-        render();
-        syncUrl();
-    },
-});
 const resetBtn = document.getElementById('reset-btn');
 const form = document.getElementById('choices-form');
 const optionsCard = document.getElementById('options-card');
@@ -33,9 +22,9 @@ const optionsTable = document.getElementById('options-table');
 const optionsEmpty = document.getElementById('options-empty');
 
 let data = null;
-let settings = null;
+let itemPicker = null;
 let valuation = null;
-let panel = null;
+let recompute = null;
 let choiceSources = {};
 // Packages whose "Details" are open (kept across re-renders, e.g. a changed weekly spend).
 const expandedKeys = new Set();
@@ -123,12 +112,12 @@ function render() {
     optionsTable.innerHTML = `
         <thead>
             <tr>
-                <th class="text-right table-col-rank">${t('choices.table.rank')}</th>
-                <th>${t('choices.table.option')}</th>
-                <th class="table-col-wide">${t('choices.table.category')}</th>
-                <th class="text-right table-col-wide">${t('choices.table.points')}</th>
-                <th class="text-right table-col-fit">${t('choices.table.worth')}</th>
-                <th class="text-right">${t('choices.table.vsBest')}</th>
+                <th class="text-right table-col-rank">${tHtml('common.table.rank')}</th>
+                <th>${tHtml('choices.table.option')}</th>
+                <th class="table-col-wide">${tHtml('common.table.category')}</th>
+                <th class="text-right table-col-wide">${tHtml('choices.table.points')}</th>
+                <th class="text-right table-col-fit">${tHtml('common.table.worth')}</th>
+                <th class="text-right">${tHtml('choices.table.vsBest')}</th>
             </tr>
         </thead>
         <tbody>${rows
@@ -136,11 +125,11 @@ function render() {
                 (row, index) => `
                 <tr>
                     <td class="text-right table-col-rank">${tieFlags[index] ? '' : index + 1}</td>
-                    <td><span class="item-cell">${itemIconSlot(row.firstId)}${row.label}${row.incomplete ? ` <span class="text-bad">${t('choices.incomplete')}</span>` : ''}</span></td>
+                    <td><span class="item-cell">${itemIconSlot(row.firstId)}${row.label}${row.incomplete ? ` <span class="text-bad">${tHtml('choices.incomplete')}</span>` : ''}</span></td>
                     <td class="table-col-wide">${enumLabel('category', data.items[row.firstId]?.category)}</td>
                     <td class="text-right table-col-wide">${formatSignificant(row.points)}</td>
                     <td class="text-right table-col-fit">${banknotesHtml(formatSignificant(row.worth))}</td>
-                    <td class="text-right">${best > 0 ? ratioBarHtml(row.worth / best, 1, { label: `${formatThousands((100 * row.worth) / best, 1)}%` }) : t('common.notAvailable')}</td>
+                    <td class="text-right">${best > 0 ? ratioBarHtml(row.worth / best, 1, { label: formatPercent(row.worth / best) }) : tHtml('common.notAvailable')}</td>
                 </tr>`,
             )
             .join('')}</tbody>`;
@@ -154,7 +143,7 @@ function detailRowsHtml(row) {
     // The Worth and Ratio columns are hidden on phones: the item's worth moves to the (otherwise empty) Gain column.
     const parts = breakdownParts(row.parts, data, valuation)
         .map((part) => {
-            const worth = part.unknown ? `<span class="text-bad">${t('choices.incomplete')}</span>` : part.worth;
+            const worth = part.unknown ? `<span class="text-bad">${tHtml('choices.incomplete')}</span>` : part.worth;
             return `
                 <tr class="choice-details" data-details-key="${key}" ${hidden}>
                     <td></td>
@@ -170,11 +159,11 @@ function detailRowsHtml(row) {
     return `
         <tr class="choice-details choice-details--header" data-details-key="${key}" ${hidden}>
             <th></th>
-            <th>${t('choices.table.item')}</th>
-            <th class="text-right table-col-fit">${t('choices.table.worthEach')}</th>
-            <th class="text-right table-col-fit table-col-wide">${t('choices.table.worth')}</th>
+            <th>${tHtml('common.table.item')}</th>
+            <th class="text-right table-col-fit">${tHtml('common.table.worthEach')}</th>
+            <th class="text-right table-col-fit table-col-wide">${tHtml('common.table.worth')}</th>
             <th class="table-col-wide"></th>
-            <th class="text-right table-col-fit"><span class="phone-only">${t('choices.table.worth')}</span></th>
+            <th class="text-right table-col-fit"><span class="phone-only">${tHtml('common.table.worth')}</span></th>
             <th class="table-col-fit"></th>
         </tr>
         ${parts}`;
@@ -200,17 +189,16 @@ function renderGroup(packages, locale) {
     optionsSelectHint.hidden = false;
     optionsSelectHint.textContent = t('choices.groupHint');
     const tieFlags = computeTieFlags(rows.map((row) => row.gain.toFixed(2)));
-    const maxRatio = Math.max(1, ...rows.map((row) => row.ratio).filter(Number.isFinite));
-    const gold = (value) => banknotesHtml(formatThousands(value, 0));
+    const maxRatio = ratioScale(rows.map((row) => row.ratio));
     optionsTable.innerHTML = `
         <thead>
             <tr>
-                <th class="text-right table-col-rank">${t('choices.table.rank')}</th>
-                <th>${t('choices.table.package')}</th>
-                <th class="text-right table-col-fit table-col-num">${t('choices.table.price')}</th>
-                <th class="text-right table-col-fit table-col-num table-col-wide">${t('choices.table.worth')}</th>
-                <th class="text-right table-col-fit table-col-num table-col-wide">${t('choices.table.ratio')}</th>
-                <th class="text-right table-col-fit table-col-num">${t('choices.table.gain')}</th>
+                <th class="text-right table-col-rank">${tHtml('common.table.rank')}</th>
+                <th>${tHtml('choices.table.package')}</th>
+                <th class="text-right table-col-fit table-col-num">${tHtml('common.table.price')}</th>
+                <th class="text-right table-col-fit table-col-num table-col-wide">${tHtml('common.table.worth')}</th>
+                <th class="text-right table-col-fit table-col-num table-col-wide">${tHtml('common.table.ratio')}</th>
+                <th class="text-right table-col-fit table-col-num">${tHtml('choices.table.gain')}</th>
                 <th class="table-col-fit table-col-button"></th>
             </tr>
         </thead>
@@ -219,11 +207,11 @@ function renderGroup(packages, locale) {
                 (row, index) => `
                 <tr>
                     <td class="text-right table-col-rank">${tieFlags[index] ? '' : index + 1}</td>
-                    <td>${packageDisplayName(row.pkg, locale)}${row.incomplete ? ` <span class="text-bad">${t('choices.incomplete')}</span>` : ''}</td>
-                    <td class="text-right table-col-fit">${gold(row.pkg.price)}</td>
-                    <td class="text-right table-col-fit table-col-wide">${gold(row.worth)}</td>
+                    <td>${packageDisplayName(row.pkg, locale)}${row.incomplete ? ` <span class="text-bad">${tHtml('choices.incomplete')}</span>` : ''}</td>
+                    <td class="text-right table-col-fit">${banknotesAmount(row.pkg.price)}</td>
+                    <td class="text-right table-col-fit table-col-wide">${banknotesAmount(row.worth)}</td>
                     <td class="text-right table-col-fit table-col-wide">${ratioBarHtml(row.ratio, maxRatio)}</td>
-                    <td class="text-right table-col-fit ${row.gain >= 0 ? 'text-good' : 'text-bad'}">${gold(row.gain)}</td>
+                    <td class="text-right table-col-fit ${row.gain >= 0 ? 'text-good' : 'text-bad'}">${banknotesAmount(row.gain)}</td>
                     <td class="text-right table-col-fit">${detailsToggleHtml(row.key, expandedKeys)}</td>
                 </tr>
                 ${detailRowsHtml(row)}`,
@@ -238,22 +226,23 @@ function syncUrl() {
     setUrlParams({ item: itemPicker.getValue() });
 }
 
-async function recompute() {
-    await withLoading(async () => {
-        valuation = await buildValuation(data, settings);
-        panel.showRate(valuation);
-        render();
-    });
-}
-
 async function init(loaded) {
     data = loaded;
-    settings = getSettings();
-    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, { fields: ['budget'] });
-    onSettingsChange((next) => {
-        settings = next;
-        recompute();
+    itemPicker = createItemPicker({
+        trigger: document.getElementById('item-search'),
+        placeholderKey: 'choices.itemPlaceholder',
+        onChange: () => {
+            render();
+            syncUrl();
+        },
     });
+    ({ recompute } = mountValuationPage(data, {
+        fields: ['budget'],
+        render: (next) => {
+            valuation = next;
+            render();
+        },
+    }));
     choiceSources = collectChoiceSources(getLocale());
     itemPicker.setItems(choiceSources);
     const itemParam = urlParam('item');

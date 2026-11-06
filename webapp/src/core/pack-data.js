@@ -88,10 +88,23 @@ function normalizePackData(raw) {
     };
 }
 
+// The families per packages object (computed once; the data doesn't change).
+const passFamilyCache = new WeakMap();
+
 /** The seasonal pass families (one per tier ladder): familyId -> its tiers `[{ id, pkg }]`, lowest tier first. */
 function seasonalPassFamilies(packages) {
+    if (!packages) {
+        return new Map();
+    }
+    if (!passFamilyCache.has(packages)) {
+        passFamilyCache.set(packages, buildPassFamilies(packages));
+    }
+    return passFamilyCache.get(packages);
+}
+
+function buildPassFamilies(packages) {
     const families = new Map();
-    for (const [id, pkg] of Object.entries(packages || {})) {
+    for (const [id, pkg] of Object.entries(packages)) {
         if (pkg.seasonal) {
             const familyId = packageFamilyId(id, pkg);
             families.set(familyId, [...(families.get(familyId) || []), { id, pkg }]);

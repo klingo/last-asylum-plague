@@ -6,17 +6,16 @@
 import { startPage } from '../ui/page.js';
 import { getSettings, updateSettings } from '../ui/settings.js';
 import { zeroFitItems } from '../core/settings-model.js';
-import { hydrateItemIcons } from '../ui/html.js';
+import { hydrateItemIcons, statHtml } from '../ui/html.js';
 import { pointFit } from '../ui/valuation.js';
 import { fitHoldOut, sensitivityFamilies } from '../core/point-fit.js';
 import { packageDisplayName } from '../ui/labels.js';
-import { formatThousands } from '../ui/format.js';
+import { formatPercent, formatThousands } from '../ui/format.js';
 import { infoIconHtml } from '../ui/info-icon.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { t } from '../ui/i18n.js';
 
 let data = null;
-const PERCENT = '&nbsp;%';
 const WORST_COUNT = 3;
 const WITHIN = 0.25;
 // Error (how far a pack's fitted contents are from what its deal % says) up to which the typical pack, fitted or
@@ -26,7 +25,6 @@ const TYPICAL_LIMITS = { good: 0.1, warn: 0.2 };
 const PACK_LIMITS = { good: 0.3, warn: 0.5 };
 
 const tone = (error, limits) => (error <= limits.good ? 'text-good' : error <= limits.warn ? 'text-warn' : 'text-bad');
-const percent = (share) => `${formatThousands(share * 100, 1)}${PERCENT}`;
 const ofTotal = (count, total) =>
     t('settings.quality.ofTotal', { count: formatThousands(count, 0), total: formatThousands(total, 0) });
 
@@ -37,7 +35,7 @@ let holdOutRun = 0;
 /** The held-out figure shown for `fit`: its value once known (coloured), else a placeholder. */
 function holdOutValue(fit) {
     return holdOutErrors.has(fit)
-        ? { text: percent(holdOutErrors.get(fit)), className: tone(holdOutErrors.get(fit), TYPICAL_LIMITS) }
+        ? { text: formatPercent(holdOutErrors.get(fit)), className: tone(holdOutErrors.get(fit), TYPICAL_LIMITS) }
         : { text: '…', className: '' };
 }
 
@@ -87,12 +85,12 @@ function renderQuality() {
     const fitted = [...fit.points.values()].filter((entry) => entry.source === 'fit' && entry.value > 0);
     // A tile: its title with an info icon (what the figure means), the value below.
     const stat = (label, info, value, className = '', id = '') =>
-        `<div class="mine-stat"><div class="mine-stat__label">${label} ${infoIconHtml(info)}</div><div class="mine-stat__value ${className}"${id ? ` id="${id}"` : ''}>${value}</div></div>`;
+        statHtml(`${label} ${infoIconHtml(info)}`, value, className, id);
     document.getElementById('fit-stats').innerHTML = [
         stat(
             t('settings.quality.median'),
             t('settings.quality.medianInfo'),
-            percent(diagnostics.medianError),
+            formatPercent(diagnostics.medianError),
             tone(diagnostics.medianError, TYPICAL_LIMITS),
         ),
         stat(
@@ -124,7 +122,7 @@ function renderQuality() {
         .map(({ id, ratio }) => {
             const sign = ratio >= 1 ? '+' : '−';
             const name = data.packages[id] ? packageDisplayName(data.packages[id]) : id;
-            const error = `${sign}${formatThousands(Math.abs(ratio - 1) * 100, 0)}${PERCENT}`;
+            const error = `${sign}${formatPercent(Math.abs(ratio - 1), 0)}`;
             return `<li>${name} <span class="${tone(Math.abs(ratio - 1), PACK_LIMITS)}">${error}</span></li>`;
         });
     document.getElementById('fit-worst').innerHTML = worst.join('');

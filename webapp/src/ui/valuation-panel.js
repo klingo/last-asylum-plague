@@ -19,6 +19,7 @@ import { runningToday, calendarSelection } from './calendar-sync.js';
 import { escapeHtml, escapeAttr } from './html.js';
 import { banknoteIconHtml } from './images.js';
 import { formatThousands } from './format.js';
+import { readText, writeText } from './storage.js';
 import { enableInfoTooltips } from './tooltip.js';
 import { modelSummaryText } from './valuation.js';
 
@@ -33,21 +34,13 @@ function passFamilies(packages) {
 const ALL_FIELDS = ['budget', 'events', 'passes'];
 
 function loadOpen() {
-    try {
-        const stored = window.localStorage.getItem(OPEN_KEY);
-        // First visit (nothing set up yet): open, so the settings are seen.
-        return stored === null ? window.localStorage.getItem(SETTINGS_KEY) === null : stored === '1';
-    } catch {
-        return false;
-    }
+    const stored = readText(OPEN_KEY);
+    // First visit (nothing set up yet): open, so the settings are seen.
+    return stored === null ? readText(SETTINGS_KEY) === null : stored === '1';
 }
 
 function saveOpen(open) {
-    try {
-        window.localStorage.setItem(OPEN_KEY, open ? '1' : '0');
-    } catch {
-        // localStorage may be unavailable (private browsing, etc.)
-    }
+    writeText(OPEN_KEY, open ? '1' : '0');
 }
 
 /** A labelled group of toggle chips (events / passes) for the settings list `key`; `running`: ids running today. */
@@ -121,7 +114,7 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
             // How points become Banknotes at this spend: short in the bar, the full sentence on hover / focus.
             const explanation = escapeAttr(modelSummaryText(valuation));
             chips.push(
-                `<span class="setup-chip setup-chip--rate" tabindex="0" data-tooltip="${explanation}" aria-label="${explanation}">${t(
+                `<span class="setup-chip setup-chip--rate" tabindex="0" data-tooltip="${explanation}" aria-label="${explanation}">${tHtml(
                     'valuation.rateChip',
                     { rate: formatThousands(valuation.rate, 2) },
                 )}</span>`,
@@ -130,7 +123,7 @@ function mountValuationPanel(container, data, { fields = ALL_FIELDS } = {}) {
         // Last, so switching it on or off doesn't shift the rest of the summary.
         if (offerCalendar && settings.followsCalendar) {
             chips.push(
-                `<span class="setup-chip setup-chip--calendar"><span class="toggle-chip__now" aria-hidden="true"></span>${escapeHtml(t('valuation.followingChip'))}</span>`,
+                `<span class="setup-chip setup-chip--calendar"><span class="toggle-chip__now" aria-hidden="true"></span>${tHtml('valuation.followingChip')}</span>`,
             );
         }
         summary.innerHTML = chips.join('');

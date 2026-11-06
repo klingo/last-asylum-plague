@@ -35,8 +35,10 @@ A static webapp that values items, packages and exchange-shop offers from `data/
   `pack_data.json` as `name: { en, de }` (`en` required), and an event's or an item's (regular or choice) optional short `description: { en, de }`;
   UI texts and the labels of the data's codes (`category.*`, `sourceType.*`, `weekday.*`, `gear.class.*`,
   `gear.faction.*`, looked up with `enumLabel(group, code)`) in `en.json` / `de.json`. A new category or other code
-  needs its label in both (`i18n:missing` and `verify-data` list missing ones). A translation is plain text; when a
-  placeholder holds markup or an escaped name, use `tHtml()`, which escapes the text itself. A new language: its
+  needs its label in both (`i18n:missing` and `verify-data` list missing ones). A translation is plain text. A
+  `t()` text goes into markup only through `tHtml(key, vars)` (it escapes the text, inserts `vars` as given, so they must
+  be markup-safe already; it works without `vars`), or into an attribute through `escapeAttr(t(...))`. Never a raw
+  `${t(...)}` in a template or `escapeHtml(t(...))`; `t()` stays for plain text (`textContent`, tooltip text). A new language: its
   dictionary in `LOCALES` (`ui/i18n.js`) and its key in the schema's `localizedString`.
 - Gold is reserved for Banknote amounts (`banknotesHtml`); diamonds are blue, other numbers plain.
 

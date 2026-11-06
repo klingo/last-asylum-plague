@@ -5,6 +5,7 @@
  * blended in between. The bar's length shows the ratio relative to the best one in the table.
  */
 import { formatThousands } from './format.js';
+import { t } from './i18n.js';
 
 // --bad, --warn, --good (see style.css).
 const RATIO_BAD_RGB = [242, 104, 92];
@@ -61,4 +62,14 @@ function ratioBarHtml(ratio, maxRatio, { digits = 2, label = null } = {}) {
         </div>`;
 }
 
-export { ratioBarHtml, ratioColor };
+/** The scale of a table's ratio bars: the highest ratio, at least 1 (`null`s and non-numbers are skipped). */
+function ratioScale(ratios) {
+    return Math.max(1, ...ratios.filter(Number.isFinite));
+}
+
+/** A table cell's ratio bar (3 digits), or a dash when there is no ratio (`null`: no worth to compare). */
+function ratioCellHtml(ratio, max) {
+    return ratio === null || ratio === undefined ? t('common.dash') : ratioBarHtml(ratio, max, { digits: 3 });
+}
+
+export { ratioBarHtml, ratioColor, ratioScale, ratioCellHtml };

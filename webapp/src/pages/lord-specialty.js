@@ -14,6 +14,8 @@
  * saved (over the player's own) only once they change something.
  */
 import { startPage } from '../ui/page.js';
+import { readJson, writeJson } from '../ui/storage.js';
+import { setUrlParams, urlParam } from '../ui/url.js';
 import { localizedName, t, tHtml } from '../ui/i18n.js';
 import { escapeHtml } from '../ui/html.js';
 import { formatThousands } from '../ui/format.js';
@@ -80,12 +82,7 @@ function clampInt(value, min, max, fallback) {
 
 /** What this browser saved: `{ level, extra, lord, builds: { <lord>: <build as URL text> } }` (or less). */
 function loadSaved() {
-    try {
-        return JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || {};
-    } catch {
-        // No storage, or nothing valid in it: the defaults.
-        return {};
-    }
+    return readJson(STORAGE_KEY);
 }
 
 const saved = loadSaved();
@@ -98,11 +95,7 @@ const setup = {
 /** Saves the player's level and extra points, the lord and every lord's build. */
 function save() {
     const encoded = Object.fromEntries(lordIds.map((id) => [id, encodeBuild(builds[id])]));
-    try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...setup, lord: lordId, builds: encoded }));
-    } catch {
-        // Not saved (private browsing, ...): the page still works.
-    }
+    writeJson(STORAGE_KEY, { ...setup, lord: lordId, builds: encoded });
 }
 
 /** The saved lord and builds, then the URL's: a link (with `lord`) shows its lord and build. */
@@ -113,10 +106,10 @@ function readState() {
     lordIds.forEach((id) => {
         builds[id] = decodeBuild(lordData.lords[id], saved.builds?.[id], maxLevel);
     });
-    const params = new URLSearchParams(window.location.search);
-    if (lordIds.includes(params.get('lord'))) {
-        lordId = params.get('lord');
-        builds[lordId] = decodeBuild(lord(), params.get('t'), maxLevel);
+    const linked = urlParam('lord');
+    if (lordIds.includes(linked)) {
+        lordId = linked;
+        builds[lordId] = decodeBuild(lord(), urlParam('t'), maxLevel);
     }
 }
 
@@ -127,15 +120,7 @@ function commit() {
 }
 
 function writeUrl() {
-    const url = new URL(window.location.href);
-    url.searchParams.set('lord', lordId);
-    const encoded = encodeBuild(build());
-    if (encoded) {
-        url.searchParams.set('t', encoded);
-    } else {
-        url.searchParams.delete('t');
-    }
-    window.history.replaceState(null, '', `${url.pathname}?${url.searchParams}${url.hash}`);
+    setUrlParams({ lord: lordId, t: encodeBuild(build()) });
 }
 
 /** A cooldown in hours as the game's days, hours and minutes ("1d 23h 30m"). */
@@ -211,7 +196,7 @@ function tileHtml(talent, points = null) {
     const count =
         points === null
             ? ''
-            : `<span class="lord-talent__count">${escapeHtml(t('lord.count', { points, max: talent.max_level }))}</span>`;
+            : `<span class="lord-talent__count">${tHtml('lord.count', { points, max: talent.max_level })}</span>`;
     return `<span class="lord-talent__frame"><img src="${ICONS}${talent.icon}" alt="" draggable="false" /></span>${count}`;
 }
 
@@ -305,7 +290,7 @@ function placeSpine() {
 function renderDetail() {
     const talent = shown === null ? null : lord().talents[shown];
     if (!talent) {
-        detail.innerHTML = `<p class="lord-detail__hint">${escapeHtml(t('lord.pickHint'))}</p>`;
+        detail.innerHTML = `<p class="lord-detail__hint">${tHtml('lord.pickHint')}</p>`;
         return;
     }
     const points = build()[shown];
@@ -316,13 +301,13 @@ function renderDetail() {
     ].filter(Boolean);
     const effects = talent.values
         ? `
-            <p><span class="lord-detail__label">${escapeHtml(t('lord.now'))}</span> ${points > 0 ? effectHtml(talent, points) : `<span class="text-dim">${escapeHtml(t('lord.notTaken'))}</span>`}</p>
-            <p><span class="lord-detail__label">${escapeHtml(t('lord.next'))}</span> ${points < talent.max_level ? effectHtml(talent, points + 1) : `<span class="text-dim">${escapeHtml(t('lord.maxReached'))}</span>`}</p>
-            <ol class="lord-detail__values" aria-label="${escapeHtml(t('lord.values'))}">
+            <p><span class="lord-detail__label">${tHtml('lord.now')}</span> ${points > 0 ? effectHtml(talent, points) : `<span class="text-dim">${tHtml('lord.notTaken')}</span>`}</p>
+            <p><span class="lord-detail__label">${tHtml('lord.next')}</span> ${points < talent.max_level ? effectHtml(talent, points + 1) : `<span class="text-dim">${tHtml('lord.maxReached')}</span>`}</p>
+            <ol class="lord-detail__values" aria-label="${tHtml('lord.values')}">
                 ${talent.values
                     .map(
                         (value, i) =>
-                            `<li class="${i + 1 === points ? 'is-current' : ''}"><span class="text-dim">${escapeHtml(t('lord.valueLevel', { level: i + 1 }))}</span> ${formatThousands(value)}</li>`,
+                            `<li class="${i + 1 === points ? 'is-current' : ''}"><span class="text-dim">${tHtml('lord.valueLevel', { level: i + 1 })}</span> ${formatThousands(value)}</li>`,
                     )
                     .join('')}
             </ol>`
@@ -335,7 +320,7 @@ function renderDetail() {
                 <p class="lord-detail__facts">${facts.map(escapeHtml).join(' · ')}</p>
             </div>
         </div>
-        <p class="lord-detail__level">${escapeHtml(t('lord.talentLevel', { points, max: talent.max_level }))}</p>
+        <p class="lord-detail__level">${tHtml('lord.talentLevel', { points, max: talent.max_level })}</p>
         ${effects}`;
 }
 
@@ -343,7 +328,7 @@ function renderDetail() {
 function requiresHtml({ level }) {
     return tHtml('lord.requires', {
         lord: escapeHtml(localizedName(lord().name)),
-        level: `<strong>${escapeHtml(t('lord.levelValue', { level }))}</strong>`,
+        level: `<strong>${tHtml('lord.levelValue', { level })}</strong>`,
     });
 }
 
@@ -354,7 +339,7 @@ function renderBar() {
     const reachable = isReachable(lord(), build(), setup);
     // As in the game: the lord and level, the points with a reset icon next to them; Copy link on the right in every
     // language (the text wraps, the button stays).
-    const reset = escapeHtml(t('common.reset'));
+    const reset = tHtml('common.reset');
     bar.innerHTML = `
         <div class="lord-bar__summary">
             <span class="${reachable ? '' : 'text-bad'}">${requiresHtml(needs)}</span>
@@ -364,7 +349,7 @@ function renderBar() {
             </span>
             <span class="lord-bar__note" role="status">${escapeHtml(note)}</span>
         </div>
-        <button type="button" class="lord-bar__copy" data-action="copy">${escapeHtml(t('lord.copyLink'))}</button>`;
+        <button type="button" class="lord-bar__copy" data-action="copy">${tHtml('lord.copyLink')}</button>`;
 }
 
 /** The level next to its slider ("Lv.40"). */

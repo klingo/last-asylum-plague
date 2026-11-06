@@ -4,7 +4,7 @@
  * stacked. The footer gets two stamps: when the data was last updated and when the site last changed. Both are
  * translated again on a language switch.
  */
-import { t, getLocale, setLocale, LOCALES } from './i18n.js';
+import { t, getLocale, setLocale, LOCALES, tHtml } from './i18n.js';
 import { escapeAttr } from './html.js';
 
 // Date the pack data was last updated (`metadata.last_updated`), shown in the footer.
@@ -143,7 +143,7 @@ function renderNav(activePage) {
         .map(([code, { label }]) => `<option value="${code}" ${code === locale ? 'selected' : ''}>${label}</option>`)
         .join('');
     const link = (href, label, active, description) =>
-        `<a href="${base}${href}" class="${active ? 'active' : ''}" title="${escapeAttr(t(description))}" ${active ? 'aria-current="page"' : ''}>${t(label)}</a>`;
+        `<a href="${base}${href}" class="${active ? 'active' : ''}" title="${escapeAttr(t(description))}" ${active ? 'aria-current="page"' : ''}>${tHtml(label)}</a>`;
     const groups = NAV_GROUPS.map((group) => {
         if (!group.items) {
             return link(group.href, group.label, group.page === activePage, group.description);
@@ -155,22 +155,22 @@ function renderNav(activePage) {
         return `
             <div class="app-nav__group ${active ? 'active' : ''}">
                 <button type="button" class="app-nav__group-button" aria-expanded="false" aria-haspopup="true">
-                    ${t(`nav.groups.${group.key}`)}<span class="app-nav__caret" aria-hidden="true">▾</span>
+                    ${tHtml(`nav.groups.${group.key}`)}<span class="app-nav__caret" aria-hidden="true">▾</span>
                 </button>
                 <div class="app-nav__menu">${items}</div>
             </div>`;
     }).join('');
     header.innerHTML = `
-        <h1><a href="${base}index.html" class="app-title">${t('app.title')}</a></h1>
-        <button type="button" class="app-nav__toggle" aria-expanded="${header.classList.contains('nav-open')}" aria-controls="app-nav" aria-label="${t('nav.menu')}">☰</button>
+        <h1><a href="${base}index.html" class="app-title">${tHtml('app.title')}</a></h1>
+        <button type="button" class="app-nav__toggle" aria-expanded="${header.classList.contains('nav-open')}" aria-controls="app-nav" aria-label="${tHtml('nav.menu')}">☰</button>
         <nav class="app-nav" id="app-nav">
             ${link('index.html', 'nav.home', activePage === 'today', 'today.description')}
             ${groups}
         </nav>
         <div class="app-header__tools">
-            <a href="${base}settings.html" class="app-settings-link${activePage === 'settings' ? ' active' : ''}" title="${t('nav.settings')}" aria-label="${t('nav.settings')}" ${activePage === 'settings' ? 'aria-current="page"' : ''}>⚙</a>
+            <a href="${base}settings.html" class="app-settings-link${activePage === 'settings' ? ' active' : ''}" title="${tHtml('nav.settings')}" aria-label="${tHtml('nav.settings')}" ${activePage === 'settings' ? 'aria-current="page"' : ''}>⚙</a>
             <label class="lang-switch">
-                <span class="sr-only">${t('nav.language')}</span>
+                <span class="sr-only">${tHtml('nav.language')}</span>
                 <select id="lang-select">${langOptions}</select>
             </label>
         </div>

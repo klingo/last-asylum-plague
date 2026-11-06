@@ -49,7 +49,25 @@
         "loadError": "Daten konnten nicht geladen werden: {message}",
         "reset": "Zurücksetzen",
         "howItWorks": "So funktioniert's",
-        "requiresTooltip": "Benötigt: {name}"
+        "requiresTooltip": "Benötigt: {name}",
+        "total": "Gesamt",
+        "totalWorth": "Gesamtwert",
+        "everything": "Alles, was du bekommst",
+        "perMonth": "Monat",
+        "perTwoWeeks": "2 Wochen",
+        "table": {
+            "rank": "Rang",
+            "pack": "Paket",
+            "item": "Gegenstand",
+            "category": "Kategorie",
+            "price": "Preis",
+            "limit": "Max. / Woche",
+            "worth": "Wert",
+            "worthEach": "Wert je Stück",
+            "ratio": "Ratio",
+            "buy": "Kauf / Woche",
+            "incomplete": "Unvollständig"
+        }
     },
     "picker": {
         "placeholder": "Gegenstand auswählen…",
@@ -235,17 +253,8 @@
         "typeFilter": "Typ",
         "empty": "Keine Einträge entsprechen deinen Filtern.",
         "table": {
-            "rank": "Rang",
             "name": "Name",
-            "type": "Typ",
-            "category": "Kategorie",
-            "price": "Preis",
-            "item": "Gegenstand",
-            "incomplete": "Unvollständig",
-            "worth": "Wert",
-            "ratio": "Ratio",
-            "worthEach": "Wert je Stück",
-            "buy": "Kauf / Woche"
+            "type": "Typ"
         },
         "once": "einmal",
         "section": {
@@ -266,8 +275,6 @@
         "buyForTiersTip": "Für sich allein ist es weniger wert als sein Preis, aber seine Münzen helfen, die Bonusstufen des Shops zu erreichen, deren Extra-Belohnungen den Kauf lohnend machen (siehe Event-Shops).",
         "pointsTooltip": "{points} Punkte je Stück",
         "lifetimeTotal": "{count}× insgesamt",
-        "perMonth": "Monat",
-        "perTwoWeeks": "2 Wochen",
         "perWeekShare": "{amount} Banknoten / Woche"
     },
     "events": {
@@ -363,11 +370,8 @@
         "tiles": {
             "packs": "Diese Pakete kaufen",
             "encounters": "Begegnungen",
-            "bonusTiers": "Erreichte Bonusstufen",
-            "everything": "Alles, was du bekommst"
+            "bonusTiers": "Erreichte Bonusstufen"
         },
-        "total": "Gesamt",
-        "totalWorth": "Gesamtwert",
         "received": "erhalten",
         "spentInShop": "im Shop ausgegeben",
         "spentDigging": "beim Graben ausgegeben",
@@ -395,15 +399,9 @@
         "perDay": "{count}/Tag",
         "table": {
             "offer": "Angebot",
-            "pack": "Paket",
-            "price": "Preis",
-            "limit": "Max. / Woche",
             "cost": "Kosten",
             "costBanknotes": "Kosten in Banknoten",
-            "worth": "Wert",
-            "ratio": "Ratio",
             "mustBuy": "Fest / Woche",
-            "buy": "Kauf / Woche",
             "eventSpend": "Event-Ausgaben",
             "stepCost": "Mehrausgaben",
             "stepWorth": "Mehrwert",
@@ -426,14 +424,11 @@
         "coinCost": "≈ {amount} Banknoten für diese Münzen, aus: {packs}",
         "coinWorth": "≈ {amount} Banknoten: Kein angebotenes Paket gibt diese Münzen, daher mit ihrem Wert in deinem Plan",
         "table": {
-            "rank": "Rang",
             "source": "Quelle",
             "gives": "Gibt",
-            "price": "Preis",
             "perUnit": "Pro Einheit",
             "perUnits": "Pro {count}",
             "share": "Gegenstands-Anteil",
-            "ratio": "Ratio",
             "itemRatio": "Gegenstands-Ratio"
         }
     },
@@ -449,18 +444,11 @@
         "selectCountHintAll": "Du bekommst alle {total} dieser Optionen, also gibt es nichts zu priorisieren.",
         "optionsEmpty": "Dieser Gegenstand hat keine Wahloptionen.",
         "table": {
-            "rank": "Rang",
             "option": "Option",
-            "category": "Kategorie",
             "points": "Punkte",
-            "worth": "Wert",
             "vsBest": "vs. Beste",
             "package": "Paket",
-            "price": "Preis",
-            "ratio": "Ratio",
-            "gain": "Nettogewinn",
-            "item": "Gegenstand",
-            "worthEach": "Wert je Stück"
+            "gain": "Nettogewinn"
         },
         "groupName": "Nur eines von: {packages}",
         "groupHint": "Du kannst nur eines davon kaufen. Geordnet nach Nettogewinn = Wert − Preis; Ratio 1,0 oder mehr = lohnt sich bei deinen wöchentlichen Ausgaben.",
@@ -482,7 +470,6 @@
             "tier": "Stufe",
             "threshold": "Gesamtausgaben",
             "stepCost": "Mehrausgaben",
-            "item": "Gegenstand",
             "worth": "Stufenbelohnung",
             "ratio": "Stufen-Ratio",
             "packs": "Gekaufte Pakete"
@@ -750,9 +737,7 @@
             "high": "Hoch"
         },
         "table": {
-            "item": "Gegenstand",
-            "priority": "Priorität",
-            "worth": "Wert"
+            "priority": "Priorität"
         },
         "explainUnknown": "Unbekannt = es gibt nichts, worauf sich ein Wert stützen ließe: Der Gegenstand ist in keinem Paket mit Deal-% enthalten, lässt sich nicht aus anderen Gegenständen ableiten und hat kein Rezept (oder er wird bewusst nicht modelliert, wie Moon Coins). In Paketen zählt er als 0.",
         "explainUncertain": "Eine Zahl mit „unsicher“ ist die beste Schätzung, beruht aber auf dünner Datenlage: Die Pakete unterscheiden den Gegenstand kaum von anderen oder er hängt von einem einzelnen Paket ab. Fahre über das Info-Symbol für den Grund. Wenn es dir falsch vorkommt, korrigiere es mit Niedrig oder Hoch.",

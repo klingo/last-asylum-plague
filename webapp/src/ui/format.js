@@ -54,4 +54,14 @@ function formatSignificant(value, digits = 3) {
     return value.toFixed(decimals);
 }
 
-export { formatThousands, formatSignificant, computeTieFlags };
+/** A count or amount that may be fractional: whole numbers grouped, others with `formatSignificant`. */
+function formatAmount(value) {
+    return Number.isInteger(value) ? formatThousands(value) : formatSignificant(value);
+}
+
+/** A share (0.25 = 25) as markup: `decimals` places and a non-breaking space before the %. */
+function formatPercent(share, decimals = 1) {
+    return `${formatThousands(share * 100, decimals)}&nbsp;%`;
+}
+
+export { formatThousands, formatSignificant, formatAmount, formatPercent, computeTieFlags };

@@ -5,14 +5,13 @@
  * today's weekday offers with their ratio.
  */
 import { startPage } from '../ui/page.js';
-import { buildValuation } from '../ui/valuation.js';
-import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, onSettingsChange } from '../ui/settings.js';
-import { withLoading } from '../ui/loading.js';
-import { banknotesHtml, escapeHtml, hydrateItemIcons, itemIconSlot } from '../ui/html.js';
+import { mountValuationPage } from '../ui/valuation-page.js';
+import { getSettings } from '../ui/settings.js';
+import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, itemIconSlot, tileHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
+import { eventPlanHref, pageHref } from '../ui/url.js';
 import { infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
-import { packageDisplayName, packageIcon } from '../ui/labels.js';
+import { SCHEDULE_KIND_LABELS, SCHEDULE_KINDS, packageDisplayName, packageIcon } from '../ui/labels.js';
 import {
     gridCell,
     gridNum,
@@ -23,20 +22,21 @@ import {
     detailsToggleHtml,
     wireDetailsToggles,
     breakdownParts,
+    packPartRowHtml,
 } from '../ui/grid.js';
 import { formatDays, getLocale, localizedName, t, tHtml } from '../ui/i18n.js';
 import { formatThousands } from '../ui/format.js';
-import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { ratioCellHtml, ratioScale } from '../ui/ratio-bar.js';
 import {
     eventImageUrl,
     countdownText,
-    formatGameDay,
     scheduleHref,
     scheduleImage,
     scheduleName,
     slotRangeText,
     startCountdowns,
 } from '../ui/event-banner.js';
+import { formatGameDayRange } from '../ui/datetime.js';
 import { isOnSale } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { groupPlanByWhen } from '../core/plan-view.js';
@@ -48,15 +48,6 @@ const SOON_FILL_MS = 4 * 3600000;
 const ENDING_MS = 24 * 3600000;
 // What starts within this many days is listed under "Starting soon".
 const SOON_DAYS = 3;
-// The order of the schedule's kinds (as on the Calendar) and their labels.
-const KINDS = ['event', 'ingame', 'alliance', 'pass', 'track'];
-const KIND_LABELS = {
-    event: 'calendar.schedule.groupEvents',
-    ingame: 'calendar.schedule.groupIngame',
-    alliance: 'calendar.schedule.groupAlliance',
-    pass: 'calendar.schedule.groupPasses',
-    track: 'calendar.schedule.groupTracks',
-};
 
 const scheduleCard = document.getElementById('schedule-card');
 const runningList = document.getElementById('running-list');
@@ -68,18 +59,11 @@ const planSummary = document.getElementById('plan-summary');
 const planTiles = document.getElementById('plan-tiles');
 
 let data = null;
-let settings = null;
 let valuation = null;
-let panel = null;
 // The game day the page shows (a new one renders it all again).
 let renderedDay = null;
 // The offers' open Details blocks (kept across re-renders).
 const offerExpanded = new Set();
-
-const gold = banknotesHtml;
-
-const tileHtml = (label, body) =>
-    `<div class="plan-tile"><div class="plan-tile__label">${label}</div><div class="plan-tile__body">${body}</div></div>`;
 
 /**
  * An entry of a list. `start` / `end` are moments (ms).
@@ -90,7 +74,7 @@ const tileHtml = (label, body) =>
  */
 function runEntry(id, kind, run, state, forecast = false) {
     const moments = runMoments(run);
-    const range = `${formatGameDay(run.start)} – ${formatGameDay(run.end)}`;
+    const range = formatGameDayRange(run.start, run.end);
     return {
         id,
         kind,
@@ -100,7 +84,7 @@ function runEntry(id, kind, run, state, forecast = false) {
         // The event's own short line, if it has one (the Demon Kings: which heroes deal more damage).
         description: localizedName(data.events?.[id]?.description),
         image: scheduleImage(data, id),
-        href: scheduleHref(data, id, settings.activeEvents),
+        href: scheduleHref(data, id, getSettings().activeEvents),
         dates: forecast ? `${range} · ${t('today.expected')}` : range,
         start: moments.start,
         end: moments.end,
@@ -140,7 +124,7 @@ function planShareHtml(entry) {
         return '';
     }
     const spent = mine.reduce((sum, { spend }) => sum + spend, 0);
-    return tHtml('today.planPacks', { count: formatThousands(mine.length), spent: gold(formatThousands(spent, 0)) });
+    return tHtml('today.planPacks', { count: formatThousands(mine.length), spent: banknotesAmount(spent) });
 }
 
 /**
@@ -181,7 +165,7 @@ function entryHtml(entry) {
                 </span>
                 <span class="today-entry__dates">${escapeHtml(entry.dates)}</span>
             </div>
-            <span class="today-entry__kind">${escapeHtml(t(KIND_LABELS[entry.kind]))}</span>
+            <span class="today-entry__kind">${tHtml(SCHEDULE_KIND_LABELS[entry.kind])}</span>
             <span class="today-entry__time event-banner__countdown" data-until="${until}" data-state="${entry.state}">${escapeHtml(countdownText(entry.state, until))}</span>
         </${tag}>`;
 }
@@ -218,13 +202,12 @@ function renderSchedule() {
         running.push(rotationEntry(rotation, current, 'running'));
         soon.push(rotationEntry(rotation, next, 'upcoming'));
     }
-    const order = (a, b) => KINDS.indexOf(a.kind) - KINDS.indexOf(b.kind);
+    const order = (a, b) => SCHEDULE_KINDS.indexOf(a.kind) - SCHEDULE_KINDS.indexOf(b.kind);
     // The one ending first on top (the kind only breaks ties).
     running.sort((a, b) => a.end - b.end || order(a, b));
     soon.sort((a, b) => a.start - b.start || order(a, b));
-    runningList.innerHTML =
-        running.map(entryHtml).join('') || `<p class="text-dim">${escapeHtml(t('today.runningEmpty'))}</p>`;
-    soonList.innerHTML = soon.map(entryHtml).join('') || `<p class="text-dim">${escapeHtml(t('today.soonEmpty'))}</p>`;
+    runningList.innerHTML = running.map(entryHtml).join('') || `<p class="text-dim">${tHtml('today.runningEmpty')}</p>`;
+    soonList.innerHTML = soon.map(entryHtml).join('') || `<p class="text-dim">${tHtml('today.soonEmpty')}</p>`;
     enableInfoTooltips(scheduleCard);
     updateProgress();
     // The countdowns tick; once one runs out (a run ended or started) the lists show the new state.
@@ -237,6 +220,7 @@ const plannedCounts = () => new Map(valuation.plan.purchases.map((p) => [p.id, M
 /** Today's weekday offers (`weekly_rotation` packs on sale today), best ratio first, with what the plan buys. */
 function renderOffers() {
     const weekday = WEEKDAYS[weekdayIndex(renderedDay)];
+    const settings = getSettings();
     const rules = { activeEventIds: new Set(settings.activeEvents), seasonalPasses: settings.seasonalPasses };
     const planned = plannedCounts();
     const locale = getLocale();
@@ -265,7 +249,7 @@ function renderOffers() {
     if (offers.length === 0) {
         return;
     }
-    const maxRatio = Math.max(1, ...offers.map((o) => o.ratio).filter(Number.isFinite));
+    const maxRatio = ratioScale(offers.map((o) => o.ratio));
     let previousFamily = null;
     const rows = offers.map((offer) => {
         const { id, pkg, worth, ratio, incomplete } = offer;
@@ -280,10 +264,10 @@ function renderOffers() {
                     `${icon ? itemIconSlot(icon) : ''}${packageDisplayName(pkg, locale)}${requiresIconHtml(pkg.requires, data.packages, data.items, locale)}`,
                     { className: `item-cell${higherTier ? ' offer-tier' : ''}` },
                 ),
-                gridNum(gold(formatThousands(pkg.price, 0))),
-                gridNum(gold(formatThousands(worth, 0)), { wide: true }),
-                gridNum(incomplete || ratio === null ? t('common.dash') : ratioBarHtml(ratio, maxRatio, { digits: 3 })),
-                gridNum(count ? `<span class="buy-badge">×${formatThousands(count)}</span>` : ''),
+                gridNum(banknotesAmount(pkg.price)),
+                gridNum(banknotesAmount(worth), { wide: true }),
+                gridNum(ratioCellHtml(incomplete ? null : ratio, maxRatio)),
+                gridNum(count ? buyBadge(`×${formatThousands(count)}`) : ''),
                 gridNum(detailsToggleHtml(id, offerExpanded)),
             ],
             { buy: count > 0 },
@@ -291,11 +275,11 @@ function renderOffers() {
         return row + offerDetailsHtml(id, offer);
     });
     const header = gridRow([
-        gridHeader(t('events.table.pack')),
-        gridHeader(t('events.table.price'), { num: true }),
-        gridHeader(t('events.table.worth'), { num: true, wide: true }),
-        gridHeader(t('events.table.ratio'), { num: true }),
-        gridHeader(t('events.table.buy'), { num: true }),
+        gridHeader(tHtml('common.table.pack')),
+        gridHeader(tHtml('common.table.price'), { num: true }),
+        gridHeader(tHtml('common.table.worth'), { num: true, wide: true }),
+        gridHeader(tHtml('common.table.ratio'), { num: true }),
+        gridHeader(tHtml('common.table.buy'), { num: true }),
         gridHeader(),
     ]);
     offersTable.innerHTML = gridTable(header, rows.join(''));
@@ -307,15 +291,7 @@ function renderOffers() {
 /** The Details block of an offer: what it gives, item by item, in the table's columns. */
 function offerDetailsHtml(key, bundle) {
     const rows = breakdownParts(bundle.parts, data, valuation).map((part) =>
-        gridRow([
-            gridCell(part.item, { className: 'item-cell' }),
-            // On phones the Worth column is hidden: the item's worth moves to the Price column.
-            gridNum(`<span class="phone-only">${part.worth}</span>`),
-            gridNum(part.worth, { wide: true }),
-            gridNum(''),
-            gridNum(''),
-            gridNum(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
-        ]),
+        packPartRowHtml(part, { limitColumn: false }),
     );
     return gridDetails(key, offerExpanded, rows.join(''));
 }
@@ -323,16 +299,16 @@ function offerDetailsHtml(key, bundle) {
 /** "×3 / week", "×1 / month": what the plan buys of a package in the unit its limit counts in. */
 function countText(pkg, planned) {
     if (pkg.limit_type === 'monthly' || pkg.limit_type === 'biweekly') {
-        const per = pkg.limit_type === 'monthly' ? t('rankings.perMonth') : t('rankings.perTwoWeeks');
+        const per = pkg.limit_type === 'monthly' ? t('common.perMonth') : t('common.perTwoWeeks');
         return `×${formatThousands(planned)} / ${per}`;
     }
-    const perWeek = pkg.limit_type === 'daily' && !pkg.event_id ? ` / ${t('today.week')}` : '';
+    const perWeek = pkg.limit_type === 'daily' && !pkg.event_id ? ` / ${tHtml('today.week')}` : '';
     return `×${formatThousands(planned)}${perWeek}`;
 }
 
 /** The Event Shops' tab of an event, or of a shop without event. */
 const shoppingPlanHref = (shopId, shop) =>
-    `events.html?event=${encodeURIComponent(shop.event_id ? `event:${shop.event_id}` : `shop:${shopId}`)}`;
+    shop.event_id ? eventPlanHref(shop.event_id) : pageHref('events', { event: `shop:${shopId}` });
 
 /** Your weekly plan by when to buy it: daily packs, weekly and longer ones, weekday offers, each event, shops. */
 function renderPlan() {
@@ -344,7 +320,7 @@ function renderPlan() {
     const entryOf = ({ pkg, planned, spend }) => [
         packageDisplayName(pkg, locale),
         countText(pkg, planned),
-        gold(formatThousands(spend, 0)),
+        banknotesAmount(spend),
     ];
     const daily = grouped.daily.map(entryOf);
     const weekly = grouped.weekly.map(entryOf);
@@ -378,19 +354,19 @@ function renderPlan() {
         ['rotation', rotation],
     ]) {
         if (entries.length > 0) {
-            tiles.push(tileHtml(t(`today.tiles.${key}`), packList(entries)));
+            tiles.push(tileHtml(tHtml(`today.tiles.${key}`), packList(entries)));
         }
     }
     for (const [eventId, { packs, offers }] of byEvent) {
-        const href = `events.html?event=${encodeURIComponent(`event:${eventId}`)}`;
+        const href = eventPlanHref(eventId);
         const offersLine =
             offers > 0
-                ? `<div class="plan-stat text-dim">${t('today.shopOffers', { count: formatThousands(Math.round(offers)) })}</div>`
+                ? `<div class="plan-stat text-dim">${tHtml('today.shopOffers', { count: formatThousands(Math.round(offers)) })}</div>`
                 : '';
         tiles.push(
             tileHtml(
                 escapeHtml(localizedName(data.events[eventId].name)),
-                `${packs.length > 0 ? packList(packs.map(entryOf)) : ''}${offersLine}<div class="plan-stat"><a href="${href}">${t('today.openPlan')}</a></div>`,
+                `${packs.length > 0 ? packList(packs.map(entryOf)) : ''}${offersLine}<div class="plan-stat"><a href="${href}">${tHtml('today.openPlan')}</a></div>`,
             ),
         );
     }
@@ -412,10 +388,10 @@ function renderPlan() {
         );
     }
     planSummary.innerHTML = tHtml('today.planSummary', {
-        spent: gold(formatThousands(plan.spent, 0)),
-        budget: gold(formatThousands(plan.budget, 0)),
+        spent: banknotesAmount(plan.spent),
+        budget: banknotesAmount(plan.budget),
     });
-    planTiles.innerHTML = tiles.join('') || `<p class="text-dim">${escapeHtml(t('today.planEmpty'))}</p>`;
+    planTiles.innerHTML = tiles.join('') || `<p class="text-dim">${tHtml('today.planEmpty')}</p>`;
 }
 
 function render() {
@@ -424,24 +400,15 @@ function render() {
     renderPlan();
 }
 
-async function recompute() {
-    await withLoading(async () => {
-        valuation = await buildValuation(data, settings);
-        panel.showRate(valuation);
-        render();
-    });
-}
-
 startPage('today', {
     async init(loaded) {
         data = loaded;
-        settings = getSettings();
-        panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        const { recompute } = mountValuationPage(data, {
             fields: ['budget', 'events', 'passes'],
-        });
-        onSettingsChange((next) => {
-            settings = next;
-            recompute();
+            render: (next) => {
+                valuation = next;
+                render();
+            },
         });
         await recompute();
         // A new game day (they start at 02:00 UTC) changes what runs and which weekday offers are on sale; within a

@@ -10,8 +10,9 @@
  */
 import { startPage } from '../ui/page.js';
 import { enumLabel, localizedName, t, tHtml } from '../ui/i18n.js';
-import { escapeHtml, hydrateItemIcons } from '../ui/html.js';
-import { itemLinkHtml } from '../ui/labels.js';
+import { escapeHtml, hydrateItemIcons, itemIconSlot } from '../ui/html.js';
+import { readJson, writeJson } from '../ui/storage.js';
+import { itemDisplayText, itemLinkHtml } from '../ui/labels.js';
 import { formatThousands } from '../ui/format.js';
 import {
     MR_STEP,
@@ -54,7 +55,7 @@ let progress = null;
 // Which full step lists are open ("Show all steps"), kept across re-renders.
 const openLists = new Set();
 
-const itemName = (itemId) => localizedName(data.items[itemId]?.name) || itemId;
+const itemName = (itemId) => itemDisplayText(data.items, itemId);
 // A blueprint's name, linked to Item Sources (where to get it).
 const blueprintLink = (itemId) => itemLinkHtml(data.items, itemId, escapeHtml(itemName(itemId)));
 const heroName = (heroId) => localizedName(data.heroes?.[heroId]?.name) || heroId;
@@ -73,13 +74,8 @@ const formatStars = (stars) => formatThousands(Number(stars.toFixed(1)));
  * (the faction shown last, and per faction its progress). Older saves held one squad's progress directly: the warriors'.
  */
 function savedProgress() {
-    try {
-        const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}')[guideId] || {};
-        return PATHS.some((path) => path in saved) ? { warrior: saved } : saved;
-    } catch {
-        // localStorage may be unavailable or hold something else: start fresh.
-        return {};
-    }
+    const saved = readJson(STORAGE_KEY)[guideId] || {};
+    return PATHS.some((path) => path in saved) ? { warrior: saved } : saved;
 }
 
 /** The progress of the faction shown (none saved yet: nothing done). */
@@ -88,17 +84,13 @@ function loadProgress() {
 }
 
 function saveProgress() {
-    try {
-        const all = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}');
-        all[guideId] = {
-            ...savedProgress(),
-            faction: shownFaction,
-            [shownFaction]: progress.snapshot(),
-        };
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-    } catch {
-        // localStorage may be unavailable (private browsing, etc.)
-    }
+    const all = readJson(STORAGE_KEY);
+    all[guideId] = {
+        ...savedProgress(),
+        faction: shownFaction,
+        [shownFaction]: progress.snapshot(),
+    };
+    writeJson(STORAGE_KEY, all);
 }
 
 function commit() {
@@ -213,8 +205,8 @@ function tileHtml(state, upcoming, slot, item) {
         .join('');
     return `
         <div class="${classes.join(' ')}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}" role="img">
-            <span class="gear-tile__level">${piece.crafted ? t('gear.level', { level: piece.level }) : '–'}</span>
-            <span data-item-id="${item}"></span>
+            <span class="gear-tile__level">${piece.crafted ? t('gear.level', { level: piece.level }) : t('common.dash')}</span>
+            ${itemIconSlot(item)}
             <span class="gear-tile__stars">${starsHtml}</span>
             <span class="gear-tile__next">${next.map(({ path, text }) => `<span class="gear-tile__next--${path}">${escapeHtml(text)}</span>`).join(' ')}</span>
         </div>`;
@@ -245,7 +237,7 @@ function renderBoard() {
     const { state, upcoming } = shownState();
     const row = (slots, labelKey) => `
         <div class="gear-row">
-            <div class="gear-row__label">${escapeHtml(t(labelKey))}</div>
+            <div class="gear-row__label">${tHtml(labelKey)}</div>
             <div class="gear-row__slots">${slots.map((slot) => slotHtml(state, upcoming, slot)).join('')}</div>
         </div>`;
     board.innerHTML = row(guide.formation.front, 'gear.frontRow') + row(guide.formation.back, 'gear.backRow');
@@ -306,7 +298,7 @@ function stepHtml(entry) {
         .map((slot) => `<img class="gear-face" src="${heroImage(heroOf(slot))}" alt="" />`)
         .join('');
     const pieces = stepItems(gearSet, entry.step)
-        .map((item) => `<span data-item-id="${item}"></span>`)
+        .map((item) => itemIconSlot(item))
         .join('');
     const target = entry.kind === 'stars' ? starStripHtml(entry.step.stars) : '';
     return `<span class="gear-step"><span class="gear-step__faces" aria-hidden="true">${faces}</span><span class="gear-step__pieces" aria-hidden="true">${pieces}</span><span class="gear-step__text">${stepText(entry)}</span>${target}</span>`;
@@ -367,10 +359,7 @@ function costHtml(entry) {
         return '';
     }
     const parts = Object.entries(cost)
-        .map(
-            ([itemId, qty]) =>
-                `<span class="gear-cost__part"><span data-item-id="${itemId}"></span>${formatThousands(qty)}</span>`,
-        )
+        .map(([itemId, qty]) => `<span class="gear-cost__part">${itemIconSlot(itemId)}${formatThousands(qty)}</span>`)
         .join('');
     return `<div class="gear-cost">${parts}</div>`;
 }
@@ -399,7 +388,7 @@ function listHtml(path) {
                 needHtml = `<span class="gear-gate${met ? ' gear-gate--done' : ''}">${met ? '✓' : '○'} ${escapeHtml(need.gate)}</span>`;
             }
             const problem = entry.problems.length
-                ? `<span class="gear-path__problem text-bad">${escapeHtml(t('gear.problem'))}</span>`
+                ? `<span class="gear-path__problem text-bad">${tHtml('gear.problem')}</span>`
                 : '';
             return `
                 <li class="gear-path__step${progress.isDone(entry) ? ' is-done' : ''}${entry === progress.nextOf(path) ? ' is-next' : ''}${progress.isHeld(entry) ? ' is-held' : ''}" data-path="${path}" data-position="${i + 1}">
@@ -408,7 +397,7 @@ function listHtml(path) {
                         <span class="gear-path__check" aria-hidden="true"></span>
                         <span class="gear-path__body">
                             <span class="gear-path__text">${stepHtml(entry)}</span>
-                            ${progress.isHeld(entry) ? `<span class="gear-path__held">${ACTION_ICONS.hold} ${escapeHtml(t('gear.onHold'))}</span>` : ''}${needHtml}${costHtml(entry)}${problem}
+                            ${progress.isHeld(entry) ? `<span class="gear-path__held">${ACTION_ICONS.hold} ${tHtml('gear.onHold')}</span>` : ''}${needHtml}${costHtml(entry)}${problem}
                         </span>
                     </button>
                 </li>`;
@@ -416,7 +405,7 @@ function listHtml(path) {
         .join('');
     return `
         <details class="gear-list" data-list="${path}"${openLists.has(path) ? ' open' : ''}>
-            <summary>${escapeHtml(t('gear.showAll', { path: laneName(path), count: entries.length }))}</summary>
+            <summary>${tHtml('gear.showAll', { path: escapeHtml(laneName(path)), count: entries.length })}</summary>
             <ol class="gear-path">${steps}</ol>
         </details>`;
 }
@@ -431,8 +420,8 @@ function holdSwitchHtml() {
     return `
         <label class="gear-hold">
             <input type="checkbox" data-action="hold"${progress.mrOnHold ? ' checked' : ''} />
-            <span data-item-id="${blueprint}"></span>
-            <span>${escapeHtml(t('gear.holdMr', { item: itemName(blueprint) }))}</span>
+            ${itemIconSlot(blueprint)}
+            <span>${tHtml('gear.holdMr', { item: escapeHtml(itemName(blueprint)) })}</span>
         </label>`;
 }
 
@@ -442,7 +431,7 @@ function blockedHtml(need) {
 }
 
 /** A button's label with its icon: "✓ Done". */
-const actionLabel = (action) => `${icon(ACTION_ICONS[action])} ${escapeHtml(t(`gear.${action}`))}`;
+const actionLabel = (action) => `${icon(ACTION_ICONS[action])} ${tHtml(`gear.${action}`)}`;
 
 /**
  * The card of a queue's next step: what to do and what it uses, Done and Undo (+ "All crafted" while crafting), and
@@ -457,12 +446,12 @@ function nextCardHtml(path, titleKey) {
     let blocked = '';
     if (!next) {
         body = held
-            ? `<p class="gear-next__held">${ACTION_ICONS.hold} ${escapeHtml(t('gear.onlyHeldLeft', { count: held }))}</p>`
-            : `<p class="gear-next__done">✓ ${escapeHtml(t(`gear.allDone.${path}`))}</p>`;
+            ? `<p class="gear-next__held">${ACTION_ICONS.hold} ${tHtml('gear.onlyHeldLeft', { count: held })}</p>`
+            : `<p class="gear-next__done">✓ ${tHtml(`gear.allDone.${path}`)}</p>`;
     } else {
         const blueprint = path === 'stars' ? blueprintOf(next) : null;
         const uses = blueprint
-            ? `<p class="gear-next__uses">${escapeHtml(t('gear.uses'))} <span data-item-id="${blueprint}"></span> ${blueprintLink(blueprint)}</p>`
+            ? `<p class="gear-next__uses">${tHtml('gear.uses')} ${itemIconSlot(blueprint)} ${blueprintLink(blueprint)}</p>`
             : '';
         const need = path === 'craft' || locked || progress.canAdvance(path) ? null : needOf(next);
         blocked = need ? blockedHtml(need) : '';
@@ -477,8 +466,8 @@ function nextCardHtml(path, titleKey) {
     return `
         <div class="gear-next gear-next--${path}${locked ? ' is-locked' : ''}">
             <div class="gear-next__head">
-                <h4>${icon(LANE_ICONS[path])} ${escapeHtml(t(titleKey))}</h4>
-                <span class="gear-next__count">${escapeHtml(t('gear.count', { done: progress.doneCount(path), total: entries.length }))}</span>
+                <h4>${icon(LANE_ICONS[path])} ${tHtml(titleKey)}</h4>
+                <span class="gear-next__count">${tHtml('gear.count', { done: progress.doneCount(path), total: entries.length })}</span>
             </div>
             ${progressBarHtml(progress.doneCount(path), entries.length)}
             ${body}
@@ -499,24 +488,24 @@ function heldNoteHtml() {
     if (!held || !blueprint) {
         return '';
     }
-    return `<p class="gear-held-note">${ACTION_ICONS.hold} ${escapeHtml(t('gear.heldNote', { count: held }))} <span data-item-id="${blueprint}"></span> ${blueprintLink(blueprint)}</p>`;
+    return `<p class="gear-held-note">${ACTION_ICONS.hold} ${tHtml('gear.heldNote', { count: held })} ${itemIconSlot(blueprint)} ${blueprintLink(blueprint)}</p>`;
 }
 
 function renderGuide() {
     const locked = !progress.craftComplete();
     guidePanel.innerHTML = `
         <div class="gear-guide__head">
-            <h3>${escapeHtml(t('gear.progressTitle'))}</h3>
+            <h3>${tHtml('gear.progressTitle')}</h3>
             <button type="button" class="gear-guide__reset" data-action="reset"${progress.doneCount('craft') + progress.doneCount('level') + progress.doneCount('stars') === 0 ? ' disabled' : ''}>${actionLabel('startOver')}</button>
         </div>
         <section class="gear-phase${progress.craftComplete() ? ' is-complete' : ''}">
-            <h3 class="gear-phase__title"><span class="gear-phase__number">1</span>${escapeHtml(t('gear.phaseCraft'))}</h3>
+            <h3 class="gear-phase__title"><span class="gear-phase__number">1</span>${tHtml('gear.phaseCraft')}</h3>
             ${nextCardHtml('craft', 'gear.nextCraft')}
             ${listHtml('craft')}
         </section>
         <section class="gear-phase${locked ? ' is-locked' : ''}">
-            <h3 class="gear-phase__title"><span class="gear-phase__number">2</span>${escapeHtml(t('gear.phaseUpgrades'))}</h3>
-            <p class="gear-phase__hint">${escapeHtml(locked ? t('gear.locked', { count: progress.entriesOf.craft.length }) : t('gear.choiceHint'))}</p>
+            <h3 class="gear-phase__title"><span class="gear-phase__number">2</span>${tHtml('gear.phaseUpgrades')}</h3>
+            <p class="gear-phase__hint">${locked ? tHtml('gear.locked', { count: progress.entriesOf.craft.length }) : tHtml('gear.choiceHint')}</p>
             <div class="gear-choices">
                 ${nextCardHtml('level', 'gear.nextLevel')}
                 ${nextCardHtml('stars', 'gear.nextStar')}
@@ -568,12 +557,12 @@ const chipHtml = (action) => `<span class="gear-chip">${actionLabel(action)}</sp
 function renderHelp() {
     const section = (symbol, titleKey, body) => `
         <section>
-            <h3>${icon(symbol)} ${escapeHtml(t(titleKey))}</h3>
+            <h3>${icon(symbol)} ${tHtml(titleKey)}</h3>
             ${body}
         </section>`;
     const p = (key, html = {}, params = {}) => `<p>${tHtml(key, { ...params, ...html })}</p>`;
     const itemHtml = (item) =>
-        `<span class="gear-help__piece"><span data-item-id="${item}"></span>${escapeHtml(itemName(item))}</span>`;
+        `<span class="gear-help__piece">${itemIconSlot(item)}${escapeHtml(itemName(item))}</span>`;
     const blueprints = gearSet.blueprints || {};
 
     // The squad: the factions (as on the switch), the formation with the heroes of the faction shown.
@@ -589,8 +578,8 @@ function renderHelp() {
     };
     const formation = `
         <div class="gear-help__formation">
-            <div class="gear-help__row"><span class="gear-help__row-label">${escapeHtml(t('gear.frontRow'))}</span>${guide.formation.front.map(slotChip).join('')}</div>
-            <div class="gear-help__row"><span class="gear-help__row-label">${escapeHtml(t('gear.backRow'))}</span>${guide.formation.back.map(slotChip).join('')}</div>
+            <div class="gear-help__row"><span class="gear-help__row-label">${tHtml('gear.frontRow')}</span>${guide.formation.front.map(slotChip).join('')}</div>
+            <div class="gear-help__row"><span class="gear-help__row-label">${tHtml('gear.backRow')}</span>${guide.formation.back.map(slotChip).join('')}</div>
         </div>`;
 
     // Reading the squad: the 2×2 square, and sample tiles drawn like the board's.
@@ -610,15 +599,15 @@ function renderHelp() {
 
     // Upgrading: the two lists and the blueprints the star steps use.
     const blueprintHtml = (id) =>
-        id ? `<span class="gear-help__piece"><span data-item-id="${id}"></span>${escapeHtml(itemName(id))}</span>` : '';
+        id ? `<span class="gear-help__piece">${itemIconSlot(id)}${escapeHtml(itemName(id))}</span>` : '';
     const upgradeCards = `
         <div class="gear-help__cards">
             <div class="gear-help__card gear-help__card--level">
-                <h4>${icon(LANE_ICONS.level)} ${escapeHtml(t('gear.lane.level'))}</h4>
+                <h4>${icon(LANE_ICONS.level)} ${tHtml('gear.lane.level')}</h4>
                 ${p('gear.help.levelText', {}, { max: gearSet.max_level })}
             </div>
             <div class="gear-help__card gear-help__card--stars">
-                <h4>${icon(LANE_ICONS.stars)} ${escapeHtml(t('gear.lane.stars'))}</h4>
+                <h4>${icon(LANE_ICONS.stars)} ${tHtml('gear.lane.stars')}</h4>
                 ${p('gear.help.starsText', { ur: blueprintHtml(blueprints.ur), mr: blueprintHtml(blueprints.mr) })}
                 <div class="gear-help__star-example">${starStripHtml(2, 'gear-help__stars')} → ${starStripHtml(4, 'gear-help__stars')} → ${starStripHtml(5, 'gear-help__stars')}</div>
             </div>
@@ -630,9 +619,9 @@ function renderHelp() {
             const needs = gearSet.min_level_for_star?.[stars];
             const cap = stars < 5 ? gearSet.level_cap_by_stars?.[stars] : gearSet.max_level;
             return `<tr>
-                <td>${starStripHtml(stars, 'gear-help__stars')} <span class="text-dim">${stars === 5 ? t('gear.toMr') : `${stars} ★`}</span></td>
-                <td class="text-right">${needs ? escapeHtml(t('gear.level', { level: needs })) : '–'}</td>
-                <td class="text-right">${cap ? escapeHtml(t('gear.level', { level: cap })) : '–'}</td>
+                <td>${starStripHtml(stars, 'gear-help__stars')} <span class="text-dim">${stars === 5 ? tHtml('gear.toMr') : `${stars} ★`}</span></td>
+                <td class="text-right">${needs ? tHtml('gear.level', { level: needs }) : t('common.dash')}</td>
+                <td class="text-right">${cap ? tHtml('gear.level', { level: cap }) : t('common.dash')}</td>
             </tr>`;
         })
         .join('');
@@ -641,7 +630,7 @@ function renderHelp() {
         ? `
         <div class="gear-help__example">
             <div class="gear-next gear-next--level">
-                <div class="gear-next__head"><h4>${icon(LANE_ICONS.level)} ${escapeHtml(t('gear.nextLevel'))}</h4></div>
+                <div class="gear-next__head"><h4>${icon(LANE_ICONS.level)} ${tHtml('gear.nextLevel')}</h4></div>
                 <p class="gear-next__step">${stepHtml(example)}</p>
                 <div class="gear-next__actions"><span class="gear-chip is-disabled">${actionLabel('done')}</span></div>
                 ${blockedHtml(needOf(example))}
@@ -676,7 +665,7 @@ function renderHelp() {
         section(
             `${LANE_ICONS.level} ${LANE_ICONS.stars}`,
             'gear.help.upgradesTitle',
-            `${p('gear.help.upgradesText')}${upgradeCards}<p class="gear-help__decision">${blueprints.ur ? `<span data-item-id="${blueprints.ur}"></span>` : ''}${escapeHtml(t('gear.choiceHint'))}</p>`,
+            `${p('gear.help.upgradesText')}${upgradeCards}<p class="gear-help__decision">${blueprints.ur ? itemIconSlot(blueprints.ur) : ''}${tHtml('gear.choiceHint')}</p>`,
         ),
         section(
             ACTION_ICONS.blocked,
@@ -685,9 +674,9 @@ function renderHelp() {
             <div class="table-wrap">
                 <table class="gear-help__rules">
                     <thead><tr>
-                        <th>${escapeHtml(t('gear.help.rulesStars'))}</th>
-                        <th class="text-right">${escapeHtml(t('gear.help.rulesNeeds'))}</th>
-                        <th class="text-right">${escapeHtml(t('gear.help.rulesMax'))}</th>
+                        <th>${tHtml('gear.help.rulesStars')}</th>
+                        <th class="text-right">${tHtml('gear.help.rulesNeeds')}</th>
+                        <th class="text-right">${tHtml('gear.help.rulesMax')}</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>
                 </table>

@@ -4,46 +4,35 @@
  * an item ratio (the worth of the item alone ÷ price).
  */
 import { startPage } from '../ui/page.js';
-import { buildValuation } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';
-import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, onSettingsChange } from '../ui/settings.js';
-import { withLoading } from '../ui/loading.js';
+import { mountValuationPage } from '../ui/valuation-page.js';
+import { getSettings } from '../ui/settings.js';
 import { isOnSale, currencyCost } from '../core/catalog.js';
 import { createUnitCounter, sourcesListing } from '../core/item-sources.js';
 import { createItemPicker } from '../ui/item-picker.js';
-import { packageDisplayName, itemDisplayName } from '../ui/labels.js';
-import { escapeHtml, banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { packageDisplayName, itemDisplayName, itemDisplayText } from '../ui/labels.js';
+import { escapeHtml, banknotesAmount, banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
 import { gridCell, gridNum, gridHeader, gridRow, gridTable } from '../ui/grid.js';
-import { formatThousands, formatSignificant } from '../ui/format.js';
-import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { formatAmount, formatPercent, formatSignificant, formatThousands } from '../ui/format.js';
+import { ratioCellHtml, ratioScale } from '../ui/ratio-bar.js';
 import { infoIconHtml } from '../ui/info-icon.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { t, tHtml, getLocale, localizedName } from '../ui/i18n.js';
 
-const itemPicker = createItemPicker({
-    trigger: document.getElementById('item-search'),
-    onChange: () => {
-        render();
-        setUrlParams({ item: itemPicker.getValue() });
-    },
-});
 const sourcesPrompt = document.getElementById('sources-prompt');
 const sourcesEmpty = document.getElementById('sources-empty');
 const sourcesMeta = document.getElementById('sources-meta');
 const sourcesTable = document.getElementById('sources-table');
 
 let data = null;
-let settings = null;
+let itemPicker = null;
 let valuation = null;
-let panel = null;
+let recompute = null;
 let baseItems = {};
 // Top item of a crafting chain (Tempered Steel) -> its base (Cloth), whose units are counted.
 let chainBaseOf = new Map();
 
-const gold = banknotesHtml;
 const iconHtml = itemIconSlot;
-const amount = (value) => (Number.isInteger(value) ? formatThousands(value) : formatSignificant(value));
 
 /**
  * Every purchase on sale this week that gives the target item, at any depth: packages (packs of
@@ -62,6 +51,7 @@ function buildSources(targetId) {
     const perTarget = countId === targetId ? 1 : counter.ofItem(targetId).units;
     const unitsOf = (r) => ({ units: r.units / perTarget, random: r.random });
     const unitWorth = valuation.worth(targetId);
+    const settings = getSettings();
     const activeEventIds = new Set(settings.activeEvents);
     const plannedPackages = new Set(valuation.plan.purchases.map((p) => p.id));
     const plannedOffers = new Set(valuation.plan.exchanges.map((e) => `${e.shopId}:${e.offerKey}`));
@@ -100,7 +90,7 @@ function buildSources(targetId) {
                 via: viaOf(pkg.contains, pkg.choice),
                 units,
                 random,
-                priceHtml: gold(formatThousands(pkg.price)),
+                priceHtml: banknotesAmount(pkg.price),
                 price: pkg.price,
                 bought: plannedPackages.has(id),
             });
@@ -163,7 +153,7 @@ function shareHtml(share) {
     if (share === null) {
         return t('common.dash');
     }
-    return share > 0 && share < 0.01 ? '&lt;1&nbsp;%' : `${formatThousands(share * 100, 0)}&nbsp;%`;
+    return share > 0 && share < 0.01 ? '&lt;1&nbsp;%' : formatPercent(share, 0);
 }
 
 function render() {
@@ -182,7 +172,7 @@ function render() {
     const unitWorth = valuation.worth(targetId);
     sourcesMeta.textContent = `${t('sources.summary', {
         count: formatThousands(sources.length),
-        item: localizedName(data.items[targetId].name, locale),
+        item: itemDisplayText(data.items, targetId, locale),
         worth: unitWorth === null ? t('common.unknown') : formatSignificant(unitWorth),
     })}`;
     if (sources.length === 0) {
@@ -190,8 +180,8 @@ function render() {
         return;
     }
 
-    const maxRatio = Math.max(1, ...sources.map((s) => s.ratio).filter(Number.isFinite));
-    const maxItemRatio = Math.max(1, ...sources.map((s) => s.itemRatio).filter(Number.isFinite));
+    const maxRatio = ratioScale(sources.map((s) => s.ratio));
+    const maxItemRatio = ratioScale(sources.map((s) => s.itemRatio));
     // Bulk items cost tiny fractions of a Banknote each: price per 1,000 / 1,000,000 / ... units instead.
     const cheapest = Math.min(...sources.map((s) => s.perUnit).filter(Number.isFinite));
     let unitScale = 1;
@@ -202,7 +192,7 @@ function render() {
     const num = gridNum;
     // Gives, Share and Item ratio are hidden on phones.
     const WIDE = { wide: true };
-    const header = (key, isNum = false, wide = false) => gridHeader(t(`sources.table.${key}`), { num: isNum, wide });
+    const header = (key, isNum = false, wide = false) => gridHeader(tHtml(key), { num: isNum, wide });
     const perUnitHeader = gridHeader(
         unitScale === 1
             ? t('sources.table.perUnit')
@@ -224,52 +214,47 @@ function render() {
                     `${s.iconId ? iconHtml(s.iconId) : ''}<span class="source-name"><span>${s.nameHtml}</span>${via}</span>`,
                     'item-cell',
                 ),
-                num(`${s.random ? '~' : ''}×${amount(s.units)}`, WIDE),
+                num(`${s.random ? '~' : ''}×${formatAmount(s.units)}`, WIDE),
                 num(s.priceHtml),
-                num(s.perUnit === null ? t('common.dash') : gold(formatSignificant(s.perUnit * unitScale))),
-                num(s.ratio === null ? t('common.dash') : ratioBarHtml(s.ratio, maxRatio, { digits: 3 })),
+                num(s.perUnit === null ? t('common.dash') : banknotesHtml(formatSignificant(s.perUnit * unitScale))),
+                num(ratioCellHtml(s.ratio, maxRatio)),
                 num(shareHtml(s.share), WIDE),
-                num(
-                    s.itemRatio === null ? t('common.dash') : ratioBarHtml(s.itemRatio, maxItemRatio, { digits: 3 }),
-                    WIDE,
-                ),
+                num(ratioCellHtml(s.itemRatio, maxItemRatio), WIDE),
             ],
             { buy: s.bought },
         );
     });
     const headerRow = gridRow([
-        header('rank', true),
-        header('source'),
-        header('gives', true, true),
-        header('price', true),
+        header('common.table.rank', true),
+        header('sources.table.source'),
+        header('sources.table.gives', true, true),
+        header('common.table.price', true),
         perUnitHeader,
-        header('ratio', true),
-        header('share', true, true),
-        header('itemRatio', true, true),
+        header('common.table.ratio', true),
+        header('sources.table.share', true, true),
+        header('sources.table.itemRatio', true, true),
     ]);
     sourcesTable.innerHTML = gridTable(headerRow, rows.join(''));
     hydrateItemIcons(sourcesTable);
     enableInfoTooltips(sourcesTable);
 }
 
-async function recompute() {
-    await withLoading(async () => {
-        valuation = await buildValuation(data, settings);
-        panel.showRate(valuation);
-        render();
-    });
-}
-
 async function init(loaded) {
     data = loaded;
-    settings = getSettings();
-    panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+    itemPicker = createItemPicker({
+        trigger: document.getElementById('item-search'),
+        onChange: () => {
+            render();
+            setUrlParams({ item: itemPicker.getValue() });
+        },
+    });
+    ({ recompute } = mountValuationPage(data, {
         fields: ['budget', 'events', 'passes'],
-    });
-    onSettingsChange((next) => {
-        settings = next;
-        recompute();
-    });
+        render: (next) => {
+            valuation = next;
+            render();
+        },
+    }));
     // Only base items (see sourcesListing): containers stand for their contents, crafting chains appear as their
     // top item, value levels each.
     const listing = sourcesListing(data.items);

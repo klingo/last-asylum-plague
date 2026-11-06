@@ -9,7 +9,7 @@
 import '../style.css';
 import { followCalendar } from './calendar-sync.js';
 import { renderNav } from './nav.js';
-import { applyStaticTranslations, t } from './i18n.js';
+import { applyStaticTranslations, tHtml } from './i18n.js';
 import { loadPackData } from './data.js';
 import { escapeHtml } from './html.js';
 
@@ -21,7 +21,7 @@ function showLoadError(error) {
         .querySelector('main')
         ?.insertAdjacentHTML(
             'afterbegin',
-            `<div class="card"><p class="text-bad">${t('common.loadError', { message: escapeHtml(error.message) })}</p></div>`,
+            `<div class="card"><p class="text-bad">${tHtml('common.loadError', { message: escapeHtml(error.message) })}</p></div>`,
         );
 }
 

@@ -4,15 +4,15 @@
  * again at that total spend) plus the tier's reward, as a step ratio: spend more while it is 1.0 or more.
  */
 import { startPage } from '../ui/page.js';
-import { buildValuation, planOptions } from '../ui/valuation.js';
+import { planOptions } from '../ui/valuation.js';
 import { urlParam, setUrlParams } from '../ui/url.js';
 import { solveWeeklyPlan } from '../core/planner.js';
-import { mountValuationPanel } from '../ui/valuation-panel.js';
-import { getSettings, onSettingsChange } from '../ui/settings.js';
+import { mountValuationPage } from '../ui/valuation-page.js';
+import { getSettings } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { analyseTrackTiers } from '../core/step-analysis.js';
 import { gameDay, runContains, scheduleRuns } from '../core/schedule.js';
-import { banknotesHtml, hydrateItemIcons } from '../ui/html.js';
+import { banknotesAmount, hydrateItemIcons } from '../ui/html.js';
 import {
     gridCell,
     gridNum,
@@ -24,24 +24,12 @@ import {
     wireDetailsToggles,
     breakdownParts,
 } from '../ui/grid.js';
-import { localizedName, t } from '../ui/i18n.js';
+import { localizedName, t, tHtml } from '../ui/i18n.js';
 import { formatThousands } from '../ui/format.js';
-import { ratioBarHtml } from '../ui/ratio-bar.js';
+import { ratioCellHtml, ratioScale } from '../ui/ratio-bar.js';
 import { createItemPicker } from '../ui/item-picker.js';
-import { eventBannerHtml, scheduleTiming, startCountdowns } from '../ui/event-banner.js';
+import { mountBanner } from '../ui/event-banner.js';
 
-// The app's own picker (as on the other pages), not a native <select>.
-const trackPicker = createItemPicker({
-    trigger: document.getElementById('track-select'),
-    placeholderKey: 'spendRewards.trackPlaceholder',
-    searchPlaceholderKey: 'spendRewards.trackSearch',
-    icons: false,
-    onChange: () => {
-        expandedKeys.clear();
-        setUrlParams({ track: trackPicker.getValue() });
-        void withLoading(render);
-    },
-});
 const trackBanner = document.getElementById('track-banner');
 const tiersPrompt = document.getElementById('tiers-prompt');
 const tiersEmpty = document.getElementById('tiers-empty');
@@ -50,9 +38,9 @@ const tiersTable = document.getElementById('tiers-table');
 const tiersNote = document.getElementById('tiers-note');
 
 let data = null;
-let settings = null;
+let trackPicker = null;
 let valuation = null;
-let panel = null;
+let recompute = null;
 const expandedKeys = new Set();
 
 /** The Details block of a tier: its reward's contents in the table's columns. */
@@ -60,12 +48,12 @@ function detailsHtml(key, tier) {
     // The tier table's Step cost, Packs and Reward worth columns are hidden on phones (the three after Category). The
     // Category column then shows the item's worth, in the place of the Total spend column above it.
     const header = gridRow([
-        gridHeader(t('spendRewards.table.item')),
+        gridHeader(tHtml('common.table.item')),
         gridHeader(
-            `<span class="wide-only">${t('rankings.table.category')}</span><span class="phone-only">${t('rankings.table.worth')}</span>`,
+            `<span class="wide-only">${tHtml('common.table.category')}</span><span class="phone-only">${tHtml('common.table.worth')}</span>`,
         ),
-        gridHeader(t('rankings.table.worthEach'), { num: true, wide: true }),
-        gridHeader(t('rankings.table.worth'), { num: true, wide: true }),
+        gridHeader(tHtml('common.table.worthEach'), { num: true, wide: true }),
+        gridHeader(tHtml('common.table.worth'), { num: true, wide: true }),
         gridHeader('', { wide: true }),
         gridHeader(),
         gridHeader(),
@@ -77,7 +65,7 @@ function detailsHtml(key, tier) {
             gridNum(part.worthEach, { wide: true }),
             gridNum(part.worth, { wide: true }),
             gridCell('', { wide: true }),
-            gridCell(part.unknown ? `<span class="text-bad">${t('rankings.table.incomplete')}</span>` : ''),
+            gridCell(part.incomplete),
             gridCell(),
         ]),
     );
@@ -90,9 +78,9 @@ function stepAnalysis(track, trackId) {
         track,
         trackId,
         rate: valuation.rate,
-        budget: settings.budget,
+        budget: getSettings().budget,
         rewardOf: (tier) => valuation.bundle({ contains: tier.rewards }, 0),
-        solve: (overrides) => solveWeeklyPlan(valuation.highs, data, planOptions(data, settings, overrides)),
+        solve: (overrides) => solveWeeklyPlan(valuation.highs, data, planOptions(data, getSettings(), overrides)),
     });
 }
 
@@ -103,16 +91,7 @@ function render() {
     const track = data.spend_reward_tracks?.[trackId];
     tiersPrompt.hidden = Boolean(track);
     // The track's art and when it runs: its tiers only count while it does.
-    trackBanner.hidden = !track;
-    trackBanner.innerHTML = track
-        ? eventBannerHtml({
-              image: track.image,
-              name: localizedName(track.name),
-              timing: scheduleTiming(data, trackId),
-          })
-        : '';
-    // The countdown ticks; once it runs out (the track ended or started) the banner shows the new state.
-    startCountdowns(trackBanner, render);
+    mountBanner(trackBanner, data, trackId, track && { image: track.image, name: localizedName(track.name) }, render);
     if (!track) {
         tiersWrap.hidden = true;
         tiersNote.hidden = true;
@@ -120,7 +99,7 @@ function render() {
         return;
     }
     const usesPoints = Array.isArray(track.conversions) && track.conversions.length > 0;
-    const cacheKey = `${trackId}|${JSON.stringify(settings)}`;
+    const cacheKey = `${trackId}|${JSON.stringify(getSettings())}`;
     if (stepCache.key !== cacheKey) {
         stepCache = { key: cacheKey, tiers: stepAnalysis(track, trackId) };
     }
@@ -136,7 +115,7 @@ function render() {
     const reachedCount = tiers.filter((tier) => tier.atWeeklySpend).length;
     const reachedText =
         reachedCount > 0
-            ? `${t('spendRewards.reachedSummary', { budget: formatThousands(settings.budget, 0), tier: reachedCount })} `
+            ? `${t('spendRewards.reachedSummary', { budget: formatThousands(getSettings().budget, 0), tier: reachedCount })} `
             : '';
     let verdict;
     if (reachedCount === tiers.length) {
@@ -153,7 +132,7 @@ function render() {
     }
     tiersNote.textContent = `${verdict} ${t('spendRewards.note')}`;
 
-    const maxRatio = Math.max(1, ...tiers.map((tier) => tier.ratio).filter(Number.isFinite));
+    const maxRatio = ratioScale(tiers.map((tier) => tier.ratio));
     const rows = tiers
         .map((tier, index) => {
             const key = `${trackId}:${tier.threshold}`;
@@ -161,28 +140,24 @@ function render() {
             const row = gridRow([
                 gridCell(
                     usesPoints
-                        ? `${label} (${formatThousands(tier.threshold)}&nbsp;${t('spendRewards.pointsSuffix')})`
+                        ? `${label} (${formatThousands(tier.threshold)}&nbsp;${tHtml('spendRewards.pointsSuffix')})`
                         : label,
                 ),
-                gridNum(banknotesHtml(formatThousands(tier.cumulativeCost, 0))),
+                gridNum(banknotesAmount(tier.cumulativeCost)),
                 gridNum(
                     tier.atWeeklySpend
-                        ? `<span class="text-dim nowrap">${t('spendRewards.reachedAtSpend')}</span>`
-                        : banknotesHtml(formatThousands(tier.stepCost, 0)),
+                        ? `<span class="text-dim nowrap">${tHtml('spendRewards.reachedAtSpend')}</span>`
+                        : banknotesAmount(tier.stepCost),
                     { wide: true },
                 ),
-                gridNum(banknotesHtml(formatThousands(tier.packsWorth, 0)), { wide: true }),
+                gridNum(banknotesAmount(tier.packsWorth), { wide: true }),
                 gridNum(
                     tier.reached
-                        ? banknotesHtml(formatThousands(tier.reward.worth, 0))
-                        : `<span class="text-dim">${t('spendRewards.notReached')}</span>`,
+                        ? banknotesAmount(tier.reward.worth)
+                        : `<span class="text-dim">${tHtml('spendRewards.notReached')}</span>`,
                     { wide: true },
                 ),
-                gridNum(
-                    tier.ratio === null || tier.ratio === undefined
-                        ? t('common.dash')
-                        : ratioBarHtml(tier.ratio, maxRatio, { digits: 3 }),
-                ),
+                gridNum(ratioCellHtml(tier.ratio, maxRatio)),
                 gridCell(detailsToggleHtml(key, expandedKeys)),
             ]);
             return row + detailsHtml(key, tier);
@@ -190,12 +165,12 @@ function render() {
         .join('');
 
     const header = gridRow([
-        gridHeader(t('spendRewards.table.tier')),
-        gridHeader(t('spendRewards.table.threshold'), { num: true }),
-        gridHeader(t('spendRewards.table.stepCost'), { num: true, wide: true }),
-        gridHeader(t('spendRewards.table.packs'), { num: true, wide: true }),
-        gridHeader(t('spendRewards.table.worth'), { num: true, wide: true }),
-        gridHeader(t('spendRewards.table.ratio'), { num: true }),
+        gridHeader(tHtml('spendRewards.table.tier')),
+        gridHeader(tHtml('spendRewards.table.threshold'), { num: true }),
+        gridHeader(tHtml('spendRewards.table.stepCost'), { num: true, wide: true }),
+        gridHeader(tHtml('spendRewards.table.packs'), { num: true, wide: true }),
+        gridHeader(tHtml('spendRewards.table.worth'), { num: true, wide: true }),
+        gridHeader(tHtml('spendRewards.table.ratio'), { num: true }),
         gridHeader(),
     ]);
     tiersTable.innerHTML = gridTable(header, rows);
@@ -227,25 +202,28 @@ function populateTrackSelect() {
     );
 }
 
-async function recompute() {
-    await withLoading(async () => {
-        valuation = await buildValuation(data, settings);
-        panel.showRate(valuation);
-        render();
-    });
-}
-
 startPage('spend-rewards', {
     async init(loaded) {
         data = loaded;
-        settings = getSettings();
-        panel = mountValuationPanel(document.getElementById('valuation-panel'), data, {
+        // The app's own picker (as on the other pages), not a native <select>.
+        trackPicker = createItemPicker({
+            trigger: document.getElementById('track-select'),
+            placeholderKey: 'spendRewards.trackPlaceholder',
+            searchPlaceholderKey: 'spendRewards.trackSearch',
+            icons: false,
+            onChange: () => {
+                expandedKeys.clear();
+                setUrlParams({ track: trackPicker.getValue() });
+                void withLoading(render);
+            },
+        });
+        ({ recompute } = mountValuationPage(data, {
             fields: ['budget', 'events', 'passes'],
-        });
-        onSettingsChange((next) => {
-            settings = next;
-            recompute();
-        });
+            render: (next) => {
+                valuation = next;
+                render();
+            },
+        }));
         populateTrackSelect();
         // Pre-select the track running today (the first, should there be several); a track in the URL (a shared
         // link, a reload) wins over today's.

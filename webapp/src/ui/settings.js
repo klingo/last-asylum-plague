@@ -7,6 +7,7 @@
  * reads from them are in core/settings-model.js.
  */
 import { gameDay } from '../core/schedule.js';
+import { readJson, writeJson } from './storage.js';
 import { DEFAULT_SETTINGS, MINE_SAFETY_LEVELS, PRIORITY_LEVELS } from '../core/settings-model.js';
 
 const STORAGE_KEY = 'lasps_valuation';
@@ -25,12 +26,7 @@ function levelForWeight(weight) {
 }
 
 function loadSettings() {
-    let stored;
-    try {
-        stored = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}') || {};
-    } catch {
-        stored = {};
-    }
+    const stored = readJson(STORAGE_KEY);
     const settings = { ...DEFAULT_SETTINGS, priorities: { ...DEFAULT_SETTINGS.priorities } };
     if (Number.isFinite(stored.budget) && stored.budget >= 0) {
         settings.budget = stored.budget;
@@ -118,11 +114,7 @@ function loadSettings() {
 }
 
 function saveSettings(settings) {
-    try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-    } catch {
-        // localStorage may be unavailable (private browsing, etc.)
-    }
+    writeJson(STORAGE_KEY, settings);
 }
 
 let current = null;

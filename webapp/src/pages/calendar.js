@@ -6,16 +6,17 @@
  * 02:00 UTC.
  */
 import { startPage } from '../ui/page.js';
-import { formatDays, getLocale, localizedName, t } from '../ui/i18n.js';
+import { formatDays, getLocale, localizedName, t, tHtml } from '../ui/i18n.js';
 import { formatThousands } from '../ui/format.js';
 import { buildValuation } from '../ui/valuation.js';
 import { withLoading } from '../ui/loading.js';
 import { ratioColor } from '../ui/ratio-bar.js';
 import { escapeHtml } from '../ui/html.js';
+import { formatClock, formatGameDay, formatGameDayRange, pad2 } from '../ui/datetime.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { createItemImage } from '../ui/images.js';
 import { getSettings } from '../ui/settings.js';
-import { packageIcon } from '../ui/labels.js';
+import { SCHEDULE_KIND_LABELS, itemDisplayText, packageIcon } from '../ui/labels.js';
 import {
     eventImageUrl,
     runStatusText,
@@ -40,13 +41,6 @@ import {
 
 // The schedule timeline: the current week and the 3 weeks ahead (Monday to Sunday).
 const WEEKS = 4;
-const GROUPS = [
-    ['event', 'calendar.schedule.groupEvents'],
-    ['ingame', 'calendar.schedule.groupIngame'],
-    ['alliance', 'calendar.schedule.groupAlliance'],
-    ['pass', 'calendar.schedule.groupPasses'],
-    ['track', 'calendar.schedule.groupTracks'],
-];
 
 // Weekday offers (and the event rotations): today and the next 6 days (game days: they start at 02:00 UTC).
 const ROTATION_DAYS = 7;
@@ -60,16 +54,11 @@ let rotationDay = null;
 // The Event Schedule's window (first day, number of days), for moving its "Now" line every minute.
 let scheduleWindow = null;
 
-function formatDay(day, options) {
-    return dayDate(day).toLocaleDateString(getLocale(), { timeZone: 'UTC', ...options });
-}
-
 /** "Mon, 12 Oct – Tue, 13 Oct (2 days)" */
 function rangeText(start, end) {
     const options = { weekday: 'short', day: 'numeric', month: 'short' };
     const days = end - start + 1;
-    const range =
-        start === end ? formatDay(start, options) : `${formatDay(start, options)} – ${formatDay(end, options)}`;
+    const range = formatGameDayRange(start, end, options);
     return `${range} (${days === 1 ? t('calendar.schedule.oneDay') : t('calendar.schedule.days', { count: days })})`;
 }
 
@@ -180,7 +169,7 @@ function renderSchedule() {
     const body = section.querySelector('.schedule__body');
     section.hidden = false;
     if (rows.length === 0) {
-        body.innerHTML = `<p class="text-dim">${escapeHtml(t('calendar.schedule.empty'))}</p>`;
+        body.innerHTML = `<p class="text-dim">${tHtml('calendar.schedule.empty')}</p>`;
         return;
     }
 
@@ -188,31 +177,32 @@ function renderSchedule() {
         .map(
             (monday) => `
                 <div class="schedule__week${monday <= today && today < monday + 7 ? ' schedule__week--current' : ''}">
-                    <strong>${escapeHtml(t('calendar.schedule.week', { week: isoWeekNumber(monday) }))}</strong>
-                    <span>${escapeHtml(formatDay(monday, { day: 'numeric', month: 'short' }))}</span>
+                    <strong>${tHtml('calendar.schedule.week', { week: isoWeekNumber(monday) })}</strong>
+                    <span>${escapeHtml(formatGameDay(monday, { day: 'numeric', month: 'short' }))}</span>
                 </div>`,
         )
         .join('');
-    const groups = GROUPS.map(([kind, labelKey]) => {
-        const groupRows = rows
-            .filter((row) => row.kind === kind)
-            .sort((a, b) => a.first - b.first || a.name.localeCompare(b.name));
-        if (groupRows.length === 0) {
-            return '';
-        }
-        // The name (with its art) links to the plan, as the bars do; pointing at either highlights the row.
-        const rowsHtml = groupRows
-            .map((row) => {
-                const label = `${thumbHtml(row.image)}${escapeHtml(row.name)}`;
-                const bars = row.bars
-                    .map((bar) =>
-                        barHtml(bar, from, to, scheduleTooltip(bar, row, today), {
-                            href: row.href,
-                            image: row.image,
-                        }),
-                    )
-                    .join('');
-                return `
+    const groups = Object.entries(SCHEDULE_KIND_LABELS)
+        .map(([kind, labelKey]) => {
+            const groupRows = rows
+                .filter((row) => row.kind === kind)
+                .sort((a, b) => a.first - b.first || a.name.localeCompare(b.name));
+            if (groupRows.length === 0) {
+                return '';
+            }
+            // The name (with its art) links to the plan, as the bars do; pointing at either highlights the row.
+            const rowsHtml = groupRows
+                .map((row) => {
+                    const label = `${thumbHtml(row.image)}${escapeHtml(row.name)}`;
+                    const bars = row.bars
+                        .map((bar) =>
+                            barHtml(bar, from, to, scheduleTooltip(bar, row, today), {
+                                href: row.href,
+                                image: row.image,
+                            }),
+                        )
+                        .join('');
+                    return `
                     <div class="schedule__row schedule__row--${kind}">
                         ${
                             row.href
@@ -221,24 +211,25 @@ function renderSchedule() {
                         }
                         <div class="schedule__track">${bars}</div>
                     </div>`;
-            })
-            .join('');
-        return `
+                })
+                .join('');
+            return `
             <div class="schedule__row schedule__row--group schedule__row--${kind}">
-                <div class="schedule__label">${escapeHtml(t(labelKey))}</div>
+                <div class="schedule__label">${tHtml(labelKey)}</div>
                 <div class="schedule__track"></div>
             </div>
             ${rowsHtml}`;
-    }).join('');
+        })
+        .join('');
 
     const currentWeek = (weekStart(today) - from) / total;
     body.innerHTML = `
         <div class="schedule__legend">
-            <span><i class="schedule__swatch"></i>${escapeHtml(t('calendar.schedule.recorded'))}</span>
-            <span><i class="schedule__swatch schedule__swatch--forecast"></i>${escapeHtml(t('calendar.schedule.forecast'))}</span>
-            <span><i class="schedule__swatch schedule__swatch--forecast schedule__swatch--guess"></i>${escapeHtml(t('calendar.schedule.forecastGuess'))}</span>
-            <span><i class="schedule__swatch schedule__swatch--past"></i>${escapeHtml(t('calendar.schedule.past'))}</span>
-            <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(t('calendar.schedule.today'))}</span>
+            <span><i class="schedule__swatch"></i>${tHtml('calendar.schedule.recorded')}</span>
+            <span><i class="schedule__swatch schedule__swatch--forecast"></i>${tHtml('calendar.schedule.forecast')}</span>
+            <span><i class="schedule__swatch schedule__swatch--forecast schedule__swatch--guess"></i>${tHtml('calendar.schedule.forecastGuess')}</span>
+            <span><i class="schedule__swatch schedule__swatch--past"></i>${tHtml('calendar.schedule.past')}</span>
+            <span><i class="schedule__swatch schedule__swatch--today"></i>${tHtml('calendar.schedule.today')}</span>
         </div>
         <div class="schedule__scroll">
             <div class="schedule__chart" style="--columns: ${WEEKS}; --week-start: ${currentWeek}; --week-width: ${7 / total}; --today: ${(today - from + now.fraction) / total}">
@@ -266,8 +257,7 @@ function untilText(ms) {
 /** "Now · today's offers end in 5h 12m (a new game day starts at 04:00)": the game day `day` ends at the next reset. */
 function nowText(day) {
     const nextReset = dayDate(day + 1).getTime() + GAME_DAY_START_MS;
-    const time = new Date(nextReset).toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' });
-    return t('calendar.rotation.now', { left: untilText(nextReset - Date.now()), time });
+    return t('calendar.rotation.now', { left: untilText(nextReset - Date.now()), time: formatClock(nextReset) });
 }
 
 /**
@@ -294,11 +284,11 @@ function dayHeadersHtml(from) {
             const label =
                 index < 2
                     ? t(index === 0 ? 'calendar.rotation.today' : 'calendar.rotation.tomorrow')
-                    : formatDay(day, { weekday: 'long' });
+                    : formatGameDay(day, { weekday: 'long' });
             return `
                 <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
                     <strong>${escapeHtml(label)}</strong>
-                    <span>${escapeHtml(formatDay(day, { day: 'numeric', month: 'short' }))}</span>
+                    <span>${escapeHtml(formatGameDay(day, { day: 'numeric', month: 'short' }))}</span>
                 </div>`;
         })
         .join('');
@@ -335,8 +325,8 @@ function localDayHeadersHtml(boundaries) {
 /** "03" (or "08:30" where the time zone is off the full hour): a moment's local time, short. */
 function hourLabel(ms) {
     const date = new Date(ms);
-    const hours = String(date.getHours()).padStart(2, '0');
-    return date.getMinutes() === 0 ? hours : `${hours}:${String(date.getMinutes()).padStart(2, '0')}`;
+    const hours = pad2(date.getHours());
+    return date.getMinutes() === 0 ? hours : `${hours}:${pad2(date.getMinutes())}`;
 }
 
 /** One slot's hover card: the phase and its times in local time. */
@@ -421,23 +411,22 @@ function renderEventRotations() {
                 .slice(0, ROTATION_DAYS)
                 .map((ms, index) => `${(boundaries[index + 1] - ms) / HOUR_MS}fr`)
                 .join(' ');
-            const until = new Date(current.end).toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' });
             const nowLine = t('calendar.eventRotation.now', {
                 current: localizedName(current.phase.name),
-                time: until,
+                time: formatClock(current.end),
                 next: localizedName(next.phase.name),
             });
             // `data-refresh-at`: when the phase on now ends or the local day changes, the chart is drawn again.
             return `
                 <section class="card schedule schedule--event-rotation" data-from="${from}" data-to="${to}" data-refresh-at="${Math.min(current.end, boundaries[1])}">
                     <h2>${escapeHtml(localizedName(packData.events[rotation.event_id].name))}</h2>
-                    <p class="text-dim">${escapeHtml(t('calendar.eventRotation.lead'))}</p>
+                    <p class="text-dim">${tHtml('calendar.eventRotation.lead')}</p>
                     <div class="schedule__body">
                         <div class="schedule__legend">
                             <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(nowLine)}</span>
-                            <span><i class="schedule__swatch schedule__swatch--active"></i>${escapeHtml(t('calendar.eventRotation.active'))}</span>
-                            <span><i class="schedule__swatch schedule__swatch--upcoming"></i>${escapeHtml(t('calendar.eventRotation.upcoming'))}</span>
-                            <span><i class="schedule__swatch schedule__swatch--past"></i>${escapeHtml(t('calendar.schedule.past'))}</span>
+                            <span><i class="schedule__swatch schedule__swatch--active"></i>${tHtml('calendar.eventRotation.active')}</span>
+                            <span><i class="schedule__swatch schedule__swatch--upcoming"></i>${tHtml('calendar.eventRotation.upcoming')}</span>
+                            <span><i class="schedule__swatch schedule__swatch--past"></i>${tHtml('calendar.schedule.past')}</span>
                         </div>
                         <div class="schedule__scroll">
                             <div class="schedule__chart schedule__chart--days" style="--columns: ${ROTATION_DAYS}; --week-start: 0; --week-width: ${(boundaries[1] - boundaries[0]) / (to - from)}; --today: ${(nowMs - from) / (to - from)}">
@@ -503,7 +492,7 @@ function renderRotation() {
             const tooltip = [
                 name,
                 t('calendar.rotation.every', { days: formatDays(pkg.available_days) }),
-                ratio === null ? '' : `${t('rankings.table.ratio')}: ${formatThousands(ratio, 2)}`,
+                ratio === null ? '' : `${t('common.table.ratio')}: ${formatThousands(ratio, 2)}`,
             ]
                 .filter(Boolean)
                 .join('\n');
@@ -542,7 +531,7 @@ function renderRotation() {
     section.querySelector('.schedule__body').innerHTML = `
         <div class="schedule__legend">
             <span><i class="schedule__swatch schedule__swatch--today"></i><span class="schedule__now-text">${escapeHtml(nowText(from))}</span></span>
-            <span>${escapeHtml(t('calendar.rotation.colour'))}</span>
+            <span>${tHtml('calendar.rotation.colour')}</span>
         </div>
         <div class="schedule__scroll">
             <div class="schedule__chart schedule__chart--days" style="--columns: ${ROTATION_DAYS}; --week-start: 0; --week-width: ${1 / ROTATION_DAYS}; --today: ${now.fraction / ROTATION_DAYS}">
@@ -561,9 +550,7 @@ function renderRotation() {
     for (const label of section.querySelectorAll('.schedule__label[data-icon]')) {
         const itemId = label.dataset.icon;
         if (itemId) {
-            label.prepend(
-                createItemImage(itemId, localizedName(packData.items?.[itemId]?.name), 'item-icon schedule__icon'),
-            );
+            label.prepend(createItemImage(itemId, itemDisplayText(packData.items, itemId), 'item-icon schedule__icon'));
         }
     }
     enableInfoTooltips(section);
