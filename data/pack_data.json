@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-05"
+        "last_updated": "2026-11-06"
     },
     "items": {
         "alliance_coins": {
@@ -176,6 +176,14 @@
                 "leather": 4
             },
             "reversible": true
+        },
+        "builders_hammer": {
+            "name": {
+                "en": "Builder's Hammer",
+                "de": "Bauarbeiterhammer"
+            },
+            "category": "skin_decor",
+            "rarity": "ur"
         },
         "chiefs_count_chest": {
             "name": {
@@ -3160,6 +3168,33 @@
                 "lv6_alliance_chest": 1
             }
         },
+        "builders_hammer_pack": {
+            "name": {
+                "en": "Builder's hammer Pack",
+                "de": "Bauarbeiterhammer Paket"
+            },
+            "category": "weekly_rotation",
+            "limit_type": "daily",
+            "available_days": ["friday"],
+            "tiers": {
+                "1": {
+                    "price": 499,
+                    "deal_percentage": 5790,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 500,
+                        "builders_hammer": 1,
+                        "speedup": 500,
+                        "timber_level_supply_ssr": 2,
+                        "grain_level_supply_ssr": 2,
+                        "herb_level_supply_ssr": 2,
+                        "antitoxin_level_supply_sr": 2,
+                        "vip_points": 500,
+                        "lv2_alliance_chest": 1
+                    }
+                }
+            }
+        },
         "building_speedup_pack": {
             "name": {
                 "en": "Building Speedup Pack",
@@ -5296,7 +5331,7 @@
         "research_tome_pack": {
             "name": {
                 "en": "Research Tome Pack",
-                "de": ""
+                "de": "Forschungsband Paket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -5408,7 +5443,7 @@
         "speedup_special_pack": {
             "name": {
                 "en": "Speedup Special Pack",
-                "de": ""
+                "de": "Beschleunigung-Spezialpaket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -5744,7 +5779,7 @@
         "universal_speedup_pack": {
             "name": {
                 "en": "Universal Speedup Pack",
-                "de": ""
+                "de": "Universelles Beschleunigungspaket"
             },
             "category": "daily_must_buy",
             "limit_type": "daily",
