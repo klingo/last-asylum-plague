@@ -56,6 +56,7 @@ A static webapp that values items, packages and exchange-shop offers from `data/
 npm run verify-data                                          # validate data/pack_data.json (schema, references, item worth, pack worth vs deal %, code labels)
 npm run lint                                                  # eslint .
 npm test                                                      # node:test: unit tests + golden files (test/)
+npm run test:coverage                                         # the same with Node's coverage of core/, ui/, scripts/; fails below 90 % lines / 85 % branches / 90 % functions
 UPDATE_GOLDEN=1 npm test                                      # rewrite test/golden/*.json (only for an intended change)
 npm run webapp:dev                                            # vite dev server (imports data/pack_data.json directly)
 npm run webapp:build                                          # vite build -> webapp/dist
@@ -71,6 +72,9 @@ the weekly plan, Compare, Item Sources and the gear path order on a frozen copy 
 (`test/fixtures/pack_data.json`). A data change doesn't touch them; a model change that moves a number fails them.
 If that is intended, explain the diff, then run `UPDATE_GOLDEN=1 npm test`. HiGHS breaks ties by row order, so
 reordering the model's rows can swap one equally good shopping list for another (same points, other packs).
+CI runs `test:coverage` (the table goes to the job summary, `coverage/lcov.info` is an artifact). Node lists only the
+files a test imports, so the DOM-bound ui modules and `pages/` don't show; raise the thresholds in `package.json` when
+the coverage grows.
 
 ## Architecture
 
