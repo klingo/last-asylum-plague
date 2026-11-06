@@ -10,8 +10,9 @@ import { formatClock, formatGameDay, formatGameDayRange, formatMoment, pad2 } fr
 import { eventPlanHref, pageHref } from './url.js';
 import { packageFamilyId, seasonalPassFamilies } from '../core/pack-data.js';
 import { gameDay, nextRun, runMoments, runStatus, scheduleRuns } from '../core/schedule.js';
+import { BASE_URL } from './base-url.js';
 
-const EVENT_IMAGES_URL = `${import.meta.env.BASE_URL}assets/events/`;
+const EVENT_IMAGES_URL = `${BASE_URL}assets/events/`;
 // How far ahead a forecast is looked for ("next expected around …").
 const FORECAST_DAYS = 180;
 

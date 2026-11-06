@@ -140,4 +140,4 @@ function onSettingsChange(listener) {
     listeners.add(listener);
 }
 
-export { STORAGE_KEY as SETTINGS_KEY, getSettings, updateSettings, onSettingsChange };
+export { STORAGE_KEY as SETTINGS_KEY, loadSettings, getSettings, updateSettings, onSettingsChange };

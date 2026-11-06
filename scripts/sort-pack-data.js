@@ -1,7 +1,5 @@
 import fs from 'node:fs';
-import path from 'node:path';
-
-const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
+import { PACK_DATA_PATH, readJson, writeJson, isMain } from './lib/data-files.js';
 
 function isObject(value) {
     return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -15,9 +13,11 @@ function sortByNumericKey(object) {
     return Object.fromEntries(Object.entries(object).sort(([a], [b]) => Number(a) - Number(b)));
 }
 
-if (fs.existsSync(DATA_PATH)) {
-    const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
-
+/**
+ * Sorts the sections of the pack data in place (and returns it): ids alphabetical, numeric keys by number, each
+ * id's schedule runs oldest first. Orders that are the data's meaning (event rotation phases, guide paths) stay.
+ */
+function sortPackData(data) {
     // (An event rotation's phases keep their order: the order is the cycle.)
     for (const sectionName of [
         'items',
@@ -83,6 +83,17 @@ if (fs.existsSync(DATA_PATH)) {
             }
         }
     }
+    return data;
+}
 
-    fs.writeFileSync(DATA_PATH, `${JSON.stringify(data, null, 4)}\n`, 'utf8');
+function main() {
+    if (fs.existsSync(PACK_DATA_PATH)) {
+        writeJson(PACK_DATA_PATH, sortPackData(readJson(PACK_DATA_PATH)));
+    }
+}
+
+export { sortPackData };
+
+if (isMain(import.meta)) {
+    main();
 }

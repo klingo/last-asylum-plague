@@ -6,15 +6,12 @@ import { test } from 'node:test';
 import { fitItemPoints, fitSensitivity } from '../webapp/src/core/point-fit.js';
 import { solveWeeklyPlan } from '../webapp/src/core/planner.js';
 import { solveNeeds } from '../webapp/src/core/acquire.js';
-import { loadHighs } from '../webapp/src/core/lp.js';
 import { DEFAULT_SETTINGS, zeroFitItems } from '../webapp/src/core/settings-model.js';
-import { loadFixture, expectGolden, defaultPlanOptions } from './helpers.js';
+import { loadSetup, expectGolden, defaultPlanOptions } from './helpers.js';
 
-const data = loadFixture();
-const fit = fitItemPoints(data);
+const { data, highs, fit } = await loadSetup();
 // The fit as the pages use it by default: VIP points worth 0 ("Count VIP points in the worth" off).
 const defaultFit = fitItemPoints(data, { zeroItems: new Set(zeroFitItems(DEFAULT_SETTINGS)) });
-const highs = await loadHighs();
 
 /**
  * Planner options of the default settings, but on the fit with VIP points counted (the model as the game prices

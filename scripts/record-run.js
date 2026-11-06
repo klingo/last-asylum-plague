@@ -1,10 +1,8 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import { execSync } from 'node:child_process';
-import { dayDate, forecastRuns, gameDay, scheduleRuns } from '../webapp/src/core/schedule.js';
+import { dayDate, dayNumber, forecastRuns, gameDay, scheduleRuns } from '../webapp/src/core/schedule.js';
+import { ROOT, PACK_DATA_PATH, readJson, writeJson, splitArgs, isMain } from './lib/data-files.js';
+import { sortPackData } from './sort-pack-data.js';
 
-const ROOT = path.join(import.meta.dirname, '..');
-const DATA_PATH = path.join(ROOT, 'data', 'pack_data.json');
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const DAYS_PATTERN = /^\d+$/;
 
@@ -24,27 +22,18 @@ const DAYS_PATTERN = /^\d+$/;
  */
 function main() {
     const args = process.argv.slice(2);
-    const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
-    const kinds = {
-        events: new Set(Object.keys(data.events || {})),
-        seasonal_passes: new Set(
-            Object.entries(data.packages || {})
-                .filter(([, pkg]) => pkg.seasonal)
-                .map(([id]) => id),
-        ),
-        spend_reward_tracks: new Set(Object.keys(data.spend_reward_tracks || {})),
-    };
-    const dates = args.filter((arg) => DATE_PATTERN.test(arg));
-    const counts = args.filter((arg) => DAYS_PATTERN.test(arg));
-    const ids = args.filter((arg) => !arg.startsWith('--') && !DATE_PATTERN.test(arg) && !DAYS_PATTERN.test(arg));
+    const data = readJson(PACK_DATA_PATH);
+    const kinds = recordableIds(data);
+    const { flags } = splitArgs(args);
+    const { ids, dates, counts } = parseRecordArgs(args);
 
-    if (args.includes('--show')) {
+    if (flags.has('--show')) {
         printSchedule(data.schedule || {}, ids);
         printMissed(data, ids);
         return;
     }
     // Nothing to record (or --help): show how to use it.
-    if (ids.length === 0 || args.includes('--help')) {
+    if (ids.length === 0 || flags.has('--help')) {
         printUsage(kinds, data.events || {});
         return;
     }
@@ -67,22 +56,64 @@ function main() {
         fail('Give the number of days it runs (1 or more), e.g. npm run record-run -- strange_bazaar 2026-10-12 7');
     }
     const start = dates[0] || gameToday();
-    if (formatDate(toDate(start)) !== start) {
+    if (!isValidDate(start)) {
         fail(`Invalid date "${start}". Use YYYY-MM-DD.`);
     }
     const end = addDays(start, Number(counts[0]) - 1);
 
-    data.schedule = data.schedule || {};
+    const result = recordRun(data, ids, start, end);
+    if (result.error) {
+        fail(result.error);
+    }
+    writeJson(PACK_DATA_PATH, sortPackData(data));
+    // Same tidy-up as the commit hook: prettier formatting.
+    execSync('npx prettier --write data/pack_data.json', { cwd: ROOT, stdio: 'ignore' });
+
+    console.log(`Recorded (${daysText(start, end)}):`);
+    console.log(result.changes.join('\n'));
+}
+
+/** The ids that can be recorded, by kind: `{ events, seasonal_passes, spend_reward_tracks }` (Sets). */
+function recordableIds(data) {
+    return {
+        events: new Set(Object.keys(data.events || {})),
+        seasonal_passes: new Set(
+            Object.entries(data.packages || {})
+                .filter(([, pkg]) => pkg.seasonal)
+                .map(([id]) => id),
+        ),
+        spend_reward_tracks: new Set(Object.keys(data.spend_reward_tracks || {})),
+    };
+}
+
+/** The command line sorted into `{ ids, dates, counts }`: dates are YYYY-MM-DD, counts whole numbers, the rest ids. */
+function parseRecordArgs(args) {
+    const { positional } = splitArgs(args);
+    return {
+        dates: positional.filter((arg) => DATE_PATTERN.test(arg)),
+        counts: positional.filter((arg) => DAYS_PATTERN.test(arg)),
+        ids: positional.filter((arg) => !DATE_PATTERN.test(arg) && !DAYS_PATTERN.test(arg)),
+    };
+}
+
+/**
+ * Records the run `start`..`end` (YYYY-MM-DD, inclusive) for every id in `data.schedule`. A run with the same start
+ * replaces the recorded one (its length is corrected); another overlap is refused, and nothing is recorded then.
+ * Returns `{ changes }` (lines to print) or `{ error }`.
+ */
+function recordRun(data, ids, start, end) {
+    const staged = {};
     const changes = [];
     for (const id of ids) {
-        const runs = data.schedule[id] || [];
+        const runs = (data.schedule?.[id] || []).map((run) => ({ ...run }));
         const same = runs.find((run) => run.start === start);
         const overlap = runs.find((run) => run !== same && run.start <= end && start <= run.end);
         if (overlap) {
-            fail(
-                `${id}: ${start}..${end} overlaps its recorded run ${overlap.start}..${overlap.end}. Nothing was written. ` +
+            return {
+                error:
+                    `${id}: ${start}..${end} overlaps its recorded run ${overlap.start}..${overlap.end}. Nothing was written. ` +
                     'Fix it in data/pack_data.json ("schedule") if that run is wrong.',
-            );
+            };
         }
         if (same) {
             changes.push(`  ${id}: ${same.start}..${same.end} -> ${start}..${end} (updated)`);
@@ -91,43 +122,36 @@ function main() {
             changes.push(`  ${id}: ${start}..${end}`);
             runs.push({ start, end });
         }
-        data.schedule[id] = runs;
+        staged[id] = runs;
     }
-    fs.writeFileSync(DATA_PATH, `${JSON.stringify(data, null, 4)}\n`, 'utf8');
-
-    // Same tidy-up as the commit hook: sorted sections, prettier formatting.
-    execSync('node scripts/sort-pack-data.js', { cwd: ROOT, stdio: 'inherit' });
-    execSync('npx prettier --write data/pack_data.json', { cwd: ROOT, stdio: 'ignore' });
-
-    console.log(`Recorded (${daysText(start, end)}):`);
-    console.log(changes.join('\n'));
+    data.schedule = { ...data.schedule, ...staged };
+    return { changes };
 }
 
 /** Today's game day (it starts at 02:00 UTC, so before 04:00 CEST it's still yesterday) as YYYY-MM-DD. */
 function gameToday() {
-    return dayDate(gameDay(new Date()).day).toISOString().slice(0, 10);
+    return formatDay(gameDay(new Date()).day);
 }
 
-function toDate(text) {
-    const [year, month, day] = text.split('-').map(Number);
-    return new Date(year, month - 1, day);
+/** A day number as YYYY-MM-DD. */
+function formatDay(day) {
+    return dayDate(day).toISOString().slice(0, 10);
 }
 
-function formatDate(date) {
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+/** Whether `text` is a real calendar date written YYYY-MM-DD (not 2026-02-30). */
+function isValidDate(text) {
+    return DATE_PATTERN.test(text) && formatDay(dayNumber(text)) === text;
 }
 
+/** The date `days` after `text` (YYYY-MM-DD). */
 function addDays(text, days) {
-    const date = toDate(text);
-    date.setDate(date.getDate() + days);
-    return formatDate(date);
+    return formatDay(dayNumber(text) + days);
 }
 
 /** "Mon 2026-10-12 .. Sun 2026-10-18, 7 days" */
 function daysText(start, end) {
-    const weekday = (text) => toDate(text).toLocaleDateString('en', { weekday: 'short' });
-    const days = Math.round((toDate(end) - toDate(start)) / 86400000) + 1;
+    const weekday = (text) => dayDate(dayNumber(text)).toLocaleDateString('en', { weekday: 'short', timeZone: 'UTC' });
+    const days = dayNumber(end) - dayNumber(start) + 1;
     return `${weekday(start)} ${start} .. ${weekday(end)} ${end}, ${days} day${days === 1 ? '' : 's'}`;
 }
 
@@ -199,14 +223,13 @@ function printMissed(data, ids) {
     );
 }
 
-/** A day number as YYYY-MM-DD. */
-function formatDay(day) {
-    return dayDate(day).toISOString().slice(0, 10);
-}
-
 function fail(message) {
     console.error(message);
     process.exit(1);
 }
 
-main();
+export { addDays, daysText, isValidDate, parseRecordArgs, recordRun, recordableIds };
+
+if (isMain(import.meta)) {
+    main();
+}

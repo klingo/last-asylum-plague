@@ -4,10 +4,11 @@
  * placeholder icon, so images can be dropped in later without touching any rendering code.
  */
 import { t, localizedName } from './i18n.js';
+import { BASE_URL } from './base-url.js';
 
-const PLACEHOLDER_ICON = `${import.meta.env.BASE_URL}icons/placeholder-item.svg`;
-const BANKNOTE_ICON_URL = `${import.meta.env.BASE_URL}assets/currencies/banknote.png`;
-const ITEM_IMAGES_URL = `${import.meta.env.BASE_URL}assets/items/`;
+const PLACEHOLDER_ICON = `${BASE_URL}icons/placeholder-item.svg`;
+const BANKNOTE_ICON_URL = `${BASE_URL}assets/currencies/banknote.png`;
+const ITEM_IMAGES_URL = `${BASE_URL}assets/items/`;
 
 // itemId -> { urls, name, rarity }, built from the data when it's loaded. `urls`: where its image may be, in
 // the order tried (category folder, then unsorted). Image URLs are only ever taken from here, never built from

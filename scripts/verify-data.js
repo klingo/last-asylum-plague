@@ -7,9 +7,9 @@ import { resolveItemValues, bundleValue } from '../webapp/src/core/item-values.j
 import { currencyFlows } from '../webapp/src/core/planner.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
 import { normalizePackData } from '../webapp/src/core/pack-data.js';
-import { missingCodeLabels } from './code-labels.js';
+import { missingCodeLabels } from './lib/code-labels.js';
+import { I18N_DIR, LORD_DATA_PATH, PACK_DATA_PATH as DATA_PATH } from './lib/data-files.js';
 
-const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
 // A pack whose worth is this many times above (or below) its deal % is reported (Pack Worth vs Deal %).
 const PACK_WORTH_OFF = 5;
 // Hours in a week: an event rotation's phase length must divide it.
@@ -17,8 +17,7 @@ const WEEK_HOURS = 168;
 const SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.schema.json');
 const ITEM_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'items');
 const EVENT_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'events');
-const EN_TEXTS_PATH = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n', 'en.json');
-const LORD_DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.json');
+const EN_TEXTS_PATH = path.join(I18N_DIR, 'en.json');
 const LORD_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.schema.json');
 const LORD_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'lord');
 

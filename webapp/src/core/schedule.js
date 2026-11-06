@@ -413,6 +413,7 @@ export {
     HOUR_MS,
     WEEKDAYS,
     dayDate,
+    dayNumber,
     gameDay,
     GAME_DAY_START_MS,
     weekdayIndex,

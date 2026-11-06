@@ -6,6 +6,7 @@
  */
 import { t, getLocale, setLocale, LOCALES, tHtml } from './i18n.js';
 import { escapeAttr } from './html.js';
+import { BASE_URL } from './base-url.js';
 
 // Date the pack data was last updated (`metadata.last_updated`), shown in the footer.
 let dataDate = null;
@@ -137,7 +138,7 @@ function renderNav(activePage) {
     if (!header) {
         return;
     }
-    const base = import.meta.env.BASE_URL;
+    const base = BASE_URL;
     const locale = getLocale();
     const langOptions = Object.entries(LOCALES)
         .map(([code, { label }]) => `<option value="${code}" ${code === locale ? 'selected' : ''}>${label}</option>`)

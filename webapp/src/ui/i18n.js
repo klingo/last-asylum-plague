@@ -14,8 +14,8 @@
  * Labels of the data's codes (categories, purchase types, weekdays, hero classes, ...) are `<group>.<code>`
  * keys, looked up with `enumLabel()`.
  */
-import en from '../i18n/en.json';
-import de from '../i18n/de.json';
+import en from '../i18n/en.json' with { type: 'json' };
+import de from '../i18n/de.json' with { type: 'json' };
 import { escapeHtml } from './html.js';
 import { readText, writeText } from './storage.js';
 

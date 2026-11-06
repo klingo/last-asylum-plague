@@ -26,8 +26,9 @@ import {
     stepSlots,
 } from '../core/gear-path.js';
 import { createProgress } from '../core/gear-progress.js';
+import { BASE_URL } from '../ui/base-url.js';
 
-const ASSETS = `${import.meta.env.BASE_URL}assets/`;
+const ASSETS = `${BASE_URL}assets/`;
 const STORAGE_KEY = 'lasps_gear_progress';
 const PATHS = ['craft', 'level', 'stars'];
 // In this order on the faction switch.

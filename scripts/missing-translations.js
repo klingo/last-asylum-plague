@@ -1,16 +1,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { missingCodeLabels } from './code-labels.js';
+import { missingCodeLabels } from './lib/code-labels.js';
+import { I18N_DIR, LORD_DATA_PATH, PACK_DATA_PATH, isMain, readJson, splitArgs } from './lib/data-files.js';
 
-const I18N_DIR = path.join(import.meta.dirname, '..', 'webapp', 'src', 'i18n');
-const DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.json');
-const LORD_DATA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.json');
 const SOURCE_LANG = 'en';
 
 /**
  * Lists missing translations: UI texts (webapp/src/i18n/<lang>.json, compared with en.json), the
  * localized names in data/pack_data.json and data/lord_specialty.json (`{ "en": "...", "<lang>": "..." }`),
- * and the labels of the data's codes (categories, hero classes, ...: scripts/code-labels.js), also those
+ * and the labels of the data's codes (categories, hero classes, ...: scripts/lib/code-labels.js), also those
  * English lacks. A text is missing when English has it and the language's value is absent or empty.
  *
  * Usage: npm run i18n:missing -- [lang] [--keys-only] [--data-only]
@@ -20,10 +18,10 @@ const SOURCE_LANG = 'en';
  *   --data-only  only the data names (pack_data.json, lord_specialty.json), not the UI texts
  */
 function main() {
-    const args = process.argv.slice(2);
-    const keysOnly = args.includes('--keys-only');
-    const dataOnly = args.includes('--data-only');
-    const requested = args.find((arg) => !arg.startsWith('--'));
+    const { flags, positional } = splitArgs(process.argv.slice(2));
+    const keysOnly = flags.has('--keys-only');
+    const dataOnly = flags.has('--data-only');
+    const [requested] = positional;
     const available = fs
         .readdirSync(I18N_DIR)
         .filter((file) => file.endsWith('.json'))
@@ -36,7 +34,7 @@ function main() {
     const languages = requested ? [requested] : available;
 
     const source = readJson(path.join(I18N_DIR, `${SOURCE_LANG}.json`));
-    const data = readJson(DATA_PATH);
+    const data = readJson(PACK_DATA_PATH);
     const lordData = readJson(LORD_DATA_PATH);
     if (!dataOnly) {
         // Labels English lacks too: the page would show the raw code in every language.
@@ -67,10 +65,6 @@ function main() {
         printSection('Data names (data/pack_data.json)', names, keysOnly);
         printSection('Lord talents (data/lord_specialty.json)', lordNames, keysOnly);
     }
-}
-
-function readJson(file) {
-    return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
 /** Every string leaf of the English UI texts whose translation is absent or empty. */
@@ -117,4 +111,8 @@ function printSection(title, missing, keysOnly) {
     }
 }
 
-main();
+export { missingDataNames, missingUiTexts };
+
+if (isMain(import.meta)) {
+    main();
+}

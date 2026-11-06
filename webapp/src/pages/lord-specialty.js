@@ -34,8 +34,9 @@ import {
     talentRows,
     talentValue,
 } from '../core/lord-specialty.js';
+import { BASE_URL } from '../ui/base-url.js';
 
-const ICONS = `${import.meta.env.BASE_URL}assets/lord/`;
+const ICONS = `${BASE_URL}assets/lord/`;
 // How long the bar shows a note ("Link copied", why a click changed nothing).
 const NOTE_MS = 3000;
 // A touch held this long removes a point (phones have no right click).

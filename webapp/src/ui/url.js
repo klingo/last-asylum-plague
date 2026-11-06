@@ -2,6 +2,7 @@
  * A page's selection in its URL (`?item=…`, `?event=…`, …), so a reload or a shared link opens the same view.
  * The language (`?lang=`) is kept as it is.
  */
+import { BASE_URL } from './base-url.js';
 
 /** The value of query parameter `name`, or null. */
 function urlParam(name) {
@@ -27,7 +28,7 @@ function setUrlParams(params) {
 /** Link to the page `page` (e.g. 'events') with the selection `params` in its query. */
 function pageHref(page, params) {
     const query = Object.entries(params).map(([name, value]) => `${name}=${encodeURIComponent(value)}`);
-    return `${import.meta.env.BASE_URL}${page}.html?${query.join('&')}`;
+    return `${BASE_URL}${page}.html?${query.join('&')}`;
 }
 
 /** Link to Item Sources for `itemId`. */

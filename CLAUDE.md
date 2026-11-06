@@ -64,7 +64,9 @@ npm run i18n:missing -- [lang] [--keys-only] [--data-only]     # missing transla
 npm run record-run -- <ids...> [START] <DAYS> | --show [ids]  # record when events / passes / tracks run
 ```
 
-Tests (`test/`, run in CI before deploying) are unit tests on small inline data plus golden tests that pin the fit,
+Tests (`test/`, run in CI before deploying) mirror the source: `test/core/<module>.test.js`, `test/ui/` (the ui modules
+run in Node on the stand-in browser of `test/ui/env.js`), `test/scripts/`; `test/helpers.js` has the fixture, HiGHS and
+fit setup, the schedule's game days and `near`. They are unit tests on small inline data plus golden tests that pin the fit,
 the weekly plan, Compare, Item Sources and the gear path order on a frozen copy of the data
 (`test/fixtures/pack_data.json`). A data change doesn't touch them; a model change that moves a number fails them.
 If that is intended, explain the diff, then run `UPDATE_GOLDEN=1 npm test`. HiGHS breaks ties by row order, so

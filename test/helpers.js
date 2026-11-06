@@ -1,12 +1,15 @@
 /**
  * Shared test helpers: the frozen pack data fixture (so the goldens don't move when data/pack_data.json is
- * edited) and golden files (`UPDATE_GOLDEN=1 npm test` rewrites them; a normal run compares).
+ * edited) with the solver and the fit on it, the planner options the pages use, game days for the schedule tests,
+ * `near`, and golden files (`UPDATE_GOLDEN=1 npm test` rewrites them; a normal run compares).
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { normalizePackData } from '../webapp/src/core/pack-data.js';
 import { DEFAULT_SETTINGS, planOptions } from '../webapp/src/core/settings-model.js';
+import { fitItemPoints } from '../webapp/src/core/point-fit.js';
+import { loadHighs } from '../webapp/src/core/lp.js';
 
 const FIXTURE_PATH = path.join(import.meta.dirname, 'fixtures', 'pack_data.json');
 const GOLDEN_DIR = path.join(import.meta.dirname, 'golden');
@@ -17,6 +20,27 @@ const TOLERANCE = 1e-6;
 function loadFixture() {
     const raw = JSON.parse(fs.readFileSync(FIXTURE_PATH, 'utf8'));
     return normalizePackData(raw);
+}
+
+/** The fixture with HiGHS and the deal % fit on it: `{ data, highs, fit }`. */
+async function loadSetup() {
+    const data = loadFixture();
+    return { data, highs: await loadHighs(), fit: fitItemPoints(data) };
+}
+
+// A Monday as a game day number (days since 1970), the anchor of the schedule tests; `day(n)` is n days later and
+// `iso(n)` the same day as a data date ("2026-11-02").
+const MONDAY = Date.UTC(2026, 10, 2) / 86400000;
+const day = (offset) => MONDAY + offset;
+const iso = (offset) => new Date(day(offset) * 86400000).toISOString().slice(0, 10);
+
+/** Asserts `actual` is `expected` to `digits` decimals, or within `relative` (a share of `expected`) when given. */
+function near(actual, expected, { digits = 3, relative = null } = {}) {
+    if (relative !== null) {
+        assert.ok(Math.abs(actual / expected - 1) < relative, `${actual} != ${expected} (within ${relative * 100} %)`);
+        return;
+    }
+    assert.ok(Math.abs(actual - expected) < 0.5 * 10 ** -digits, `${actual} != ${expected}`);
 }
 
 /** 9 significant digits: stable in the file, and well inside TOLERANCE. */
@@ -83,4 +107,4 @@ function defaultPlanOptions(fit, overrides = {}, settings = {}) {
     return planOptions({ ...DEFAULT_SETTINGS, ...settings }, { today: 0, basePoints: fit.points }, overrides);
 }
 
-export { loadFixture, expectGolden, defaultPlanOptions };
+export { loadFixture, loadSetup, expectGolden, defaultPlanOptions, MONDAY, day, iso, near };
