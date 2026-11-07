@@ -4,7 +4,6 @@
 import { BASE_URL } from '../../ui/base-url.js';
 
 const ASSETS = `${BASE_URL}assets/`;
-const STORAGE_KEY = 'lasps_gear_progress';
 const PATHS = ['craft', 'level', 'stars'];
 // In this order on the faction switch.
 const FACTIONS = ['warrior', 'ranger', 'warlock'];
@@ -13,4 +12,4 @@ const FACTIONS = ['warrior', 'ranger', 'warlock'];
 const LANE_ICONS = { craft: '🔨', level: '⬆', stars: '★' };
 const ACTION_ICONS = { done: '✓', undo: '↶', craftAll: '⏭', startOver: '↺', hold: '⏸', blocked: '⛔' };
 
-export { ACTION_ICONS, ASSETS, FACTIONS, LANE_ICONS, PATHS, STORAGE_KEY };
+export { ACTION_ICONS, ASSETS, FACTIONS, LANE_ICONS, PATHS };

@@ -24,6 +24,7 @@ import { followCalendar } from './calendar-sync.js';
 import { renderNav } from './nav.js';
 import { applyStaticTranslations, tHtml } from './i18n.js';
 import { loadPackData } from './data.js';
+import { removeLegacyKeys } from './storage.js';
 import { escapeHtml } from './html.js';
 
 function showLoadError(error) {
@@ -40,6 +41,7 @@ function showLoadError(error) {
 
 /** `init(data)`: the page's setup (may be async); `withData: false` for a page without pack data. */
 function startPage(pageId, { init = null, onLocaleChange = null, withData = true } = {}) {
+    removeLegacyKeys();
     renderNav(pageId);
     applyStaticTranslations();
     let ready = false;

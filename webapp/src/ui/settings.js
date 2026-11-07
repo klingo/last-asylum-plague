@@ -7,33 +7,14 @@
  * reads from them are in core/settings-model.js.
  */
 import { gameDay } from '../core/schedule.js';
-import { readJson, writeJson } from './storage.js';
+import { STORAGE_KEYS, readJson, writeJson } from './storage.js';
 import { DEFAULT_SETTINGS, MINE_SAFETY_LEVELS, PRIORITY_LEVELS } from '../core/settings-model.js';
 
-const STORAGE_KEY = 'lasps_valuation';
-// Bumped when the stored shape changes (see loadSettings for the migrations).
-const SETTINGS_VERSION = 3;
-
-/** Nearest priority level for an old weight factor. */
-function levelForWeight(weight) {
-    if (weight <= 0.25) {
-        return 'none';
-    }
-    if (weight < 0.75) {
-        return 'low';
-    }
-    return weight >= 1.5 ? 'high' : 'normal';
-}
-
 function loadSettings() {
-    const stored = readJson(STORAGE_KEY);
+    const stored = readJson(STORAGE_KEYS.settings);
     const settings = { ...DEFAULT_SETTINGS, priorities: { ...DEFAULT_SETTINGS.priorities } };
     if (Number.isFinite(stored.budget) && stored.budget >= 0) {
         settings.budget = stored.budget;
-    }
-    if (typeof stored.seasonalPass === 'string') {
-        // Older settings: a single seasonal pass on sale.
-        settings.seasonalPasses = [stored.seasonalPass];
     }
     if (typeof stored.vipPointsInWorth === 'boolean') {
         settings.vipPointsInWorth = stored.vipPointsInWorth;
@@ -45,9 +26,6 @@ function loadSettings() {
         settings.extraCurrency = Object.fromEntries(
             Object.entries(stored.extraCurrency).filter(([, amount]) => Number.isFinite(amount) && amount > 0),
         );
-    } else if (Number.isFinite(stored.extraDiamonds) && stored.extraDiamonds > 0) {
-        // Older settings: the extra diamonds of the VIP Shop.
-        settings.extraCurrency = { diamonds: stored.extraDiamonds };
     }
     if (stored.skippedPackages && typeof stored.skippedPackages === 'object') {
         const today = gameDay(new Date()).day;
@@ -87,34 +65,18 @@ function loadSettings() {
             settings[key] = stored[key].filter((id) => typeof id === 'string');
         }
     }
-    if (stored.version === SETTINGS_VERSION && stored.priorities && typeof stored.priorities === 'object') {
+    if (stored.priorities && typeof stored.priorities === 'object') {
         settings.priorities = Object.fromEntries(
             Object.entries(stored.priorities).filter(
                 ([, level]) => PRIORITY_LEVELS.includes(level) && level !== 'normal',
             ),
         );
-    } else {
-        // Older settings: ignored items and personal weights become priorities (defaults kept).
-        for (const id of Array.isArray(stored.ignoredItems) ? stored.ignoredItems : []) {
-            settings.priorities[id] = 'none';
-        }
-        for (const [id, weight] of Object.entries(stored.itemWeights || {})) {
-            if (Number.isFinite(weight) && weight >= 0) {
-                const level = levelForWeight(weight);
-                if (level === 'normal') {
-                    delete settings.priorities[id];
-                } else {
-                    settings.priorities[id] = level;
-                }
-            }
-        }
     }
-    settings.version = SETTINGS_VERSION;
     return settings;
 }
 
 function saveSettings(settings) {
-    writeJson(STORAGE_KEY, settings);
+    writeJson(STORAGE_KEYS.settings, settings);
 }
 
 let current = null;
@@ -140,4 +102,4 @@ function onSettingsChange(listener) {
     listeners.add(listener);
 }
 
-export { STORAGE_KEY as SETTINGS_KEY, loadSettings, getSettings, updateSettings, onSettingsChange };
+export { loadSettings, getSettings, updateSettings, onSettingsChange };

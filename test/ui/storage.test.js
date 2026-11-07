@@ -1,7 +1,14 @@
 import { storage } from './env.js';
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { readJson, readText, writeJson, writeText } from '../../webapp/src/ui/storage.js';
+import {
+    STORAGE_KEYS,
+    readJson,
+    readText,
+    removeLegacyKeys,
+    writeJson,
+    writeText,
+} from '../../webapp/src/ui/storage.js';
 
 beforeEach(() => storage.clear());
 
@@ -39,4 +46,19 @@ test('without a usable localStorage reads give the fallback and writes do nothin
     } finally {
         globalThis.window.localStorage = saved;
     }
+});
+
+test("every key is the app's own: one prefix, no two the same", () => {
+    const keys = Object.values(STORAGE_KEYS);
+    assert.ok(keys.every((key) => key.startsWith('lapkc_')));
+    assert.equal(new Set(keys).size, keys.length);
+});
+
+test('keys of earlier versions are removed, the current ones stay', () => {
+    storage.set('lasps_valuation', '{}');
+    storage.set('lasps_locale', 'de');
+    storage.set(STORAGE_KEYS.settings, '{}');
+    storage.set('somebody_elses_key', 'x');
+    removeLegacyKeys();
+    assert.deepEqual([...storage.keys()].sort(), ['somebody_elses_key', STORAGE_KEYS.settings].sort());
 });

@@ -1,7 +1,20 @@
 /**
  * The browser's localStorage behind try/catch: it may be unavailable (private browsing, blocked) or hold something
  * else than we wrote. Reads then give the fallback, writes do nothing (the page still works, it just forgets).
+ *
+ * Every key the app uses is listed here (prefix `lapkc_`), so there is one place to look at what a browser holds.
  */
+
+const STORAGE_KEYS = {
+    locale: 'lapkc_locale', // 'en' | 'de'
+    settings: 'lapkc_settings', // the shared settings (ui/settings.js)
+    setupOpen: 'lapkc_setup_open', // '1' | '0': the setup bar's controls shown
+    gearProgress: 'lapkc_gear_progress', // the Gear Upgrade Path's progress per guide and faction
+    lordSetup: 'lapkc_lord_setup', // the Lord Specialty's level, extra points, lord and builds
+};
+
+// What earlier versions of the app saved (prefix `lasps_`): nothing reads it any more, so it is removed.
+const LEGACY_KEYS = ['lasps_locale', 'lasps_valuation', 'lasps_setup_open', 'lasps_gear_progress', 'lasps_lord_setup'];
 
 /** The text saved under `key`, or null (nothing saved or no storage). */
 function readText(key) {
@@ -36,4 +49,13 @@ function writeJson(key, value) {
     writeText(key, JSON.stringify(value));
 }
 
-export { readText, writeText, readJson, writeJson };
+/** Removes the keys earlier versions of the app saved. */
+function removeLegacyKeys() {
+    try {
+        LEGACY_KEYS.forEach((key) => window.localStorage.removeItem(key));
+    } catch {
+        // No storage: nothing to remove.
+    }
+}
+
+export { STORAGE_KEYS, readText, writeText, readJson, writeJson, removeLegacyKeys };

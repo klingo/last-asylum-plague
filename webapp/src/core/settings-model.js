@@ -29,11 +29,9 @@ const DEFAULT_NONE_ITEMS = [
 
 const DEFAULT_SETTINGS = {
     budget: 20000, // Banknotes per week
-    // VIP points count in the deal % fit (false: worth 0, the rest of a pack carries its price) (Settings). Stored
-    // under this name since the default became false, so a `countVipPoints: true` saved before doesn't stick.
+    // VIP points count in the deal % fit (false: worth 0, the rest of a pack carries its price) (Settings).
     vipPointsInWorth: false,
     // Events and passes follow the calendar on every page load (setup bar switch; a change by hand turns it off).
-    // Stored under this name since the default became on, so a `followCalendar: false` saved before doesn't stick.
     followsCalendar: true,
     extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)

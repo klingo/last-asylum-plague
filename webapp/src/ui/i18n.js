@@ -17,7 +17,7 @@
 import en from '../i18n/en.json' with { type: 'json' };
 import de from '../i18n/de.json' with { type: 'json' };
 import { escapeHtml } from './html.js';
-import { readText, writeText } from './storage.js';
+import { STORAGE_KEYS, readText, writeText } from './storage.js';
 
 // The languages: dictionary and the short name on the language switch. A new language needs its
 // i18n/<code>.json here (and its `name.<code>` in pack_data.schema.json's localizedString).
@@ -28,7 +28,6 @@ const LOCALES = {
 const DICTIONARIES = Object.fromEntries(Object.entries(LOCALES).map(([code, { dictionary }]) => [code, dictionary]));
 const SUPPORTED_LOCALES = Object.keys(LOCALES);
 const DEFAULT_LOCALE = 'en';
-const STORAGE_KEY = 'lasps_locale';
 
 function isSupported(locale) {
     return SUPPORTED_LOCALES.includes(locale);
@@ -45,7 +44,7 @@ function detectLocale() {
         // ignore
     }
 
-    const stored = readText(STORAGE_KEY);
+    const stored = readText(STORAGE_KEYS.locale);
     if (isSupported(stored)) {
         return stored;
     }
@@ -160,7 +159,7 @@ function setLocale(locale) {
         return;
     }
     currentLocale = locale;
-    writeText(STORAGE_KEY, locale);
+    writeText(STORAGE_KEYS.locale, locale);
     try {
         const url = new URL(window.location.href);
         url.searchParams.set('lang', locale);

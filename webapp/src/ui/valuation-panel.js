@@ -13,18 +13,17 @@
  * Returns `{ open(), showRate(valuation) }`.
  */
 import { localizedName, applyStaticTranslations, t, tHtml } from './i18n.js';
-import { getSettings, updateSettings, onSettingsChange, SETTINGS_KEY } from './settings.js';
+import { getSettings, updateSettings, onSettingsChange } from './settings.js';
 import { seasonalPassFamilies } from '../core/pack-data.js';
 import { runningToday, calendarSelection } from './calendar-sync.js';
 import { escapeHtml, escapeAttr } from './html.js';
 import { banknoteIconHtml } from './images.js';
 import { formatThousands } from './format.js';
-import { readText, writeText } from './storage.js';
+import { STORAGE_KEYS, readText, writeText } from './storage.js';
 import { enableInfoTooltips } from './tooltip.js';
 import { modelSummaryText } from './valuation.js';
 
 // Whether the setup panel is open: a UI preference (not a setting, so toggling doesn't recompute).
-const OPEN_KEY = 'lasps_setup_open';
 
 /** Seasonal package families (one entry per tier ladder): [familyId, { name }]. */
 function passFamilies(packages) {
@@ -34,13 +33,13 @@ function passFamilies(packages) {
 const ALL_FIELDS = ['budget', 'events', 'passes'];
 
 function loadOpen() {
-    const stored = readText(OPEN_KEY);
+    const stored = readText(STORAGE_KEYS.setupOpen);
     // First visit (nothing set up yet): open, so the settings are seen.
-    return stored === null ? readText(SETTINGS_KEY) === null : stored === '1';
+    return stored === null ? readText(STORAGE_KEYS.settings) === null : stored === '1';
 }
 
 function saveOpen(open) {
-    writeText(OPEN_KEY, open ? '1' : '0');
+    writeText(STORAGE_KEYS.setupOpen, open ? '1' : '0');
 }
 
 /** A labelled group of toggle chips (events / passes) for the settings list `key`; `running`: ids running today. */

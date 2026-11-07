@@ -92,7 +92,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   "spend more" tables), `gear-progress.js` (the gear page's progress), plus the page-specific parts of `catalog.js`,
   `schedule.js`, `mine.js` and `item-sources.js`.
 - `webapp/src/ui/` holds the browser helpers: `valuation.js` (the worth model on top of the planner), `valuation-page.js`
-  (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage),
+  (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage: every key is listed in `STORAGE_KEYS`, prefix `lapkc_`; a new one goes there),
   `i18n.js`, `format.js`, `datetime.js`, `html.js`, `labels.js`, `url.js`, `grid.js` and the other builders of markup.
 - `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (loaded on every page by
   `ui/page.js`, in that order) and `pages/<page>.css` (the page script imports its own, after the shared ones). A rule keeps

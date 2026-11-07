@@ -15,7 +15,7 @@
  */
 import { startPage } from '../ui/page.js';
 import '../styles/pages/lord.css';
-import { readJson, writeJson } from '../ui/storage.js';
+import { STORAGE_KEYS, readJson, writeJson } from '../ui/storage.js';
 import { setUrlParams, urlParam } from '../ui/url.js';
 import { localizedName, t, tHtml } from '../ui/i18n.js';
 import { escapeHtml } from '../ui/html.js';
@@ -44,7 +44,6 @@ const NOTE_MS = 3000;
 const LONG_PRESS_MS = 500;
 // A touch that moves further is a scroll, not a press.
 const TOUCH_SLOP_PX = 10;
-const STORAGE_KEY = 'lasps_lord_setup';
 // Highest extra points the input takes.
 const MAX_EXTRA = 999;
 
@@ -84,7 +83,7 @@ function clampInt(value, min, max, fallback) {
 
 /** What this browser saved: `{ level, extra, lord, builds: { <lord>: <build as URL text> } }` (or less). */
 function loadSaved() {
-    return readJson(STORAGE_KEY);
+    return readJson(STORAGE_KEYS.lordSetup);
 }
 
 const saved = loadSaved();
@@ -97,7 +96,7 @@ const setup = {
 /** Saves the player's level and extra points, the lord and every lord's build. */
 function save() {
     const encoded = Object.fromEntries(lordIds.map((id) => [id, encodeBuild(builds[id])]));
-    writeJson(STORAGE_KEY, { ...setup, lord: lordId, builds: encoded });
+    writeJson(STORAGE_KEYS.lordSetup, { ...setup, lord: lordId, builds: encoded });
 }
 
 /** The saved lord and builds, then the URL's: a link (with `lord`) shows its lord and build. */
