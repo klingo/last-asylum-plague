@@ -6,8 +6,8 @@
 import { t, localizedName } from './i18n.js';
 import { BASE_URL } from './base-url.js';
 
-const PLACEHOLDER_ICON = `${BASE_URL}icons/placeholder-item.svg`;
-const BANKNOTE_ICON_URL = `${BASE_URL}assets/currencies/banknote.png`;
+const PLACEHOLDER_ICON = `${BASE_URL}assets/ui/placeholder-item.svg`;
+const BANKNOTE_ICON_URL = `${BASE_URL}assets/ui/banknote.png`;
 const ITEM_IMAGES_URL = `${BASE_URL}assets/items/`;
 
 // itemId -> { urls, name, rarity }, built from the data when it's loaded. `urls`: where its image may be, in

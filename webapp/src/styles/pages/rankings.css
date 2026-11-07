@@ -1,0 +1,37 @@
+/* Skip / Undo in the Buy cell: small, quiet; over the global `button:hover` (an accent fill). */
+.skip-btn {
+    padding: 1px 7px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.skip-btn:hover {
+    background: transparent;
+    border-color: var(--accent);
+    color: var(--text);
+}
+@media (max-width: 640px) {
+    /* Skip / Undo as small icon buttons ("Überspringen" would take a third of the row; the text stays for screen readers). */
+    .skip-btn {
+        min-width: 32px;
+        font-size: 0;
+    }
+
+    .skip-btn::before {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .skip-btn[data-skip]::before {
+        content: '✕';
+    }
+
+    .skip-btn[data-unskip]::before {
+        content: '↶';
+    }
+}

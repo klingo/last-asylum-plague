@@ -5,6 +5,7 @@
  * today's weekday offers with their ratio.
  */
 import { startPage } from '../ui/page.js';
+import '../styles/pages/today.css';
 import { mountValuationPage } from '../ui/valuation-page.js';
 import { getSettings } from '../ui/settings.js';
 import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, itemIconSlot, tileHtml } from '../ui/html.js';

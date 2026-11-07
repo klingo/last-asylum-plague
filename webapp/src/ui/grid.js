@@ -4,7 +4,7 @@
  * a bundle's contents shown in Details.
  *
  * `wide: true` on a cell / header: shown on wide screens only. On phones the grid drops those columns (see
- * `.ranking-grid__cell--wide` in style.css), so mark the same columns in every row of a grid.
+ * `.ranking-grid__cell--wide` in styles/components/grid.css), so mark the same columns in every row of a grid.
  *
  * Inside a cell, `<span class="wide-only">` / `<span class="phone-only">` show their content on wide screens / phones
  * only: a Details row uses them to move a hidden column's value into a visible column.

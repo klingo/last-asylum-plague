@@ -1,0 +1,70 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th,
+td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    color: var(--text-dim);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+}
+
+tbody tr:hover {
+    background: var(--panel-alt);
+}
+
+/* Keeps a "Rank" column as narrow as the Deal Ranking page's fixed 50px grid track — plain
+   <table> auto-layout would otherwise let it balloon out with the table's other, wider columns. */
+.table-col-rank {
+    width: 50px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+/* Number and button cells on one line (a price and its icon never wrap apart). */
+.table-col-fit {
+    white-space: nowrap;
+}
+
+/* Number columns: an even share of a full-width table, like the Ranking's grid; the name column gets the rest. */
+.table-col-num {
+    width: 11%;
+}
+
+/* A trailing "Details" button column: only as wide as the button. */
+.table-col-button {
+    width: 1%;
+}
+
+/* Keeps a ratio bar at its full length in such a column. */
+.table-col-fit .ratio-display {
+    min-width: 70px;
+}
+@media (max-width: 640px) {
+    /* A <table>'s secondary columns (Best Pick), as `wide` does in the grids. */
+    .table-col-wide {
+        display: none;
+    }
+
+    .table-col-rank {
+        width: 36px;
+    }
+
+    /* A header wraps (a price and its icon in the cells below still don't). */
+    th.table-col-fit {
+        white-space: normal;
+    }
+}

@@ -1,0 +1,386 @@
+/* Calendar: schedule timeline (one row per event / pass / track, one column per day, weeks Monday-Sunday). */
+.schedule__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+.schedule__legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* One colour per kind, the events and passes ones as their Type pills on the Ranking. */
+.schedule__row--event {
+    --bar-color: var(--teal);
+}
+
+.schedule__row--ingame {
+    --bar-color: var(--gold);
+}
+
+.schedule__row--alliance {
+    --bar-color: var(--series-a);
+}
+
+.schedule__row--pass {
+    --bar-color: var(--purple);
+}
+
+.schedule__row--track {
+    --bar-color: var(--series-b);
+}
+
+/* Weekday offers: the Ranking's "Package" colour. */
+.schedule__row--rotation {
+    --bar-color: var(--good);
+}
+
+/* The legend explains the style (recorded / forecast), not a kind: neutral. */
+.schedule__legend {
+    --bar-color: var(--text-dim);
+}
+
+.schedule__swatch {
+    display: inline-block;
+    width: 22px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--bar-color);
+}
+
+/* A proven forecast: the kind's colour as a light fill (a recorded run is solid, a rough guess striped and dashed). */
+.schedule__swatch--forecast,
+.schedule__bar.schedule__bar--forecast {
+    background:
+        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.22) 0 1.5px, transparent 1.5px 5px),
+        color-mix(in srgb, var(--bar-color) 52%, transparent);
+}
+
+/* A run that ended before today: grey, whatever its kind. */
+.schedule__swatch--past,
+.schedule__bar.schedule__bar--past {
+    background: #4b5263;
+}
+
+/* An event rotation's chart (Survival Battle): the phase on now stands out from the ones to come. */
+.schedule__swatch--active,
+.schedule__bar.schedule__bar--active {
+    --bar-color: var(--good);
+}
+
+.schedule__swatch--upcoming {
+    --bar-color: var(--gold);
+}
+
+/* The local hour of every slot boundary, small, above the phases (the lines are in the grid). */
+.schedule__row--hours {
+    min-height: 16px;
+}
+
+.schedule__hour {
+    position: absolute;
+    top: 2px;
+    padding-left: 2px;
+    font-size: 0.6rem;
+    line-height: 1;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+}
+
+.schedule__swatch--today {
+    width: 2px;
+    height: 14px;
+    border-radius: 1px;
+    background: var(--text);
+}
+
+.schedule__scroll {
+    overflow-x: auto;
+}
+
+.schedule__chart {
+    --label-width: 190px;
+    position: relative;
+    min-width: 760px;
+}
+
+.schedule__chart--days {
+    min-width: 480px;
+}
+
+/* Weekday offers: the package's item icon before its name. */
+.schedule__icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.schedule__icon.item-icon--placeholder {
+    padding: 2px;
+}
+
+/* Name | 4px gap | timeline. The gap leaves room for a hovered bar's outline on the first day (the name column is
+   sticky and opaque, and would cover it); the timeline still starts at --label-width, where the lines are drawn. */
+.schedule__row {
+    display: grid;
+    grid-template-columns: calc(var(--label-width) - 4px) 4px 1fr;
+    min-height: 28px;
+}
+
+.schedule__label {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    padding-right: 10px;
+    line-height: 28px;
+    background: var(--panel);
+    font-size: 0.85rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.schedule__track {
+    grid-column: 3;
+    position: relative;
+    z-index: 1;
+}
+
+/* Column lines (week / day lines, faint day lines) as 1px elements: a repeating background drops lines when a
+   column is a fractional number of pixels wide. */
+.schedule__grid {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--label-width);
+    right: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.schedule__grid i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.schedule__grid i.schedule__grid-major {
+    background: var(--border);
+}
+
+.schedule__row--axis {
+    min-height: 36px;
+    border-bottom: 1px solid var(--border);
+}
+
+.schedule__weeks {
+    display: grid;
+    grid-template-columns: repeat(var(--columns), 1fr);
+}
+
+.schedule__week {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 6px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.2;
+}
+
+.schedule__week strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.schedule__week--current strong {
+    color: var(--accent);
+}
+
+/* Group heading: the kind's colour as a small square before its name. */
+.schedule__row--group .schedule__label::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 2px;
+    background: var(--bar-color);
+}
+
+.schedule__row--group .schedule__label {
+    padding: 12px 10px 2px 0;
+    line-height: 1.2;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.schedule__bar {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    border-radius: 4px;
+    background: var(--bar-color, var(--accent));
+    cursor: default;
+}
+
+a.schedule__bar {
+    cursor: pointer;
+}
+
+/* Cut by the window's edge: square, fading end (it continues outside the shown weeks). The mask reaches 4px past
+   the bar (not clipped to it), so the hover outline around the bar stays visible and fades with it; on the cut side
+   those 4px stay transparent (no outline there: the run goes on beyond the window). */
+.schedule__bar--cut-start,
+.schedule__bar--cut-end {
+    mask-size: calc(100% + 8px) calc(100% + 8px);
+    mask-position: -4px -4px;
+    mask-repeat: no-repeat;
+    mask-clip: no-clip;
+}
+
+.schedule__bar--cut-start {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    -webkit-mask-image: linear-gradient(to right, transparent 4px, #000 22px);
+    mask-image: linear-gradient(to right, transparent 4px, #000 22px);
+}
+
+.schedule__bar--cut-end {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    -webkit-mask-image: linear-gradient(to left, transparent 4px, #000 22px);
+    mask-image: linear-gradient(to left, transparent 4px, #000 22px);
+}
+
+.schedule__bar:hover,
+.schedule__bar:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 1px;
+}
+
+.schedule__current-week,
+.schedule__today {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.schedule__current-week {
+    z-index: 0;
+    left: calc(var(--label-width) + (100% - var(--label-width)) * var(--week-start));
+    width: calc((100% - var(--label-width)) * var(--week-width));
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.schedule__today {
+    z-index: 2;
+    left: calc(var(--label-width) + (100% - var(--label-width)) * var(--today) - 1px);
+    width: 2px;
+    background: var(--text);
+    opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+    .schedule__chart {
+        --label-width: 130px;
+    }
+
+    .schedule__row--hours {
+        display: none;
+    }
+}
+
+/* Calendar: the entry's art before its name (a placeholder in its group's colour without art), so the schedule's
+   names are wider. */
+.schedule__chart:not(.schedule__chart--days) {
+    --label-width: 230px;
+}
+
+.schedule__thumb {
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    margin-right: 8px;
+    border-radius: 3px;
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+.schedule__thumb--none {
+    background: color-mix(in srgb, var(--bar-color) 30%, var(--panel-alt));
+}
+
+a.schedule__label--link {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.schedule__label--link:hover {
+    text-decoration: underline;
+}
+
+/* Pointing at a bar or its name highlights the whole row in the bar's colour: which bar belongs to which name. */
+.schedule__row:not(.schedule__row--group):has(
+        .schedule__bar:hover,
+        .schedule__bar:focus-visible,
+        .schedule__label:hover,
+        .schedule__label:focus-visible
+    )
+    .schedule__label {
+    background: color-mix(in srgb, var(--bar-color) 16%, var(--panel));
+    color: var(--text);
+}
+
+.schedule__row:not(.schedule__row--group):has(
+        .schedule__bar:hover,
+        .schedule__bar:focus-visible,
+        .schedule__label:hover,
+        .schedule__label:focus-visible
+    ) {
+    background: color-mix(in srgb, var(--bar-color) 10%, transparent);
+}
+
+@media (max-width: 640px) {
+    .schedule__chart:not(.schedule__chart--days) {
+        --label-width: 160px;
+    }
+
+    .schedule__thumb {
+        width: 32px;
+        height: 16px;
+        margin-right: 6px;
+    }
+}
+
+/* Calendar forecasts: a rough guess (no repeating pattern yet, or a proven one last recorded over 8 weeks ago) is
+   striped and fainter than a proven one. After the forecast rules, so this wins. */
+.schedule__bar.schedule__bar--guess,
+.schedule__swatch.schedule__swatch--guess {
+    background: repeating-linear-gradient(
+        -45deg,
+        color-mix(in srgb, var(--bar-color) 55%, transparent) 0 3px,
+        transparent 3px 6px
+    );
+    border: 1px dashed var(--bar-color);
+    opacity: 0.45;
+}
+
+/* Weekday offers: the line on which offers are worth it, below the chart. */
+.schedule__summary {
+    margin: 16px 0 0;
+    font-size: 0.85rem;
+}

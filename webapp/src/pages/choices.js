@@ -3,6 +3,7 @@
  * of (`exclusive_group`, e.g. calendar packs), ranked by worth. The pick is in the URL (`?item=`).
  */
 import { startPage } from '../ui/page.js';
+import '../styles/pages/choices.css';
 import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPage } from '../ui/valuation-page.js';
 import { selectCount } from '../core/items.js';

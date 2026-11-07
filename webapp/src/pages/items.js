@@ -5,6 +5,7 @@
  * priorities can be exported to and imported from a file.
  */
 import { startPage } from '../ui/page.js';
+import '../styles/pages/items.css';
 import { buildValuation, modelSummaryText } from '../ui/valuation.js';
 import { withLoading } from '../ui/loading.js';
 import { fitSensitivity, sensitivityFamilies, isDependent } from '../core/point-fit.js';

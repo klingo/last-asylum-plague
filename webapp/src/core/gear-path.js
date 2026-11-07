@@ -38,7 +38,7 @@ function wholeStars(step) {
 }
 
 /**
- * The 5 star icons of a piece (assets/stars/<name>.png): each `N_5_ur` (N fifths filled) or `0_5`. At MR (5 stars) all
+ * The 5 star icons of a piece (assets/gear/stars/<name>.png): each `N_5_ur` (N fifths filled) or `0_5`. At MR (5 stars) all
  * five are full UR stars; MR shows elsewhere (the piece's border).
  */
 function starIcons(step) {

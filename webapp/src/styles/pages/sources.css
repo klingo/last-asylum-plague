@@ -1,0 +1,10 @@
+.source-name {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.source-via {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+}

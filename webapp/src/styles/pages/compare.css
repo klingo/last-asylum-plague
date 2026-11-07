@@ -1,0 +1,135 @@
+.parts-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-dim);
+}
+
+/* Compare: the two inputs side by side, the split value bar, and the mirrored result table. */
+.compare-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .compare-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+.compare-bar {
+    margin: 8px 0 4px;
+}
+
+.compare-bar__track {
+    display: flex;
+    gap: 2px;
+    height: 28px;
+}
+
+.compare-bar__segment {
+    height: 100%;
+    min-width: 4px;
+    transition: width 0.2s ease;
+}
+
+.compare-bar__segment--a {
+    background: var(--series-a);
+    border-radius: 6px 0 0 6px;
+}
+
+.compare-bar__segment--b {
+    background: var(--series-b);
+    border-radius: 0 6px 6px 0;
+}
+
+.compare-bar__labels {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.compare-bar__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.compare-bar__swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.compare-bar__swatch--a {
+    background: var(--series-a);
+}
+
+.compare-bar__swatch--b {
+    background: var(--series-b);
+}
+
+.compare-table {
+    table-layout: fixed;
+}
+
+.compare-table .compare-table__a {
+    text-align: right;
+    width: 40%;
+}
+
+.compare-table .compare-table__b {
+    text-align: left;
+    width: 40%;
+}
+
+.compare-table .compare-table__label {
+    text-align: center;
+    color: var(--text-dim);
+    width: 20%;
+}
+
+.compare-table__best {
+    background: rgba(99, 214, 138, 0.1);
+}
+
+.compare-table__a .parts-list {
+    list-style-position: inside;
+    padding-left: 0;
+}
+@media (max-width: 640px) {
+    /* Compare's result table: the label on a line of its own, the two sides side by side under it. */
+    .compare-table,
+    .compare-table thead,
+    .compare-table tbody {
+        display: block;
+    }
+
+    .compare-table tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .compare-table .compare-table__a,
+    .compare-table .compare-table__b {
+        width: auto;
+    }
+
+    .compare-table .compare-table__label {
+        grid-column: 1 / -1;
+        order: -1;
+        width: auto;
+        padding-bottom: 0;
+        border-bottom: none;
+        font-size: 0.72rem;
+    }
+
+    .compare-table thead .compare-table__label {
+        display: none;
+    }
+}

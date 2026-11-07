@@ -6,7 +6,20 @@
  * On a language switch the static texts (`data-i18n`) are translated again, then the page's
  * `onLocaleChange()` re-renders the rest; only once `init` has finished, so it never runs on half a page.
  */
-import '../style.css';
+import '../styles/base.css';
+import '../styles/components/nav.css';
+import '../styles/components/switch.css';
+import '../styles/components/item-picker.css';
+import '../styles/components/table.css';
+import '../styles/components/tooltip.css';
+import '../styles/components/item-icon.css';
+import '../styles/components/pill.css';
+import '../styles/components/setup-bar.css';
+import '../styles/components/grid.css';
+import '../styles/components/tiles.css';
+import '../styles/components/ratio-bar.css';
+import '../styles/components/loading.css';
+import '../styles/components/event-banner.css';
 import { followCalendar } from './calendar-sync.js';
 import { renderNav } from './nav.js';
 import { applyStaticTranslations, tHtml } from './i18n.js';

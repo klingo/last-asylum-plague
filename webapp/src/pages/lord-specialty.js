@@ -14,6 +14,7 @@
  * saved (over the player's own) only once they change something.
  */
 import { startPage } from '../ui/page.js';
+import '../styles/pages/lord.css';
 import { readJson, writeJson } from '../ui/storage.js';
 import { setUrlParams, urlParam } from '../ui/url.js';
 import { localizedName, t, tHtml } from '../ui/i18n.js';

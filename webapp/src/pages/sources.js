@@ -4,6 +4,7 @@
  * an item ratio (the worth of the item alone ÷ price).
  */
 import { startPage } from '../ui/page.js';
+import '../styles/pages/sources.css';
 import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPage } from '../ui/valuation-page.js';
 import { getSettings } from '../ui/settings.js';

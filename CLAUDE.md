@@ -79,13 +79,20 @@ the coverage grows.
 ## Architecture
 
 One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitHub Pages URLs); each loads
-`webapp/src/pages/<page>.js`, which starts with `startPage` (`ui/page.js`).
+`webapp/src/pages/<page>.js` (`<page>/index.js` for the big pages: Events, Gear, Calendar; their sections are modules next to
+it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui/page.js`).
 
 - `webapp/src/core/` holds the pure modules (fit, valuation, planner, Compare, schedule, gear path, ...). No DOM or
   i18n, imports only `core/`, explicit `.js` extensions; ESLint fails on `document`, `window` or a `../ui` import.
   Scripts and tests import it directly. Core modules take the data from `normalizePackData`, not the raw file.
   Each module's header comment says what it does; read it before changing the module.
 - `webapp/src/ui/` holds the browser helpers (settings in localStorage, i18n, formatting, grids, the setup bar).
+- `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (loaded on every page by
+  `ui/page.js`, in that order) and `pages/<page>.css` (the page script imports its own, after the shared ones). A rule keeps
+  its place inside its file; a rule that overrides another of the same specificity (a phone `@media` over the base rule) lives
+  in the same file or a later-loaded one.
+- `webapp/public/assets/` holds the images: `items/<category>/` (images not sorted yet are found directly in `items/`),
+  `events/`, `heroes/`, `lord/`, `gear/{stars,classes,factions}/` and `ui/` (the placeholder icon, the Banknote icon).
 - `webapp/src/i18n/{en,de}.json` holds UI texts and code labels. `scripts/` holds verify-data, i18n:missing,
   record-run and the commit hooks.
 - Pages read their selection from the URL (`?item=`, `?event=`, `?track=`, Compare's `?a=&an=&b=&bn=&days=`), so

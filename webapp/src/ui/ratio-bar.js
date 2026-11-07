@@ -7,7 +7,7 @@
 import { formatThousands } from './format.js';
 import { t } from './i18n.js';
 
-// --bad, --warn, --good (see style.css).
+// --bad, --warn, --good (see styles/base.css).
 const RATIO_BAD_RGB = [242, 104, 92];
 const RATIO_WARN_RGB = [242, 193, 78];
 const RATIO_GOOD_RGB = [99, 214, 138];

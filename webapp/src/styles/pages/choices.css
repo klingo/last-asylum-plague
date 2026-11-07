@@ -1,0 +1,5 @@
+/* Best Pick: a package's opened "Details" (its contents and their worth). */
+tr.choice-details,
+tbody tr.choice-details:hover {
+    background: var(--panel-alt);
+}

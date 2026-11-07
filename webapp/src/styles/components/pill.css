@@ -1,0 +1,47 @@
+.pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+}
+
+.pill--package {
+    color: var(--good);
+    border-color: var(--good);
+}
+
+/* Type pills (labels.js purchaseType): pass, seasonal pass, event pack, once-only unlock, top-up. */
+.pill--pass {
+    color: var(--purple);
+    border-color: var(--purple);
+}
+
+.pill--seasonal_pass {
+    color: var(--purple);
+    border-color: var(--purple);
+    border-style: dashed;
+}
+
+.pill--event {
+    color: var(--teal);
+    border-color: var(--teal);
+}
+
+.pill--unlock {
+    color: var(--gold);
+    border-color: var(--gold);
+}
+
+.pill--limited {
+    color: var(--gold);
+    border-color: var(--gold);
+    border-style: dashed;
+}
+
+.pill--top_up {
+    color: var(--text-dim);
+}

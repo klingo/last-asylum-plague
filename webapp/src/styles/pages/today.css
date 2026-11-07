@@ -1,0 +1,172 @@
+/* A higher tier in Today's weekday offers: indented under its lower tier, with a small connector. */
+.item-cell.offer-tier {
+    padding-left: 22px;
+}
+
+.item-cell.offer-tier::before {
+    content: '└';
+    margin-right: -2px;
+    color: var(--text-dim);
+}
+
+/* Today: what runs and what starts soon, one entry per line (art, name and dates, the countdown, its kind). */
+.today-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 8px 0 20px;
+}
+
+/* The faint fill up to --progress (set from the script): how far a running entry is (green), how close an upcoming one
+   is to starting (blue; fainter for a forecast). */
+.today-entry {
+    --fill: transparent;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 10px;
+    background: linear-gradient(to right, var(--fill) calc(var(--progress, 0) * 100%), transparent 0), var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+}
+
+.today-entry--running {
+    --fill: color-mix(in srgb, var(--good) 8%, transparent);
+}
+
+.today-entry--upcoming {
+    --fill: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.today-entry--forecast {
+    --fill: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+a.today-entry:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+.today-entry__art {
+    flex: none;
+    width: 80px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.today-entry__art--none {
+    background: var(--panel);
+}
+
+.today-entry__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.today-entry__name {
+    font-weight: 600;
+}
+
+.today-entry__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 10px;
+}
+
+.today-entry__description {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+/* The Banknote icon of the plan line sized to its text, so a row with it is no taller than one without. */
+.today-entry__title .currency-icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* The info icon (how to earn points) beside the title: centred on the line, not on the text's baseline. */
+.today-entry__title .info-icon {
+    align-self: center;
+}
+
+.today-entry__dates {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+/* The countdown: bold, in its own column at the far right, in the colour of its list. */
+.today-entry__time {
+    flex: none;
+    width: 11.5em;
+    padding: 0 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.today-entry--running .today-entry__time {
+    color: var(--good);
+}
+
+.today-entry--running.today-entry--ending .today-entry__time {
+    color: var(--warn);
+}
+
+.today-entry--upcoming .today-entry__time {
+    color: var(--accent);
+}
+
+.today-entry__kind {
+    flex: none;
+    width: 11em;
+    overflow: hidden;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+@media (max-width: 640px) {
+    /* A Today entry: the art beside the name and dates, the countdown under them (no room for the kind). */
+    .today-entry {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas:
+            'art text'
+            'art time';
+        align-items: center;
+        gap: 2px 10px;
+    }
+
+    .today-entry__art {
+        grid-area: art;
+        width: 64px;
+        height: 32px;
+    }
+
+    .today-entry__text {
+        grid-area: text;
+    }
+
+    .today-entry__kind {
+        display: none;
+    }
+
+    .today-entry__time {
+        grid-area: time;
+        width: auto;
+        padding: 0;
+        font-size: 0.9rem;
+        text-align: left;
+    }
+}
+@media (max-width: 640px) {
+    .item-cell.offer-tier {
+        padding-left: 12px;
+    }
+}

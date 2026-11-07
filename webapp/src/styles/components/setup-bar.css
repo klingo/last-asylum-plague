@@ -1,0 +1,197 @@
+/* Setup bar (ui/valuation-panel.js): summary of the shared settings + "Edit" opening the controls. */
+#valuation-panel:not(:empty) {
+    margin-bottom: 16px;
+}
+
+.setup-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 8px 12px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.setup-bar__summary {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 18px;
+}
+
+.setup-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.setup-bar__toggle {
+    padding: 4px 12px;
+    background: transparent;
+    border-color: var(--border);
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.setup-bar__toggle:hover {
+    background: var(--panel);
+    border-color: var(--accent);
+}
+
+.setup-panel {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 16px 28px;
+    margin-top: 8px;
+    padding: 14px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.setup-panel[hidden] {
+    display: none;
+}
+
+.setup-panel__group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.setup-panel__group input {
+    width: 160px;
+}
+
+@media (max-width: 700px) {
+    .setup-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* On/off pill (events, passes): bigger tap target than a checkbox, clear state. */
+.toggle-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.toggle-chip {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-dim);
+    font-weight: normal;
+}
+
+.toggle-chip:hover {
+    background: var(--panel-alt);
+    border-color: var(--text-dim);
+    color: var(--text);
+}
+
+.toggle-chip[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+.toggle-chip[aria-pressed='true']::before {
+    content: '✓ ';
+    color: var(--accent);
+}
+
+/* Setup panel: the dot of an event / pass the calendar shows running today, and the button using them. */
+.toggle-chip__now {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-left: 4px;
+    border-radius: 50%;
+    background: var(--good);
+    vertical-align: middle;
+}
+
+/* Its display would otherwise win over [hidden] (the item pickers hide it unless the selection runs now). */
+.toggle-chip__now[hidden] {
+    display: none;
+}
+
+.setup-panel__calendar {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    font-size: 0.85rem;
+}
+
+/* The plan's rate in the setup bar: its explanation on hover / focus. */
+/* The setup bar's "Follow the calendar" switch: title (with the "running now" dot) and what it does right now. */
+.calendar-follow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.calendar-follow__text {
+    display: grid;
+    gap: 2px;
+}
+
+.calendar-follow__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.calendar-follow__title .toggle-chip__now {
+    margin-left: 0;
+}
+
+/* "Following the calendar" in the setup bar's summary: the mode is on. */
+.setup-chip--calendar {
+    gap: 6px;
+    padding: 1px 8px;
+    border: 1px solid var(--good);
+    border-radius: 999px;
+    color: var(--good);
+    font-size: 0.8rem;
+}
+
+.setup-chip--calendar .toggle-chip__now {
+    margin-left: 0;
+}
+
+.setup-chip--rate {
+    color: var(--text-dim);
+    border-bottom: 1px dotted var(--text-dim);
+    cursor: help;
+}
+@media (max-width: 640px) {
+    /* The setup bar's summary gets the full row; "Edit" wraps below it. */
+    .setup-bar {
+        padding: 10px 12px;
+    }
+
+    .setup-bar__summary {
+        flex-basis: 100%;
+    }
+
+    .setup-bar__toggle {
+        margin-left: auto;
+    }
+
+    .setup-panel {
+        padding: 12px 10px;
+    }
+}

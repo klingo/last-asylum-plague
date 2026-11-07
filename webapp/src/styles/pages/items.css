@@ -1,0 +1,135 @@
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    min-height: 36px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.checkbox-label input[type='checkbox'],
+.checkbox-label input[type='radio'] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.checkbox-label:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.checkbox-label input:disabled {
+    cursor: not-allowed;
+}
+
+/* Item Priorities: the "Unknown / uncertain" explanation and the uncertain marker with its info icon. */
+.explainer {
+    margin: 0 0 12px;
+    padding-left: 20px;
+    font-size: 0.85rem;
+}
+
+.uncertain-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 6px;
+}
+
+/* Item Priorities: category jump links and the category heading rows. */
+.category-jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.category-jump a {
+    text-decoration: none;
+}
+
+.table-group th {
+    padding-top: 18px;
+    color: var(--accent);
+    font-size: 0.95rem;
+    text-transform: none;
+}
+
+/* The category jump links target the group row. */
+.table-group {
+    scroll-margin-top: 12px;
+}
+
+/* Below the sticky header (66px, wide screens). */
+@media (min-width: 1001px) {
+    .table-group {
+        scroll-margin-top: 80px;
+    }
+}
+
+/* Item Priorities: Don't care / Low / Normal / High as a segmented control. */
+.priority-group {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.priority-option {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-right: 1px solid var(--border);
+}
+
+.priority-option:last-child {
+    border-right: none;
+}
+
+.priority-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.priority-option--active {
+    background: var(--accent);
+    color: var(--bg);
+}
+@media (max-width: 640px) {
+    #items-table tr.table-group {
+        display: block;
+        padding: 0;
+        border-bottom: none;
+    }
+
+    #items-table tr.table-group th {
+        display: block;
+        padding: 18px 16px 6px;
+    }
+
+    .priority-group {
+        display: flex;
+        width: 100%;
+    }
+
+    .priority-option {
+        flex: 1;
+        justify-content: center;
+        min-height: 40px;
+    }
+}

@@ -1,0 +1,237 @@
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.app-header h1 {
+    font-size: 1.15rem;
+    margin: 0;
+}
+
+.app-title {
+    color: var(--text);
+}
+
+.app-title:hover {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+/* Top nav: Today plus menus (Shop, Events, Items, Heroes, Lord), each a dropdown of its pages. */
+.app-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.app-nav > a,
+.app-nav__group-button {
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    color: var(--text-dim);
+    border: 1px solid transparent;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+.app-nav > a:hover,
+.app-nav__group-button:hover {
+    color: var(--text);
+    background: none;
+    border-color: transparent;
+    text-decoration: none;
+}
+
+.app-nav > a.active,
+.app-nav__group.active > .app-nav__group-button {
+    color: var(--text);
+    background: var(--panel-alt);
+    border-color: var(--border);
+}
+
+.app-nav__caret {
+    margin-left: 6px;
+    font-size: 0.75em;
+}
+
+.app-nav__group {
+    position: relative;
+}
+
+.app-nav__menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    flex-direction: column;
+    min-width: 200px;
+    padding: 6px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
+}
+
+.app-nav__group.open > .app-nav__menu {
+    display: flex;
+}
+
+@media (hover: hover) {
+    .app-nav__group:hover > .app-nav__menu {
+        display: flex;
+    }
+}
+
+.app-nav__menu a {
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+.app-nav__menu a:hover,
+.app-nav__menu a.active {
+    color: var(--text);
+    background: var(--panel-alt);
+    text-decoration: none;
+}
+
+.app-nav__toggle {
+    display: none;
+}
+
+.app-nav__toggle,
+.app-nav__toggle:hover {
+    padding: 4px 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--panel-alt);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+/* Wide screens (header fits on one row, EN and DE): the header stays on top while scrolling. */
+@media (min-width: 1001px) {
+    .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 12px rgb(0 0 0 / 35%);
+    }
+}
+
+/* Narrow screens (the full nav would wrap): ☰ shows the menus stacked, every menu expanded. */
+@media (max-width: 1000px) {
+    .app-header h1 {
+        flex: 1;
+    }
+
+    .app-nav__toggle {
+        display: block;
+        order: 2;
+    }
+
+    .app-header__tools {
+        order: 1;
+    }
+
+    .app-nav {
+        display: none;
+        order: 3;
+        flex-basis: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .app-header.nav-open .app-nav {
+        display: flex;
+    }
+
+    .app-nav__group-button {
+        width: 100%;
+        text-align: left;
+        cursor: default;
+    }
+
+    .app-nav__caret {
+        display: none;
+    }
+
+    .app-nav__menu,
+    .app-nav__group:hover > .app-nav__menu {
+        display: flex;
+        position: static;
+        min-width: 0;
+        padding: 0 0 0 16px;
+        background: none;
+        border: none;
+        box-shadow: none;
+    }
+}
+
+/* The settings cogwheel and the language switcher, at the right of the header. */
+.app-header__tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* As tall as the language switcher next to it, square. */
+.app-settings-link {
+    display: grid;
+    place-items: center;
+    align-self: stretch;
+    width: 37px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+    color: var(--text-dim);
+    font-size: 1.15rem;
+    line-height: 1;
+}
+
+.app-settings-link:hover,
+.app-settings-link.active {
+    border-color: var(--accent);
+    color: var(--text);
+    text-decoration: none;
+}
+
+.lang-switch select {
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--panel-alt);
+    color: var(--text);
+}
+
+.app-footer__updated::before,
+.app-footer__change::before {
+    content: ' · ';
+}
+
+.app-footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    padding: 24px;
+}
+@media (max-width: 640px) {
+    .app-header {
+        padding: 10px 16px;
+        gap: 8px 12px;
+    }
+
+    .app-header h1 {
+        font-size: 1rem;
+    }
+}

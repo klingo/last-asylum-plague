@@ -1,0 +1,76 @@
+/* Events page / Spend Rewards: the event's or track's banner. Name and when it runs on the left, the game's art on
+   the right (whole, not cropped), fading into the card. Without art the same strip, so nothing jumps. */
+.event-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 112px;
+    margin-bottom: 16px;
+    padding: 16px 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+}
+
+.event-banner__art {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 45%);
+    mask-image: linear-gradient(to right, transparent, #000 45%);
+}
+
+.event-banner__text {
+    position: relative;
+    max-width: 60%;
+}
+
+.event-banner__name {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+}
+
+.event-banner__timing {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.88rem;
+}
+
+.event-banner__timing--running {
+    color: var(--good);
+}
+
+.event-banner__timing--upcoming {
+    color: var(--accent);
+}
+
+/* The live countdown: same-width digits, so the text doesn't jitter every second; hover: the exact moment. */
+.event-banner__timing[title] {
+    cursor: help;
+}
+
+.event-banner__countdown {
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+    /* No room beside the text: the art moves behind it, faded. */
+    .event-banner__art {
+        opacity: 0.4;
+    }
+
+    .event-banner__text {
+        max-width: none;
+    }
+}
+@media (max-width: 640px) {
+    .event-banner {
+        min-height: 96px;
+        margin-bottom: 12px;
+        padding: 12px 14px;
+    }
+}

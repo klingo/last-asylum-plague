@@ -1,0 +1,55 @@
+.item-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.item-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: var(--panel-alt);
+    /* The neutral border of an item without rarity: a visible grey (the panel's own border would vanish into it). */
+    border: 1px solid #6b7385;
+    flex-shrink: 0;
+}
+
+.item-icon--placeholder {
+    padding: 4px;
+    opacity: 0.7;
+}
+
+/* Border by the item's rarity (`rarity` in pack_data.json); without one, the neutral border above. */
+.item-icon--mr {
+    border-color: #ff5a4f;
+}
+
+.item-icon--ur {
+    border-color: #f5a524;
+}
+
+.item-icon--ssr {
+    border-color: #b072ff;
+}
+
+.item-icon--sr {
+    border-color: #4da3ff;
+}
+
+.item-icon--r {
+    border-color: #6cc04a;
+}
+
+.item-icon--sm {
+    width: 24px;
+    height: 24px;
+}
+
+.currency-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin: 0 2px;
+}

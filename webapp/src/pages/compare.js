@@ -4,6 +4,7 @@
  * on Monday). Unlike the other pages it does not use the weekly plan for what to buy.
  */
 import { startPage } from '../ui/page.js';
+import '../styles/pages/compare.css';
 import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPage } from '../ui/valuation-page.js';
 import { getSettings } from '../ui/settings.js';

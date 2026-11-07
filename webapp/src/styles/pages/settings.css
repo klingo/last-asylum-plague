@@ -1,0 +1,73 @@
+/* A setting (Settings): its text on the left, a switch on the right. */
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+    cursor: pointer;
+}
+
+.setting-row + .setting-row {
+    margin-top: 10px;
+}
+
+/* A setting that changes every value in the app. */
+.setting-row--impact {
+    border-left-color: var(--warn);
+}
+
+.setting-row__text {
+    display: grid;
+    gap: 4px;
+}
+
+.setting-row__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    font-weight: 600;
+}
+
+.setting-row__title .item-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: -2px;
+}
+
+/* The two states: the active one in full, the other dimmed. */
+.setting-row__state {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    opacity: 0.6;
+}
+
+.setting-row__state--active {
+    color: var(--text);
+    opacity: 1;
+}
+
+/* Marks a setting that changes every value in the app. */
+.impact-badge {
+    padding: 1px 8px;
+    border: 1px solid var(--warn);
+    border-radius: 999px;
+    color: var(--warn);
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.impact-badge::before {
+    content: '⚠ ';
+}
+
+/* Settings: the packs the fit is furthest off. */
+.fit-worst {
+    font-size: 0.85rem;
+}

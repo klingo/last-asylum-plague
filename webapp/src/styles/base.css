@@ -1,0 +1,480 @@
+:root {
+    /* Native controls (dropdown popups, scrollbars, number spinners) in the browser's dark style. */
+    color-scheme: dark;
+    --bg: #14161b;
+    --panel: #1e2129;
+    --panel-alt: #262b35;
+    --border: #343a46;
+    --text: #e7e9ee;
+    --text-dim: #9aa1b0;
+    --accent: #5fb0ff;
+    --accent-dark: #2f7cc9;
+    --good: #63d68a;
+    --warn: #f2c14e;
+    --bad: #f2685c;
+    --gold: #d4af37;
+    --purple: #b389f9;
+    --teal: #4fd6c4;
+    --faction-warrior: oklch(59% 0.24 29);
+    --faction-ranger: oklch(56% 0.14 247);
+    --faction-warlock: oklch(71% 0.16 158);
+    --radius: 8px;
+    --series-a: #3987e5;
+    --series-b: #d95926;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.4;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+main {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.05rem;
+}
+
+/* Today: the pages grouped like the nav menus; auto-fill keeps the columns aligned across groups. */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: end;
+    margin-bottom: 4px;
+}
+
+/* A row whose fields have different control heights (input vs checkboxes): headers on one line, aligned at the top. */
+.form-row--top {
+    align-items: start;
+}
+
+.form-row--top .field label,
+.form-row--top .field .field-label {
+    white-space: nowrap;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+}
+
+.field--wide {
+    flex: 2;
+    min-width: 320px;
+}
+
+.field--item {
+    flex: 2;
+    min-width: 400px;
+}
+
+/* ~25% narrower than the browser's default number-input width (was ~203px). */
+.field--narrow {
+    min-width: 150px;
+}
+
+.field--narrow input {
+    width: 150px;
+}
+
+.field--reset {
+    min-width: 130px;
+}
+
+/* Buttons side by side in a field (Item Priorities: Reset, Export, Import). */
+.field__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.field label,
+.field .field-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+input,
+select,
+button {
+    font: inherit;
+    color: var(--text);
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 10px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+button {
+    cursor: pointer;
+    background: var(--accent-dark);
+    border-color: var(--accent-dark);
+    color: #fff;
+    font-weight: 600;
+}
+
+button:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--panel-alt);
+    border-color: var(--border);
+    color: var(--text-dim);
+}
+
+.btn-secondary:hover {
+    background: var(--border);
+    border-color: var(--text-dim);
+    color: var(--text);
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+/* Page intro: a lead sentence, the rest behind "How it works". */
+.page-lead {
+    margin: 4px 0 6px;
+    color: var(--text-dim);
+}
+
+.page-details {
+    margin-bottom: 14px;
+    color: var(--text-dim);
+}
+
+.page-details summary {
+    width: fit-content;
+    color: var(--accent);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.page-details p {
+    margin: 6px 0 0;
+    max-width: 900px;
+    line-height: 1.5;
+}
+
+/* A page's "How it works": one idea per line, like the mine's rules. */
+.page-details__list {
+    max-width: 900px;
+    line-height: 1.5;
+}
+
+.page-details__list strong {
+    color: var(--text);
+}
+
+.text-dim {
+    color: var(--text-dim);
+}
+
+.text-good {
+    color: var(--good);
+}
+
+.text-bad {
+    color: var(--bad);
+}
+
+.text-gold {
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.text-right {
+    text-align: right;
+    /* For flex-based "cells" (an icon + a span) where text-align alone won't move the
+       flex-laid-out content to the right edge. No effect on plain table cells. */
+    justify-content: flex-end;
+}
+
+.empty-state {
+    color: var(--text-dim);
+    font-style: italic;
+    padding: 12px 0;
+}
+
+.summary-line {
+    margin: 8px 0 0;
+    color: var(--text-dim);
+}
+
+.expand-toggle {
+    background: none;
+    border: none;
+    color: var(--accent);
+    padding: 2px 6px;
+    font-size: 0.85rem;
+}
+
+.expand-toggle:hover {
+    background: none;
+    color: var(--text);
+}
+
+.footnote {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-top: 16px;
+}
+
+.mine-rules__list,
+.page-details__list {
+    margin: 8px 0 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 8px;
+}
+
+.mine-rules__pity,
+.page-details__table {
+    width: auto;
+    min-width: 0;
+    margin-top: 6px;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.mine-rules__pity th,
+.mine-rules__pity td,
+.page-details__table th,
+.page-details__table td {
+    padding: 3px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+}
+
+.mine-rules__pity th:first-child,
+.mine-rules__pity td:first-child,
+.page-details__table th,
+.page-details__table td {
+    text-align: left;
+}
+
+.mine-rules__pity th,
+.page-details__table th {
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+.text-warn {
+    color: var(--warn);
+}
+
+/* Diamond amounts (gold is reserved for Banknotes). */
+.text-diamond {
+    color: var(--accent);
+}
+@media (max-width: 640px) {
+    .wide-only {
+        display: none;
+    }
+}
+
+/* An item name linking to Item Sources ("where do I get this?"): reads as text, shows it's a link on hover. */
+.item-link {
+    color: inherit;
+    text-decoration: underline dotted var(--text-dim);
+    text-underline-offset: 3px;
+}
+
+.item-link:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+}
+
+/* A small secondary button inside a line of text (Events: "Choose events"). */
+.btn-small {
+    margin-left: 6px;
+    padding: 2px 10px;
+    font-size: 0.8rem;
+}
+
+/* Text for phones only (a Details row moving a hidden column's value into a visible one, see ui/grid.js). */
+.phone-only {
+    display: none;
+}
+
+/*
+ * Phones, one pattern for every page: each card is a full-width section (no side margin, border or corner, so the
+ * content gets the whole screen), 16px from the edge; what sits inside a card keeps one frame, with less padding;
+ * tables run edge to edge like a native list, their text still on the 16px line. Secondary grid columns are dropped
+ * (`wide` in grid.js) and names wrap, so no page scrolls sideways.
+ */
+@media (max-width: 640px) {
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    .phone-only {
+        display: inline;
+    }
+
+    main {
+        padding: 8px 0;
+    }
+
+    .card {
+        margin-bottom: 8px;
+        padding: 16px;
+        border-right: none;
+        border-left: none;
+        border-radius: 0;
+    }
+
+    /* Item pickers and wide fields use the whole row. */
+    .field--item,
+    .field--wide {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    /* Tables as lists: edge to edge, the first and last column keep the 16px line. */
+    .card .table-wrap:not(.page-details .table-wrap) {
+        margin-inline: -16px;
+    }
+
+    .card .table-wrap table :is(th, td) {
+        padding-inline: 6px;
+    }
+
+    .card .table-wrap table td:not(.text-right) {
+        overflow-wrap: anywhere;
+        hyphens: auto;
+    }
+
+    .card .table-wrap table :is(th, td):first-child {
+        padding-left: 16px;
+    }
+
+    .card .table-wrap table :is(th, td):last-child {
+        padding-right: 16px;
+    }
+
+    /* Details is a disclosure chevron (its text stays for screen readers): a column of 44px, not 70-105px. */
+    .expand-toggle {
+        min-width: 32px;
+        font-size: 0;
+    }
+
+    .expand-toggle::before {
+        content: '▸';
+        font-size: 1.4rem;
+        line-height: 1;
+    }
+
+    .expand-toggle[aria-expanded='true']::before {
+        content: '▾';
+    }
+
+    /* Touch targets of 44px (Details, Skip, info icons) without making the rows taller: an invisible hit area. */
+    .expand-toggle,
+    .skip-btn,
+    .info-icon {
+        position: relative;
+    }
+
+    .expand-toggle::after,
+    .skip-btn::after {
+        content: '';
+        position: absolute;
+        inset: -11px -6px;
+    }
+
+    /* Item Priorities: name and worth on a line, the priority control under them across the full width. */
+    #items-table thead {
+        display: none;
+    }
+
+    #items-table,
+    #items-table tbody {
+        display: block;
+    }
+
+    #items-table tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px 12px;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    #items-table td {
+        padding: 0;
+        border-bottom: none;
+    }
+
+    #items-table td:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    #items-table td:nth-child(2) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    #items-table td:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1;
+    }
+}

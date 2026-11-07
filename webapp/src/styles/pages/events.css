@@ -1,0 +1,408 @@
+.lock-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.lock-toggle {
+    padding: 2px 6px;
+    background: transparent;
+    border-color: var(--border);
+    font-size: 0.95rem;
+    line-height: 1.2;
+    opacity: 0.55;
+}
+
+.lock-toggle:hover {
+    background: var(--panel);
+    border-color: var(--text-dim);
+    opacity: 1;
+}
+
+.lock-toggle[aria-pressed='true'] {
+    border-color: var(--accent);
+    opacity: 1;
+}
+
+.lock-count {
+    width: 64px;
+    padding: 2px 6px;
+}
+
+/* An offer whose item no pack or other shop gives. */
+.only-here {
+    margin-left: 6px;
+    padding: 1px 6px;
+    border: 1px solid var(--warn);
+    border-radius: 999px;
+    color: var(--warn);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    cursor: help;
+}
+
+/* Floors 0..top as a bar: cleared before, this run (or how far the pickaxes reach), progress-reward ticks. */
+.floor-track {
+    margin: 18px 0 4px;
+}
+
+.floor-track__bar {
+    position: relative;
+    height: 12px;
+    border-radius: 6px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+}
+
+.floor-track__before,
+.floor-track__run {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 6px;
+}
+
+.floor-track__before {
+    left: 0;
+    background: var(--text-dim);
+    opacity: 0.45;
+}
+
+.floor-track__run--dig {
+    background: var(--good);
+}
+
+.floor-track__run--reach {
+    background: repeating-linear-gradient(
+        135deg,
+        var(--warn) 0 6px,
+        color-mix(in srgb, var(--warn) 45%, transparent) 6px 12px
+    );
+}
+
+.floor-track__tick {
+    position: absolute;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    background: var(--panel-alt);
+    border: 2px solid var(--text-dim);
+    cursor: help;
+}
+
+.floor-track__tick--on {
+    background: var(--good);
+    border-color: var(--good);
+}
+
+.floor-track__tick--target {
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border-color: var(--verdict, var(--good));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--verdict, var(--good)) 25%, transparent);
+}
+
+.floor-track__scale {
+    position: relative;
+    height: 18px;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.floor-track__scale > span {
+    position: absolute;
+    transform: translateX(-50%);
+}
+
+.floor-track__scale > span:first-child {
+    transform: none;
+}
+
+.floor-track__scale > span:last-child {
+    transform: translateX(-100%);
+}
+
+.floor-track__scale-target {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.floor-track__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+.floor-track__key::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    border-radius: 3px;
+    vertical-align: -1px;
+}
+
+.floor-track__key--before::before {
+    background: var(--text-dim);
+    opacity: 0.45;
+}
+
+.floor-track__key--dig::before {
+    background: var(--good);
+}
+
+.floor-track__key--reach::before {
+    background: var(--warn);
+}
+
+.floor-track__key--tick::before {
+    border-radius: 50%;
+    border: 2px solid var(--text-dim);
+    width: 6px;
+    height: 6px;
+}
+
+/* How sure the planned pickaxes should be: one card per choice, with its pickaxes. */
+.mine-safety {
+    margin: 14px 0 0;
+    padding: 0;
+    border: none;
+}
+
+.mine-safety legend {
+    padding: 0;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.mine-safety__options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 8px;
+}
+
+.mine-safety__option {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 2px 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+    cursor: pointer;
+}
+
+.mine-safety__option:hover {
+    border-color: var(--accent);
+}
+
+.mine-safety__option--on {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+}
+
+.mine-safety__option input {
+    grid-row: span 2;
+    margin: 0;
+    accent-color: var(--accent);
+}
+
+.mine-safety__amount {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.mine-safety__label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+/* An item icon inside running text (the mine's rules: the pickaxe in front of its name). */
+.mine-rules__list > li > .item-icon {
+    width: 18px;
+    height: 18px;
+    margin: 0 3px 0 1px;
+    border-radius: 4px;
+    vertical-align: -4px;
+}
+
+/* The mine's rules (from the data). */
+.mine-rules {
+    margin: 8px 0 16px;
+}
+
+.mine-rules__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-top: 4px;
+}
+
+/* The pickaxe tile: this run's pickaxes by source, with the target floor's need marked. */
+.pick-total {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.05rem;
+}
+
+.pick-bar {
+    position: relative;
+    display: flex;
+    height: 14px;
+    margin: 12px 0 4px;
+    border-radius: 7px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    min-width: 260px;
+}
+
+.pick-bar__part {
+    height: 100%;
+}
+
+.pick-bar__part:first-child {
+    border-radius: 7px 0 0 7px;
+}
+
+.pick-bar__part:last-of-type {
+    border-radius: 0 7px 7px 0;
+}
+
+.pick-bar__part:only-of-type {
+    border-radius: 7px;
+}
+
+.pick-bar__part--owned,
+.pick-legend__dot--owned {
+    background: var(--purple);
+}
+
+.pick-bar__part--free,
+.pick-legend__dot--free {
+    background: var(--teal);
+}
+
+.pick-bar__part--bonus,
+.pick-legend__dot--bonus {
+    background: var(--accent);
+}
+
+.pick-bar__part--packs,
+.pick-legend__dot--packs {
+    background: var(--series-b);
+}
+
+.pick-bar__mark {
+    position: absolute;
+    top: -5px;
+    bottom: -5px;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--warn);
+}
+
+.pick-bar__mark--met {
+    background: var(--good);
+}
+
+.pick-bar__caption {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-align: right;
+    margin-bottom: 8px;
+}
+
+.pick-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pick-legend > li {
+    display: grid;
+    grid-template-columns: 10px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+}
+
+.pick-legend__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.pick-legend > li.pick-legend__packs {
+    display: block;
+    padding: 0 0 2px 18px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.pick-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    color: var(--text-dim);
+}
+
+.pick-foot strong {
+    color: var(--text);
+}
+
+.cell-list {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip {
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+.chip[data-tooltip] {
+    cursor: help;
+}
+
+.chip--on {
+    border-color: var(--good);
+    color: var(--good);
+}
+
+/* Events page: the event's art before its name in the tabs. */
+.toggle-chip__thumb {
+    width: 32px;
+    height: 16px;
+    margin: -2px 6px -2px -4px;
+    border-radius: 3px;
+    object-fit: cover;
+    vertical-align: middle;
+}
+@media (max-width: 640px) {
+    .lock-count {
+        width: 48px;
+    }
+}

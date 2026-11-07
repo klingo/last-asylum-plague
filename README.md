@@ -138,7 +138,9 @@ npm run record-run -- <ids...> [START] <DAYS>   # records when events / seasonal
 ```
 
 The code is split into `webapp/src/core/` (the valuation: pure modules without DOM, shared with the scripts and
-tests), `webapp/src/ui/` (browser helpers) and `webapp/src/pages/` (one script per page).
+tests), `webapp/src/ui/` (browser helpers), `webapp/src/pages/` (one script per page; a folder with `index.js` and a module per
+section for the big ones) and `webapp/src/styles/` (`base.css`, `components/`, `pages/`). Images are in
+`webapp/public/assets/`, grouped by what they show (`items/<category>/`, `events/`, `heroes/`, `lord/`, `gear/`, `ui/`).
 
 `record-run` fills the `schedule` section of `pack_data.json`: per event, seasonal pass and spend reward track the
 start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;

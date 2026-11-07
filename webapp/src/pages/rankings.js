@@ -5,6 +5,7 @@
  * the plan is solved again without it, on every page).
  */
 import { startPage } from '../ui/page.js';
+import '../styles/pages/rankings.css';
 import { mountValuationPage } from '../ui/valuation-page.js';
 import { getSettings, updateSettings } from '../ui/settings.js';
 import { gameDay } from '../core/schedule.js';

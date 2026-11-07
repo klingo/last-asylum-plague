@@ -1,0 +1,103 @@
+.info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-left: 6px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    color: var(--text-dim);
+    cursor: help;
+    vertical-align: middle;
+}
+
+.info-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.info-icon:hover,
+.info-icon:focus-visible {
+    /* Overrides the global `button:hover` background/border (a solid accent fill), which
+       would otherwise still apply here since `.info-icon` is a plain <button>. */
+    background: none;
+    border-color: transparent;
+    color: var(--accent);
+}
+
+.info-icon:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.app-tooltip {
+    position: absolute;
+    /* "\n" in a tooltip text starts a new line. */
+    white-space: pre-line;
+    /* Above the sticky header. */
+    z-index: 300;
+    max-width: 320px;
+    padding: 6px 10px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    font-size: 0.8rem;
+    color: var(--text);
+    pointer-events: none;
+}
+
+.app-tooltip[hidden] {
+    display: none;
+}
+
+.app-tooltip--image {
+    width: 260px;
+}
+
+/* Rows with an item icon each (info icon with `data-tooltip-rows`): as wide as the longest line, so none breaks. */
+.app-tooltip--rows {
+    width: max-content;
+    max-width: 460px;
+}
+
+.app-tooltip__row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.app-tooltip__row + .app-tooltip__row {
+    margin-top: 3px;
+}
+
+.app-tooltip__row .item-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+}
+
+.app-tooltip__image {
+    display: block;
+    width: calc(100% + 20px);
+    aspect-ratio: 2 / 1;
+    margin: -6px -10px 6px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    object-fit: cover;
+}
+
+/* An ended run (grey bar): mostly grey, slightly dimmed, still recognizable. */
+.app-tooltip__image--muted {
+    filter: grayscale(0.8);
+    opacity: 0.75;
+}
+@media (max-width: 640px) {
+    .info-icon::after {
+        content: '';
+        position: absolute;
+        inset: -14px;
+    }
+}
