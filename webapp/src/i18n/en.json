@@ -147,7 +147,7 @@
         "lastChange": "Last change: {date}"
     },
     "settings": {
-        "heading": "Settings",
+        "heading": "Valuation",
         "description": "Settings that shape every value on every page, saved in this browser.",
         "countVipPoints": "Count VIP points in the worth",
         "impact": "Affects every value on every page",
@@ -165,6 +165,17 @@
             "uncertainInfo": "Items the packs hardly pin down (they appear in few packs, or only alongside the same items). Their worths are the least reliable; the Items page marks them as uncertain.",
             "ofTotal": "{count} of {total}",
             "worstHeading": "Furthest off"
+        },
+        "notifications": {
+            "heading": "Notifications",
+            "description": "Browser notifications while a tab of this app is open. Nothing is shown once every tab is closed, and each browser asks you to allow notifications.",
+            "survivalBattle": "Survival Battle",
+            "survivalBattleOn": "On: a notification when a new round of Survival Battle begins (every 4 hours).",
+            "survivalBattleOff": "Off (default): no notification.",
+            "survivalBattleBody": "The new round of Survival Battle has begun! Complete the quests to enhance your strength!",
+            "denied": "Notifications aren't allowed for this site. Allow them when the browser asks (or in its site settings), then switch this on again.",
+            "unsupported": "This browser can't show notifications.",
+            "revoked": "This setting is on, but notifications are blocked for this site in the browser, so none will be shown."
         }
     },
     "calendar": {
@@ -490,6 +501,7 @@
         "soonEmpty": "Nothing is expected to start in the next 3 days.",
         "expected": "expected",
         "earnPoints": "How to earn points:",
+        "notificationOn": "Notification on: you'll be told when the next round begins (while a tab of this app is open).",
         "offersHeading": "Today's weekday offers",
         "offersEmpty": "No weekday offers on sale today.",
         "planHeading": "Your plan this week",

@@ -33,6 +33,8 @@ const DEFAULT_SETTINGS = {
     vipPointsInWorth: false,
     // Events and passes follow the calendar on every page load (setup bar switch; a change by hand turns it off).
     followsCalendar: true,
+    // A browser notification when a new round of Survival Battle begins, while a tab of the app is open (Settings).
+    notifySurvivalBattle: false,
     extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
     skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Deal Ranking's "Skip", core/skips.js)

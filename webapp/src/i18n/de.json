@@ -147,7 +147,7 @@
         "lastChange": "Letzte Änderung: {date}"
     },
     "settings": {
-        "heading": "Einstellungen",
+        "heading": "Bewertung",
         "description": "Einstellungen, die jeden Wert auf jeder Seite beeinflussen, in diesem Browser gespeichert.",
         "countVipPoints": "VIP-Punkte im Wert mitzählen",
         "impact": "Ändert jeden Wert auf jeder Seite",
@@ -165,6 +165,17 @@
             "uncertainInfo": "Gegenstände, die die Pakete kaum festlegen (sie kommen in wenigen Paketen vor oder nur zusammen mit denselben Gegenständen). Ihre Werte sind am unsichersten; die Seite Gegenstandsprioritäten markiert sie als unsicher.",
             "ofTotal": "{count} von {total}",
             "worstHeading": "Am weitesten daneben"
+        },
+        "notifications": {
+            "heading": "Benachrichtigungen",
+            "description": "Browser-Benachrichtigungen, solange ein Tab dieser App geöffnet ist. Sind alle Tabs geschlossen, wird nichts angezeigt, und jeder Browser fragt, ob Benachrichtigungen erlaubt sind.",
+            "survivalBattle": "Überlebenskampf",
+            "survivalBattleOn": "An: eine Benachrichtigung, wenn eine neue Runde des Überlebenskampfs beginnt (alle 4 Stunden).",
+            "survivalBattleOff": "Aus (Standard): keine Benachrichtigung.",
+            "survivalBattleBody": "Die neue Runde des Überlebenskampfs hat begonnen! Erfülle die Aufgaben, um deine Stärke zu steigern!",
+            "denied": "Benachrichtigungen sind für diese Seite nicht erlaubt. Erlaube sie, wenn der Browser fragt (oder in dessen Website-Einstellungen), und schalte dies dann wieder ein.",
+            "unsupported": "Dieser Browser kann keine Benachrichtigungen anzeigen.",
+            "revoked": "Diese Einstellung ist an, aber Benachrichtigungen sind für diese Seite im Browser blockiert, daher wird nichts angezeigt."
         }
     },
     "calendar": {
@@ -490,6 +501,7 @@
         "soonEmpty": "In den nächsten 3 Tagen wird nichts erwartet.",
         "expected": "erwartet",
         "earnPoints": "So sammelst du Punkte:",
+        "notificationOn": "Benachrichtigung an: Du wirst informiert, wenn die nächste Runde beginnt (solange ein Tab dieser App geöffnet ist).",
         "offersHeading": "Heutige Wochentags-Angebote",
         "offersEmpty": "Heute sind keine Wochentags-Angebote im Verkauf.",
         "planHeading": "Dein Plan diese Woche",

@@ -8,6 +8,7 @@ import {
     listRuns,
     nextRun,
     planningRun,
+    freshSlot,
     rotationSlots,
     rotationWindow,
     runContains,
@@ -507,4 +508,17 @@ test('rotation window: a slot the window cuts is included whole', () => {
     );
     assert.equal(slots[0].start, rotationStart);
     assert.equal(slots[2].end, slotAt(12));
+});
+
+test('a round has just begun while its slot started within the grace time', () => {
+    const grace = 3 * 60000;
+    assert.equal(freshSlot(rotation, slotAt(4), grace).phaseId, 'S', 'the moment it starts');
+    assert.equal(freshSlot(rotation, slotAt(4) + grace, grace).slot, 1, 'up to the grace time');
+    assert.equal(freshSlot(rotation, slotAt(4) + grace + 1, grace), null, 'later: not new any more');
+    assert.equal(freshSlot(rotation, slotAt(4) - 1, grace), null, 'just before the next slot: the old one is not new');
+});
+
+test('the first slot of the next week is a new round too', () => {
+    const weekEnd = rotationStart + 7 * 24 * HOUR;
+    assert.equal(freshSlot(rotation, weekEnd + 60000, 3 * 60000).slot, 0);
 });

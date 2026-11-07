@@ -27,7 +27,30 @@
                 </label>
             </section>
 
-            <!-- How well the fitted worths reproduce the packs' deal % (with the settings above). -->
+            <!-- Browser notifications (only while a tab of the app is open). -->
+            <section class="card settings-notifications">
+                <h2 data-i18n="settings.notifications.heading"></h2>
+                <p class="page-lead" data-i18n="settings.notifications.description"></p>
+                <label class="setting-row" for="notify-survival-battle">
+                    <span class="setting-row__text">
+                        <span class="setting-row__title" data-i18n="settings.notifications.survivalBattle"></span>
+                        <span
+                            class="setting-row__state"
+                            data-state="on"
+                            data-i18n="settings.notifications.survivalBattleOn"
+                        ></span>
+                        <span
+                            class="setting-row__state"
+                            data-state="off"
+                            data-i18n="settings.notifications.survivalBattleOff"
+                        ></span>
+                    </span>
+                    <input type="checkbox" class="switch" id="notify-survival-battle" role="switch" />
+                </label>
+                <p class="text-bad" id="notify-note" hidden></p>
+            </section>
+
+            <!-- How well the fitted worths reproduce the packs' deal % (with the valuation settings above). -->
             <section class="card" id="fit-quality">
                 <h2 data-i18n="settings.quality.heading"></h2>
                 <div class="mine-stats" id="fit-stats"></div>

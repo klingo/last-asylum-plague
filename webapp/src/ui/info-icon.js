@@ -25,6 +25,19 @@ function infoIconHtml(text, rows = null) {
     return `<button type="button" class="info-icon" data-tooltip="${label}"${rowsAttr} aria-label="${label}">${INFO_ICON_SVG}</button>`;
 }
 
+// A bell: a notification is on.
+const BELL_ICON_SVG =
+    '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">' +
+    '<path d="M8 2a3.5 3.5 0 0 0-3.5 3.5V8L3 11h10l-1.5-3V5.5A3.5 3.5 0 0 0 8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />' +
+    '<path d="M6.5 13a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />' +
+    '</svg>';
+
+/** A small bell with `text` (markup-safe) as its tooltip: marks something a notification is switched on for. */
+function bellIconHtml(text) {
+    const label = escapeAttr(text);
+    return `<span class="info-icon bell-icon" tabindex="0" role="img" data-tooltip="${label}" aria-label="${label}">${BELL_ICON_SVG}</span>`;
+}
+
 /** Name of what `requiresId` stands for: a package (with its tier) or an item. */
 function requiredName(requiresId, packages, items, locale) {
     const requiredPackage = packages[requiresId];
@@ -42,4 +55,4 @@ function requiresIconHtml(requiresId, packages, items, locale) {
     return infoIconHtml(t('common.requiresTooltip', { name: requiredName(requiresId, packages, items, locale) }));
 }
 
-export { infoIconHtml, requiresIconHtml };
+export { bellIconHtml, infoIconHtml, requiresIconHtml };

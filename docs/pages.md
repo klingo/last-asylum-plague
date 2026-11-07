@@ -9,8 +9,11 @@ screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
 Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
 **Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work. The cogwheel next to the language switcher opens
-**Settings** (`settings.html`): the settings that shape every value (Count VIP points in the worth) and the model
-quality (how well the fitted worths reproduce the packs' deal %).
+**Settings** (`settings.html`) has three sections: **Valuation**, the settings that shape every value (Count VIP points
+in the worth); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
+4-hour slot of its rotation; switching it on asks the browser for permission, and as there is no server to push from, the
+notification only comes while a tab of the app is open; while it is on, Today marks the Survival Battle bars with a bell); and **Model quality**, how well the fitted worths reproduce the
+packs' deal %.
 
 - **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
   days (recorded runs and proven forecasts), the weekly plan by when to buy it (daily packs, weekly and longer packs,

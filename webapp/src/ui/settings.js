@@ -22,6 +22,9 @@ function loadSettings() {
     if (typeof stored.followsCalendar === 'boolean') {
         settings.followsCalendar = stored.followsCalendar;
     }
+    if (typeof stored.notifySurvivalBattle === 'boolean') {
+        settings.notifySurvivalBattle = stored.notifySurvivalBattle;
+    }
     if (stored.extraCurrency && typeof stored.extraCurrency === 'object') {
         settings.extraCurrency = Object.fromEntries(
             Object.entries(stored.extraCurrency).filter(([, amount]) => Number.isFinite(amount) && amount > 0),

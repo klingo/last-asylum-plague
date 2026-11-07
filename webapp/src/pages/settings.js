@@ -15,6 +15,7 @@ import { formatPercent, formatThousands } from '../ui/format.js';
 import { infoIconHtml } from '../ui/info-icon.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { t } from '../ui/i18n.js';
+import { notificationsSupported, requestNotificationPermission } from '../ui/notifications.js';
 
 let data = null;
 const WORST_COUNT = 3;
@@ -129,21 +130,63 @@ function renderQuality() {
     document.getElementById('fit-worst').innerHTML = worst.join('');
 }
 
+/** Highlights the line of a setting's row that describes the switch's state (the other one is dimmed). */
+function showSettingState(input) {
+    const state = input.checked ? 'on' : 'off';
+    for (const line of input.closest('.setting-row').querySelectorAll('.setting-row__state')) {
+        line.classList.toggle('setting-row__state--active', line.dataset.state === state);
+    }
+}
+
 /** One setting's switch: shows the stored value with the line describing it highlighted (the other one dimmed). */
 function wireSetting(id, key) {
     const input = document.getElementById(id);
-    const showState = () => {
-        const state = input.checked ? 'on' : 'off';
-        for (const line of input.closest('.setting-row').querySelectorAll('.setting-row__state')) {
-            line.classList.toggle('setting-row__state--active', line.dataset.state === state);
-        }
-    };
     input.checked = getSettings()[key] === true;
-    showState();
+    showSettingState(input);
     input.addEventListener('change', () => {
         updateSettings({ [key]: input.checked });
-        showState();
+        showSettingState(input);
         renderQuality();
+    });
+}
+
+// Why notifications can't be on (the text key), shown under the switch; null = nothing to say.
+let notifyNote = null;
+
+function renderNotifyNote() {
+    const note = document.getElementById('notify-note');
+    note.hidden = notifyNote === null;
+    note.textContent = notifyNote === null ? '' : t(notifyNote);
+}
+
+/**
+ * The Survival Battle notification switch. Switching it on asks the browser for permission (from this click); if it
+ * isn't given, or there are no notifications in this browser, the switch goes back off and says why.
+ */
+function wireNotifications() {
+    const input = document.getElementById('notify-survival-battle');
+    input.checked = getSettings().notifySurvivalBattle === true;
+    showSettingState(input);
+    if (input.checked && (!notificationsSupported() || Notification.permission !== 'granted')) {
+        // Still on, but the browser no longer allows it: nothing will be shown.
+        notifyNote = 'settings.notifications.revoked';
+    }
+    renderNotifyNote();
+    input.addEventListener('change', async () => {
+        notifyNote = null;
+        if (input.checked) {
+            const permission = await requestNotificationPermission();
+            if (permission !== 'granted') {
+                input.checked = false;
+                notifyNote =
+                    permission === 'unsupported'
+                        ? 'settings.notifications.unsupported'
+                        : 'settings.notifications.denied';
+            }
+        }
+        updateSettings({ notifySurvivalBattle: input.checked });
+        showSettingState(input);
+        renderNotifyNote();
     });
 }
 
@@ -152,7 +195,11 @@ startPage('settings', {
         data = packData;
         hydrateItemIcons(document.querySelector('.settings-values'));
         wireSetting('count-vip-points', 'vipPointsInWorth');
+        wireNotifications();
         renderQuality();
     },
-    onLocaleChange: renderQuality,
+    onLocaleChange() {
+        renderQuality();
+        renderNotifyNote();
+    },
 });

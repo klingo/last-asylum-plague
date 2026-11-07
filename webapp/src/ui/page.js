@@ -25,6 +25,7 @@ import { renderNav } from './nav.js';
 import { applyStaticTranslations, tHtml } from './i18n.js';
 import { loadPackData } from './data.js';
 import { removeLegacyKeys } from './storage.js';
+import { startNotifications } from './notifications.js';
 import { escapeHtml } from './html.js';
 
 function showLoadError(error) {
@@ -56,6 +57,7 @@ function startPage(pageId, { init = null, onLocaleChange = null, withData = true
         if (data) {
             // Following the calendar: today's events and passes before the page computes anything.
             followCalendar(data);
+            startNotifications(data);
         }
         await init?.(data);
         ready = true;

@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
     setupOpen: 'lapkc_setup_open', // '1' | '0': the setup bar's controls shown
     gearProgress: 'lapkc_gear_progress', // the Gear Upgrade Path's progress per guide and faction
     lordSetup: 'lapkc_lord_setup', // the Lord Specialty's level, extra points, lord and builds
+    notified: 'lapkc_notified', // the last notification shown per kind, so tabs and reloads don't repeat it
 };
 
 // What earlier versions of the app saved (prefix `lasps_`): nothing reads it any more, so it is removed.

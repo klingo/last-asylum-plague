@@ -11,7 +11,8 @@ import { getSettings } from '../ui/settings.js';
 import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, itemIconSlot, tileHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { eventPlanHref, pageHref } from '../ui/url.js';
-import { infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
+import { bellIconHtml, infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
+import { notifiesRotation } from '../ui/notifications.js';
 import { SCHEDULE_KIND_LABELS, SCHEDULE_KINDS, packageDisplayName, packageIcon } from '../ui/labels.js';
 import {
     gridCell,
@@ -105,6 +106,7 @@ function rotationEntry(rotation, slot, state) {
         href: null,
         dates: slotRangeText(slot.start, slot.end),
         earnPoints: slot.phase.earn_points || [],
+        notify: notifiesRotation(rotation),
         start: slot.start,
         end: slot.end,
     };
@@ -163,6 +165,7 @@ function entryHtml(entry) {
                     ${entry.description ? `<span class="today-entry__description">${escapeHtml(entry.description)}</span>` : ''}
                     ${planShare ? `<span class="today-entry__description">${planShare}</span>` : ''}
                     ${earnRows ? infoIconHtml(earnRows.map((row) => row.text).join('\n'), earnRows) : ''}
+                    ${entry.notify ? bellIconHtml(t('today.notificationOn')) : ''}
                 </span>
                 <span class="today-entry__dates">${escapeHtml(entry.dates)}</span>
             </div>

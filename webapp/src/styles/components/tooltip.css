@@ -19,6 +19,11 @@
     height: 100%;
 }
 
+/* A bell (a notification is on): lit, unlike the dim info icon. */
+.bell-icon {
+    color: var(--accent);
+}
+
 .info-icon:hover,
 .info-icon:focus-visible {
     /* Overrides the global `button:hover` background/border (a solid accent fill), which
