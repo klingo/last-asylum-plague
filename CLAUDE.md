@@ -55,6 +55,7 @@ A static webapp that values items, packages and exchange-shop offers from `data/
 ```bash
 npm run verify-data                                          # validate data/pack_data.json (schema, references, item worth, pack worth vs deal %, code labels)
 npm run lint                                                  # eslint .
+npm run format:check                                          # prettier --check (npm run format fixes); CI runs it with lint
 npm test                                                      # node:test: unit tests + golden files (test/)
 npm run test:coverage                                         # the same with Node's coverage of core/, ui/, scripts/; fails below 90 % lines / 85 % branches / 90 % functions
 UPDATE_GOLDEN=1 npm test                                      # rewrite test/golden/*.json (only for an intended change)
@@ -82,11 +83,17 @@ One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitH
 `webapp/src/pages/<page>.js` (`<page>/index.js` for the big pages: Events, Gear, Calendar; their sections are modules next to
 it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui/page.js`).
 
-- `webapp/src/core/` holds the pure modules (fit, valuation, planner, Compare, schedule, gear path, ...). No DOM or
-  i18n, imports only `core/`, explicit `.js` extensions; ESLint fails on `document`, `window` or a `../ui` import.
-  Scripts and tests import it directly. Core modules take the data from `normalizePackData`, not the raw file.
-  Each module's header comment says what it does; read it before changing the module.
-- `webapp/src/ui/` holds the browser helpers (settings in localStorage, i18n, formatting, grids, the setup bar).
+- `webapp/src/core/` holds the pure modules (fit, planner, Compare, schedule, gear path, ...). No DOM or i18n, imports
+  only `core/` (and the `highs` package in `lp.js`), explicit `.js` extensions; ESLint fails on `document`, `window` or a
+  `../ui` import. Scripts and tests import it directly. Core modules take the data from `normalizePackData`, not the raw
+  file. Each module's header comment says what it does; read it before changing the module. Logic a page needs goes
+  here, not into the page: `settings-model.js` (defaults, priorities, the planner options the settings make),
+  `event-plan.js` and `plan-view.js` (what the Events, Today and Ranking pages show of a plan), `step-analysis.js` (the
+  "spend more" tables), `gear-progress.js` (the gear page's progress), plus the page-specific parts of `catalog.js`,
+  `schedule.js`, `mine.js` and `item-sources.js`.
+- `webapp/src/ui/` holds the browser helpers: `valuation.js` (the worth model on top of the planner), `valuation-page.js`
+  (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage),
+  `i18n.js`, `format.js`, `datetime.js`, `html.js`, `labels.js`, `url.js`, `grid.js` and the other builders of markup.
 - `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (loaded on every page by
   `ui/page.js`, in that order) and `pages/<page>.css` (the page script imports its own, after the shared ones). A rule keeps
   its place inside its file; a rule that overrides another of the same specificity (a phone `@media` over the base rule) lives
@@ -94,7 +101,8 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
 - `webapp/public/assets/` holds the images: `items/<category>/` (images not sorted yet are found directly in `items/`),
   `events/`, `heroes/`, `lord/`, `gear/{stars,classes,factions}/` and `ui/` (the placeholder icon, the Banknote icon).
 - `webapp/src/i18n/{en,de}.json` holds UI texts and code labels. `scripts/` holds verify-data, i18n:missing,
-  record-run and the commit hooks.
+  record-run and the commit hooks (`scripts/lib/` holds what they share: the data file paths and JSON format, the
+  code labels). A script exports its pure parts for the tests and runs `main()` only when started directly.
 - Pages read their selection from the URL (`?item=`, `?event=`, `?track=`, Compare's `?a=&an=&b=&bn=&days=`), so
   links between pages and reloads keep it.
 
@@ -142,7 +150,7 @@ the Diamond Golden Egg) is worth that currency at its marginal value too (`itemP
   fit. Alliance chests, ... start at Don't care but stay in the fit; VIP points are fixed at 0 in the fit itself
   (`zeroItems`, everywhere) unless the Settings page's "Count VIP points" setting (default off) is on. Moon Coins and Star Moon Sigils are
   deliberately unmodelled (`UNMODELLED_ITEMS`).
-- There is ONE model (`valuation.js`): the weekly-budget MILP/LP (`planner.js`, HiGHS) maximizing points under
+- There is ONE model (`ui/valuation.js` over `core/planner.js`): the weekly-budget MILP/LP (`planner.js`, HiGHS) maximizing points under
   purchase limits at the user's weekly spend; worth = points ÷ the marginal points per Banknote. Every page uses it
   (Spend Rewards re-solves it per tier); Event Shops shows an event's slice plus what-if options.
 - Compare is the exception: `acquire.js` (`solveNeeds`) is an exact minimum-cost MILP over every conversion,
@@ -155,5 +163,6 @@ the Diamond Golden Egg) is worth that currency at its marginal value too (`itemP
 
 ## Reference Documents
 
-- `README.md` — webapp pages, valuation model, GitHub Pages deployment.
+- `README.md` — what the project is, how to run, edit, test and deploy it.
+- `docs/pages.md` — the pages one by one; `docs/valuation.md` — how the worth is calculated, the schedule and its forecasts.
 - `data/pack_data.schema.json` — full shape of `pack_data.json`.

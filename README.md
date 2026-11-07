@@ -1,170 +1,93 @@
 # Klingo's Companion for Last Asylum: Plague
 
-A small static webapp (in `webapp/`) that values items, packages and exchange-shop offers from
-`data/pack_data.json` (Last Asylum: Plague), computed live in the browser and deployed to GitHub Pages.
+[![Verify and deploy](https://github.com/klingo/last-asylum-plague/actions/workflows/deploy-webapp.yml/badge.svg)](https://github.com/klingo/last-asylum-plague/actions/workflows/deploy-webapp.yml)
 
-## How worth is calculated
+A small static webapp that values the items, packages and exchange-shop offers of the mobile game **Last Asylum:
+Plague** from `data/pack_data.json`. Everything is computed live in the browser (no server) and deployed to GitHub
+Pages: **https://klingo.github.io/last-asylum-plague/**
 
-Almost every pack gives about one diamond per Banknote plus "bonus" items, so a pack's price can't be split across
-its contents without a common value scale. The tool uses one:
+It answers "what is this pack worth at my weekly spend?": a Deal Ranking of every package on sale, the plan for each
+event shop, seasonal passes and spend reward tracks, item sources, comparisons, a calendar of what runs when, and
+planners for gear upgrades and the lord's specialty skills. Texts are in English and German.
 
-- **Points** — every item has a relative worth in points (diamonds = 1). Nothing is hardcoded: base items are
-  fitted live from the game's own deal percentages (every pack says what its contents are worth in diamonds;
-  exchange-shop prices are used as weak extra hints), everything else is derived from what it contains (chests:
-  expected contents, choice chests: best option, omni shards: the shard they replace, crafting chains: 4:1).
-  Recipes (`crafted_from`, e.g. 800 UR Epigraph Shards → any UR Epigraph IV, 9 Lv.1 → 1 Lv.3 raven gear) cap an
-  item at its crafting cost. Moon Coins and Star Moon Sigils are not modelled. Diamonds, event
-  coins and dig-event pickaxes have no points of their own: they are worth what their shop offers buy (diamonds: the
-  VIP shop) or what the floors they dig give.
-- **Your priorities** — on the Item Priorities page each item is Don't care (0%), Low (50%), Normal (100%) or High
-  (200%) of its worth; chests, choices and packs follow. VIP points, alliance chests, Top-Up EXP, Stamina and
-  Direct Relocate start at Don't care. They still count in the fit (the game's deal % pays for them), so the rest of a
-  pack isn't worth more for it. VIP points are the exception: by default ("Count VIP points in the worth" off on the
-  Settings page, the cogwheel in the header) they're worth 0 in the fit too, so the other contents carry each pack's whole price, on every page;
-  switched on, the worth follows the game's deal % for them as well.
-- **Banknote worth** — one weekly optimisation (linear program, [HiGHS](https://highs.dev/) compiled to
-  WebAssembly): the best purchases for your weekly Banknote spend within all purchase limits, passes and the events
-  you tick. Worth = points ÷ what your last Banknote buys; diamonds and coins at what one more unit could still buy
-  this week (at most what their best offer with room left gives, 0 once the shops are exhausted; a shop's bonus tiers
-  don't raise it). A ratio of 1.0 or more = worth buying at your weekly spend.
+- [docs/pages.md](docs/pages.md): every page and what it shows.
+- [docs/valuation.md](docs/valuation.md): how the worth is calculated, and how the schedule and its forecasts work.
 
-## Pages
+## Quick start
 
-The top nav starts with **Today** (the home page) and **Calendar**, then groups the other pages into menus (`NAV_GROUPS` in
-`webapp/src/ui/nav.js`; each page's short description is the `title` of its link: shown on hover, read out by
-screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
-Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
-**Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
-`events.html`, `gear.html`, ...), so saved links still work. The cogwheel next to the language switcher opens
-**Settings** (`settings.html`): the settings that shape every value (Count VIP points in the worth) and the model
-quality (how well the fitted worths reproduce the packs' deal %).
-
-- **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
-  days (recorded runs and proven forecasts), the weekly plan by when to buy it (daily packs, weekly and longer packs,
-  weekday offers, each event's packs and how many different shop offers it buys, linking to its Event Shops tab) and
-  today's weekday offers with their ratio, what the plan buys and what each gives (Details). Running entries are
-  ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
-  plan buys from it.
-  Survival Battle (`event_rotations` in `pack_data.json`: the 42 four-hour slots of its week, from Sunday's reset, the
-  same every week) shows the phase on now and the next one, with their local times and how to earn points in them.
-
-- **Deal Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
-  ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
-  "other pick" when a bundle or another member of its group is bought instead; "for the bonus tiers" when a pack below
-  1.0 is bought because its coins reach an event shop's bonus tiers). "Plan only" shows just the weekly
-  shopping list, the Type pills filter by kind; entries of unknown worth are listed unranked. A pack the plan
-  buys has a small "Skip": the plan is made again without it (and without the higher tiers that need it), so the
-  weekly spend is filled up with other packs, on every page. The row stays, faded, with Undo; a skip lasts until the
-  weekly reset or until its event / pass is over, whichever comes first.
-- **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see below; each entry with the
-  game's art, a hover card with how long is left, and a click opens its plan), the Weekday Offers of the next 7 days
-  and, for each event rotation (Survival Battle), a chart of today and the next 6 days: one row per phase, a bar for
-  each 4-hour slot (elapsed ones grey), a line for the phase on now, local times in the hover card.
-- **Event Shops** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
-  its part of the same weekly plan: which event packs
-  to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
-  and a step table of how much spending more on the event still pays off. A shop whose coin no pack gives (Thief Hunt's lion coins, earned by killing thieves) has an "Extra coins per week" field: you enter what you expect to earn, and the plan spends it on the best offers per coin. Dig events (Dwarven Mine, `mines` in
-  `pack_data.json`) take the pickaxes you own and the floor you've reached; the plan counts the days left of the
-  run (daily pack limits, 14 free pickaxes a day, +6 on days with a pack bought) and digs the floors in order at the
-  expected digs per floor (`core/mine.js`). Unused pickaxes carry over to the next run but the floors don't, so it
-  only digs a run that reaches the last progress reward (floor 100), and never past it (once there, the rest is saved
-  for the next run). A verdict card on top says dig or not, with a floor track (floors cleared before, this run's
-  floors or how far your pickaxes would reach) and the key numbers: the pickaxes still missing, what they'd cost and
-  give, or that the packs can't give them in the days left. The digs are random, so you choose how sure to be (the
-  exact distribution of a run's digs): the average ≈ 676 for floor 100 (enough in about 1 of 2 runs), 695 (9 in 10),
-  710 (99 in 100) or the worst case 780 (the default, saved in the browser); the plan counts with your choice, and the
-  card shows the chance your pickaxes suffice. The floor table also lists the floors above 100 (worth and ratio, never
-  dug); Details lists a stretch's progress reward, the wish rewards and
-  the expected tile loot; "How the mine works" lists the rules from the data. The
-  pickaxe tile shows where they come from as a bar (owned, free, purchase bonus, each pack) and what's left for the
-  next run. Extra Banknotes for an event are a cap: the plan only spends them where they buy at least what your last
-  normal Banknote does.
-- **Item Sources** (`sources.html`) — pick one item: every pack and shop offer on sale this week that gives it,
-  nested at any depth (e.g. SR Resource Supplies → Herbs), ranked by Banknotes per unit, with how much each gives and
-  an item ratio (worth of the item alone ÷ price).
-- **Item Priorities** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
-- **Best Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
-  packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.
-- **Compare Items** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get
-  it within N days (crafting, choices and shops included, with a shop's free coins; weekly limits reset on Monday).
-- **Spend Rewards** (`spend-rewards.html`) — the track's banner and when it runs, and per tier of a spend track, what
-  the extra Banknotes buy (the best packs
-  still available at that total spend) plus the tier reward, as a step ratio: spend more while it's 1.0 or more.
-- **Seasonal Passes** (`seasonal-passes.html`) — pick a seasonal pass (`?pass=<family id>`; the one running today is
-  pre-selected, and the Calendar's pass bars link here): its banner and when it runs, its price, everything the
-  whole pass gives (all tiers) with each item's worth, and the pass's worth against its price as a ratio, plus the
-  tiers your weekly plan buys.
-- **Gear Upgrade Path** (`gear.html`) — a squad (2 tanks in front, carries and support behind, each hero with its sword,
-  armor, gauntlets and boots) and the guide to its UR gear in two phases: first crafting every piece, then two
-  queues, one card each: the next level step and the next star step (star steps use Gear Blueprints, so you pick the
-  one that fits what you have). A step that needs the other queue first says which one. A switch picks the hero
-  faction (Warriors, Rangers, Warlocks: same path, other heroes); progress is saved in the browser, per faction. Data:
-  `heroes` (rarity, faction, class, image), `gear_upgrades` (level caps by stars, minimum levels for stars,
-  blueprints, optional cost tables) and `squad_guides` (formation, slots with a hero class and a hero per faction,
-  `craft_path` / `level_path` /
-  `star_path`) in `pack_data.json`; `verify-data` checks that the paths can be completed without a deadlock.
-- **Lord Specialty** (`lord-specialty.html`) — a planner for the specialty skills of the two lords (Handyman, Legion
-  Commander), drawn like the game's tree: Lv.1 at the bottom, a specialty skill left and right of every unlock level,
-  hexagons for active ones, squares for passive ones. Left click adds a point, right click removes one, hovering shows
-  what a specialty skill does (on a phone: tap adds, a long press removes). Above the tree you enter your level and
-  extra Specialty Skill Points (saved in the browser): specialty skills above your level are grey and take no points
-  (points they already have stay, with a red count, so lowering the level doesn't lose the build). The bar shows what
-  the build requires ("Legion Commander: Lv.31", extra points only beyond the season's highest level), red while you
-  can't have it yet, and your Specialty Points left. A preview switch shows the specialty skills of later seasons (Lv.45/50, greyed out). The lord and
-  the build are in the URL (`?lord=&t=`, one digit per specialty skill), so a link shares the build; the browser also
-  saves the lord and each lord's build (a shared link's build replaces yours only once you change it). Data:
-  `data/lord_specialty.json` (its own schema, checked by `verify-data`; icons in `webapp/public/assets/lord/`).
-
-Weekly spend, events, seasonal passes on sale (e.g. the Gear Pass) and item priorities are shared by all pages
-(saved in the browser). In the setup bar, events and passes the calendar shows running today carry a green dot, and
-"Follow the calendar" (on by default) switches to exactly those and keeps them up to date on every page load ("Following the
-calendar" in the bar while it's on); selecting or unselecting an event or pass yourself turns it off; the bar also
-shows what your last Banknote buys (hover it for the
-explanation). Item names link to Item Sources, and the pages keep their selection in the URL (a reload or a shared
-link opens the same item, event, track or comparison). On phones the tables drop their secondary columns. Item images:
-drop a `<item_id>.png` into `webapp/public/assets/items/<category>/` (e.g. `items/chest/`; images not sorted yet are also found directly in `items/`, placeholder otherwise). Every item's `rarity`
-(`mr`, `ur`, `ssr`, `sr`, `r`, or `null` for none) colours its image's border.
-
-### Running locally
+Needs Node.js 22.8 or newer.
 
 ```bash
 npm install                    # first time only (one package for everything)
 npm run webapp:dev             # Vite dev server; the app imports data/pack_data.json directly
-npm test                       # unit + golden tests (test/)
-npm run test:coverage          # the same with coverage of core/, ui/ and scripts/ (coverage/lcov.info); fails below the thresholds
-npm run verify-data            # validates pack_data.json (schema, references, deal % fit, items without a worth, packs far off their deal %, code labels)
-npm run i18n:missing -- de     # what German still lacks (UI texts, code labels, data names)
-npm run record-run -- <ids...> [START] <DAYS>   # records when events / seasonal passes / spend tracks run (--show)
+npm run webapp:build           # production build into webapp/dist (npm run webapp:preview serves it)
+npm run lint                   # eslint
+npm run format:check           # prettier --check (npm run format fixes)
 ```
 
-The code is split into `webapp/src/core/` (the valuation: pure modules without DOM, shared with the scripts and
-tests), `webapp/src/ui/` (browser helpers), `webapp/src/pages/` (one script per page; a folder with `index.js` and a module per
-section for the big ones) and `webapp/src/styles/` (`base.css`, `components/`, `pages/`). Images are in
-`webapp/public/assets/`, grouped by what they show (`items/<category>/`, `events/`, `heroes/`, `lord/`, `gear/`, `ui/`).
+## Project structure
 
-`record-run` fills the `schedule` section of `pack_data.json`: per event, seasonal pass and spend reward track the
-start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;
-the end is computed from the number of days). Recording the same start again corrects the length. Gameplay
-events, those without packs (`"category": "ingame_event"` in `events`), can be tracked this way too. The Calendar page shows it as the Event
-Schedule timeline (this week and the next three) with a simple forecast: an entry recorded at least twice
-repeats its usual rhythm (median days between starts, median length). Once the gaps between its runs repeat (a proven
-pattern) its forecast runs count as runs, also today and in the past (Follow the calendar, Running now, ...), so they
-need no recording; 8 weeks after its last recorded run it is a rough guess again until the latest run is recorded
-(`record-run --show` lists those). Below it, Weekday Offers shows which
-`weekly_rotation` packs are on sale today and in the next 6 days (from their `available_days`), each with the
-image of its main item (the package's `icon`, else its first item other than diamonds, VIP points, alliance chests, ...).
+```text
+data/                   pack_data.json (+ schema) and lord_specialty.json (+ schema): the game's data
+webapp/                 the HTML pages (their URLs are the Pages URLs), vite.config.js
+  src/core/             the valuation and planning: pure modules without DOM, shared with the scripts and tests
+  src/ui/               browser helpers: settings, i18n, formatting, grids, the setup bar
+  src/pages/            one script per page (a folder with index.js and a module per section for the big ones)
+  src/styles/           base.css, components/ (every page) and pages/ (one file per page)
+  src/i18n/             en.json and de.json: UI texts and the labels of the data's codes
+  public/assets/        images: items/<category>/, events/, heroes/, lord/, gear/, ui/
+scripts/                verify-data, i18n:missing, record-run and the commit hooks (lib/: what they share)
+test/                   unit tests (core/, ui/, scripts/) and golden tests on a frozen copy of the data
+docs/                   pages.md and valuation.md
+```
 
-### Deploying to GitHub Pages
+## Editing the data
 
-`.github/workflows/deploy-webapp.yml` verifies the data, lints, tests and builds the webapp with the current
-`data/pack_data.json`, then deploys it on every push to `master`, or manually via "Run workflow". The same checks run on
-every pull request into `master` (without deploying). Since the webapp computes everything live from that data, the
-deployed site is always in sync with `data/pack_data.json` at deploy time.
+1. Edit `data/pack_data.json` (its shape: `data/pack_data.schema.json`).
+2. `npm run verify-data` checks the schema, the references, items without a worth, packs far off their deal %, code
+   labels and the image files.
+3. On commit, a hook sorts the file, stamps `metadata.last_updated` and formats it (husky + lint-staged).
+4. `npm run i18n:missing -- de` lists what German still lacks: UI texts, code labels and data names. The German names
+   in the data are taken from the game by hand, never translated or guessed.
+5. `npm run record-run -- <ids...> [START] <DAYS>` records when events, seasonal passes and spend reward tracks run
+   (`--show` lists them), e.g. `npm run record-run -- strange_bazaar 2026-10-12 7`.
 
-Every page footer shows two stamps: when the data was last updated (`metadata.last_updated`) and when the site last changed.
-The second is filled in at build time (`__LAST_CHANGE__` in `webapp/vite.config.js`) from the date of the latest commit, so
-a rebuild without a change keeps it, and a code-only change updates it.
+Item images: drop a `<item_id>.png` into `webapp/public/assets/items/<category>/` (e.g. `items/chest/`; images not
+sorted yet are also found directly in `items/`, a placeholder shows otherwise). An item's `rarity` (`mr`, `ur`, `ssr`,
+`sr`, `r`, or `null` for none) colours its image's border.
 
-One-time repository setup: in **Settings → Pages**, set **Source** to **GitHub Actions**. To make a PR need passing
-checks before it can be merged, add a branch protection rule (or ruleset) for `master` under **Settings → Branches**
-with **Require status checks to pass before merging** and select `verify-data` (plus `lint`, `test`, `build` if wanted).
+## Testing
+
+```bash
+npm test                       # unit tests + golden tests (test/)
+npm run test:coverage          # the same with coverage of core/, ui/ and scripts/ (coverage/lcov.info)
+UPDATE_GOLDEN=1 npm test       # rewrite test/golden/*.json, only for a change of the model that is intended
+```
+
+The unit tests run on small inline data; the golden tests pin the fit, the weekly plan, Compare, Item Sources and the
+gear path order on a frozen copy of the data (`test/fixtures/pack_data.json`), so a data change doesn't move them but a
+change of the model does. `test:coverage` fails below 90 % lines, 85 % branches and 90 % functions (set in
+`package.json`) and counts the files the tests import: the DOM-bound code (`pages/`, parts of `ui/`) is not in it.
+
+## Deploying to GitHub Pages
+
+`.github/workflows/deploy-webapp.yml` verifies the data, checks the code (lint and formatting), tests with coverage and
+builds the webapp with the current `data/pack_data.json`; every push to `master` (or "Run workflow") then deploys it
+once all four jobs have passed. The same checks run on every pull request into `master`, without deploying. Since the
+webapp computes everything live from that data, the deployed site is always in sync with `data/pack_data.json` at
+deploy time.
+
+Every page footer shows two stamps: when the data was last updated (`metadata.last_updated`) and when the site last
+changed. The second is filled in at build time (`__LAST_CHANGE__` in `webapp/vite.config.js`) from the date of the
+latest commit, so a rebuild without a change keeps it, and a code-only change updates it.
+
+One-time repository setup: in **Settings → Pages**, set **Source** to **GitHub Actions**. To make a pull request need
+passing checks before it can be merged, add a branch protection rule (or ruleset) for `master` under **Settings →
+Branches** with **Require status checks to pass before merging** and select `verify-data`, `lint`, `test` and `build`.
+
+Dependabot proposes updates to the npm packages and the GitHub Actions every week (`.github/dependabot.yml`).
+
+## Disclaimer
+
+This is a fan-made tool. It is not affiliated with, endorsed by or connected to the publisher of Last Asylum: Plague.
+The game's names, art and data belong to their owners.

@@ -8,10 +8,9 @@ on:
         branches: [master]
     workflow_dispatch: {}
 
+# Least privilege: the jobs only read the repository; the deployment alone may write to Pages.
 permissions:
     contents: read
-    pages: write
-    id-token: write
 
 # Only allow one concurrent deployment, cancelling in-progress runs. A PR has its own group, so its checks can
 # neither cancel a deployment nor be cancelled by one.
@@ -27,14 +26,8 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v5
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v5
-              with:
-                  node-version: 24
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci
+            - name: Setup the project
+              uses: ./.github/actions/setup
 
             - name: Verify pack data
               run: npm run verify-data
@@ -45,17 +38,14 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v5
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v5
-              with:
-                  node-version: 24
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci
+            - name: Setup the project
+              uses: ./.github/actions/setup
 
             - name: Lint
               run: npm run lint
+
+            - name: Check the formatting
+              run: npm run format:check
 
     test:
         runs-on: ubuntu-latest
@@ -63,14 +53,8 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v5
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v5
-              with:
-                  node-version: 24
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci
+            - name: Setup the project
+              uses: ./.github/actions/setup
 
             # The coverage run is the test run: it fails below the thresholds in package.json.
             - name: Test with coverage
@@ -95,18 +79,16 @@ jobs:
 
     build:
         runs-on: ubuntu-latest
+        # `pages: read`: configure-pages looks up the site's settings.
+        permissions:
+            contents: read
+            pages: read
         steps:
             - name: Checkout
               uses: actions/checkout@v5
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v5
-              with:
-                  node-version: 24
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci
+            - name: Setup the project
+              uses: ./.github/actions/setup
 
             - name: Build the webapp
               run: npm run webapp:build
@@ -123,9 +105,12 @@ jobs:
                   path: webapp/dist
 
     deploy:
-        needs: [build, lint, test]
+        needs: [verify-data, build, lint, test]
         if: github.event_name != 'pull_request'
         runs-on: ubuntu-latest
+        permissions:
+            pages: write
+            id-token: write
         environment:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}
