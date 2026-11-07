@@ -636,7 +636,7 @@
                     "type": "object",
                     "required": ["currency_item_id", "currency_cost", "points"],
                     "additionalProperties": false,
-                    "description": "Another way to earn progress points, bought with a currency (e.g. an Encounter: 100 diamonds = 10 points). Its own rewards are not modelled.",
+                    "description": "Another way to earn progress points, bought with a currency (e.g. an Encounter: 100 diamonds = 10 points). `rolls` is what one purchase gives: a list of independent drop tables, each rolled once (probabilities under 1 in total = nothing otherwise). `free_per_day` free ones come every day of the run (they give the same points and reward and are always taken), and `purchase_limit` / `limit_type` cap the free and the bought ones together.",
                     "properties": {
                         "currency_item_id": {
                             "$ref": "#/definitions/id"
@@ -648,6 +648,28 @@
                         "points": {
                             "type": "number",
                             "exclusiveMinimum": 0
+                        },
+                        "rolls": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "$ref": "#/definitions/randomItemDrop"
+                                }
+                            }
+                        },
+                        "free_per_day": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "purchase_limit": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "limit_type": {
+                            "$ref": "#/definitions/limitType"
                         }
                     }
                 },

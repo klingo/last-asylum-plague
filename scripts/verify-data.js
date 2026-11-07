@@ -436,6 +436,25 @@ async function verifyData() {
                 }
             }
 
+            (shop.point_purchase?.rolls || []).forEach((roll, i) => {
+                const total = roll.reduce((sum, drop) => sum + drop.probability, 0);
+                if (total > 1.001) {
+                    reportError(
+                        'Probability',
+                        `Exchange shop "${shopId}" point_purchase roll #${i + 1} probabilities sum to ${total.toFixed(5)} (expected at most 1.0)`,
+                    );
+                }
+                for (const itemId of roll.flatMap((drop) => Object.keys(drop.contains))) {
+                    referencedItemKeys.add(itemId);
+                    if (!itemKeys.has(itemId)) {
+                        reportError(
+                            'Shop Reference',
+                            `Exchange shop "${shopId}" point_purchase roll #${i + 1} contains unresolvable item: "${itemId}"`,
+                        );
+                    }
+                }
+            });
+
             if (shop.bonus_tiers && typeof shop.bonus_tiers === 'object') {
                 for (const [tier, contents] of Object.entries(shop.bonus_tiers)) {
                     if (!contents || typeof contents !== 'object') {

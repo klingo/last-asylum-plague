@@ -38,7 +38,7 @@ import { resolveItemValues, bundleValue } from './item-values.js';
 import { fitItemPoints } from './point-fit.js';
 import { currencyItemIds, isEventActive, packageWeeklyCapacity, offerWeeklyCapacity, isOnSale } from './catalog.js';
 import { DAYS_PER_WEEK } from './schedule.js';
-import { isRandomItem } from './items.js';
+import { isRandomItem, expectedRolls } from './items.js';
 import { addPackageRules } from './package-rows.js';
 import { expandSkips } from './skips.js';
 import { createModel, addTerm, linkRow, solutionValue, solveModel, varName } from './lp.js';
@@ -205,20 +205,22 @@ function addEventRows(ctx, packageVars, { budget, eventSpend, eventBudget, extra
 
 /**
  * Exchange shops of the running events (and those without event): offers, progress points (bonus tiers,
- * offer unlocks) and point purchases. Returns `{ offerVars, tierVars, pointPurchaseVars, fixedVars }`.
+ * offer unlocks) and point purchases. Returns `{ offerVars, tierVars, pointPurchaseVars, freePointVars, fixedVars }`.
  */
-function addShops(ctx, { activeEventIds, lockedOffers }) {
+function addShops(ctx, { activeEventIds, lockedOffers, eventDaysLeft }) {
     const { model, shops, values } = ctx;
     const offerVars = new Map();
     const tierVars = new Map();
     const pointPurchaseVars = new Map(); // name -> shopId
+    const freePointVars = new Map(); // name -> { shopId, count } of the free point purchases (daily Encounters)
     const fixedVars = new Map(); // offer variable -> { key, wanted } of offers fixed by the user
     for (const [shopId, shop] of Object.entries(shops)) {
         if (shop.event_id && !isEventActive(shop.event_id, activeEventIds)) {
             continue;
         }
         // Progress points this run (bonus tiers, offer unlocks): `points_per_currency` per coin spent
-        // here, plus any `point_purchase` (Surprise Encounter: 100 diamonds = 10 points).
+        // here, plus any `point_purchase` (Surprise Encounter: 100 diamonds = 10 points, its reward, the free
+        // ones every day and the run's limit).
         const perCoin = shop.points_per_currency ?? 1;
         const offerProgress = []; // [name, points earned per purchase, unlock_points]
         for (const [offerKey, offer] of Object.entries(shop.offers || {})) {
@@ -247,10 +249,25 @@ function addShops(ctx, { activeEventIds, lockedOffers }) {
         }
         const extraProgress = new Map();
         if (shop.point_purchase) {
+            const { currency_item_id: currencyId, currency_cost: cost, points, rolls } = shop.point_purchase;
+            const contains = expectedRolls(rolls); // what one Encounter gives on average
+            // The run's limit covers the free ones too, which are always taken: the paid ones fill the rest.
+            const limit = offerWeeklyCapacity(shop.point_purchase, shop, { activeEventIds });
+            const days = eventDaysLeft?.[shop.event_id] ?? DAYS_PER_WEEK;
+            const free = Math.min((shop.point_purchase.free_per_day || 0) * days, limit);
             const name = varName('pp', shopId);
-            addTerm(ctx.balance(shop.point_purchase.currency_item_id), name, shop.point_purchase.currency_cost);
-            addTerm(extraProgress, name, shop.point_purchase.points);
+            addTerm(ctx.balance(currencyId), name, cost);
+            addTerm(extraProgress, name, points);
+            model.bounds.set(name, { upper: limit - free });
             pointPurchaseVars.set(name, shopId);
+            ctx.reward(name, contains);
+            if (free > 0) {
+                const freeName = varName('ppf', shopId);
+                addTerm(extraProgress, freeName, points);
+                model.bounds.set(freeName, { lower: free, upper: free });
+                freePointVars.set(freeName, { shopId, count: free });
+                ctx.reward(freeName, contains);
+            }
         }
         // Row "threshold · binary <= progress points" for a bonus tier / unlock; `counts` picks the
         // offers whose spend counts towards it.
@@ -289,7 +306,7 @@ function addShops(ctx, { activeEventIds, lockedOffers }) {
             }
         }
     }
-    return { offerVars, tierVars, pointPurchaseVars, fixedVars };
+    return { offerVars, tierVars, pointPurchaseVars, freePointVars, fixedVars };
 }
 
 /**
@@ -704,7 +721,7 @@ function solveWeeklyPlan(highs, data, options = {}) {
     const packageVars = addPackages(ctx, opts);
     addEventRows(ctx, packageVars, opts);
     addPackageRules(model, packageVars, ctx.packages);
-    const { offerVars, tierVars, pointPurchaseVars, fixedVars } = addShops(ctx, opts);
+    const { offerVars, tierVars, pointPurchaseVars, freePointVars, fixedVars } = addShops(ctx, opts);
     const trackTierVars = addTracks(ctx, packageVars, opts);
     const mineVars = addMines(ctx, opts);
     addOutsideCurrency(ctx, opts);
@@ -728,10 +745,11 @@ function solveWeeklyPlan(highs, data, options = {}) {
 
     // 3) The plan as the pages read it.
     const { purchases, spent } = readPurchases(plan, packageVars);
-    // Progress points bought outside the shop offers (Surprise Encounters).
+    // Progress points outside the shop offers (Surprise Encounters): `count` bought, `free` given.
+    const freeOf = (shopId) => [...freePointVars.values()].find((f) => f.shopId === shopId)?.count || 0;
     const pointPurchases = [...pointPurchaseVars]
-        .map(([name, shopId]) => ({ shopId, count: Math.round(solutionValue(plan, name)) }))
-        .filter((p) => p.count > 0);
+        .map(([name, shopId]) => ({ shopId, count: Math.round(solutionValue(plan, name)), free: freeOf(shopId) }))
+        .filter((p) => p.count > 0 || p.free > 0);
     const reachedOf = (vars) => [...vars].filter(([name]) => solutionValue(plan, name) > 0.5).map(([, tier]) => tier);
 
     const budgetBinding = lambda > EPS;

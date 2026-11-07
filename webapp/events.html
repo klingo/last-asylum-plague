@@ -43,18 +43,18 @@
                 <h3 data-i18n="events.planHeading"></h3>
                 <!-- Options of this plan. Each sits in a plain wrapper, so [hidden] isn't overridden by .field. -->
                 <div class="form-row form-row--top">
-                    <!-- Shops whose currency also comes from outside the packs (VIP, Alliance, Thief Hunt's lion coins). -->
-                    <div id="extra-currency-field" hidden>
-                        <div class="field field--narrow">
-                            <label for="extra-currency" id="extra-currency-label"></label>
-                            <input id="extra-currency" type="number" min="0" step="1000" />
-                        </div>
-                    </div>
                     <!-- Events with packs: extra Banknotes only for this event. -->
                     <div id="extra-banknotes-field" hidden>
                         <div class="field field--narrow">
                             <label for="extra-banknotes" data-i18n="events.extraBanknotes"></label>
                             <input id="extra-banknotes" type="number" min="0" step="1000" />
+                        </div>
+                    </div>
+                    <!-- Shops whose currency also comes from outside the packs (VIP, Alliance, Thief Hunt's lion coins). -->
+                    <div id="extra-currency-field" hidden>
+                        <div class="field field--narrow">
+                            <label for="extra-currency" id="extra-currency-label"></label>
+                            <input id="extra-currency" type="number" min="0" step="1000" />
                         </div>
                     </div>
                     <!-- Events with a mine: the pickaxes owned and the floor reached this run. -->

@@ -38,7 +38,9 @@ packs' deal %.
   each 4-hour slot (elapsed ones grey), a line for the phase on now, local times in the hover card.
 - **Event Shops** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
-  to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers),
+  to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers; an Encounter counts its random reward, the free one every day and
+  the run's limit;
+  you can enter extra diamonds per week to spend on them),
   and a step table of how much spending more on the event still pays off. A shop whose coin no pack gives (Thief Hunt's lion coins, earned by killing thieves) has an "Extra coins per week" field: you enter what you expect to earn, and the plan spends it on the best offers per coin. Dig events (Dwarven Mine, `mines` in
   `pack_data.json`) take the pickaxes you own and the floor you've reached; the plan counts the days left of the
   run (daily pack limits, 14 free pickaxes a day, +6 on days with a pack bought) and digs the floors in order at the

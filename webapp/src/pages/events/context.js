@@ -4,7 +4,7 @@
  */
 import { getSettings } from '../../ui/settings.js';
 import { eventMaxSpend } from '../../core/catalog.js';
-import { eventSelection, hasOutsideCurrency as hasOutsideCurrencyIn } from '../../core/event-plan.js';
+import { eventSelection, outsideCurrencyId } from '../../core/event-plan.js';
 import { mineProgressFor } from '../../core/mine.js';
 import { planningRun, gameDay } from '../../core/schedule.js';
 import { ctx } from './state.js';
@@ -16,12 +16,11 @@ function selection() {
     return eventSelection(ctx.data, ctx.selectedKey);
 }
 
-/** Whether the selected shop's currency also comes from outside the packs (the user enters how much). */
-const hasOutsideCurrency = (selected) => hasOutsideCurrencyIn(ctx.data.packages, selected?.shop);
+/** The currency the user enters an amount of for the selected shop (its coin, or the diamonds of its Encounters), or null. */
+const outsideCurrency = (selected) => outsideCurrencyId(ctx.data.packages, selected?.shop);
 
-/** Units per week of the selected shop's currency from outside the packs (the user's input). */
-const extraCurrencyOf = (selected) =>
-    (hasOutsideCurrency(selected) && getSettings().extraCurrency?.[selected.shop.currency_item_id]) || 0;
+/** Units per week of that currency from outside the packs (the user's input). */
+const extraCurrencyOf = (selected) => getSettings().extraCurrency?.[outsideCurrency(selected)] || 0;
 
 /** Extra Banknotes per week the user puts only into this event's packs (remembered per event). */
 const extraFor = (eventId) => (eventId && getSettings().extraEventBanknotes?.[eventId]) || 0;
@@ -66,7 +65,7 @@ const minePlan = (mineId) => ctx.valuation.plan.mines.find((m) => m.mineId === m
 export {
     extraCurrencyOf,
     extraFor,
-    hasOutsideCurrency,
+    outsideCurrency,
     maxSpendOf,
     minePlan,
     mineRun,

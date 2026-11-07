@@ -351,6 +351,8 @@
             "rewards": "Fortschrittsbelohnung",
             "floor": "Etage {floor}"
         },
+        "pointsCollected": "{points} Punkte gesammelt",
+        "pointsCollectedSplit": "{points} Punkte gesammelt ({encounters} durch Begegnungen, {spent} durch im Shop ausgegebene Münzen)",
         "mineOwned": "im Besitz",
         "mineFreeLeft": "gratis: {perDay}/Tag × {days} (verbleibende Tage, heute mitgezählt)",
         "mineFreeNext": "gratis: {perDay}/Tag × {days} (Tage des nächsten Laufs)",
@@ -387,6 +389,7 @@
         "spentInShop": "im Shop ausgegeben",
         "spentDigging": "beim Graben ausgegeben",
         "points": "Punkte",
+        "encountersFree": "+{count} gratis",
         "unlockStart": "Von Anfang an verfügbar",
         "unlockAt": "Wird bei {points} Punkten freigeschaltet",
         "buy": "Kaufen",

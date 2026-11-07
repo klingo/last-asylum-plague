@@ -351,6 +351,8 @@
             "rewards": "progress reward",
             "floor": "Floor {floor}"
         },
+        "pointsCollected": "{points} points collected",
+        "pointsCollectedSplit": "{points} points collected ({encounters} from Encounters, {spent} from coins spent in the shop)",
         "mineOwned": "owned",
         "mineFreeLeft": "free: {perDay}/day × {days} (days left, today included)",
         "mineFreeNext": "free: {perDay}/day × {days} (days of the next run)",
@@ -387,6 +389,7 @@
         "spentInShop": "spent in the shop",
         "spentDigging": "spent digging",
         "points": "points",
+        "encountersFree": "+{count} free",
         "unlockStart": "Available from the start",
         "unlockAt": "Unlocks at {points} points",
         "buy": "Buy",

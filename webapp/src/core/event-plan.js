@@ -1,11 +1,12 @@
 /**
  * What the Event Shops page reads from the data and the weekly plan about one event: which event (and its shop and
- * mine) a tab stands for, whether the shop's currency also comes from outside the packs, and every item the plan
- * gets from the event.
+ * mine) a tab stands for, whether the shop's currency also comes from outside the packs, every item the plan
+ * gets from the event and the progress points it earns in the shop.
  *
  * Pure module (no DOM/i18n), shared with the tests.
  */
 import { eventPurchases } from './step-analysis.js';
+import { expectedRolls } from './items.js';
 
 /**
  * The selection of a tab: an event (`event:<id>`, with its shop and mine if any) or a shop without event
@@ -49,7 +50,8 @@ function hasOutsideCurrency(packages, shop) {
 
 /**
  * Every item the plan gets from the event: the bought packs' contents (incl. the picked choice options), the shop
- * offers bought and the bonus tiers reached, minus what Encounters cost (diamonds), and the mine's expected loot,
+ * offers bought and the bonus tiers reached, the Encounters' expected rewards (bought and free) minus what they cost
+ * (diamonds), and the mine's expected loot,
  * wishes and progress rewards (`dug`: the mine's entry of the plan, if any). The shop's coins and the mine's
  * pickaxes are left out (they're spent there). Sorted by worth.
  * `partsOf(pkg)`: the item parts of a package (`{ id, qty }`), `worthOf(id)`: Banknote worth of one unit or null.
@@ -77,6 +79,9 @@ function eventItemTotals(plan, { eventId, shopId, shop, mine, dug }, { partsOf, 
         const pointPurchase = plan.pointPurchases.find((p) => p.shopId === shopId);
         if (shop.point_purchase && pointPurchase) {
             add(shop.point_purchase.currency_item_id, -pointPurchase.count * shop.point_purchase.currency_cost);
+            for (const [id, qty] of Object.entries(expectedRolls(shop.point_purchase.rolls))) {
+                add(id, qty * (pointPurchase.count + (pointPurchase.free || 0)));
+            }
         }
         totals.delete(shop.currency_item_id);
     }
@@ -124,4 +129,32 @@ function activeLocks(lockedOffers, shops, activeEvents) {
     });
 }
 
-export { activeLocks, eventItemTotals, eventSelection, hasOutsideCurrency, withLock };
+/**
+ * The currency the user can enter an amount of from outside the packs for a shop: its coin (see
+ * `hasOutsideCurrency`), or the extra diamonds the user adds to spend on its Encounters (`point_purchase`).
+ * Null if there is none.
+ */
+function outsideCurrencyId(packages, shop) {
+    if (hasOutsideCurrency(packages, shop)) {
+        return shop.currency_item_id;
+    }
+    return shop?.point_purchase?.currency_item_id ?? null;
+}
+
+/**
+ * The progress points (bonus tiers, offer unlocks) the plan earns in a shop, by where they come from: the
+ * Encounters (bought and free, `point_purchase`) and the coins spent on its offers (`points_per_currency` each).
+ * Returns `{ encounters, spent, total }`.
+ */
+function shopProgress(plan, shopId, shop) {
+    const pointPurchase = plan.pointPurchases.find((p) => p.shopId === shopId);
+    const encounters = shop.point_purchase
+        ? ((pointPurchase?.count || 0) + (pointPurchase?.free || 0)) * shop.point_purchase.points
+        : 0;
+    const spent = plan.exchanges
+        .filter((x) => x.shopId === shopId)
+        .reduce((sum, x) => sum + x.count * x.offer.currency_cost * (shop.points_per_currency ?? 1), 0);
+    return { encounters, spent, total: encounters + spent };
+}
+
+export { activeLocks, eventItemTotals, eventSelection, hasOutsideCurrency, outsideCurrencyId, shopProgress, withLock };

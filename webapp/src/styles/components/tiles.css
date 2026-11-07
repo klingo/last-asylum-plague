@@ -169,6 +169,12 @@
     padding: 2px 0;
 }
 
+/* A small line under the figures of a tile. */
+.plan-stat--note {
+    margin-top: 4px;
+    font-size: 0.8rem;
+}
+
 /* "Everything you get": one item per line — name, quantity, worth. */
 .item-list {
     list-style: none;

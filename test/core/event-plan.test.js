@@ -5,6 +5,8 @@ import {
     eventItemTotals,
     eventSelection,
     hasOutsideCurrency,
+    outsideCurrencyId,
+    shopProgress,
     withLock,
 } from '../../webapp/src/core/event-plan.js';
 
@@ -51,6 +53,23 @@ test('a shop whose currency also comes from outside the packs', () => {
     assert.equal(hasOutsideCurrency(packages, null), false);
 });
 
+test('the currency a user can enter an amount of: the coin, or the diamonds of the Encounters', () => {
+    const packages = { gem_pack: { event_id: 'bazaar', contains: { coin: 5 } } };
+    const withPoints = {
+        event_id: 'bazaar',
+        currency_item_id: 'coin',
+        point_purchase: { currency_item_id: 'diamonds' },
+    };
+    assert.equal(
+        outsideCurrencyId(packages, withPoints),
+        'diamonds',
+        'the packs give the coin: the diamonds are entered',
+    );
+    assert.equal(outsideCurrencyId({}, withPoints), 'coin', 'no pack gives the coin: it is entered');
+    assert.equal(outsideCurrencyId(packages, { event_id: 'bazaar', currency_item_id: 'coin' }), null);
+    assert.equal(outsideCurrencyId(packages, undefined), null);
+});
+
 test('locks: set, change, unset (a new object each time); only those of a running event count', () => {
     const none = {};
     const one = withLock(none, 'vip_shop', 'gem', 2);
@@ -75,13 +94,17 @@ test('everything the plan gets from an event, sorted by worth', () => {
             { shopId: 'other_shop', offer: { item_id: 'ignored', quantity: 1 }, count: 1 },
         ],
         tiersReached: [{ shopId: 'bazaar_shop', reward: { ticket: 4 } }],
-        pointPurchases: [{ shopId: 'bazaar_shop', count: 2 }],
+        pointPurchases: [{ shopId: 'bazaar_shop', count: 2, free: 3 }],
     };
     const shop = {
         currency_item_id: 'coin',
-        point_purchase: { currency_item_id: 'diamonds', currency_cost: 100 },
+        point_purchase: {
+            currency_item_id: 'diamonds',
+            currency_cost: 100,
+            rolls: [[{ contains: { prize: 4 }, probability: 0.5 }]],
+        },
     };
-    const worth = { gem: 1, hat: 10, ticket: 0.5, diamonds: 0.1, coin: 99 };
+    const worth = { gem: 1, hat: 10, ticket: 0.5, diamonds: 0.1, coin: 99, prize: 20 };
     const totals = eventItemTotals(
         plan,
         { eventId: 'bazaar', shopId: 'bazaar_shop', shop, mine: null, dug: null },
@@ -93,14 +116,31 @@ test('everything the plan gets from an event, sorted by worth', () => {
             worthOf: (id) => worth[id] ?? null,
         },
     );
-    // 2 packs x (5 gems, 100 coins); 2 offers x 3 hats; the tier's tickets; the Encounters cost 2 x 100 diamonds.
-    // The shop's coins are spent there, so they are left out.
+    // 2 packs x (5 gems, 100 coins); 2 offers x 3 hats; the tier's tickets; the Encounters give 2 prizes each, (2 bought
+    // + 3 free) of them, and the 2 bought cost 100 diamonds each. The shop's coins are spent there, so they are left out.
     assert.deepEqual(totals, [
+        { id: 'prize', qty: 10, worth: 200 },
         { id: 'hat', qty: 6, worth: 60 },
         { id: 'gem', qty: 10, worth: 10 },
         { id: 'ticket', qty: 4, worth: 2 },
         { id: 'diamonds', qty: -200, worth: -20 },
     ]);
+});
+
+test('a shop’s progress points: the Encounters (bought and free) and the coins spent on offers', () => {
+    const plan = {
+        pointPurchases: [{ shopId: 'bazaar_shop', count: 2, free: 3 }],
+        exchanges: [
+            { shopId: 'bazaar_shop', offer: { currency_cost: 20 }, count: 2 },
+            { shopId: 'bazaar_shop', offer: { currency_cost: 100 }, count: 1 },
+            { shopId: 'other_shop', offer: { currency_cost: 999 }, count: 1 },
+        ],
+    };
+    const shop = { points_per_currency: 5, point_purchase: { points: 10 } };
+    // (2 + 3) Encounters x 10 points; (2 x 20 + 100) coins x 5 points.
+    assert.deepEqual(shopProgress(plan, 'bazaar_shop', shop), { encounters: 50, spent: 700, total: 750 });
+    // A shop without Encounters counts 1 point per coin.
+    assert.deepEqual(shopProgress(plan, 'bazaar_shop', {}), { encounters: 0, spent: 140, total: 140 });
 });
 
 test('a dug mine adds its loot, wishes and progress rewards; the pickaxes are left out', () => {

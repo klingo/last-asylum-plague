@@ -2,7 +2,7 @@
  * "Your plan": one tile per step of the selected event (mine verdict, packs, coins, pickaxes, Encounters,
  * bonus tiers, everything it gives).
  */
-import { eventItemTotals } from '../../core/event-plan.js';
+import { eventItemTotals, shopProgress } from '../../core/event-plan.js';
 import { eventPackSpend, eventPurchases } from '../../core/step-analysis.js';
 import { packageDisplayName, itemDisplayName, itemLinkName, bundleLabel } from '../../ui/labels.js';
 import { banknotesAmount, escapeAttr, hydrateItemIcons, tileHtml } from '../../ui/html.js';
@@ -84,11 +84,16 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
         const pointPurchase = plan.pointPurchases.find((p) => p.shopId === shopId);
         if (shop.point_purchase && pointPurchase) {
             const { currency_item_id: currencyId, currency_cost: cost, points } = shop.point_purchase;
+            const free = pointPurchase.free || 0;
             tiles.push(
                 tileHtml(
                     t('events.tiles.encounters'),
-                    `<div class="plan-stat"><strong>×${formatThousands(pointPurchase.count)}</strong> = ${iconHtml(currencyId)}<strong class="${currencyId === 'diamonds' ? 'text-diamond' : ''}">${formatThousands(pointPurchase.count * cost)}</strong></div>
-                    <div class="plan-stat text-dim">+${formatThousands(pointPurchase.count * points)} ${tHtml('events.points')}</div>`,
+                    `<div class="plan-stat"><strong>×${formatThousands(pointPurchase.count)}</strong> = ${iconHtml(currencyId)}<strong class="${currencyId === 'diamonds' ? 'text-diamond' : ''}">${formatThousands(pointPurchase.count * cost)}</strong></div>${
+                        free > 0
+                            ? `<div class="plan-stat text-dim">${tHtml('events.encountersFree', { count: formatThousands(free) })}</div>`
+                            : ''
+                    }
+                    <div class="plan-stat text-dim">+${formatThousands((pointPurchase.count + free) * points)} ${tHtml('events.points')}</div>`,
                 ),
             );
         }
@@ -99,6 +104,16 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
             const reached = new Set(
                 plan.tiersReached.filter((tier) => tier.shopId === shopId).map((tier) => tier.threshold),
             );
+            const progress = shopProgress(plan, shopId, shop);
+            // One line: the total, and where it comes from if from both Encounters and coins.
+            const collected =
+                progress.encounters > 0 && progress.spent > 0
+                    ? tHtml('events.pointsCollectedSplit', {
+                          points: formatThousands(progress.total),
+                          encounters: formatThousands(progress.encounters),
+                          spent: formatThousands(progress.spent),
+                      })
+                    : tHtml('events.pointsCollected', { points: formatThousands(progress.total) });
             tiles.push(
                 tileHtml(
                     t('events.tiles.bonusTiers'),
@@ -108,7 +123,8 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
                             const tip = escapeAttr(bundleLabel(shop.bonus_tiers[String(x)], ctx.data.items, locale));
                             return `<span class="chip${reached.has(x) ? ' chip--on' : ''}" tabindex="0" data-tooltip="${tip}" aria-label="${tip}">${reached.has(x) ? '✓ ' : ''}${formatThousands(x)}</span>`;
                         })
-                        .join('')}</div>`,
+                        .join('')}</div>
+                    <div class="plan-stat plan-stat--note text-dim">${collected}</div>`,
                     true,
                 ),
             );

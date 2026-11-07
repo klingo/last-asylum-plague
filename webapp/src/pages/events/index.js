@@ -21,7 +21,7 @@ import { ctx } from './state.js';
 import {
     extraCurrencyOf,
     extraFor,
-    hasOutsideCurrency,
+    outsideCurrency,
     maxSpendOf,
     mineRun,
     overridesKey,
@@ -56,14 +56,20 @@ function render() {
     const selected = selection();
     promptCard.hidden = Boolean(selected);
     planCard.hidden = !selected;
-    extraCurrencyField.hidden = !hasOutsideCurrency(selected);
-    if (hasOutsideCurrency(selected)) {
-        const currencyId = selected.shop.currency_item_id;
+    const currencyId = outsideCurrency(selected);
+    extraCurrencyField.hidden = !currencyId;
+    if (currencyId) {
         extraCurrencyLabel.textContent = t('events.extraCurrency', {
             currency: itemDisplayText(ctx.data.items, currencyId),
         });
-        // Diamonds come in thousands; an event's coins are counted one by one.
-        extraCurrencyInput.step = selected.shop.event_id ? '1' : '1000';
+        // Diamonds come in thousands (an Encounter's in its price); an event's coins are counted one by one.
+        extraCurrencyInput.step = String(
+            currencyId === selected.shop.currency_item_id
+                ? selected.shop.event_id
+                    ? 1
+                    : 1000
+                : selected.shop.point_purchase.currency_cost,
+        );
         extraCurrencyInput.value = String(extraCurrencyOf(selected));
     }
     extraBanknotesField.hidden = !(selected?.eventId && maxSpendOf(selected.eventId) > 0);
@@ -172,13 +178,14 @@ startPage('events', {
         chooseEvents.addEventListener('click', () => ctx.page.panel.open());
         extraCurrencyInput.addEventListener('change', () => {
             const selected = selection();
-            if (!hasOutsideCurrency(selected)) {
+            const currencyId = outsideCurrency(selected);
+            if (!currencyId) {
                 return;
             }
             const amount = Math.max(0, Number(extraCurrencyInput.value) || 0);
-            const extra = { ...getSettings().extraCurrency, [selected.shop.currency_item_id]: amount };
+            const extra = { ...getSettings().extraCurrency, [currencyId]: amount };
             if (amount === 0) {
-                delete extra[selected.shop.currency_item_id];
+                delete extra[currencyId];
             }
             updateSettings({ extraCurrency: extra });
         });

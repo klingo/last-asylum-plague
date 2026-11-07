@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-07"
+        "last_updated": "2026-11-08"
     },
     "items": {
         "alliance_coins": {
@@ -7460,7 +7460,76 @@
             "point_purchase": {
                 "currency_item_id": "diamonds",
                 "currency_cost": 100,
-                "points": 10
+                "points": 10,
+                "free_per_day": 1,
+                "purchase_limit": 300,
+                "limit_type": "event",
+                "rolls": [
+                    [
+                        {
+                            "contains": {
+                                "ur_hero_omni_shard": 1
+                            },
+                            "probability": 0.046
+                        },
+                        {
+                            "contains": {
+                                "antitoxin_level_supply_sr": 3
+                            },
+                            "probability": 0.0611
+                        },
+                        {
+                            "contains": {
+                                "study_scroll": 12
+                            },
+                            "probability": 0.1003
+                        },
+                        {
+                            "contains": {
+                                "skill_badge": 62
+                            },
+                            "probability": 0.2289
+                        },
+                        {
+                            "contains": {
+                                "resource_supply_ssr": 1
+                            },
+                            "probability": 0.3305
+                        },
+                        {
+                            "contains": {
+                                "speedup": 70
+                            },
+                            "probability": 0.2332
+                        }
+                    ],
+                    [
+                        {
+                            "contains": {
+                                "ur_hero_omni_shard": 1
+                            },
+                            "probability": 0.0125
+                        },
+                        {
+                            "contains": {
+                                "resource_supply_ur": 1
+                            },
+                            "probability": 0.0125
+                        },
+                        {
+                            "contains": {
+                                "raven_fruit": 100000
+                            },
+                            "probability": 0.0125
+                        },
+                        {
+                            "contains": {
+                                "speedup": 100
+                            },
+                            "probability": 0.0125
+                        }
+                    ]
+                ]
             }
         },
         "thief_hunt_shop": {

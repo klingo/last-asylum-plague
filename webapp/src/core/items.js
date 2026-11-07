@@ -20,6 +20,22 @@ function isChoiceItem(item) {
     return item?.type === 'choice' && Boolean(item.choice);
 }
 
+/**
+ * The expected contents of one go at a list of independent `rolls` (drop tables of `{ contains, probability }`,
+ * probabilities under 1 in total = nothing otherwise), e.g. a shop's Encounters: `{ itemId: expected qty }`.
+ */
+function expectedRolls(rolls) {
+    const out = {};
+    for (const roll of rolls || []) {
+        for (const drop of roll) {
+            for (const [id, qty] of Object.entries(drop.contains)) {
+                out[id] = (out[id] || 0) + qty * drop.probability;
+            }
+        }
+    }
+    return out;
+}
+
 /** How many options of a choice pool (`{ choices, select_count }`) are picked: `select_count`, default 1. */
 function selectCount(choice) {
     return choice?.select_count || 1;
@@ -55,4 +71,4 @@ function itemKind(item) {
     return item.crafted_from ? 'recipe' : 'leaf';
 }
 
-export { isRandomItem, isChoiceItem, selectCount, substituteTargets, itemKind };
+export { isRandomItem, expectedRolls, isChoiceItem, selectCount, substituteTargets, itemKind };
