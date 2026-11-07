@@ -184,7 +184,7 @@
             "groupTracks": "Ausgabenbelohnungen",
             "oneDay": "1 Tag",
             "days": "{count} Tage",
-            "forecastBasis": "Prognose: etwa alle {interval} Tage",
+            "forecastBasis": "Prognose: alle {interval} Tage",
             "forecastPattern": "Prognose: wiederholt sich alle {days} Tage ({weekdays})",
             "forecastGuessBasis": "Grobe Schätzung: etwa alle {interval} Tage",
             "staleNote": "Zuletzt vor über 8 Wochen erfasst: erfasse den letzten Durchlauf, damit das Muster wieder gilt",

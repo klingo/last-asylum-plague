@@ -33,7 +33,7 @@ function scheduleTooltip(bar, row, today) {
         runStatusText(runStatus([bar], today)),
     ];
     if (bar.forecast) {
-        // A proven pattern: its weekdays ("every 7 days (Tue, Thu)") or the usual gap ("about every 28 days"); else a
+        // A proven pattern: its weekdays ("every 7 days (Tue, Thu)") or its gap ("every 28 days"); else a
         // rough guess (no repeating pattern yet), with why when its last record is too old to trust.
         if (!bar.proven) {
             lines.push(t('calendar.schedule.forecastGuessBasis', { interval: bar.intervalDays }));

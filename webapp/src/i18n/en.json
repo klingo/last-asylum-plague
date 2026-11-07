@@ -184,7 +184,7 @@
             "groupTracks": "Spend rewards",
             "oneDay": "1 day",
             "days": "{count} days",
-            "forecastBasis": "Forecast: about every {interval} days",
+            "forecastBasis": "Forecast: every {interval} days",
             "forecastPattern": "Forecast: repeats every {days} days ({weekdays})",
             "forecastGuessBasis": "Rough guess: about every {interval} days",
             "staleNote": "Last recorded over 8 weeks ago: record its latest run to trust the pattern again",
