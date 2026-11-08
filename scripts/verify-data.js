@@ -652,6 +652,15 @@ async function verifyData() {
         }
     });
 
+    // The MR items of the gear sets (a piece's name and picture at 5 stars) are only ever shown: the set references
+    // them, no pack contains them, so they have no worth either.
+    const displayOnlyItems = new Set(
+        Object.values(data.gear_upgrades || {}).flatMap((gearSet) => Object.values(gearSet.mr_items || {})),
+    );
+    for (const itemId of displayOnlyItems) {
+        referencedItemKeys.add(itemId);
+    }
+
     // 8. Report Unreferenced Items (Informational / Warnings)
     checkCategory('Unreferenced Items', ({ reportWarning }) => {
         for (const itemId of itemKeys) {
@@ -725,9 +734,18 @@ async function verifyData() {
                 ...gearSet.layout.flat(),
                 ...costItems,
                 ...blueprintItems,
+                ...Object.values(gearSet.mr_items || {}),
             ])) {
                 if (!items[itemId]) {
                     reportError('Gear Reference', `Gear set "${setId}" references unknown item "${itemId}".`);
+                }
+            }
+            for (const pieceId of Object.keys(gearSet.mr_items || {})) {
+                if (!gearSet.items.includes(pieceId)) {
+                    reportError(
+                        'Gear Reference',
+                        `Gear set "${setId}": mr_items names "${pieceId}", which is not one of its items.`,
+                    );
                 }
             }
             const laidOut = gearSet.layout.flat();
@@ -908,8 +926,8 @@ async function verifyData() {
     const resolved = resolveItemValues(items, { basePoints: fit.points, currencyIds, currencyValues: zeroCurrencies });
     checkCategory('Item Worth', ({ reportWarning }) => {
         for (const [itemId, entry] of resolved) {
-            if (!items[itemId]) {
-                continue; // unresolvable references are reported above
+            if (!items[itemId] || displayOnlyItems.has(itemId)) {
+                continue; // unresolvable references are reported above; display-only items have no worth to check
             }
             if (entry.value === null) {
                 reportWarning(

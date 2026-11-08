@@ -80,7 +80,7 @@ packs' deal %.
   one that fits what you have). A step that needs the other queue first says which one. A switch picks the hero
   faction (Warriors, Rangers, Warlocks: same path, other heroes); progress is saved in the browser, per faction. Data:
   `heroes` (rarity, faction, class, image), `gear_upgrades` (level caps by stars, minimum levels for stars,
-  blueprints, optional cost tables) and `squad_guides` (formation, slots with a hero class and a hero per faction,
+  blueprints, `mr_items`: a piece at 5 stars shows as its MR item, optional cost tables) and `squad_guides` (formation, slots with a hero class and a hero per faction,
   `craft_path` / `level_path` /
   `star_path`) in `pack_data.json`; `verify-data` checks that the paths can be completed without a deadlock.
 - **Lord Specialty** (`lord-specialty.html`) — a planner for the specialty skills of the two lords (Handyman, Legion

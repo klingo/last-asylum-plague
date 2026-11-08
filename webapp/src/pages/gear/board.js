@@ -7,6 +7,7 @@ import {
     MR_STEP,
     applyStep,
     initialState,
+    shownItem,
     starIcons,
     starStep,
     starsOfStep,
@@ -69,6 +70,7 @@ function shownState() {
 
 function tileHtml(state, upcoming, slot, item) {
     const piece = state[slot][item];
+    const shown = shownItem(ctx.gearSet, item, piece.starStep); // at MR: the MR item (its picture and name)
     const next = upcoming.get(`${slot}:${item}`) || [];
     const classes = [
         'gear-tile',
@@ -78,7 +80,7 @@ function tileHtml(state, upcoming, slot, item) {
     ].filter(Boolean);
     const label = piece.crafted
         ? t('gear.tileLabel', {
-              item: itemName(item),
+              item: itemName(shown),
               level: piece.level,
               stars: formatStars(starsOfStep(piece.starStep)),
           })
@@ -89,7 +91,7 @@ function tileHtml(state, upcoming, slot, item) {
     return `
         <div class="${classes.join(' ')}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}" role="img">
             <span class="gear-tile__level">${piece.crafted ? t('gear.level', { level: piece.level }) : t('common.dash')}</span>
-            ${itemIconSlot(item)}
+            ${itemIconSlot(shown)}
             <span class="gear-tile__stars">${starsHtml}</span>
             <span class="gear-tile__next">${next.map(({ path, text }) => `<span class="gear-tile__next--${path}">${escapeHtml(text)}</span>`).join(' ')}</span>
         </div>`;

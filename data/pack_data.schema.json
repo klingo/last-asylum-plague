@@ -1060,6 +1060,13 @@
                         }
                     }
                 },
+                "mr_items": {
+                    "type": "object",
+                    "description": "The item a piece becomes at 5 stars (MR quality), by the piece's id: the squad board shows its name, picture and border for a piece at that step. A piece without an entry keeps its own.",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/id"
+                    }
+                },
                 "max_level": {
                     "type": "integer",
                     "minimum": 1

@@ -1735,6 +1735,38 @@
             "category": "event_item",
             "rarity": "ur"
         },
+        "mr_armor": {
+            "name": {
+                "en": "MR Armor",
+                "de": "MR Rüstung"
+            },
+            "category": "gear",
+            "rarity": "mr"
+        },
+        "mr_boots": {
+            "name": {
+                "en": "MR Boots",
+                "de": "MR Stiefel"
+            },
+            "category": "gear",
+            "rarity": "mr"
+        },
+        "mr_gauntlets": {
+            "name": {
+                "en": "MR Gauntlets",
+                "de": "MR Handschuhe"
+            },
+            "category": "gear",
+            "rarity": "mr"
+        },
+        "mr_sword": {
+            "name": {
+                "en": "MR Sword",
+                "de": "MR Schwert"
+            },
+            "category": "gear",
+            "rarity": "mr"
+        },
         "mystic_cabin_permanent": {
             "name": {
                 "en": "Mystic Cabin (Permanent)",
@@ -9186,6 +9218,12 @@
                 ["ur_sword", "ur_armor"],
                 ["ur_gauntlets", "ur_boots"]
             ],
+            "mr_items": {
+                "ur_sword": "mr_sword",
+                "ur_armor": "mr_armor",
+                "ur_boots": "mr_boots",
+                "ur_gauntlets": "mr_gauntlets"
+            },
             "max_level": 60,
             "level_cap_by_stars": {
                 "0": 44,

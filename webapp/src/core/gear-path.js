@@ -51,6 +51,11 @@ function starIcons(step) {
     });
 }
 
+/** The item a piece shows as (its name, picture): the gear set's `mr_items` entry at MR, else the piece itself. */
+function shownItem(gearSet, item, step) {
+    return step === MR_STEP ? (gearSet.mr_items?.[item] ?? item) : item;
+}
+
 /** 'craft' (`{ item, slot }`: one piece), 'level' or 'stars'. */
 function stepKind(step) {
     if (step.item !== undefined) {
@@ -405,6 +410,7 @@ export {
     starStep,
     starsOfStep,
     starIcons,
+    shownItem,
     stepSlots,
     stepItems,
     initialState,

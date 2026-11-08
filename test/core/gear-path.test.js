@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { starStep, starsOfStep, mergePaths, crossNeeds } from '../../webapp/src/core/gear-path.js';
+import { MR_STEP, starStep, starsOfStep, shownItem, mergePaths, crossNeeds } from '../../webapp/src/core/gear-path.js';
 import { loadFixture, expectGolden } from '../helpers.js';
 
 const data = loadFixture();
@@ -16,6 +16,15 @@ test('stars <-> steps', () => {
     assert.equal(starStep(2.65), null);
     assert.equal(starsOfStep(13), 2.6);
     assert.equal(starsOfStep(21), 5);
+});
+
+test('a piece shows as its MR item at 5 stars only, and as itself without an MR item', () => {
+    const set = { mr_items: { ur_sword: 'mr_sword' } };
+    assert.equal(shownItem(set, 'ur_sword', MR_STEP), 'mr_sword');
+    assert.equal(shownItem(set, 'ur_sword', MR_STEP - 1), 'ur_sword'); // 4.8 stars: still UR
+    assert.equal(shownItem(set, 'ur_sword', 0), 'ur_sword');
+    assert.equal(shownItem(set, 'ur_armor', MR_STEP), 'ur_armor'); // no entry for this piece
+    assert.equal(shownItem({}, 'ur_sword', MR_STEP), 'ur_sword'); // a set without mr_items
 });
 
 test('merged order of the default guide', () => {
