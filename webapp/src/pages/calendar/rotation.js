@@ -117,7 +117,7 @@ function renderRotation() {
                 ratio,
                 days: pkg.available_days,
                 icon: packageIcon(pkg),
-                bars: weekdayRuns(pkg.available_days, from, to),
+                bars: weekdayRuns(pkg.available_days, from, to, { merge: pkg.limit_type !== 'daily' }),
             };
         })
         .filter((row) => row.bars.length > 0)

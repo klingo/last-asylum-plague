@@ -193,14 +193,17 @@ function weekdayOfferTiming(availableDays, today) {
     return ahead.length > 0 ? { state: 'upcoming', days: Math.min(...ahead) - index } : { state: 'past', days: 0 };
 }
 
-/** The days in [from, to] on one of the given weekdays ("monday", ...), consecutive days merged into runs. */
-function weekdayRuns(availableDays, from, to) {
+/**
+ * The days in [from, to] on one of the given weekdays ("monday", ...). Consecutive days are merged into one run
+ * unless `merge` is false (a daily-limit offer: each day is its own sale, the purchase limit resets in between).
+ */
+function weekdayRuns(availableDays, from, to, { merge = true } = {}) {
     const wanted = new Set((availableDays || []).map((name) => WEEKDAYS.indexOf(name)));
     const runs = [];
     for (let day = from; day <= to; day += 1) {
         if (wanted.has(weekdayIndex(day))) {
             const last = runs[runs.length - 1];
-            if (last && last.end === day - 1) {
+            if (merge && last && last.end === day - 1) {
                 last.end = day;
             } else {
                 runs.push({ start: day, end: day });

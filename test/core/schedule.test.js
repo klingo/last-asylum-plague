@@ -139,6 +139,15 @@ test('schedule: weekday runs merge consecutive days', () => {
     ]);
 });
 
+test('schedule: weekday runs stay one day each without merging (daily purchase limit)', () => {
+    assert.deepEqual(weekdayRuns(['thursday', 'friday', 'monday'], 0, 7, { merge: false }), [
+        { start: 0, end: 0 },
+        { start: 1, end: 1 },
+        { start: 4, end: 4 },
+        { start: 7, end: 7 },
+    ]);
+});
+
 test('schedule: run status (running, upcoming, ended)', () => {
     const runs = [
         { start: 10, end: 16 },
