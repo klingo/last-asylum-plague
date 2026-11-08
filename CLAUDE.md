@@ -105,7 +105,9 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   its place inside its file; a rule that overrides another of the same specificity (a phone `@media` over the base rule) lives
   in the same file or a later-loaded one.
 - `webapp/public/assets/` holds the images: `items/<category>/` (images not sorted yet are found directly in `items/`),
-  `events/`, `heroes/`, `lord/`, `gear/{stars,classes,factions}/` and `ui/` (the placeholder icon, the Banknote icon).
+  `events/`, `packages/` (a weekday offer's own picture, `<pack id>.webp`: its thumbnail before the name on Today and the
+  Calendar, a placeholder tile without it as with events, and the art of its bar's hover card on the Calendar),
+  `heroes/`, `lord/`, `gear/{stars,classes,factions}/` and `ui/` (the placeholder icon, the Banknote icon).
 - `webapp/src/i18n/{en,de}.json` holds UI texts and code labels. `scripts/` holds verify-data, i18n:missing,
   record-run and the commit hooks (`scripts/lib/` holds what they share: the data file paths and JSON format, the
   code labels). A script exports its pure parts for the tests and runs `main()` only when started directly.
@@ -124,8 +126,9 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   selected events and passes to today's on every page load (`ui/calendar-sync.js`, called in `startPage`); a manual
   event / pass change turns it off.
 - `event_rotations` holds gameplay events (`ingame_event`) that run through a fixed list of slots on a fixed clock (Survival Battle: 42
-  slots of 4 hours from Sunday's reset, the same week every week): `phases` (id, name, an optional `image` and optional
-  `earn_points`: the game's rule as text, `item_id` for the item the rule is about) and `week`, the phase of every slot. The
+  slots of 4 hours from Sunday's reset, the same week every week): `phases` (id, name, an optional `image`, a banner
+  in `assets/events/` that Today shows for the phase on now and the Calendar's chart as a thumbnail, else the event's own,
+  and optional `earn_points`: the game's rule as text, `item_id` for the item the rule is about) and `week`, the phase of every slot. The
   sequence is as the game runs it, not a loop (a round of five, Territory > Heroes, then seven rounds of five), so
   every slot is listed. `rotationSlots` (`core/schedule.js`) gives the phase on now and the next; the Today page shows
   them. The event itself stays a plain `ingame_event` in `events`. Times are UTC; the game's server time is UTC−2 (its
@@ -135,7 +138,9 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
 - `image` on events, tracks and passes is a banner in `webapp/public/assets/events/` (720×360); `verify-data`
   checks the file.
 - The Gear Upgrade Path page reads `heroes`, `gear_upgrades` and `squad_guides`; `mergePaths` (`core/gear-path.js`)
-  orders its three paths, and `verify-data` reports paths that deadlock.
+  orders its three paths, and `verify-data` reports paths that deadlock. A gear set's `mr_items` maps a piece to the item
+  it shows as at 5 stars (`shownItem`: the MR piece's name, picture and border); those items are display-only, no pack
+  contains them.
 - The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
   by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs
   (`core/lord-specialty.js`), so don't reorder or insert talents casually. Talents above `max_level` show as "not in

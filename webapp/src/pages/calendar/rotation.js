@@ -1,5 +1,7 @@
 /**
- * The Weekday Offers chart: today and the next 6 local days, with how long today's offers last.
+ * The Weekday Offers chart: today and the next 6 local days, with how long today's offers last. Each offer has its own
+ * picture (`assets/packages/<pack id>.webp`) as a thumbnail before its name and as the art of its bars' hover cards,
+ * greyed there for every bar that isn't on sale right now (as an ended event's).
  */
 import { formatDays, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { formatThousands } from '../../ui/format.js';
@@ -7,8 +9,8 @@ import { ratioColor } from '../../ui/ratio-bar.js';
 import { escapeHtml } from '../../ui/html.js';
 import { formatClock, formatMoment } from '../../ui/datetime.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
-import { createItemImage } from '../../ui/images.js';
-import { itemDisplayText, packageIcon } from '../../ui/labels.js';
+import { hydratePackThumbs, packThumbHtml } from '../../ui/event-banner.js';
+import { packageImageUrl } from '../../ui/images.js';
 import {
     barHtml,
     chartAttrs,
@@ -88,14 +90,11 @@ function renderRotation() {
         }
         families.set(familyId, entry);
     }
-    const rows = [...families.values()]
-        .map(({ pkg, ratio }) => {
+    const rows = [...families]
+        .map(([familyId, { pkg, ratio }]) => {
             const name = localizedName(pkg.name);
-            const tooltip = [
-                name,
-                t('calendar.rotation.every', { days: formatDays(pkg.available_days) }),
-                ratio === null ? '' : `${t('common.table.ratio')}: ${formatThousands(ratio, 2)}`,
-            ]
+            // The name and ratio; each bar adds its own sale window (exact, in local time: a weekday is the game's).
+            const tooltip = [name, ratio === null ? '' : `${t('common.table.ratio')}: ${formatThousands(ratio, 2)}`]
                 .filter(Boolean)
                 .join('\n');
             return {
@@ -103,7 +102,8 @@ function renderRotation() {
                 tooltip,
                 ratio,
                 days: pkg.available_days,
-                icon: packageIcon(pkg),
+                packId: familyId,
+                imageUrl: packageImageUrl(familyId), // the hover card's art (left out where the pack has no picture)
                 bars: weekdayRuns(pkg.available_days, firstDay, lastDay, { merge: pkg.limit_type !== 'daily' }).map(
                     (run) => {
                         const { start, end } = runMoments(run);
@@ -127,8 +127,8 @@ function renderRotation() {
         .map(
             (row) => `
                 <div class="schedule__row schedule__row--rotation">
-                    <div class="schedule__label" title="${escapeHtml(row.name)}" data-icon="${escapeHtml(row.icon || '')}">${escapeHtml(row.name)}</div>
-                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, view, `${row.tooltip}\n${saleWindowText(bar)}`, { color: row.color })).join('')}</div>
+                    <div class="schedule__label" title="${escapeHtml(row.name)}">${packThumbHtml(row.packId)}${escapeHtml(row.name)}</div>
+                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, view, `${row.tooltip}\n${saleWindowText(bar)}`, { color: row.color, image: row.imageUrl, mutedImage: !(bar.start <= nowMs && nowMs < bar.end) })).join('')}</div>
                 </div>`,
         )
         .join('');
@@ -152,15 +152,7 @@ function renderRotation() {
             </div>
         </div>
         ${summary ? `<p class="schedule__summary">${escapeHtml(summary)}</p>` : ''}`;
-    // Icons via createItemImage (placeholder if the image is missing, item name as mouse-over).
-    for (const label of section.querySelectorAll('.schedule__label[data-icon]')) {
-        const itemId = label.dataset.icon;
-        if (itemId) {
-            label.prepend(
-                createItemImage(itemId, itemDisplayText(ctx.packData.items, itemId), 'item-icon schedule__icon'),
-            );
-        }
-    }
+    hydratePackThumbs(section); // an offer without its picture yet gets the placeholder, as an event without art
     enableInfoTooltips(section);
 }
 

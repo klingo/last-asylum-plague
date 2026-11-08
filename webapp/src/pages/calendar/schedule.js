@@ -7,7 +7,14 @@ import { formatDate, formatRunRange } from '../../ui/datetime.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import { getSettings } from '../../ui/settings.js';
 import { SCHEDULE_KIND_LABELS } from '../../ui/labels.js';
-import { eventImageUrl, runStatusText, scheduleHref, scheduleImage, scheduleName } from '../../ui/event-banner.js';
+import {
+    eventImageUrl,
+    runStatusText,
+    scheduleHref,
+    scheduleImage,
+    scheduleName,
+    thumbHtml,
+} from '../../ui/event-banner.js';
 import {
     barHtml,
     chartAttrs,
@@ -64,13 +71,6 @@ function scheduleTooltip(bar, row, today) {
         lines.push(t('calendar.status.openPlan'));
     }
     return lines.join('\n');
-}
-
-/** The entry's art as a small thumbnail before its name (a placeholder in its group's colour without art). */
-function thumbHtml(image) {
-    return image
-        ? `<img class="schedule__thumb" src="${escapeHtml(image)}" alt="" loading="lazy" decoding="async" />`
-        : '<span class="schedule__thumb schedule__thumb--none" aria-hidden="true"></span>';
 }
 
 /**

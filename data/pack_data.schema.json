@@ -428,10 +428,6 @@
                 "name": {
                     "$ref": "#/definitions/localizedString"
                 },
-                "icon": {
-                    "$ref": "#/definitions/id",
-                    "description": "Item whose image stands for this package (e.g. on the Calendar page's Weekday Offers). Default: its first item other than diamonds and the items that are Don't care by default (VIP points, alliance chests, ...)."
-                },
                 "image": {
                     "$ref": "#/definitions/eventImage"
                 },
@@ -526,10 +522,6 @@
                 "name": {
                     "$ref": "#/definitions/localizedString"
                 },
-                "icon": {
-                    "$ref": "#/definitions/id",
-                    "description": "Item whose image stands for this package (e.g. on the Calendar page's Weekday Offers). Default: its first item other than diamonds and the items that are Don't care by default (VIP points, alliance chests, ...)."
-                },
                 "image": {
                     "$ref": "#/definitions/eventImage"
                 },
@@ -585,7 +577,7 @@
         },
         "packageCategory": {
             "type": "string",
-            "description": "Where the package is bought in the game (the shop tab). Display only. `weekly_rotation` = the unnamed weekday offers, `unlock_exclusive` = hero unlock packs without a named place.",
+            "description": "Where the package is bought in the game (the shop tab). Display only. `weekly_rotation` = the unnamed weekday offers (each may have its own picture, not a data field: webapp/public/assets/packages/<pack id>.webp, the id of its tier family; the Calendar and Today show it as a thumbnail, the Calendar also in the hover card), `unlock_exclusive` = hero unlock packs without a named place.",
             "enum": [
                 "daily_offer",
                 "daily_must_buy",
@@ -827,7 +819,8 @@
                     "$ref": "#/definitions/localizedString"
                 },
                 "image": {
-                    "$ref": "#/definitions/eventImage"
+                    "$ref": "#/definitions/eventImage",
+                    "description": "The phase's own art (a banner in webapp/public/assets/events/, e.g. survival_battle_build_territory): the Today page shows it while the phase is on, the Calendar's chart as a thumbnail before its name. Without one, the event's own image."
                 },
                 "earn_points": {
                     "type": "array",

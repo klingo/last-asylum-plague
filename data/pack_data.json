@@ -942,6 +942,7 @@
                 "de": "Lv.2 Allianz Truhe"
             },
             "category": "chest",
+            "image": "lv2_alliance_chest",
             "rarity": "r",
             "type": "random",
             "drop_table": [
@@ -2096,7 +2097,7 @@
         "research_tome": {
             "name": {
                 "en": "Research Tome",
-                "de": ""
+                "de": "Forschungsfoliant"
             },
             "category": "skin_decor",
             "rarity": "ur"
@@ -8187,6 +8188,7 @@
                         "en": "Build Territory",
                         "de": "Gebietsbau"
                     },
+                    "image": "survival_battle_build_territory",
                     "earn_points": [
                         {
                             "text": {
@@ -8217,6 +8219,7 @@
                         "en": "Train Soldiers",
                         "de": "Soldatentraining"
                     },
+                    "image": "survival_battle_train_soldiers",
                     "earn_points": [
                         {
                             "text": {
@@ -8247,6 +8250,7 @@
                         "en": "Technology Research",
                         "de": "Technologieforschung"
                     },
+                    "image": "survival_battle_technology_research",
                     "earn_points": [
                         {
                             "text": {
@@ -8277,6 +8281,7 @@
                         "en": "Enhance Raven",
                         "de": "Rabenverbesserung"
                     },
+                    "image": "survival_battle_enhance_raven",
                     "earn_points": [
                         {
                             "text": {
@@ -8307,6 +8312,7 @@
                         "en": "Enhance Heroes",
                         "de": "Heldenverbesserung"
                     },
+                    "image": "survival_battle_enhance_heroes",
                     "earn_points": [
                         {
                             "text": {

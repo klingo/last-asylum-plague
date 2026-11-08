@@ -17,8 +17,12 @@
  */
 
 import { createItemImage } from './images.js';
+import { findTile } from '../core/art-tile.js';
+
+const TILE_ANALYSIS_WIDTH = 128; // px a picture is scaled down to for finding its tile
 
 let tooltipEl = null;
+const tiles = new Map(); // picture URL -> its tile (null: none), found once
 
 function ensureTooltipEl() {
     if (tooltipEl) {
@@ -38,10 +42,15 @@ function positionTooltip(trigger) {
     const tooltipRect = el.getBoundingClientRect();
     const spacing = 6;
 
+    // What pops out above the card (a picture's top, see fitTile) needs room too, and below the trigger the card
+    // starts that much lower so the pop-out doesn't cover the trigger.
+    const image = el.querySelector('.app-tooltip__image');
+    const popOut = image ? Math.max(0, tooltipRect.top - image.getBoundingClientRect().top) : 0;
+
     // Default above the trigger, flipping below it if there isn't room.
     let top = triggerRect.top - tooltipRect.height - spacing;
-    if (top < 0) {
-        top = triggerRect.bottom + spacing;
+    if (top - popOut < 0) {
+        top = triggerRect.bottom + spacing + popOut;
     }
 
     let left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
@@ -71,6 +80,51 @@ function fillRows(el, rows) {
     }
 }
 
+/** The tile of a loaded picture (core/art-tile.js), from its alpha channel; null without one (or if it can't be read). */
+function tileOf(image) {
+    if (!tiles.has(image.src)) {
+        const width = Math.min(TILE_ANALYSIS_WIDTH, image.naturalWidth);
+        const height = Math.max(1, Math.round((image.naturalHeight * width) / image.naturalWidth));
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+        context.drawImage(image, 0, 0, width, height);
+        let tile = null;
+        try {
+            const pixels = context.getImageData(0, 0, width, height).data;
+            tile = findTile(
+                Uint8Array.from({ length: width * height }, (_, i) => pixels[i * 4 + 3]),
+                width,
+                height,
+            );
+        } catch {
+            // not readable: shown whole
+        }
+        tiles.set(image.src, tile);
+    }
+    return tiles.get(image.src);
+}
+
+/**
+ * Sizes and places a loaded picture so that its tile (the rounded rectangle of the game's art) fills the card from side
+ * to side and starts at the card's top, as an event's art always did; what the picture has outside its tile (a chest
+ * rising over the tile's top) pops out of the card. The text starts below the whole picture. The CSS (`app-tooltip__image--tile`) turns these shares of the
+ * picture into sizes. A picture without a tile is shown whole.
+ */
+function fitTile(image) {
+    const tile = tileOf(image);
+    if (!tile) {
+        return;
+    }
+    const wider = 1 / (tile.right - tile.left); // the picture is this much wider than the card
+    const aspect = image.naturalHeight / image.naturalWidth;
+    image.classList.add('app-tooltip__image--tile');
+    image.style.setProperty('--art-wider', wider);
+    image.style.setProperty('--art-left', tile.left * wider);
+    image.style.setProperty('--art-top', tile.top * aspect * wider);
+}
+
 function showTooltip(trigger) {
     const el = ensureTooltipEl();
     const rows = trigger.dataset.tooltipRows ? JSON.parse(trigger.dataset.tooltipRows) : null;
@@ -80,16 +134,34 @@ function showTooltip(trigger) {
     } else {
         el.textContent = trigger.dataset.tooltip || '';
     }
-    // Optional picture above the text (`data-tooltip-image`: an event's art on the Calendar), greyed with
-    // `data-tooltip-image-muted` (an ended run).
+    // Optional picture above the text (`data-tooltip-image`: an event's art, a weekday offer's own picture on the
+    // Calendar), greyed with `data-tooltip-image-muted` (an ended run).
     el.classList.toggle('app-tooltip--image', Boolean(trigger.dataset.tooltipImage));
     if (trigger.dataset.tooltipImage) {
         const image = document.createElement('img');
         image.className = `app-tooltip__image${'tooltipImageMuted' in trigger.dataset ? ' app-tooltip__image--muted' : ''}`;
         image.alt = '';
         image.src = trigger.dataset.tooltipImage;
-        // Placed again once the picture has its size (it may not be loaded yet).
-        image.addEventListener('load', () => !el.hidden && positionTooltip(trigger));
+        // Fitted and placed again once the picture is there (it may not be loaded yet), if it is still the one shown.
+        image.addEventListener('load', () => {
+            if (image.isConnected) {
+                fitTile(image);
+                if (!el.hidden) {
+                    positionTooltip(trigger);
+                }
+            }
+        });
+        // A picture that doesn't exist (a weekday offer without its own yet) is left out: the text alone. (The popup is
+        // shared: only while this picture is still the one in it.)
+        image.addEventListener('error', () => {
+            if (image.isConnected) {
+                image.remove();
+                el.classList.remove('app-tooltip--image');
+                if (!el.hidden) {
+                    positionTooltip(trigger);
+                }
+            }
+        });
         el.prepend(image);
     }
     el.hidden = false;

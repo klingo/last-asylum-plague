@@ -2,6 +2,9 @@
  * Item image handling: assets/items/<category>/<image>.png, sorted by the item's `category`. An image
  * not sorted into its folder yet is found directly in assets/items/; a missing one falls back to a
  * placeholder icon, so images can be dropped in later without touching any rendering code.
+ *
+ * A package (a weekday offer) may have a picture of its own, assets/packages/<pack id>.webp (the family id of a tiered
+ * pack): only its URL is built here, ui/event-banner.js shows it as a thumbnail and the Calendar as hover-card art.
  */
 import { t, localizedName } from './i18n.js';
 import { BASE_URL } from './base-url.js';
@@ -9,6 +12,7 @@ import { BASE_URL } from './base-url.js';
 const PLACEHOLDER_ICON = `${BASE_URL}assets/ui/placeholder-item.svg`;
 const BANKNOTE_ICON_URL = `${BASE_URL}assets/ui/banknote.png`;
 const ITEM_IMAGES_URL = `${BASE_URL}assets/items/`;
+const PACKAGE_IMAGES_URL = `${BASE_URL}assets/packages/`;
 
 // itemId -> { urls, name, rarity }, built from the data when it's loaded. `urls`: where its image may be, in
 // the order tried (category folder, then unsorted). Image URLs are only ever taken from here, never built from
@@ -72,6 +76,9 @@ function banknoteIconHtml(className = 'currency-icon') {
     return `<img src="${BANKNOTE_ICON_URL}" alt="${name}" title="${name}" class="${className}" />`;
 }
 
+/** URL of a package's own picture: "<pack id>.webp" below assets/packages. */
+const packageImageUrl = (packId) => `${PACKAGE_IMAGES_URL}${encodeURIComponent(packId)}.webp`;
+
 /**
  * Creates an <img> element for the given item id, pre-wired to fall back to the
  * placeholder icon if the real image doesn't exist. Its mouse-over title is the item's name (e.g. which
@@ -96,4 +103,4 @@ function createItemImage(itemId, altText, className = 'item-icon') {
     return img;
 }
 
-export { setItemImageSrc, setItemImageAliases, rarityClass, createItemImage, banknoteIconHtml };
+export { setItemImageSrc, setItemImageAliases, rarityClass, createItemImage, packageImageUrl, banknoteIconHtml };

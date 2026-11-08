@@ -2,7 +2,7 @@
  * The game's art for events, spend reward tracks and seasonal passes (`image` in pack_data.json:
  * assets/events/<image>.webp, 720×360), and when they run: "Ends in 6d 5h", "Starts in 05:06:44" (a live countdown on
  * the banners; runs start and end at the game day's reset, 02:00 UTC, shown in the user's local time). Used by the Calendar (thumbnails, hover
- * cards), Event Shops, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).
+ * cards; also a weekday offer's own picture, `assets/packages/<pack id>.webp`, as its thumbnail), Event Shops, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).
  */
 import { localizedName, t } from './i18n.js';
 import { escapeHtml } from './html.js';
@@ -11,6 +11,7 @@ import { eventPlanHref, pageHref } from './url.js';
 import { packageFamilyId, seasonalPassFamilies } from '../core/pack-data.js';
 import { gameDay, nextRun, runMoments, runStatus, scheduleRuns } from '../core/schedule.js';
 import { BASE_URL } from './base-url.js';
+import { packageImageUrl } from './images.js';
 
 const EVENT_IMAGES_URL = `${BASE_URL}assets/events/`;
 // How far ahead a forecast is looked for ("next expected around …").
@@ -19,6 +20,37 @@ const FORECAST_DAYS = 180;
 /** URL of an `image`, or null. */
 function eventImageUrl(image) {
     return image ? `${EVENT_IMAGES_URL}${encodeURIComponent(image)}.webp` : null;
+}
+
+/** The art as a small thumbnail before a name (a placeholder in its group's colour without art); `attrs`: more attributes. */
+function thumbHtml(image, attrs = '') {
+    return image
+        ? `<img class="schedule__thumb"${attrs} src="${escapeHtml(image)}" alt="" loading="lazy" decoding="async" />`
+        : '<span class="schedule__thumb schedule__thumb--none" aria-hidden="true"></span>';
+}
+
+/**
+ * A weekday offer's own picture (assets/packages/<pack id>.webp) as that thumbnail. Whether the file exists isn't in
+ * the data: `hydratePackThumbs` turns the ones that fail to load into the placeholder of an event without art.
+ */
+function packThumbHtml(packId) {
+    return thumbHtml(packageImageUrl(packId), ' data-pack-thumb');
+}
+
+/** Replaces the pack thumbnails under `root` whose picture doesn't exist (yet) by the placeholder. */
+function hydratePackThumbs(root) {
+    const missing = (img) => {
+        const holder = document.createElement('template');
+        holder.innerHTML = thumbHtml(null);
+        img.replaceWith(holder.content.firstElementChild);
+    };
+    root.querySelectorAll('img[data-pack-thumb]').forEach((img) => {
+        if (img.complete && img.naturalWidth === 0) {
+            missing(img); // it failed before this ran
+        } else {
+            img.addEventListener('error', () => missing(img), { once: true });
+        }
+    });
 }
 
 /** The `image` of a schedule id: an event, a spend reward track or a seasonal pass family. */
@@ -188,6 +220,9 @@ function mountBanner(container, data, id, entry, render) {
 
 export {
     eventImageUrl,
+    thumbHtml,
+    packThumbHtml,
+    hydratePackThumbs,
     scheduleImage,
     scheduleName,
     scheduleHref,

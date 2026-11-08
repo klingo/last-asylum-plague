@@ -74,3 +74,33 @@
         padding: 12px 14px;
     }
 }
+
+/* The art (or, without it, a placeholder tile in its group's colour) as a small thumbnail before a name: the Calendar's
+   charts, Today's weekday offers. */
+.schedule__thumb {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 40px;
+    height: 20px;
+    margin-right: 8px;
+    border-radius: 3px;
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+.schedule__thumb--none {
+    background: color-mix(in srgb, var(--bar-color, var(--text-dim)) 30%, var(--panel-alt));
+}
+
+/* In a flex cell (Today's offer table) the cell's own gap spaces it. */
+.item-cell .schedule__thumb {
+    margin-right: 0;
+}
+
+@media (max-width: 640px) {
+    .schedule__thumb {
+        width: 32px;
+        height: 16px;
+        margin-right: 6px;
+    }
+}

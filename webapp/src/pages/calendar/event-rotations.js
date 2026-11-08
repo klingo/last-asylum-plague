@@ -1,9 +1,11 @@
 /**
- * The event rotations (Survival Battle): a chart of the slots of today and the next 6 days.
+ * The event rotations (Survival Battle): a chart of the slots of today and the next 6 days, a phase's own art (its
+ * `image`; a placeholder tile without) as a small thumbnail before its name and as the art of its bars' hover cards.
  */
 import { localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
 import { formatClock, formatRunRange, pad2 } from '../../ui/datetime.js';
+import { eventImageUrl, thumbHtml } from '../../ui/event-banner.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import {
     barHtml,
@@ -53,6 +55,7 @@ function renderEventRotations() {
             const rowsHtml = rotation.phases
                 .map((phase) => {
                     const name = localizedName(phase.name);
+                    const image = eventImageUrl(phase.image); // null without one
                     const bars = slots
                         .filter((slot) => slot.phaseId === phase.id)
                         .map((slot) =>
@@ -65,11 +68,12 @@ function renderEventRotations() {
                                 },
                                 view,
                                 slotTooltip(slot),
+                                { image },
                             ),
                         );
                     return `
                         <div class="schedule__row schedule__row--ingame">
-                            <div class="schedule__label" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+                            <div class="schedule__label" title="${escapeHtml(name)}">${thumbHtml(image)}${escapeHtml(name)}</div>
                             <div class="schedule__track">${bars.join('')}</div>
                         </div>`;
                 })

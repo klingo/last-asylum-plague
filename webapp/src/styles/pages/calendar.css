@@ -103,27 +103,15 @@
     overflow-x: auto;
 }
 
+/* The name column is wide enough for a name after its thumbnail (the art, or a placeholder tile, in every chart). */
 .schedule__chart {
-    --label-width: 190px;
+    --label-width: 230px;
     position: relative;
     min-width: 760px;
 }
 
 .schedule__chart--days {
     min-width: 480px;
-}
-
-/* Weekday offers: the package's item icon before its name. */
-.schedule__icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 6px;
-    border-radius: 4px;
-    vertical-align: middle;
-}
-
-.schedule__icon.item-icon--placeholder {
-    padding: 2px;
 }
 
 /* Name | 4px gap | timeline. The gap leaves room for a hovered bar's outline on the first day (the name column is
@@ -297,32 +285,12 @@ a.schedule__bar {
 
 @media (max-width: 640px) {
     .schedule__chart {
-        --label-width: 130px;
+        --label-width: 160px;
     }
 
     .schedule__row--hours {
         display: none;
     }
-}
-
-/* Calendar: the entry's art before its name (a placeholder in its group's colour without art), so the schedule's
-   names are wider. */
-.schedule__chart:not(.schedule__chart--days) {
-    --label-width: 230px;
-}
-
-.schedule__thumb {
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    margin-right: 8px;
-    border-radius: 3px;
-    object-fit: cover;
-    vertical-align: middle;
-}
-
-.schedule__thumb--none {
-    background: color-mix(in srgb, var(--bar-color) 30%, var(--panel-alt));
 }
 
 a.schedule__label--link {
@@ -353,18 +321,6 @@ a.schedule__label--link:hover {
         .schedule__label:focus-visible
     ) {
     background: color-mix(in srgb, var(--bar-color) 10%, transparent);
-}
-
-@media (max-width: 640px) {
-    .schedule__chart:not(.schedule__chart--days) {
-        --label-width: 160px;
-    }
-
-    .schedule__thumb {
-        width: 32px;
-        height: 16px;
-        margin-right: 6px;
-    }
 }
 
 /* Calendar forecasts: a rough guess (no repeating pattern yet, or a proven one last recorded over 8 weeks ago) is

@@ -10,7 +10,6 @@ import {
     offerDisplayName,
     packageDisplayName,
     packageDisplayText,
-    packageIcon,
 } from '../../webapp/src/ui/labels.js';
 
 const items = {
@@ -32,12 +31,6 @@ test('a package name carries the tier suffix of its ladder', () => {
     assert.equal(packageDisplayText({ name: { en: 'Pack' }, tier: 2 }, 'en'), 'Pack (Tier 2)');
     assert.equal(packageDisplayText({ name: { en: 'Pack' } }, 'en'), 'Pack');
     assert.equal(packageDisplayName({ name: { en: 'A & B' } }, 'en'), 'A &amp; B');
-});
-
-test("a package's icon is its own, else its first item that is not filler", () => {
-    assert.equal(packageIcon({ icon: 'chest', contains: { shard: 1 } }), 'chest');
-    assert.equal(packageIcon({ contains: { diamonds: 100, shard: 1 } }), 'shard');
-    assert.equal(packageIcon({ contains: { diamonds: 100 } }), null);
 });
 
 test('labels of bundles and offers list the escaped names with amounts', () => {

@@ -206,7 +206,6 @@
             "lead": "Packs on sale on fixed weekdays, from today through the next 6 days, in your local time: the offers change at the game's daily reset.",
             "today": "Today",
             "tomorrow": "Tomorrow",
-            "every": "every {days}",
             "onSale": "On sale {from} – {to}",
             "now": "Now · today's offers end in {left} (a new game day starts at {time})",
             "hoursMinutes": "{hours}h {minutes}m",

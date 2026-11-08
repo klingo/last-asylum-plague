@@ -8,12 +8,12 @@ import { startPage } from '../ui/page.js';
 import '../styles/pages/today.css';
 import { mountValuationPage } from '../ui/valuation-page.js';
 import { getSettings } from '../ui/settings.js';
-import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, itemIconSlot, tileHtml } from '../ui/html.js';
+import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, tileHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { eventPlanHref, pageHref } from '../ui/url.js';
 import { bellIconHtml, infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
 import { notifiesRotation } from '../ui/notifications.js';
-import { SCHEDULE_KIND_LABELS, SCHEDULE_KINDS, packageDisplayName, packageIcon } from '../ui/labels.js';
+import { SCHEDULE_KIND_LABELS, SCHEDULE_KINDS, packageDisplayName } from '../ui/labels.js';
 import {
     gridCell,
     gridNum,
@@ -32,6 +32,8 @@ import { ratioCellHtml, ratioScale } from '../ui/ratio-bar.js';
 import {
     eventImageUrl,
     countdownText,
+    hydratePackThumbs,
+    packThumbHtml,
     scheduleHref,
     scheduleImage,
     scheduleName,
@@ -260,11 +262,10 @@ function renderOffers() {
         const higherTier = family(offer) === previousFamily;
         previousFamily = family(offer);
         const count = planned.get(id) || 0;
-        const icon = packageIcon(pkg);
         const row = gridRow(
             [
                 gridCell(
-                    `${icon ? itemIconSlot(icon) : ''}${packageDisplayName(pkg, locale)}${requiresIconHtml(pkg.requires, data.packages, data.items, locale)}`,
+                    `${packThumbHtml(family(offer))}${packageDisplayName(pkg, locale)}${requiresIconHtml(pkg.requires, data.packages, data.items, locale)}`,
                     { className: `item-cell${higherTier ? ' offer-tier' : ''}` },
                 ),
                 gridNum(banknotesAmount(pkg.price)),
@@ -286,6 +287,7 @@ function renderOffers() {
         gridHeader(),
     ]);
     offersTable.innerHTML = gridTable(header, rows.join(''));
+    hydratePackThumbs(offersTable); // an offer without its picture yet gets the placeholder, as an event without art
     hydrateItemIcons(offersTable);
     enableInfoTooltips(offersTable);
     wireDetailsToggles(offersTable, offerExpanded);

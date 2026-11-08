@@ -206,7 +206,6 @@
             "lead": "Pakete, die an festen Wochentagen im Angebot sind, von heute bis in 6 Tagen, in deiner Ortszeit: Die Angebote wechseln beim täglichen Reset des Spiels.",
             "today": "Heute",
             "tomorrow": "Morgen",
-            "every": "jeweils {days}",
             "onSale": "Im Angebot {from} – {to}",
             "now": "Jetzt · die heutigen Angebote enden in {left} (ein neuer Spieltag beginnt um {time})",
             "hoursMinutes": "{hours} Std. {minutes} Min.",

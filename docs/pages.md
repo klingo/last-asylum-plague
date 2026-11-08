@@ -18,7 +18,8 @@ packs' deal %.
 - **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
   days (recorded runs and proven forecasts), the weekly plan by when to buy it (daily packs, weekly and longer packs,
   weekday offers, each event's packs and how many different shop offers it buys, linking to its Event Shops tab) and
-  today's weekday offers with their ratio, what the plan buys and what each gives (Details). Running entries are
+  today's weekday offers (each with its own picture from `assets/packages/<pack id>.webp` as a thumbnail before its
+  name, a placeholder tile without one) with their ratio, what the plan buys and what each gives (Details). Running entries are
   ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
   plan buys from it.
   Survival Battle (`event_rotations` in `pack_data.json`: the 42 four-hour slots of its week, from Sunday's reset, the
@@ -34,7 +35,12 @@ packs' deal %.
   weekly reset or until its event / pass is over, whichever comes first.
 - **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see [Schedule and forecasts](valuation.md#schedule-and-forecasts); each entry with the
   game's art, a hover card with how long is left, and a click opens its plan), the Weekday Offers of the next 7 days
-  and, for each event rotation (Survival Battle), a chart of today and the next 6 days: one row per phase, a bar for
+  (each with its own picture from `assets/packages/<pack id>.webp` as a thumbnail before its name, a placeholder tile
+  without one, as on Today; the picture is also the art of the bar's hover card, like an event's: its tile edge to edge,
+  what pops out of the tile popping out of the card, greyed for a bar that isn't on sale right now, as an ended event's;
+  the card says the name, the ratio and the exact sale window in local time)
+  and, for each event rotation (Survival Battle), a chart of today and the next 6 days: one row per phase (with its art
+  as a thumbnail, a placeholder tile without, and as the art of its bars' hover cards), a bar for
   each 4-hour slot (elapsed ones grey), a line for the phase on now, local times in the hover card. Every chart is on
   the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
   part-way into a day column. Banners, Today and the Deal Ranking's skips show the same local moments.

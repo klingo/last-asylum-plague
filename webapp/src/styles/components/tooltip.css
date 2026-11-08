@@ -88,10 +88,21 @@
 .app-tooltip__image {
     display: block;
     width: calc(100% + 20px);
-    aspect-ratio: 2 / 1;
+    /* Its own shape once loaded (never cropped), 2:1 until then. */
+    aspect-ratio: auto 2 / 1;
     margin: -6px -10px 6px;
     border-radius: var(--radius) var(--radius) 0 0;
-    object-fit: cover;
+}
+
+/* A picture with a tile (tooltip.js fitTile sets --art-wider: how much wider than the card the picture is, and
+   --art-left / --art-top: the tile's left and top edge, in card widths): the tile fills the card from side to side and
+   from the top, what the picture has outside it pops out of the card. Percentages in a margin are of the card's width,
+   as the picture's width is. The text follows the whole picture (it fades out below the tile). */
+.app-tooltip__image--tile {
+    width: calc((100% + 20px) * var(--art-wider));
+    max-width: none;
+    margin: calc(-6px - (100% + 20px) * var(--art-top)) 0 6px calc(-10px - (100% + 20px) * var(--art-left));
+    border-radius: 0;
 }
 
 /* An ended run (grey bar): mostly grey, slightly dimmed, still recognizable. */
