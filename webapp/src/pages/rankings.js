@@ -8,10 +8,10 @@ import { startPage } from '../ui/page.js';
 import '../styles/pages/rankings.css';
 import { mountValuationPage } from '../ui/valuation-page.js';
 import { getSettings, updateSettings } from '../ui/settings.js';
-import { gameDay } from '../core/schedule.js';
+import { dayStartMs, gameDay } from '../core/schedule.js';
 import { skipUntilDay, activeSkips, expandSkips } from '../core/skips.js';
 import { notBoughtReasons } from '../core/plan-view.js';
-import { formatGameDay } from '../ui/datetime.js';
+import { formatMoment } from '../ui/datetime.js';
 import { packageWeeklyCapacity, isOnSale, purchaseType } from '../core/catalog.js';
 import { packageDisplayName, packageDisplayText } from '../ui/labels.js';
 import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons } from '../ui/html.js';
@@ -100,7 +100,7 @@ function skipButtonHtml(entry) {
 function skippedHtml(entry) {
     const note =
         entry.skipCause === entry.packageId
-            ? t('rankings.skippedUntil', { date: formatGameDay(entry.skipUntil) })
+            ? t('rankings.skippedUntil', { date: formatMoment(dayStartMs(entry.skipUntil)) })
             : t('rankings.skippedNeeds', { name: entry.causeName });
     return `<span class="text-dim">${tHtml('rankings.skipped')}</span>${infoIconHtml(note)}`;
 }

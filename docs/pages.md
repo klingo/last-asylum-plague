@@ -35,7 +35,9 @@ packs' deal %.
 - **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see [Schedule and forecasts](valuation.md#schedule-and-forecasts); each entry with the
   game's art, a hover card with how long is left, and a click opens its plan), the Weekday Offers of the next 7 days
   and, for each event rotation (Survival Battle), a chart of today and the next 6 days: one row per phase, a bar for
-  each 4-hour slot (elapsed ones grey), a line for the phase on now, local times in the hover card.
+  each 4-hour slot (elapsed ones grey), a line for the phase on now, local times in the hover card. Every chart is on
+  the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
+  part-way into a day column. Banners, Today and the Deal Ranking's skips show the same local moments.
 - **Event Shops** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers; an Encounter counts its random reward, the free one every day and

@@ -1,12 +1,12 @@
 /**
  * The game's art for events, spend reward tracks and seasonal passes (`image` in pack_data.json:
  * assets/events/<image>.webp, 720×360), and when they run: "Ends in 6d 5h", "Starts in 05:06:44" (a live countdown on
- * the banners; runs start and end at the game day's reset, 02:00 UTC). Used by the Calendar (thumbnails, hover
+ * the banners; runs start and end at the game day's reset, 02:00 UTC, shown in the user's local time). Used by the Calendar (thumbnails, hover
  * cards), Event Shops, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).
  */
-import { getLocale, localizedName, t } from './i18n.js';
+import { localizedName, t } from './i18n.js';
 import { escapeHtml } from './html.js';
-import { formatClock, formatGameDay, formatGameDayRange, formatMoment, pad2 } from './datetime.js';
+import { formatDate, formatRunRange, pad2 } from './datetime.js';
 import { eventPlanHref, pageHref } from './url.js';
 import { packageFamilyId, seasonalPassFamilies } from '../core/pack-data.js';
 import { gameDay, nextRun, runMoments, runStatus, scheduleRuns } from '../core/schedule.js';
@@ -91,17 +91,10 @@ function runStatusText(status, now = Date.now()) {
         : t('calendar.status.endedAgo', { count: status.days });
 }
 
-/** "Tue, Nov 3 · 04:00 – 08:00" in local time: a slot of an event rotation (Survival Battle), `start` / `end` in ms. */
-function slotRangeText(start, end) {
-    const locale = getLocale();
-    const day = new Date(start).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
-    return `${day} · ${formatClock(start)} – ${formatClock(end)}`;
-}
-
 /**
  * When a schedule id runs, as of now (today is the game day): `{ state, text }`, `state` one of running / upcoming /
- * ended / none. Running and upcoming runs also give their dates (`range`), the moment they end / start (`until`, for
- * a live countdown) and that moment in local time (`exact`); after the last run, the next forecast run if any.
+ * ended / none. Running and upcoming runs also give when they run in local time (`range`) and the moment they end /
+ * start (`until`, for a live countdown); after the last run, the next forecast run if any.
  */
 function scheduleTiming(data, id) {
     const now = Date.now();
@@ -112,34 +105,31 @@ function scheduleTiming(data, id) {
         return { state: 'none', text: t('calendar.status.none') };
     }
     if (status.state !== 'ended') {
-        const range = formatGameDayRange(status.run.start, status.run.end);
-        const until = statusMoment(status);
+        const { start, end } = runMoments(status.run);
+        const range = formatRunRange(start, end);
         return {
             state: status.state,
             status,
             range,
-            until,
-            exact: t(status.state === 'running' ? 'calendar.status.endsAt' : 'calendar.status.startsAt', {
-                date: formatMoment(until),
-            }),
+            until: statusMoment(status),
             text: `${range} · ${runStatusText(status, now)}`,
         };
     }
     // The next forecast run still to come, said how sure it is.
     const next = nextRun(runs, today, FORECAST_DAYS);
     const expected = next
-        ? ` · ${t(next.proven ? 'calendar.status.expected' : 'calendar.status.expectedGuess', { date: formatGameDay(next.start) })}`
+        ? ` · ${t(next.proven ? 'calendar.status.expected' : 'calendar.status.expectedGuess', { date: formatDate(runMoments(next).start) })}`
         : '';
     return { state: 'ended', text: `${runStatusText(status, now)}${expected}` };
 }
 
-/** The timing line: dates and a countdown that `startCountdowns` keeps current (hover: the exact local moment). */
+/** The timing line: when it runs and a countdown that `startCountdowns` keeps current. */
 function timingHtml(timing) {
     const className = `event-banner__timing event-banner__timing--${timing.state}`;
     if (!timing.until) {
         return `<p class="${className}">${escapeHtml(timing.text)}</p>`;
     }
-    return `<p class="${className}" title="${escapeHtml(timing.exact)}">${escapeHtml(timing.range)} · <span class="event-banner__countdown" data-until="${timing.until}" data-state="${timing.state}">${escapeHtml(runStatusText(timing.status))}</span></p>`;
+    return `<p class="${className}">${escapeHtml(timing.range)} · <span class="event-banner__countdown" data-until="${timing.until}" data-state="${timing.state}">${escapeHtml(runStatusText(timing.status))}</span></p>`;
 }
 
 /**
@@ -201,7 +191,6 @@ export {
     scheduleImage,
     scheduleName,
     scheduleHref,
-    slotRangeText,
     runStatusText,
     countdownText,
     scheduleTiming,

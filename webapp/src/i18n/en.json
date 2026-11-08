@@ -181,7 +181,7 @@
     "calendar": {
         "schedule": {
             "heading": "Event Schedule",
-            "lead": "What runs this week, and what is likely coming in the next three. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; a repeating pattern counts as running without being recorded, until its last recorded run is 8 weeks back. Hover a bar for its dates and how long is left; click it (or its name) to open its plan.",
+            "lead": "What runs this week, and what is likely coming in the next three. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; a repeating pattern counts as running without being recorded, until its last recorded run is 8 weeks back. Hover a bar for its dates and how long is left; click it (or its name) to open its plan. Dates and times are in your local time; a run starts and ends at the game's daily reset.",
             "recorded": "Recorded",
             "forecast": "Forecast",
             "forecastGuess": "Forecast (rough guess)",
@@ -203,7 +203,7 @@
         },
         "rotation": {
             "heading": "Weekday Offers",
-            "lead": "Packs on sale on fixed weekdays, from today through the next 6 days.",
+            "lead": "Packs on sale on fixed weekdays, from today through the next 6 days, in your local time: the offers change at the game's daily reset.",
             "today": "Today",
             "tomorrow": "Tomorrow",
             "every": "every {days}",
@@ -225,8 +225,6 @@
             "endsIn": "Ends in {time}",
             "startsIn": "Starts in {time}",
             "daysHours": "{days}d {hours}h",
-            "endsAt": "Ends {date}",
-            "startsAt": "Starts {date}",
             "endedYesterday": "Ended yesterday",
             "endedAgo": "Ended {count} days ago",
             "expected": "next expected around {date} (forecast)",

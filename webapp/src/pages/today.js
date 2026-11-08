@@ -35,10 +35,9 @@ import {
     scheduleHref,
     scheduleImage,
     scheduleName,
-    slotRangeText,
     startCountdowns,
 } from '../ui/event-banner.js';
-import { formatGameDayRange } from '../ui/datetime.js';
+import { formatRunRange } from '../ui/datetime.js';
 import { isOnSale } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { groupPlanByWhen } from '../core/plan-view.js';
@@ -69,14 +68,14 @@ const offerExpanded = new Set();
 
 /**
  * An entry of a list. `start` / `end` are moments (ms).
- * - A run from the schedule (whole game days): the event's, pass's or track's name, its own short line beside it, the
- *   dates (and "expected" for a forecast), a link if it has a page.
+ * - A run from the schedule (whole game days): the event's, pass's or track's name, its own short line beside it,
+ *   when it starts and ends in local time (and "expected" for a forecast), a link if it has a page.
  * - A phase of an event rotation (Survival Battle): the phase's name as the title, the event's name beside it, the
  *   slot's times in local time, and (as an info icon) how to earn points in it.
  */
 function runEntry(id, kind, run, state, forecast = false) {
     const moments = runMoments(run);
-    const range = formatGameDayRange(run.start, run.end);
+    const range = formatRunRange(moments.start, moments.end);
     return {
         id,
         kind,
@@ -104,7 +103,7 @@ function rotationEntry(rotation, slot, state) {
         description: localizedName(event.name),
         image: slot.phase.image || event.image,
         href: null,
-        dates: slotRangeText(slot.start, slot.end),
+        dates: formatRunRange(slot.start, slot.end),
         earnPoints: slot.phase.earn_points || [],
         notify: notifiesRotation(rotation),
         start: slot.start,

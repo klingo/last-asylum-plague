@@ -11,6 +11,10 @@ A static webapp that values items, packages and exchange-shop offers from `data/
 
 - Prefer the smallest change that solves the stated problem. Do not add new schema sections, sync scripts, npm
   commands, or lint-staged wiring unless asked.
+- A bigger change leaves no technical debt behind. Remove what it makes dead (functions, exports, imports, CSS rules,
+  state, i18n keys, tests), merge what it duplicates, follow the established patterns of the surrounding code, and
+  update the header comments and docs it affects. The codebase must be in a well-maintained state afterwards. That
+  cleanup is part of the change, not a separate refactor.
 - If you think a larger refactor is warranted, describe it in one paragraph and wait for approval before editing
   files.
 - When the user proposes a data-structure design, implement it as described. Raise concerns once, then defer to
@@ -47,6 +51,8 @@ A static webapp that values items, packages and exchange-shop offers from `data/
 - Numbers in tables: thousand separators, right-aligned, consistent decimal padding.
 - One number style in every language (`format.js`): apostrophe thousands, point decimals (20'000, 1.423, 2.6 ★).
   Dates are localized.
+- Runs and other moments are shown in the user's local time (`formatRunRange`, `formatMoment`, `formatDate`), the
+  Calendar's charts on local days; game days (starting at the 02:00 UTC reset) stay internal, for the logic only.
 - Grid columns that only matter on wide screens are marked `wide` (`ui/grid.js`); phones (≤ 640 px) drop them.
 - Item/package names on ranking pages include the tier suffix.
 

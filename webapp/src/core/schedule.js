@@ -4,7 +4,7 @@
  * - the recorded schedule (`schedule` in pack_data.json: per id its runs as inclusive start/end dates) as day
  *   numbers (`scheduleRuns`), plus a simple forecast for ids that ran at least twice (`forecastRuns`); with `today`
  *   the runs of a proven pattern up to today count as runs;
- * - where an id's runs stand (`runStatus`) and the exact moments a run starts and ends (`runMoments`);
+ * - where an id's runs stand (`runStatus`) and the exact moments a run starts and ends (`runMoments`, `dayStartMs`);
  * - weekday offers (packs on sale on certain weekdays): where one stands in the game week (`weekdayOfferTiming`)
  *   and the runs of days it is on sale (`weekdayRuns`);
  * - event rotations (`event_rotations`: gameplay events running through a fixed list of slots on a fixed clock):
@@ -40,13 +40,11 @@ function dayDate(day) {
 const GAME_DAY_START_MS = 2 * HOUR_MS;
 
 /**
- * The game day a moment falls in: its day number (the date it started on) and how far into it the moment is
- * (0 ≤ fraction < 1). 01:00 UTC on Oct 18 is still the game day Oct 17, 23/24 through.
+ * The game day a moment falls in: `{ day }`, its day number (the date it started on). 01:00 UTC on Oct 18 is still the
+ * game day Oct 17.
  */
 function gameDay(date) {
-    const shifted = date.getTime() - GAME_DAY_START_MS;
-    const day = Math.floor(shifted / DAY_MS);
-    return { day, fraction: (shifted - day * DAY_MS) / DAY_MS };
+    return { day: Math.floor((date.getTime() - GAME_DAY_START_MS) / DAY_MS) };
 }
 
 /** Monday = 0 ... Sunday = 6. */
@@ -351,15 +349,17 @@ function planningRun(data, id, today) {
     return next ? { state: 'next', start: next.start, days: next.end - next.start + 1 } : null;
 }
 
+/** The moment (ms) a game day starts: its reset, 02:00 UTC on its date (the previous day ends then). */
+function dayStartMs(day) {
+    return dayDate(day).getTime() + GAME_DAY_START_MS;
+}
+
 /**
  * The exact moments (ms timestamps) a run starts and ends: runs start and end at the game day's reset, so it starts
  * at 02:00 UTC on its first day and ends at 02:00 UTC after its last one.
  */
 function runMoments(run) {
-    return {
-        start: dayDate(run.start).getTime() + GAME_DAY_START_MS,
-        end: dayDate(run.end + 1).getTime() + GAME_DAY_START_MS,
-    };
+    return { start: dayStartMs(run.start), end: dayStartMs(run.end + 1) };
 }
 
 /** The moment (ms) the rotation's week that `ms` falls in started: the daily reset (02:00 UTC) of `week_starts`. */
@@ -367,7 +367,7 @@ function rotationWeekStart(rotation, ms) {
     const today = gameDay(new Date(ms)).day;
     const weekStartDay =
         today - ((weekdayIndex(today) - WEEKDAYS.indexOf(rotation.week_starts) + DAYS_PER_WEEK) % DAYS_PER_WEEK);
-    return dayDate(weekStartDay).getTime() + GAME_DAY_START_MS;
+    return dayStartMs(weekStartDay);
 }
 
 /** Slot `k` of the week that started at `weekStartMs`: `{ slot, phaseId, phase, start, end }` (ms). */
@@ -421,12 +421,13 @@ function rotationWindow(rotation, fromMs, toMs) {
 
 export {
     DAYS_PER_WEEK,
+    DAY_MS,
     HOUR_MS,
     WEEKDAYS,
     dayDate,
     dayNumber,
     gameDay,
-    GAME_DAY_START_MS,
+    dayStartMs,
     weekdayIndex,
     weekStart,
     isoWeekNumber,

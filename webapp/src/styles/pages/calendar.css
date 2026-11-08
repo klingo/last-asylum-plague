@@ -182,9 +182,9 @@
     border-bottom: 1px solid var(--border);
 }
 
+/* The columns' widths are set on the element (`columnsStyle`): a column per week / day, as wide as its hours. */
 .schedule__weeks {
     display: grid;
-    grid-template-columns: repeat(var(--columns), 1fr);
 }
 
 .schedule__week {
@@ -279,9 +279,10 @@ a.schedule__bar {
     pointer-events: none;
 }
 
+/* The current week / day: the chart's first column. */
 .schedule__current-week {
     z-index: 0;
-    left: calc(var(--label-width) + (100% - var(--label-width)) * var(--week-start));
+    left: var(--label-width);
     width: calc((100% - var(--label-width)) * var(--week-width));
     background: rgba(255, 255, 255, 0.05);
 }

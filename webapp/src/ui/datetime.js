@@ -1,23 +1,15 @@
 /**
- * Dates and times as the pages show them, in the language's format: the game's dates (a day number, the same date in
- * any time zone) and moments in the user's local time.
+ * Dates and times as the pages show them, in the language's format and the user's local time (the game's days stay
+ * internal: a run is shown from the moment it starts to the moment it ends).
  */
 import { getLocale } from './i18n.js';
-import { dayDate } from '../core/schedule.js';
 
 /** A number as two digits ("05"). */
 const pad2 = (n) => String(n).padStart(2, '0');
 
-/** "Mon, Oct 12" (a game day number, shown as the game's date in any time zone). */
-function formatGameDay(day, options = { weekday: 'short', day: 'numeric', month: 'short' }) {
-    return dayDate(day).toLocaleDateString(getLocale(), { timeZone: 'UTC', ...options });
-}
-
-/** "Mon, Oct 12 – Tue, Oct 13" (one date for a one-day run): the game days `start`..`end`. */
-function formatGameDayRange(start, end, options) {
-    return start === end
-        ? formatGameDay(start, options)
-        : `${formatGameDay(start, options)} – ${formatGameDay(end, options)}`;
+/** "Mon, Oct 12" in local time: the date of a moment. */
+function formatDate(ms, options = { weekday: 'short', day: 'numeric', month: 'short' }) {
+    return new Date(ms).toLocaleDateString(getLocale(), options);
 }
 
 /** "04:00" in local time. */
@@ -36,4 +28,17 @@ function formatMoment(ms) {
     });
 }
 
-export { pad2, formatGameDay, formatGameDayRange, formatClock, formatMoment };
+/**
+ * "Tue, Nov 3 · 04:00 – 08:00" for a run within one local day (it may end at midnight), else
+ * "Mon, Oct 12, 04:00 – Mon, Oct 19, 04:00": when a run (or a slot of an event rotation) starts and ends, `startMs` /
+ * `endMs` in local time.
+ */
+function formatRunRange(startMs, endMs) {
+    const start = new Date(startMs);
+    const nextMidnight = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1).getTime();
+    return endMs <= nextMidnight
+        ? `${formatDate(startMs)} · ${formatClock(startMs)} – ${formatClock(endMs)}`
+        : `${formatMoment(startMs)} – ${formatMoment(endMs)}`;
+}
+
+export { pad2, formatDate, formatClock, formatMoment, formatRunRange };

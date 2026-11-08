@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
     calendarSelection,
+    dayStartMs,
     forecastRuns,
     gameDay,
     isoWeekNumber,
@@ -171,12 +172,19 @@ test('schedule: a run starts and ends at the game day reset', () => {
 
 test('schedule: the game day starts at 02:00 UTC', () => {
     const oct17 = Date.UTC(2026, 9, 17) / 86400000;
-    // 01:00 UTC on Oct 18 (03:00 CEST): still Oct 17, 23 of its 24 hours gone.
-    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 1))), { day: oct17, fraction: 23 / 24 });
+    // 01:00 UTC on Oct 18 (03:00 CEST): still Oct 17.
+    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 1))), { day: oct17 });
     // 02:00 UTC on Oct 18: Oct 18 just started.
-    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 2))), { day: oct17 + 1, fraction: 0 });
-    // 14:00 UTC: half through.
-    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 14))), { day: oct17 + 1, fraction: 0.5 });
+    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 2))), { day: oct17 + 1 });
+    // 14:00 UTC: still Oct 18.
+    assert.deepEqual(gameDay(new Date(Date.UTC(2026, 9, 18, 14))), { day: oct17 + 1 });
+});
+
+test('schedule: a game day starts at its reset moment', () => {
+    const oct12 = Date.UTC(2026, 9, 12) / 86400000;
+    assert.equal(dayStartMs(oct12), Date.UTC(2026, 9, 12, 2));
+    assert.equal(gameDay(new Date(dayStartMs(oct12))).day, oct12);
+    assert.equal(gameDay(new Date(dayStartMs(oct12) - 1)).day, oct12 - 1);
 });
 
 test('schedule: forecast says how sure it is', () => {

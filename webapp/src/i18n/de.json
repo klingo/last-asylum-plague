@@ -181,7 +181,7 @@
     "calendar": {
         "schedule": {
             "heading": "Event-Zeitplan",
-            "lead": "Was diese Woche läuft und was in den nächsten drei wahrscheinlich kommt. Prognosen wiederholen den üblichen Rhythmus eines Eintrags, sobald er mindestens zweimal erfasst wurde; ein wiederkehrendes Muster gilt als laufend, ohne erfasst zu sein, bis sein letzter erfasster Durchlauf 8 Wochen zurückliegt. Fahre über einen Balken für seine Daten und die verbleibende Zeit, klicke ihn (oder seinen Namen) an, um seinen Plan zu öffnen.",
+            "lead": "Was diese Woche läuft und was in den nächsten drei wahrscheinlich kommt. Prognosen wiederholen den üblichen Rhythmus eines Eintrags, sobald er mindestens zweimal erfasst wurde; ein wiederkehrendes Muster gilt als laufend, ohne erfasst zu sein, bis sein letzter erfasster Durchlauf 8 Wochen zurückliegt. Fahre über einen Balken für seine Daten und die verbleibende Zeit, klicke ihn (oder seinen Namen) an, um seinen Plan zu öffnen. Daten und Zeiten sind in deiner Ortszeit; ein Durchlauf beginnt und endet beim täglichen Reset des Spiels.",
             "recorded": "Erfasst",
             "forecast": "Prognose",
             "forecastGuess": "Prognose (grobe Schätzung)",
@@ -203,7 +203,7 @@
         },
         "rotation": {
             "heading": "Wochentagsangebote",
-            "lead": "Pakete, die an festen Wochentagen im Angebot sind, von heute bis in 6 Tagen.",
+            "lead": "Pakete, die an festen Wochentagen im Angebot sind, von heute bis in 6 Tagen, in deiner Ortszeit: Die Angebote wechseln beim täglichen Reset des Spiels.",
             "today": "Heute",
             "tomorrow": "Morgen",
             "every": "jeweils {days}",
@@ -225,8 +225,6 @@
             "endsIn": "Endet in {time}",
             "startsIn": "Beginnt in {time}",
             "daysHours": "{days} T. {hours} Std.",
-            "endsAt": "Endet am {date}",
-            "startsAt": "Beginnt am {date}",
             "endedYesterday": "Gestern beendet",
             "endedAgo": "Vor {count} Tagen beendet",
             "expected": "nächstes Mal voraussichtlich um den {date} (Prognose)",

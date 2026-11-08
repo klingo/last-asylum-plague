@@ -1,19 +1,27 @@
 /**
- * The Weekday Offers chart: today and the next 6 days, with how long today's offers last.
+ * The Weekday Offers chart: today and the next 6 local days, with how long today's offers last.
  */
-import { formatDays, getLocale, localizedName, t, tHtml } from '../../ui/i18n.js';
+import { formatDays, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { formatThousands } from '../../ui/format.js';
 import { ratioColor } from '../../ui/ratio-bar.js';
 import { escapeHtml } from '../../ui/html.js';
-import { formatClock, formatGameDay } from '../../ui/datetime.js';
+import { formatClock, formatMoment } from '../../ui/datetime.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import { createItemImage } from '../../ui/images.js';
 import { itemDisplayText, packageIcon } from '../../ui/labels.js';
+import {
+    barHtml,
+    chartAttrs,
+    columnsStyle,
+    dayHeadersHtml,
+    gridHtml,
+    localDayBoundaries,
+    viewOf,
+} from '../../ui/timeline.js';
 import { packageFamilyId } from '../../core/pack-data.js';
-import { GAME_DAY_START_MS, dayDate, gameDay, weekdayRuns } from '../../core/schedule.js';
+import { dayStartMs, gameDay, runMoments, weekdayRuns } from '../../core/schedule.js';
 import { ctx } from './state.js';
 import { ROTATION_DAYS } from './constants.js';
-import { barHtml, gridHtml } from './schedule.js';
 
 /** "5h 12m", "42m": how long until a moment (whole minutes; the chart updates once a minute). */
 function untilText(ms) {
@@ -25,7 +33,7 @@ function untilText(ms) {
 
 /** "Now · today's offers end in 5h 12m (a new game day starts at 04:00)": the game day `day` ends at the next reset. */
 function nowText(day) {
-    const nextReset = dayDate(day + 1).getTime() + GAME_DAY_START_MS;
+    const nextReset = dayStartMs(day + 1);
     return t('calendar.rotation.now', { left: untilText(nextReset - Date.now()), time: formatClock(nextReset) });
 }
 
@@ -46,47 +54,26 @@ function rotationSummary(rows) {
         : t('calendar.rotation.noneWorthIt', { name: ranked[0].name, ratio: formatThousands(ranked[0].ratio, 2) });
 }
 
-/** The weekday columns of a day chart: "Today", "Tomorrow", then the weekday, each with its date; `from` = first game day. */
-function dayHeadersHtml(from) {
-    return Array.from({ length: ROTATION_DAYS }, (_, index) => from + index)
-        .map((day, index) => {
-            const label =
-                index < 2
-                    ? t(index === 0 ? 'calendar.rotation.today' : 'calendar.rotation.tomorrow')
-                    : formatGameDay(day, { weekday: 'long' });
-            return `
-                <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
-                    <strong>${escapeHtml(label)}</strong>
-                    <span>${escapeHtml(formatGameDay(day, { day: 'numeric', month: 'short' }))}</span>
-                </div>`;
-        })
-        .join('');
-}
-
-/** When a weekday offer's bar (whole game days `start`..`end`) is on sale, in the user's time: "Thu 03:00 AM". */
+/** When a weekday offer's bar (`start` / `end` in ms) is on sale, in the user's time: "Thu, Nov 5, 03:00 AM". */
 function saleWindowText(bar) {
-    const at = (day) =>
-        new Date(dayDate(day).getTime() + GAME_DAY_START_MS).toLocaleString(getLocale(), {
-            weekday: 'short',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    return t('calendar.rotation.onSale', { from: at(bar.start), to: at(bar.end + 1) });
+    return t('calendar.rotation.onSale', { from: formatMoment(bar.start), to: formatMoment(bar.end) });
 }
 
 /**
- * Weekday offers (`weekly_rotation` packs): today and the next 6 game days, one row per pack family, with a line
- * for now (and how long today's offers last) and a line on which are worth it.
+ * Weekday offers (`weekly_rotation` packs): today and the next 6 local days, one row per pack family (a bar from the
+ * reset that starts the offer's game day to the one that ends it), with a line for now (and how long today's offers
+ * last) and a line on which are worth it.
  */
 function renderRotation() {
     const section = document.getElementById('rotation');
     if (!section || !ctx.packData) {
         return;
     }
-    const now = gameDay(new Date());
-    const from = now.day;
-    const to = from + ROTATION_DAYS - 1;
-    ctx.rotationDay = from;
+    const nowMs = Date.now();
+    const boundaries = localDayBoundaries(nowMs, ROTATION_DAYS);
+    const view = viewOf(boundaries);
+    const firstDay = gameDay(new Date(view.from)).day;
+    const lastDay = gameDay(new Date(view.to - 1)).day;
     const families = new Map();
     for (const [id, pkg] of Object.entries(ctx.packData.packages || {})) {
         if (pkg.category !== 'weekly_rotation') {
@@ -117,7 +104,12 @@ function renderRotation() {
                 ratio,
                 days: pkg.available_days,
                 icon: packageIcon(pkg),
-                bars: weekdayRuns(pkg.available_days, from, to, { merge: pkg.limit_type !== 'daily' }),
+                bars: weekdayRuns(pkg.available_days, firstDay, lastDay, { merge: pkg.limit_type !== 'daily' }).map(
+                    (run) => {
+                        const { start, end } = runMoments(run);
+                        return { start, end, past: end <= nowMs };
+                    },
+                ),
             };
         })
         .filter((row) => row.bars.length > 0)
@@ -131,13 +123,12 @@ function renderRotation() {
         row.color = row.ratio === null ? null : ratioColor(row.ratio);
     }
 
-    const days = dayHeadersHtml(from);
     const rowsHtml = rows
         .map(
             (row) => `
                 <div class="schedule__row schedule__row--rotation">
                     <div class="schedule__label" title="${escapeHtml(row.name)}" data-icon="${escapeHtml(row.icon || '')}">${escapeHtml(row.name)}</div>
-                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, from, to, `${row.tooltip}\n${saleWindowText(bar)}`, { color: row.color })).join('')}</div>
+                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, view, `${row.tooltip}\n${saleWindowText(bar)}`, { color: row.color })).join('')}</div>
                 </div>`,
         )
         .join('');
@@ -145,17 +136,17 @@ function renderRotation() {
     section.hidden = false;
     section.querySelector('.schedule__body').innerHTML = `
         <div class="schedule__legend">
-            <span><i class="schedule__swatch schedule__swatch--today"></i><span class="schedule__now-text">${escapeHtml(nowText(from))}</span></span>
+            <span><i class="schedule__swatch schedule__swatch--today"></i><span class="schedule__now-text">${escapeHtml(nowText(gameDay(new Date(nowMs)).day))}</span></span>
             <span>${tHtml('calendar.rotation.colour')}</span>
         </div>
         <div class="schedule__scroll">
-            <div class="schedule__chart schedule__chart--days" style="--columns: ${ROTATION_DAYS}; --week-start: 0; --week-width: ${1 / ROTATION_DAYS}; --today: ${now.fraction / ROTATION_DAYS}">
+            <div class="schedule__chart schedule__chart--days" ${chartAttrs(boundaries, 1, nowMs)}>
                 <div class="schedule__row schedule__row--axis">
                     <div class="schedule__label"></div>
-                    <div class="schedule__track schedule__weeks">${days}</div>
+                    <div class="schedule__track schedule__weeks" style="${columnsStyle(boundaries, 1)}">${dayHeadersHtml(boundaries)}</div>
                 </div>
                 ${rowsHtml}
-                ${gridHtml(ROTATION_DAYS, 1)}
+                ${gridHtml(boundaries, 1)}
                 <div class="schedule__current-week" aria-hidden="true"></div>
                 <div class="schedule__today" aria-hidden="true"></div>
             </div>

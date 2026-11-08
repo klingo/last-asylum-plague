@@ -4,8 +4,6 @@
 const ctx = {
     packData: null,
     valuation: null,
-    rotationDay: null,
-    scheduleWindow: null,
 };
 
 export { ctx };
