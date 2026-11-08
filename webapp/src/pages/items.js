@@ -1,5 +1,6 @@
 /**
- * Item Priorities: every base item (containers follow their contents, `isContainerItem` in core/item-sources.js) with
+ * Item Priorities: every base item (containers follow their contents, `isContainerItem` in core/item-sources.js; the
+ * gear sets' MR items are never obtainable, only shown, so they're left out) with
  * its worth at the user's weekly spend, how sure that number is (`fitSensitivity`: "uncertain", depends on a single
  * pack) and its priority (Don't care / Low / Normal / High), which multiplies the item's worth on every page. The
  * priorities can be exported to and imported from a file.
@@ -11,6 +12,7 @@ import { withLoading } from '../ui/loading.js';
 import { fitSensitivity, sensitivityFamilies, isDependent } from '../core/point-fit.js';
 import { currencyItemIds } from '../core/catalog.js';
 import { isContainerItem, itemChainTops } from '../core/item-sources.js';
+import { mrItemIds } from '../core/gear-path.js';
 import { getSettings, updateSettings, onSettingsChange } from '../ui/settings.js';
 import { DEFAULT_SETTINGS, PRIORITY_LEVELS } from '../core/settings-model.js';
 import { itemDisplayName } from '../ui/labels.js';
@@ -36,6 +38,8 @@ const itemsEmpty = document.getElementById('items-empty');
 let data = null;
 let valuation = null;
 let currencies = new Set();
+// Items that are only ever shown (the MR gear pieces): nothing to prioritize.
+let displayOnly = new Set();
 // Chains (4 Cloth ⇄ 1 Leather ⇄ ... ⇄ 1 Tempered Steel; Lv.1 → Lv.5 raven gear by value): base item -> top item.
 let chainTops = new Map();
 // The level at the start of a chain item's name ("Lv.5 Sharp Beak", "LV5 ...").
@@ -175,6 +179,7 @@ function render() {
         // Items made of other items (chests, supplies, choice chests, omni shards, the gear-material chain above
         // Cloth): their worth follows the items they contain, so they aren't listed, unless they still have a
         // priority of their own (e.g. from the old ignore list), so it can be seen and reset.
+        .filter(([id]) => !displayOnly.has(id))
         .filter(([id, item]) => !currencies.has(id) && (!isContainerItem(item) || priorityOf(id) !== 'normal'))
         // A chain base (Cloth) is shown as its top item (Tempered Steel); the priority stays on the base.
         // A level chain is named without its level ("Sharp Beak", not "Lv.5 Sharp Beak"): the priority
@@ -281,6 +286,7 @@ startPage('items', {
     async init(loaded) {
         data = loaded;
         currencies = currencyItemIds(data);
+        displayOnly = mrItemIds(data.gear_upgrades);
         chainTops = itemChainTops(data.items);
         // No setup bar here: the worth column uses the weekly spend set on the other pages.
         onSettingsChange((settings) => recompute(settings));

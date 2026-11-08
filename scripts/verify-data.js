@@ -651,9 +651,7 @@ async function verifyData() {
 
     // The MR items of the gear sets (a piece's name and picture at 5 stars) are only ever shown: the set references
     // them, no pack contains them, so they have no worth either.
-    const displayOnlyItems = new Set(
-        Object.values(data.gear_upgrades || {}).flatMap((gearSet) => Object.values(gearSet.mr_items || {})),
-    );
+    const displayOnlyItems = gearPath.mrItemIds(data.gear_upgrades);
     for (const itemId of displayOnlyItems) {
         referencedItemKeys.add(itemId);
     }

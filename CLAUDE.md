@@ -140,7 +140,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
 - The Gear Upgrade Path page reads `heroes`, `gear_upgrades` and `squad_guides`; `mergePaths` (`core/gear-path.js`)
   orders its three paths, and `verify-data` reports paths that deadlock. A gear set's `mr_items` maps a piece to the item
   it shows as at 5 stars (`shownItem`: the MR piece's name, picture and border); those items are display-only, no pack
-  contains them.
+  contains them (`mrItemIds`), so Item Priorities leaves them out.
 - The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
   by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs
   (`core/lord-specialty.js`), so don't reorder or insert talents casually. Talents above `max_level` show as "not in

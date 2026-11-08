@@ -56,6 +56,14 @@ function shownItem(gearSet, item, step) {
     return step === MR_STEP ? (gearSet.mr_items?.[item] ?? item) : item;
 }
 
+/**
+ * The MR items of every gear set (`gear_upgrades`, `mr_items`). They are only shown, for a piece at 5 stars: no pack
+ * contains them, so they have no worth and no source, and the pages that list items leave them out.
+ */
+function mrItemIds(gearUpgrades) {
+    return new Set(Object.values(gearUpgrades || {}).flatMap((gearSet) => Object.values(gearSet.mr_items || {})));
+}
+
 /** 'craft' (`{ item, slot }`: one piece), 'level' or 'stars'. */
 function stepKind(step) {
     if (step.item !== undefined) {
@@ -411,6 +419,7 @@ export {
     starsOfStep,
     starIcons,
     shownItem,
+    mrItemIds,
     stepSlots,
     stepItems,
     initialState,

@@ -1,6 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MR_STEP, starStep, starsOfStep, shownItem, mergePaths, crossNeeds } from '../../webapp/src/core/gear-path.js';
+import {
+    MR_STEP,
+    starStep,
+    starsOfStep,
+    shownItem,
+    mrItemIds,
+    mergePaths,
+    crossNeeds,
+} from '../../webapp/src/core/gear-path.js';
 import { loadFixture, expectGolden } from '../helpers.js';
 
 const data = loadFixture();
@@ -25,6 +33,17 @@ test('a piece shows as its MR item at 5 stars only, and as itself without an MR 
     assert.equal(shownItem(set, 'ur_sword', 0), 'ur_sword');
     assert.equal(shownItem(set, 'ur_armor', MR_STEP), 'ur_armor'); // no entry for this piece
     assert.equal(shownItem({}, 'ur_sword', MR_STEP), 'ur_sword'); // a set without mr_items
+});
+
+test('the MR items of all gear sets are collected, and none without mr_items', () => {
+    const sets = {
+        a: { mr_items: { ur_sword: 'mr_sword', ur_armor: 'mr_armor' } },
+        b: { mr_items: { x: 'mr_x' } },
+        c: {},
+    };
+    assert.deepEqual([...mrItemIds(sets)].sort(), ['mr_armor', 'mr_sword', 'mr_x']);
+    assert.equal(mrItemIds({}).size, 0);
+    assert.equal(mrItemIds(undefined).size, 0);
 });
 
 test('merged order of the default guide', () => {

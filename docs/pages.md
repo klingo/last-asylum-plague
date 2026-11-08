@@ -69,6 +69,7 @@ packs' deal %.
   nested at any depth (e.g. SR Resource Supplies → Herbs), ranked by Banknotes per unit, with how much each gives and
   an item ratio (worth of the item alone ÷ price).
 - **Item Priorities** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
+  Items you can't obtain, only see (the gear sets' MR pieces), aren't listed.
 - **Best Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.
 - **Compare Items** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get

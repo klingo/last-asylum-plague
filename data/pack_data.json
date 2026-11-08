@@ -746,6 +746,7 @@
                 "de": "Lv.1 Allianz Truhe"
             },
             "category": "chest",
+            "image": "lv2_alliance_chest",
             "rarity": "r",
             "type": "random",
             "drop_table": [
@@ -942,7 +943,6 @@
                 "de": "Lv.2 Allianz Truhe"
             },
             "category": "chest",
-            "image": "lv2_alliance_chest",
             "rarity": "r",
             "type": "random",
             "drop_table": [
