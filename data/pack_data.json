@@ -3591,7 +3591,7 @@
         "dragon_blood_pack": {
             "name": {
                 "en": "Dragon Blood Pack",
-                "de": ""
+                "de": "Drachenblut-Paket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -3748,7 +3748,7 @@
         "enhancement_special_pack": {
             "name": {
                 "en": "Enhancement Special Pack",
-                "de": ""
+                "de": "Verbesserung-Spezialpaket"
             },
             "category": "weekly_rotation",
             "limit_type": "weekly",
@@ -3760,8 +3760,8 @@
                     "purchase_limit": 1,
                     "contains": {
                         "diamonds": 500,
-                        "random_gearstone_supply": 1,
                         "gearstone": 1500,
+                        "random_gearstone_supply": 1,
                         "vip_points": 500,
                         "lv2_alliance_chest": 1
                     }
@@ -4581,7 +4581,7 @@
         "might_special_pack": {
             "name": {
                 "en": "Might Special Pack",
-                "de": ""
+                "de": "Macht-Spezialpaket"
             },
             "category": "weekly_rotation",
             "limit_type": "weekly",
@@ -4593,8 +4593,8 @@
                     "purchase_limit": 1,
                     "contains": {
                         "diamonds": 500,
-                        "gearstone": 1250,
                         "skill_badge": 1250,
+                        "gearstone": 1250,
                         "antitoxin_level_supply_ssr": 2,
                         "resource_supply_general": 2,
                         "vip_points": 1000,
@@ -5766,7 +5766,7 @@
         "twin_dragon_brooch_pack": {
             "name": {
                 "en": "Twin Dragon Brooch Pack",
-                "de": ""
+                "de": "Zwillingsdrachen-Brosche-Paket"
             },
             "category": "weekly_rotation",
             "limit_type": "daily",
@@ -5830,8 +5830,8 @@
                     "purchase_limit": 1,
                     "contains": {
                         "diamonds": 1000,
-                        "tempered_steel": 50,
                         "gear_blueprint_ur": 2,
+                        "tempered_steel": 50,
                         "gearstone": 1000,
                         "vip_points": 1000,
                         "lv3_alliance_chest": 1
@@ -5843,8 +5843,8 @@
                     "purchase_limit": 1,
                     "contains": {
                         "diamonds": 2000,
-                        "tempered_steel": 100,
                         "gear_blueprint_ur": 4,
+                        "tempered_steel": 100,
                         "gearstone": 2000,
                         "vip_points": 2000,
                         "lv4_alliance_chest": 1
@@ -5856,8 +5856,8 @@
                     "purchase_limit": 1,
                     "contains": {
                         "diamonds": 5000,
-                        "tempered_steel": 250,
                         "gear_blueprint_ur": 8,
+                        "tempered_steel": 250,
                         "gearstone": 5000,
                         "vip_points": 5000,
                         "lv5_alliance_chest": 1
