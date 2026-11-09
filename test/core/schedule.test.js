@@ -2,7 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
     calendarSelection,
+    dayNumber,
     dayStartMs,
+    dayText,
     forecastRuns,
     gameDay,
     isoWeekNumber,
@@ -10,6 +12,7 @@ import {
     nextRun,
     planningRun,
     freshSlot,
+    recordableIds,
     rotationSlots,
     rotationWindow,
     runContains,
@@ -17,6 +20,8 @@ import {
     runStatus,
     scheduleBars,
     scheduleRuns,
+    unrecordedToday,
+    usualRunDays,
     weekStart,
     weekdayIndex,
     weekdayOfferTiming,
@@ -285,6 +290,55 @@ test('proven forecast: Follow the calendar selects an event whose pattern runs t
     const runs = [-21, -14, -7].map((back) => ({ start: iso(back), end: iso(back + 6) }));
     const data = { ...dataWith(runs), packages: {} };
     assert.deepEqual(calendarSelection(data, MONDAY + 3).activeEvents, ['weekly_event']);
+});
+
+// --- recording
+
+test('the ids to record are events, seasonal pass families and spend reward tracks', () => {
+    const kinds = recordableIds({
+        events: { bazaar: {} },
+        packages: { gear_pass_t1: { seasonal: true, tier: 1 }, gear_pass_t2: { seasonal: true, tier: 2 }, plain: {} },
+        spend_reward_tracks: { recipe: {} },
+    });
+    assert.deepEqual([...kinds.events], ['bazaar']);
+    assert.deepEqual([...kinds.seasonal_passes], ['gear_pass']);
+    assert.deepEqual([...kinds.spend_reward_tracks], ['recipe']);
+});
+
+test('a day number is written as its date', () => {
+    assert.equal(dayText(dayNumber('2026-10-12')), '2026-10-12');
+    assert.equal(dayText(dayNumber('2028-02-29')), '2028-02-29');
+});
+
+test('unrecorded today: a proven forecast run on today, until it is recorded', () => {
+    const data = dataWith(weekly(3));
+    // Week 3's run (21-23) is forecast; it covers day 22.
+    const [entry] = unrecordedToday(data, MONDAY + 22);
+    assert.equal(entry.id, 'weekly_event');
+    assert.deepEqual([entry.run.start - MONDAY, entry.run.end - MONDAY], [21, 23]);
+    assert.equal(entry.proven, true);
+    assert.deepEqual(unrecordedToday(data, MONDAY + 25), [], 'between two runs');
+    const recordedRun = dataWith([...weekly(3), { start: iso(21), end: iso(23) }]);
+    assert.deepEqual(unrecordedToday(recordedRun, MONDAY + 22), [], 'recorded already');
+});
+
+test('unrecorded today: a rough guess is listed as one, an id with a single run is not', () => {
+    const [entry] = unrecordedToday(dataWith(weekly(2)), MONDAY + 15);
+    assert.equal(entry.proven, false);
+    assert.deepEqual([entry.run.start - MONDAY, entry.run.end - MONDAY], [14, 16]);
+    assert.deepEqual(unrecordedToday(dataWith(weekly(1)), MONDAY + 8), []);
+});
+
+test('the usual run length is the median of the recorded runs, null without any', () => {
+    const runs = [
+        { start: iso(0), end: iso(1) },
+        { start: iso(10), end: iso(16) },
+        { start: iso(30), end: iso(36) },
+    ];
+    assert.equal(usualRunDays(dataWith(runs), 'weekly_event'), 7);
+    assert.equal(usualRunDays(dataWith(weekly(2)), 'weekly_event'), 3);
+    assert.equal(usualRunDays(dataWith([]), 'weekly_event'), null);
+    assert.equal(usualRunDays(dataWith(runs), 'unknown'), null);
 });
 
 // --- views (Calendar, Today)

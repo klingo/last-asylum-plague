@@ -86,7 +86,7 @@ the coverage grows.
 ## Architecture
 
 One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitHub Pages URLs); each loads
-`webapp/src/pages/<page>.js` (`<page>/index.js` for the big pages: Events, Gear, Calendar; their sections are modules next to
+`webapp/src/pages/<page>.js` (`<page>/index.js` for the big pages: Events, Gear, Calendar, Settings; their sections are modules next to
 it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui/page.js`).
 
 - `webapp/src/core/` holds the pure modules (fit, planner, Compare, schedule, gear path, ...). No DOM or i18n, imports
@@ -99,7 +99,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   `schedule.js`, `mine.js` and `item-sources.js`.
 - `webapp/src/ui/` holds the browser helpers: `valuation.js` (the worth model on top of the planner), `valuation-page.js`
   (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage: every key is listed in `STORAGE_KEYS`, prefix `lapkc_`; a new one goes there),
-  `i18n.js`, `format.js`, `datetime.js`, `html.js`, `labels.js`, `url.js`, `grid.js` and the other builders of markup.
+  `i18n.js`, `format.js`, `datetime.js`, `html.js`, `labels.js`, `url.js`, `grid.js`, `github.js` (the token and the call that starts the record-run workflow, for Settings > Admin) and the other builders of markup.
 - `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (loaded on every page by
   `ui/page.js`, in that order) and `pages/<page>.css` (the page script imports its own, after the shared ones). A rule keeps
   its place inside its file; a rule that overrides another of the same specificity (a phone `@media` over the base rule) lives
@@ -117,7 +117,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
 ### Data rules worth knowing
 
 - `schedule` records per event, seasonal pass family and spend reward track its runs as inclusive dates; add them
-  with `record-run`. Forecasts (`forecastRuns`) are `proven` (a repeating pattern) or a rough guess (median gap,
+  with `record-run` (or from Settings > Admin, which starts the `record-run` workflow). Forecasts (`forecastRuns`) are `proven` (a repeating pattern) or a rough guess (median gap,
   shown fainter). `scheduleRuns(data, today)` adds the proven forecast runs up to today, so they count as runs
   everywhere (Calendar, Today, Follow the calendar, skips); without `today` it is the recorded runs only (`record-run`).
   8 weeks after an id's last recorded run its pattern is `stale`: a rough guess again until recorded (`record-run --show`

@@ -9,11 +9,17 @@ screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
 Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
 **Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work. The cogwheel next to the language switcher opens
-**Settings** (`settings.html`) has three sections: **Valuation**, the settings that shape every value (Count VIP points
+**Settings** (`settings.html`) has four sections: **Valuation**, the settings that shape every value (Count VIP points
 in the worth); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
 4-hour slot of its rotation; switching it on asks the browser for permission, and as there is no server to push from, the
-notification only comes while a tab of the app is open; while it is on, Today marks the Survival Battle bars with a bell); and **Model quality**, how well the fitted worths reproduce the
-packs' deal %.
+notification only comes while a tab of the app is open; while it is on, Today marks the Survival Battle bars with a bell); **Model quality**, how well the fitted worths reproduce the
+packs' deal %; and **Admin** (collapsed), which records when events, passes and tracks run: enter a GitHub token (a
+fine-grained personal access token of this repository with only the permission Actions: Read and write; it is checked
+against GitHub, kept in this browser's localStorage only and removed by "Log out"), then record the forecast runs that
+cover today but aren't recorded yet (one button each), or pick any event, pass or track with a first day and a number of
+days (pre-filled with the median of its recorded runs). Every request first asks for a confirmation; "Yes" starts the
+`record-run` workflow (`.github/workflows/record-run.yml`), which runs `npm run record-run`, verifies the data, commits
+to `master` and starts the deployment, so the change shows up on the site after a couple of minutes.
 
 - **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
   days (recorded runs and proven forecasts), the weekly plan by when to buy it (daily packs, weekly and longer packs,

@@ -1,0 +1,84 @@
+name: Record a run
+
+# Started from Settings > Admin of the site (ui/github.js) or by hand: records when events, passes and tracks run
+# (`npm run record-run`), commits it to master and starts the deployment.
+on:
+    workflow_dispatch:
+        inputs:
+            ids:
+                description: Event, seasonal pass and/or spend reward track ids, separated by spaces
+                required: true
+                type: string
+            start:
+                description: First day, YYYY-MM-DD (empty = today, the game day)
+                required: false
+                type: string
+            days:
+                description: How many days it runs, the start day included
+                required: true
+                type: string
+
+# `contents: write` pushes the commit, `actions: write` starts the deployment afterwards.
+permissions:
+    contents: write
+    actions: write
+
+# One recording at a time, so that quick successive requests don't push over each other.
+concurrency:
+    group: record-run
+    cancel-in-progress: false
+
+jobs:
+    record:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+              with:
+                  ref: master
+
+            - name: Setup the project
+              uses: ./.github/actions/setup
+
+            # The inputs reach the shell through the environment only, never spliced into the script.
+            - name: Validate the inputs
+              env:
+                  IDS: ${{ inputs.ids }}
+                  START: ${{ inputs.start }}
+                  DAYS: ${{ inputs.days }}
+              run: |
+                  [[ "$IDS" =~ ^[a-z0-9_]+(\ [a-z0-9_]+)*$ ]] || { echo "::error::Invalid ids"; exit 1; }
+                  [[ -z "$START" || "$START" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || { echo "::error::Invalid start"; exit 1; }
+                  [[ "$DAYS" =~ ^[1-9][0-9]*$ ]] || { echo "::error::Invalid days"; exit 1; }
+
+            - name: Record, verify, commit and push
+              env:
+                  IDS: ${{ inputs.ids }}
+                  START: ${{ inputs.start }}
+                  DAYS: ${{ inputs.days }}
+              run: |
+                  git config user.name 'github-actions[bot]'
+                  git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+                  for attempt in 1 2 3; do
+                      git fetch origin master
+                      git reset --hard origin/master
+                      # shellcheck disable=SC2086 # the ids are separate arguments
+                      npm run record-run -- $IDS $START $DAYS
+                      node scripts/update-last-updated.js
+                      npm run verify-data
+                      if git diff --quiet; then
+                          echo 'Nothing changed.'
+                          exit 0
+                      fi
+                      git commit -am "chore(schedule): record $IDS ${START:-today} for $DAYS days"
+                      if git push origin HEAD:master; then
+                          break
+                      fi
+                      [ "$attempt" -lt 3 ] || { echo '::error::Could not push after 3 attempts'; exit 1; }
+                  done
+
+            # A push with the workflow token starts no workflow, but a dispatch does.
+            - name: Deploy
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: gh workflow run deploy-webapp.yml --ref master

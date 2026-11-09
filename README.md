@@ -50,7 +50,11 @@ docs/                   pages.md and valuation.md
 4. `npm run i18n:missing -- de` lists what German still lacks: UI texts, code labels and data names. The German names
    in the data are taken from the game by hand, never translated or guessed.
 5. `npm run record-run -- <ids...> [START] <DAYS>` records when events, seasonal passes and spend reward tracks run
-   (`--show` lists them), e.g. `npm run record-run -- strange_bazaar 2026-10-12 7`.
+   (`--show` lists them), e.g. `npm run record-run -- strange_bazaar 2026-10-12 7`. The deployed site can do it too:
+   **Settings → Admin** starts the `record-run` workflow, which commits the run to `master` and redeploys. It needs a
+   fine-grained personal access token (GitHub → Settings → Developer settings) for this repository with only
+   **Actions: Read and write**, pasted into that section once per browser. The workflow can also be started by hand from
+   the repository's Actions tab.
 
 Item images: drop a `<item_id>.png` into `webapp/public/assets/items/<category>/` (e.g. `items/chest/`; images not
 sorted yet are also found directly in `items/`, a placeholder shows otherwise). An item's `rarity` (`mr`, `ur`, `ssr`,

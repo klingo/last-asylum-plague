@@ -176,6 +176,37 @@
             "denied": "Notifications aren't allowed for this site. Allow them when the browser asks (or in its site settings), then switch this on again.",
             "unsupported": "This browser can't show notifications.",
             "revoked": "This setting is on, but notifications are blocked for this site in the browser, so none will be shown."
+        },
+        "admin": {
+            "heading": "Admin",
+            "tokenLabel": "Personal Access Token",
+            "tokenSave": "Check & save",
+            "tokenSaved": "Token saved (ending …{tail}).",
+            "logout": "Log out",
+            "todayHeading": "On today, not recorded yet",
+            "todayLead": "Runs the forecast expects to be on now that aren't recorded. Recording one turns the guess into a fact.",
+            "todayEmpty": "Nothing to record: every run expected today is recorded.",
+            "proven": "Repeating pattern",
+            "guess": "Rough guess",
+            "record": "Record",
+            "rowSent": "Sent",
+            "manualHeading": "Record a run",
+            "event": "Event, pass or track",
+            "start": "First day",
+            "days": "Days",
+            "confirm": "Record {name}: {range}?",
+            "confirmYes": "Yes, record",
+            "confirmNo": "Cancel",
+            "sending": "Sending…",
+            "sent": "Sent. A GitHub workflow now adds the run and deploys the site, which takes a couple of minutes ({link}).",
+            "sentLink": "follow it on GitHub",
+            "error": {
+                "form": "Pick an event, a pass or a track, a first day, and a number of days (1 or more).",
+                "invalid": "GitHub doesn't accept this token (wrong or expired).",
+                "noAccess": "This token isn't allowed to do that. It needs access to the repository with the permission Actions: Read and write.",
+                "network": "GitHub couldn't be reached.",
+                "error": "GitHub refused the request."
+            }
         }
     },
     "calendar": {

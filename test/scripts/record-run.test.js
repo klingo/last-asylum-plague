@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { addDays, daysText, isValidDate, parseRecordArgs, recordRun, recordableIds } from '../../scripts/record-run.js';
+import { addDays, daysText, isValidDate, parseRecordArgs, recordRun } from '../../scripts/record-run.js';
 
 test('the command line is sorted into ids, dates and day counts', () => {
     assert.deepEqual(parseRecordArgs(['strange_bazaar', 'gear_pass', '2026-10-12', '7', '--show']), {
@@ -25,17 +25,6 @@ test('dates are real calendar days; adding days crosses months, years and leap d
 test('a run is told with its weekdays and number of days, whatever the local time zone', () => {
     assert.equal(daysText('2026-10-12', '2026-10-18'), 'Mon 2026-10-12 .. Sun 2026-10-18, 7 days');
     assert.equal(daysText('2026-10-12', '2026-10-12'), 'Mon 2026-10-12 .. Mon 2026-10-12, 1 day');
-});
-
-test('the ids to record are events, seasonal passes and spend reward tracks', () => {
-    const kinds = recordableIds({
-        events: { bazaar: {} },
-        packages: { gear_pass_t1: { seasonal: true }, plain: {} },
-        spend_reward_tracks: { recipe: {} },
-    });
-    assert.deepEqual([...kinds.events], ['bazaar']);
-    assert.deepEqual([...kinds.seasonal_passes], ['gear_pass_t1']);
-    assert.deepEqual([...kinds.spend_reward_tracks], ['recipe']);
 });
 
 test('a new run is added, one with the same start corrects its length', () => {

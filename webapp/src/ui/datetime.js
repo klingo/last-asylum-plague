@@ -2,7 +2,8 @@
  * Dates and times as the pages show them, in the language's format and the user's local time (the game's days stay
  * internal: a run is shown from the moment it starts to the moment it ends).
  */
-import { getLocale } from './i18n.js';
+import { runMoments } from '../core/schedule.js';
+import { getLocale, t } from './i18n.js';
 
 /** A number as two digits ("05"). */
 const pad2 = (n) => String(n).padStart(2, '0');
@@ -41,4 +42,11 @@ function formatRunRange(startMs, endMs) {
         : `${formatMoment(startMs)} – ${formatMoment(endMs)}`;
 }
 
-export { pad2, formatDate, formatClock, formatMoment, formatRunRange };
+/** "Mon, 12 Oct, 04:00 – Mon, 19 Oct, 04:00 (7 days)": a run of game days (`start` / `end` day numbers) as the moments it starts and ends. */
+function formatRunDays(run) {
+    const { start, end } = runMoments(run);
+    const days = run.end - run.start + 1;
+    return `${formatRunRange(start, end)} (${days === 1 ? t('calendar.schedule.oneDay') : t('calendar.schedule.days', { count: days })})`;
+}
+
+export { pad2, formatDate, formatClock, formatMoment, formatRunRange, formatRunDays };

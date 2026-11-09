@@ -3,7 +3,7 @@
  */
 import { formatDays, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
-import { formatDate, formatRunRange } from '../../ui/datetime.js';
+import { formatDate, formatRunDays } from '../../ui/datetime.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import { getSettings } from '../../ui/settings.js';
 import { SCHEDULE_KIND_LABELS } from '../../ui/labels.js';
@@ -29,13 +29,6 @@ import { gameDay, isoWeekNumber, runMoments, runStatus, scheduleBars } from '../
 import { ctx } from './state.js';
 import { WEEKS } from './constants.js';
 
-/** "Mon, 12 Oct, 04:00 – Mon, 19 Oct, 04:00 (7 days)": a bar's game days as the moments they start and end. */
-function rangeText(bar) {
-    const { start, end } = runMoments(bar);
-    const days = bar.end - bar.start + 1;
-    return `${formatRunRange(start, end)} (${days === 1 ? t('calendar.schedule.oneDay') : t('calendar.schedule.days', { count: days })})`;
-}
-
 /**
  * A bar's hover card: "Strange Bazaar", the event's own line if it has one (`description`, e.g. its bonus),
  * "Mon, 12 Oct, 04:00 – Mon, 19 Oct, 04:00 (7 days)", "Ends in 3 days" (forecasts with their rhythm), and "Click to
@@ -45,7 +38,7 @@ function scheduleTooltip(bar, row, today) {
     const lines = [
         row.name,
         ...(row.description ? [row.description] : []),
-        rangeText(bar),
+        formatRunDays(bar),
         runStatusText(runStatus([bar], today)),
     ];
     if (bar.forecast) {

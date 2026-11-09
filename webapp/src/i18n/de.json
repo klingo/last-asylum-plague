@@ -176,6 +176,37 @@
             "denied": "Benachrichtigungen sind für diese Seite nicht erlaubt. Erlaube sie, wenn der Browser fragt (oder in dessen Website-Einstellungen), und schalte dies dann wieder ein.",
             "unsupported": "Dieser Browser kann keine Benachrichtigungen anzeigen.",
             "revoked": "Diese Einstellung ist an, aber Benachrichtigungen sind für diese Seite im Browser blockiert, daher wird nichts angezeigt."
+        },
+        "admin": {
+            "heading": "Admin",
+            "tokenLabel": "Personal Access Token",
+            "tokenSave": "Prüfen & speichern",
+            "tokenSaved": "Token gespeichert (endet auf …{tail}).",
+            "logout": "Abmelden",
+            "todayHeading": "Heute aktiv, noch nicht erfasst",
+            "todayLead": "Läufe, die laut Prognose jetzt aktiv sind, aber nicht erfasst wurden. Das Erfassen macht aus der Vermutung eine Tatsache.",
+            "todayEmpty": "Nichts zu erfassen: Jeder heute erwartete Lauf ist erfasst.",
+            "proven": "Wiederkehrendes Muster",
+            "guess": "Grobe Schätzung",
+            "record": "Erfassen",
+            "rowSent": "Gesendet",
+            "manualHeading": "Lauf erfassen",
+            "event": "Event, Pass oder Track",
+            "start": "Erster Tag",
+            "days": "Tage",
+            "confirm": "{name} erfassen: {range}?",
+            "confirmYes": "Ja, erfassen",
+            "confirmNo": "Abbrechen",
+            "sending": "Wird gesendet…",
+            "sent": "Gesendet. Ein GitHub-Workflow schreibt den Lauf jetzt in die Daten und veröffentlicht die Seite, was ein paar Minuten dauert ({link}).",
+            "sentLink": "auf GitHub verfolgen",
+            "error": {
+                "form": "Wähle ein Event, einen Pass oder einen Track, einen ersten Tag und eine Anzahl Tage (1 oder mehr).",
+                "invalid": "GitHub akzeptiert dieses Token nicht (falsch oder abgelaufen).",
+                "noAccess": "Dieses Token darf das nicht. Es braucht Zugriff auf das Repository mit der Berechtigung Actions: Read and write.",
+                "network": "GitHub war nicht erreichbar.",
+                "error": "GitHub hat die Anfrage abgelehnt."
+            }
         }
     },
     "calendar": {

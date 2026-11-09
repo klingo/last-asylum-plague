@@ -12,6 +12,7 @@ const STORAGE_KEYS = {
     gearProgress: 'lapkc_gear_progress', // the Gear Upgrade Path's progress per guide and faction
     lordSetup: 'lapkc_lord_setup', // the Lord Specialty's level, extra points, lord and builds
     notified: 'lapkc_notified', // the last notification shown per kind, so tabs and reloads don't repeat it
+    githubToken: 'lapkc_github_token', // the personal access token of Settings > Admin (ui/github.js)
 };
 
 // What earlier versions of the app saved (prefix `lasps_`): nothing reads it any more, so it is removed.
@@ -32,6 +33,15 @@ function writeText(key, text) {
         window.localStorage.setItem(key, text);
     } catch {
         // Not saved.
+    }
+}
+
+/** Removes what is saved under `key`. */
+function removeText(key) {
+    try {
+        window.localStorage.removeItem(key);
+    } catch {
+        // No storage: nothing to remove.
     }
 }
 
@@ -59,4 +69,4 @@ function removeLegacyKeys() {
     }
 }
 
-export { STORAGE_KEYS, readText, writeText, readJson, writeJson, removeLegacyKeys };
+export { STORAGE_KEYS, readText, writeText, removeText, readJson, writeJson, removeLegacyKeys };

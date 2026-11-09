@@ -57,8 +57,65 @@
                 <p class="text-dim" data-i18n="settings.quality.worstHeading"></p>
                 <ol class="fit-worst" id="fit-worst"></ol>
             </section>
+
+            <!-- Admin (collapsed): record when events, passes and tracks run, through a GitHub workflow. -->
+            <section class="card settings-admin">
+                <details>
+                    <summary data-i18n="settings.admin.heading"></summary>
+
+                    <!-- Without a token: enter and check it. -->
+                    <div id="admin-login">
+                        <form class="form-row" id="admin-token-form">
+                            <div class="field field--wide">
+                                <label for="admin-token" data-i18n="settings.admin.tokenLabel"></label>
+                                <input type="password" id="admin-token" autocomplete="off" spellcheck="false" />
+                            </div>
+                            <button type="submit" id="admin-token-save" data-i18n="settings.admin.tokenSave"></button>
+                        </form>
+                        <p class="text-bad" id="admin-token-note" hidden></p>
+                    </div>
+
+                    <!-- With a token: log out, then the two ways to record. -->
+                    <div id="admin-session" hidden>
+                        <p>
+                            <span id="admin-token-saved"></span>
+                            <button type="button" class="btn-secondary btn-small" id="admin-logout"></button>
+                        </p>
+
+                        <div class="admin-confirm" id="admin-confirm" hidden>
+                            <p id="admin-confirm-text"></p>
+                            <div class="field__buttons">
+                                <button type="button" id="admin-confirm-yes"></button>
+                                <button type="button" class="btn-secondary" id="admin-confirm-no"></button>
+                            </div>
+                        </div>
+                        <p id="admin-result" hidden></p>
+
+                        <h3 data-i18n="settings.admin.todayHeading"></h3>
+                        <p class="text-dim" data-i18n="settings.admin.todayLead"></p>
+                        <ul class="admin-list" id="admin-today"></ul>
+
+                        <h3 data-i18n="settings.admin.manualHeading"></h3>
+                        <div class="form-row">
+                            <div class="field field--wide">
+                                <label for="admin-id" data-i18n="settings.admin.event"></label>
+                                <select id="admin-id"></select>
+                            </div>
+                            <div class="field field--narrow">
+                                <label for="admin-start" data-i18n="settings.admin.start"></label>
+                                <input type="date" id="admin-start" />
+                            </div>
+                            <div class="field field--narrow">
+                                <label for="admin-days" data-i18n="settings.admin.days"></label>
+                                <input type="number" id="admin-days" min="1" step="1" />
+                            </div>
+                            <button type="button" id="admin-record" data-i18n="settings.admin.record"></button>
+                        </div>
+                    </div>
+                </details>
+            </section>
         </main>
         <footer class="app-footer"><span>Klingo's Companion</span></footer>
-        <script type="module" src="/src/pages/settings.js"></script>
+        <script type="module" src="/src/pages/settings/index.js"></script>
     </body>
 </html>

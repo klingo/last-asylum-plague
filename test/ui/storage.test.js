@@ -6,6 +6,7 @@ import {
     readJson,
     readText,
     removeLegacyKeys,
+    removeText,
     writeJson,
     writeText,
 } from '../../webapp/src/ui/storage.js';
@@ -16,6 +17,13 @@ test('text is saved and read back, nothing saved gives null', () => {
     assert.equal(readText('k'), null);
     writeText('k', 'v');
     assert.equal(readText('k'), 'v');
+});
+
+test('removed text is gone', () => {
+    writeText('k', 'v');
+    removeText('k');
+    assert.equal(readText('k'), null);
+    assert.doesNotThrow(() => removeText('missing'));
 });
 
 test('JSON objects are saved and read back', () => {
@@ -43,6 +51,7 @@ test('without a usable localStorage reads give the fallback and writes do nothin
         assert.equal(readText('k'), null);
         assert.deepEqual(readJson('k'), {});
         assert.doesNotThrow(() => writeText('k', 'v'));
+        assert.doesNotThrow(() => removeText('k'));
     } finally {
         globalThis.window.localStorage = saved;
     }

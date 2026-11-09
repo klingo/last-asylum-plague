@@ -1,21 +1,23 @@
 /**
  * Settings (the cogwheel in the header): the settings that shape every value (Count VIP points in the worth) and the
  * model quality: how well the fitted worths reproduce the packs' deal % (`fitItemPoints` diagnostics, the packs
- * furthest off, and how well each pack is predicted from the others: `fitHoldOut`, computed in the background).
+ * furthest off, and how well each pack is predicted from the others: `fitHoldOut`, computed in the background),
+ * and the collapsed Admin section that records runs through GitHub (admin.js).
  */
-import { startPage } from '../ui/page.js';
-import '../styles/pages/settings.css';
-import { getSettings, updateSettings } from '../ui/settings.js';
-import { zeroFitItems } from '../core/settings-model.js';
-import { hydrateItemIcons, statHtml } from '../ui/html.js';
-import { pointFit } from '../ui/valuation.js';
-import { fitHoldOut, sensitivityFamilies } from '../core/point-fit.js';
-import { packageDisplayName } from '../ui/labels.js';
-import { formatPercent, formatThousands } from '../ui/format.js';
-import { infoIconHtml } from '../ui/info-icon.js';
-import { enableInfoTooltips } from '../ui/tooltip.js';
-import { t } from '../ui/i18n.js';
-import { notificationsSupported, requestNotificationPermission } from '../ui/notifications.js';
+import { startPage } from '../../ui/page.js';
+import '../../styles/pages/settings.css';
+import { getSettings, updateSettings } from '../../ui/settings.js';
+import { zeroFitItems } from '../../core/settings-model.js';
+import { hydrateItemIcons, statHtml } from '../../ui/html.js';
+import { pointFit } from '../../ui/valuation.js';
+import { fitHoldOut, sensitivityFamilies } from '../../core/point-fit.js';
+import { packageDisplayName } from '../../ui/labels.js';
+import { formatPercent, formatThousands } from '../../ui/format.js';
+import { infoIconHtml } from '../../ui/info-icon.js';
+import { enableInfoTooltips } from '../../ui/tooltip.js';
+import { t } from '../../ui/i18n.js';
+import { notificationsSupported, requestNotificationPermission } from '../../ui/notifications.js';
+import { initAdmin, renderAdmin } from './admin.js';
 
 let data = null;
 const WORST_COUNT = 3;
@@ -197,9 +199,11 @@ startPage('settings', {
         wireSetting('count-vip-points', 'vipPointsInWorth');
         wireNotifications();
         renderQuality();
+        initAdmin(packData);
     },
     onLocaleChange() {
         renderQuality();
         renderNotifyNote();
+        renderAdmin();
     },
 });

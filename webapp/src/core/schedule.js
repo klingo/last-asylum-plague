@@ -4,6 +4,8 @@
  * - the recorded schedule (`schedule` in pack_data.json: per id its runs as inclusive start/end dates) as day
  *   numbers (`scheduleRuns`), plus a simple forecast for ids that ran at least twice (`forecastRuns`); with `today`
  *   the runs of a proven pattern up to today count as runs;
+ * - what can be recorded: the ids (`recordableIds`), the forecast runs on today that aren't recorded yet
+ *   (`unrecordedToday`) and the usual length of an id's runs (`usualRunDays`);
  * - where an id's runs stand (`runStatus`) and the exact moments a run starts and ends (`runMoments`, `dayStartMs`);
  * - weekday offers (packs on sale on certain weekdays): where one stands in the game week (`weekdayOfferTiming`)
  *   and the runs of days it is on sale (`weekdayRuns`);
@@ -34,6 +36,11 @@ function dayNumber(text) {
 /** Day number -> a Date at midnight UTC (format it with `timeZone: 'UTC'`). */
 function dayDate(day) {
     return new Date(day * DAY_MS);
+}
+
+/** Day number -> "2026-10-12" (the inverse of `dayNumber`). */
+function dayText(day) {
+    return dayDate(day).toISOString().slice(0, 10);
 }
 
 // The game's day starts (and ends) at 02:00 UTC, whatever the local time zone or daylight saving.
@@ -103,6 +110,42 @@ function scheduleRuns(data, today) {
         result.set(id, { kind, runs: days });
     }
     return result;
+}
+
+/** The ids that can be recorded, by kind: `{ events, seasonal_passes, spend_reward_tracks }` (Sets; passes by family). */
+function recordableIds(data) {
+    return {
+        events: new Set(Object.keys(data.events || {})),
+        seasonal_passes: new Set(seasonalPassFamilies(data.packages).keys()),
+        spend_reward_tracks: new Set(Object.keys(data.spend_reward_tracks || {})),
+    };
+}
+
+/**
+ * The forecast runs that cover game day `today` without a recorded run on it: `[{ id, run, proven }]` (`run` is
+ * `{ start, end }` in day numbers; `proven` false = a rough guess, e.g. a pattern gone stale). These are the runs worth
+ * recording now.
+ */
+function unrecordedToday(data, today) {
+    const result = [];
+    for (const [id, { runs }] of scheduleRuns(data)) {
+        if (runs.some((run) => runContains(run, today))) {
+            continue;
+        }
+        const forecast = forecastRuns(runs, { from: today, to: today, today }).find((run) => runContains(run, today));
+        if (forecast) {
+            const { start, end, proven } = forecast;
+            result.push({ id, run: { start, end }, proven });
+        }
+    }
+    return result;
+}
+
+/** How many days the runs of `id` usually last (the median of the recorded ones), or null if none is recorded. */
+function usualRunDays(data, id) {
+    const runs = data.schedule?.[id] || [];
+    const lengths = runs.map((run) => dayNumber(run.end) - dayNumber(run.start) + 1);
+    return lengths.length === 0 ? null : Math.round(median(lengths));
 }
 
 /**
@@ -426,6 +469,7 @@ export {
     WEEKDAYS,
     dayDate,
     dayNumber,
+    dayText,
     gameDay,
     dayStartMs,
     weekdayIndex,
@@ -433,6 +477,9 @@ export {
     isoWeekNumber,
     runContains,
     runningToday,
+    recordableIds,
+    unrecordedToday,
+    usualRunDays,
     calendarSelection,
     listRuns,
     scheduleBars,

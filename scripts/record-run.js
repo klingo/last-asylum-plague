@@ -1,5 +1,14 @@
 import { execSync } from 'node:child_process';
-import { dayDate, dayNumber, forecastRuns, gameDay, scheduleRuns } from '../webapp/src/core/schedule.js';
+import { normalizePackData } from '../webapp/src/core/pack-data.js';
+import {
+    dayDate,
+    dayNumber,
+    dayText,
+    forecastRuns,
+    gameDay,
+    recordableIds,
+    scheduleRuns,
+} from '../webapp/src/core/schedule.js';
 import { ROOT, PACK_DATA_PATH, readJson, writeJson, splitArgs, isMain } from './lib/data-files.js';
 import { sortPackData } from './sort-pack-data.js';
 
@@ -19,11 +28,12 @@ const DAYS_PATTERN = /^\d+$/;
  *   --show print the recorded runs (of the given ids, or all; nothing is written), and the proven patterns whose
  *          last recorded run is over 8 weeks old (they no longer count until you record their latest run)
  * A run with the same start as a recorded one replaces it (to correct its length); other overlaps are refused.
+ * The record-run workflow (.github/workflows/record-run.yml, started from Settings > Admin) runs it too.
  */
 function main() {
     const args = process.argv.slice(2);
     const data = readJson(PACK_DATA_PATH);
-    const kinds = recordableIds(data);
+    const kinds = recordableIds(normalizePackData(data));
     const { flags } = splitArgs(args);
     const { ids, dates, counts } = parseRecordArgs(args);
 
@@ -73,19 +83,6 @@ function main() {
     console.log(result.changes.join('\n'));
 }
 
-/** The ids that can be recorded, by kind: `{ events, seasonal_passes, spend_reward_tracks }` (Sets). */
-function recordableIds(data) {
-    return {
-        events: new Set(Object.keys(data.events || {})),
-        seasonal_passes: new Set(
-            Object.entries(data.packages || {})
-                .filter(([, pkg]) => pkg.seasonal)
-                .map(([id]) => id),
-        ),
-        spend_reward_tracks: new Set(Object.keys(data.spend_reward_tracks || {})),
-    };
-}
-
 /** The command line sorted into `{ ids, dates, counts }`: dates are YYYY-MM-DD, counts whole numbers, the rest ids. */
 function parseRecordArgs(args) {
     const { positional } = splitArgs(args);
@@ -130,22 +127,17 @@ function recordRun(data, ids, start, end) {
 
 /** Today's game day (it starts at 02:00 UTC, so before 04:00 CEST it's still yesterday) as YYYY-MM-DD. */
 function gameToday() {
-    return formatDay(gameDay(new Date()).day);
-}
-
-/** A day number as YYYY-MM-DD. */
-function formatDay(day) {
-    return dayDate(day).toISOString().slice(0, 10);
+    return dayText(gameDay(new Date()).day);
 }
 
 /** Whether `text` is a real calendar date written YYYY-MM-DD (not 2026-02-30). */
 function isValidDate(text) {
-    return DATE_PATTERN.test(text) && formatDay(dayNumber(text)) === text;
+    return DATE_PATTERN.test(text) && dayText(dayNumber(text)) === text;
 }
 
 /** The date `days` after `text` (YYYY-MM-DD). */
 function addDays(text, days) {
-    return formatDay(dayNumber(text) + days);
+    return dayText(dayNumber(text) + days);
 }
 
 /** "Mon 2026-10-12 .. Sun 2026-10-18, 7 days" */
@@ -213,7 +205,7 @@ function printMissed(data, ids) {
         }
         if (forecastRuns(runs, { from: 0, to: today + 365, today }).some((run) => run.stale)) {
             const last = runs[runs.length - 1];
-            stale.push(`  ${id}: last recorded ${daysText(formatDay(last.start), formatDay(last.end))}`);
+            stale.push(`  ${id}: last recorded ${daysText(dayText(last.start), dayText(last.end))}`);
         }
     }
     console.log(
@@ -228,7 +220,7 @@ function fail(message) {
     process.exit(1);
 }
 
-export { addDays, daysText, isValidDate, parseRecordArgs, recordRun, recordableIds };
+export { addDays, daysText, isValidDate, parseRecordArgs, recordRun };
 
 if (isMain(import.meta)) {
     main();
