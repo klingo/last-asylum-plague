@@ -5200,6 +5200,19 @@
                         "vip_points": 500,
                         "lv2_alliance_chest": 1
                     }
+                },
+                "2": {
+                    "price": 999,
+                    "deal_percentage": 4670,
+                    "purchase_limit": 1,
+                    "contains": {
+                        "diamonds": 1000,
+                        "raven_essence": 30,
+                        "raven_fruit": 80000,
+                        "ssr_epigraph_chest": 1,
+                        "vip_points": 1000,
+                        "lv3_alliance_chest": 1
+                    }
                 }
             }
         },
