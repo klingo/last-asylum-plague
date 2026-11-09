@@ -77,10 +77,13 @@
 
                     <!-- With a token: log out, then the two ways to record. -->
                     <div id="admin-session" hidden>
-                        <p>
-                            <span id="admin-token-saved"></span>
-                            <button type="button" class="btn-secondary btn-small" id="admin-logout"></button>
-                        </p>
+                        <div class="form-row">
+                            <div class="field field--wide">
+                                <label for="admin-token-saved" data-i18n="settings.admin.tokenLabel"></label>
+                                <input type="text" id="admin-token-saved" readonly disabled />
+                            </div>
+                            <button type="button" class="btn-secondary" id="admin-logout"></button>
+                        </div>
 
                         <div class="admin-confirm" id="admin-confirm" hidden>
                             <p id="admin-confirm-text"></p>
@@ -92,7 +95,6 @@
                         <p id="admin-result" hidden></p>
 
                         <h3 data-i18n="settings.admin.todayHeading"></h3>
-                        <p class="text-dim" data-i18n="settings.admin.todayLead"></p>
                         <ul class="admin-list" id="admin-today"></ul>
 
                         <h3 data-i18n="settings.admin.manualHeading"></h3>

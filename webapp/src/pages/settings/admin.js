@@ -11,8 +11,9 @@ import { RUNS_URL, checkToken, clearToken, dispatchRecordRun, readToken, saveTok
 import { escapeAttr, escapeHtml } from '../../ui/html.js';
 import { getLocale, t, tHtml } from '../../ui/i18n.js';
 
-// How many characters at the end of the token are shown to recognise it.
+// The saved token is shown masked, with only its last characters to recognise it (GitHub has no call for its name).
 const TOKEN_TAIL = 4;
+const MASK_LENGTH = 12;
 
 let data = null;
 // The request waiting for the confirmation, `{ ids, start, days }` (start as YYYY-MM-DD), or null.
@@ -46,8 +47,7 @@ function renderToken() {
     byId('admin-token-note').hidden = tokenError === null;
     byId('admin-token-note').textContent = tokenError === null ? '' : t(`settings.admin.error.${tokenError}`);
     byId('admin-token-save').disabled = busy;
-    byId('admin-token-saved').textContent =
-        token === null ? '' : t('settings.admin.tokenSaved', { tail: token.slice(-TOKEN_TAIL) });
+    byId('admin-token-saved').value = token === null ? '' : `${'•'.repeat(MASK_LENGTH)}${token.slice(-TOKEN_TAIL)}`;
     byId('admin-logout').textContent = t('settings.admin.logout');
 }
 
