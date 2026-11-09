@@ -8003,7 +8003,8 @@
                 "de": "Claires innerer Dämon"
             },
             "category": "ingame_event",
-            "calendar_group": "alliance"
+            "calendar_group": "alliance",
+            "image": "claires_inner_demon"
         },
         "crystal_cluster_valley": {
             "name": {
