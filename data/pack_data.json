@@ -8160,8 +8160,7 @@
                 "en": "Survival Battle",
                 "de": "Überlebenskampf"
             },
-            "category": "ingame_event",
-            "image": "survival_battle"
+            "category": "ingame_event"
         },
         "thief_hunt": {
             "name": {
