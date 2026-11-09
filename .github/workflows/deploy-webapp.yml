@@ -3,9 +3,6 @@ name: Verify and deploy webapp
 on:
     push:
         branches: [master]
-        # The local helper tools (tools/) are not part of the site: a push that only touches them deploys nothing.
-        # (Not on the PR trigger: a required check that never runs would block a tools-only PR.)
-        paths-ignore: ['tools/**']
     # The checks below also run on every PR into master (make them required in the branch protection).
     pull_request:
         branches: [master]

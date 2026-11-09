@@ -4,8 +4,8 @@ import js from '@eslint/js';
 
 export default defineConfig([
     {
-        // Not linted: build output, dependencies, coverage reports and the separate Python tooling in tools/.
-        ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', 'tools/**'],
+        // Not linted: build output, dependencies and coverage reports.
+        ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**'],
     },
     {
         extends: [js.configs.recommended],
