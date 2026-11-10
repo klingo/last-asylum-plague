@@ -258,7 +258,7 @@
             "expected": "nächstes Mal voraussichtlich um den {date} (Prognose)",
             "expectedGuess": "nächstes Mal voraussichtlich um den {date} (grobe Schätzung)",
             "none": "Noch keine Daten erfasst",
-            "openPlan": "Klicken, um den Plan zu öffnen"
+            "openPlan": "Plan öffnen"
         }
     },
     "rankings": {

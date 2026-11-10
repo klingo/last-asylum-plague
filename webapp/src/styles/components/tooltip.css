@@ -110,6 +110,30 @@
     filter: grayscale(0.8);
     opacity: 0.75;
 }
+
+/* What a click on the trigger does (tooltip.js `data-tooltip-action`): a dim line on hover. */
+.app-tooltip__action {
+    margin-top: 3px;
+    color: var(--text-dim);
+}
+
+/* A tap keeps the card open: it takes touches, and its action is a button (44px, the touch target size). */
+.app-tooltip--pinned {
+    pointer-events: auto;
+}
+
+a.app-tooltip__action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin: 6px -4px -2px;
+    background: var(--accent);
+    border-radius: var(--radius);
+    color: var(--bg);
+    font-weight: 600;
+    text-decoration: none;
+}
 @media (max-width: 640px) {
     .info-icon::after {
         content: '';

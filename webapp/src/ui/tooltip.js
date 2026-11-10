@@ -14,6 +14,12 @@
  * of whether the visual popup is shown, so the popup itself is purely a sighted-user
  * convenience and is marked `aria-hidden="true"`. Per WCAG 1.4.13, it's dismissible (Escape),
  * and stays put until the trigger loses hover/focus.
+ *
+ * Touch has no hover, and a trigger can be a link (a Calendar bar), so a tap must not both show the card and follow
+ * the link. A tap (any pointer but the mouse) therefore pins the card: the click is cancelled, the card stays until a
+ * tap elsewhere, the same trigger, Escape or a scroll, and a trigger with `data-tooltip-action` (its label) and an
+ * `href` gets that link as an explicit button in the card. A pinned card is no longer `aria-hidden` (it holds a link).
+ * The mouse and the keyboard keep hover / focus to preview and a click / Enter to follow the link.
  */
 
 import { createItemImage } from './images.js';
@@ -22,6 +28,7 @@ import { findTile } from '../core/art-tile.js';
 const TILE_ANALYSIS_WIDTH = 128; // px a picture is scaled down to for finding its tile
 
 let tooltipEl = null;
+let pinnedTrigger = null; // the trigger whose card a tap keeps open
 const tiles = new Map(); // picture URL -> its tile (null: none), found once
 
 function ensureTooltipEl() {
@@ -33,6 +40,26 @@ function ensureTooltipEl() {
     tooltipEl.setAttribute('aria-hidden', 'true');
     tooltipEl.hidden = true;
     document.body.appendChild(tooltipEl);
+    // A pinned card closes on a touch outside it and its trigger, on Escape, and when a chart scrolls under it.
+    document.addEventListener('pointerdown', (event) => {
+        if (pinnedTrigger && !tooltipEl.contains(event.target) && !pinnedTrigger.contains(event.target)) {
+            dismissTooltip();
+        }
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            dismissTooltip();
+        }
+    });
+    document.addEventListener(
+        'scroll',
+        (event) => {
+            if (event.target !== document) {
+                dismissTooltip();
+            }
+        },
+        true,
+    );
     return tooltipEl;
 }
 
@@ -125,8 +152,29 @@ function fitTile(image) {
     image.style.setProperty('--art-top', tile.top * aspect * wider);
 }
 
-function showTooltip(trigger) {
+/**
+ * The trigger's action (`data-tooltip-action`) as the card's last line: a link to the trigger's `href` in a pinned card
+ * (a touch target), else the same text, dim, as a hint of what a click does.
+ */
+function actionOf(trigger, pinned) {
+    const label = trigger.dataset.tooltipAction;
+    if (!label) {
+        return null;
+    }
+    const action = document.createElement(pinned && trigger.href ? 'a' : 'div');
+    action.className = 'app-tooltip__action';
+    action.textContent = label;
+    if (action.localName === 'a') {
+        action.href = trigger.href;
+    }
+    return action;
+}
+
+function showTooltip(trigger, pinned = false) {
     const el = ensureTooltipEl();
+    pinnedTrigger = pinned ? trigger : null;
+    el.classList.toggle('app-tooltip--pinned', pinned);
+    el.setAttribute('aria-hidden', String(!pinned));
     const rows = trigger.dataset.tooltipRows ? JSON.parse(trigger.dataset.tooltipRows) : null;
     el.classList.toggle('app-tooltip--rows', Boolean(rows));
     if (rows) {
@@ -134,6 +182,7 @@ function showTooltip(trigger) {
     } else {
         el.textContent = trigger.dataset.tooltip || '';
     }
+    el.append(...[actionOf(trigger, pinned)].filter(Boolean));
     // Optional picture above the text (`data-tooltip-image`: an event's art, a weekday offer's own picture on the
     // Calendar), greyed with `data-tooltip-image-muted` (an ended run).
     el.classList.toggle('app-tooltip--image', Boolean(trigger.dataset.tooltipImage));
@@ -168,27 +217,57 @@ function showTooltip(trigger) {
     positionTooltip(trigger);
 }
 
+/** Hides the card unless a tap pinned it (the emulated mouse and focus events that follow a tap must not close it). */
 function hideTooltip() {
-    if (tooltipEl) {
+    if (tooltipEl && !pinnedTrigger) {
         tooltipEl.hidden = true;
     }
 }
 
+/** Hides the card, pinned or not. */
+function dismissTooltip() {
+    pinnedTrigger = null;
+    hideTooltip();
+}
+
 /**
- * Wires hover/focus/dismiss behavior for every `[data-tooltip]` element under `root` (info icons,
+ * Wires hover/focus/tap/dismiss behavior for every `[data-tooltip]` element under `root` (info icons,
  * pills, ...). Safe
  * to call repeatedly (e.g. after re-rendering a table), since it only ever touches whatever
  * matching elements currently exist in the DOM.
  */
 function enableInfoTooltips(root) {
     root.querySelectorAll('[data-tooltip]').forEach((trigger) => {
-        trigger.addEventListener('mouseenter', () => showTooltip(trigger));
+        // Whether the last press on the trigger was a touch / pen (not the mouse), and no key since.
+        let tapped = false;
+        const preview = () => {
+            if (!pinnedTrigger) {
+                showTooltip(trigger);
+            }
+        };
+        trigger.addEventListener('mouseenter', preview);
         trigger.addEventListener('mouseleave', hideTooltip);
-        trigger.addEventListener('focus', () => showTooltip(trigger));
+        trigger.addEventListener('focus', preview);
         trigger.addEventListener('blur', hideTooltip);
+        trigger.addEventListener('pointerdown', (event) => {
+            tapped = event.pointerType !== 'mouse';
+        });
+        trigger.addEventListener('click', (event) => {
+            if (!tapped) {
+                return;
+            }
+            // A tap shows the card instead of following the link; its action button does that.
+            event.preventDefault();
+            if (pinnedTrigger === trigger) {
+                dismissTooltip();
+            } else {
+                showTooltip(trigger, true);
+            }
+        });
         trigger.addEventListener('keydown', (event) => {
+            tapped = false;
             if (event.key === 'Escape') {
-                hideTooltip();
+                dismissTooltip();
             }
         });
     });

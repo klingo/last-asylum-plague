@@ -31,8 +31,8 @@ import { WEEKS } from './constants.js';
 
 /**
  * A bar's hover card: "Strange Bazaar", the event's own line if it has one (`description`, e.g. its bonus),
- * "Mon, 12 Oct, 04:00 – Mon, 19 Oct, 04:00 (7 days)", "Ends in 3 days" (forecasts with their rhythm), and "Click to
- * open its plan" when it links to one.
+ * "Mon, 12 Oct, 04:00 – Mon, 19 Oct, 04:00 (7 days)", "Ends in 3 days" (forecasts with their rhythm). A bar that links
+ * to the plan adds "Open its plan" to the card itself (`barHtml`'s `action`), a button on a phone.
  */
 function scheduleTooltip(bar, row, today) {
     const lines = [
@@ -59,9 +59,6 @@ function scheduleTooltip(bar, row, today) {
         } else {
             lines.push(t('calendar.schedule.forecastBasis', { interval: bar.intervalDays }));
         }
-    }
-    if (row.href) {
-        lines.push(t('calendar.status.openPlan'));
     }
     return lines.join('\n');
 }
@@ -124,6 +121,7 @@ function renderSchedule() {
                         .map((bar) =>
                             barHtml({ ...bar, ...runMoments(bar) }, view, scheduleTooltip(bar, row, today), {
                                 href: row.href,
+                                action: t('calendar.status.openPlan'),
                                 image: row.image,
                             }),
                         )

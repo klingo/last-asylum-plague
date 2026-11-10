@@ -92,6 +92,12 @@ test('a bar is a link with a href, takes its state and colour, and escapes its t
     assert.match(html, /data-tooltip="A &quot;quoted&quot; &lt;offer&gt;"/);
     assert.match(html, /data-tooltip-image-muted/);
     assert.match(html, /--bar-color: red/);
+    assert.doesNotMatch(html, /data-tooltip-action/);
+    assert.match(
+        barHtml(bar, view, 'x', { href: '?a=1', action: 'Open "it"' }),
+        /data-tooltip-action="Open &quot;it&quot;"/,
+    );
+    assert.doesNotMatch(barHtml(bar, view, 'x', { action: 'Open' }), /data-tooltip-action/); // no link, no action
     assert.match(
         barHtml({ ...bar, past: false, proven: true }, view, 'x'),
         /^<span class="schedule__bar schedule__bar--forecast"/,

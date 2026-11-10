@@ -40,7 +40,8 @@ to `master` and starts the deployment, so the change shows up on the site after 
   weekly spend is filled up with other packs, on every page. The row stays, faded, with Undo; a skip lasts until the
   weekly reset or until its event / pass is over, whichever comes first.
 - **Calendar** (`calendar.html`) — the Event Schedule (recorded runs and a forecast, see [Schedule and forecasts](valuation.md#schedule-and-forecasts); each entry with the
-  game's art, a hover card with how long is left, and a click opens its plan), the Weekday Offers of the next 7 days
+  game's art, a hover card with how long is left, and a click opens its plan; on a phone a tap shows the card, with an
+  "Open its plan" button), the Weekday Offers of the next 7 days
   (each with its own picture from `assets/packages/<pack id>.webp` as a thumbnail before its name, a placeholder tile
   without one, as on Today; the picture is also the art of the bar's hover card, like an event's: its tile edge to edge,
   what pops out of the tile popping out of the card, greyed for a bar that isn't on sale right now, as an ended event's;

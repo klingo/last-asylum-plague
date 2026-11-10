@@ -258,7 +258,7 @@
             "expected": "next expected around {date} (forecast)",
             "expectedGuess": "next expected around {date} (rough guess)",
             "none": "No dates recorded yet",
-            "openPlan": "Click to open its plan"
+            "openPlan": "Open its plan"
         }
     },
     "rankings": {
