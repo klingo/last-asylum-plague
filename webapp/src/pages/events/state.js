@@ -7,7 +7,8 @@ const ctx = {
     page: null,
     selectedKey: '',
     stepCache: { key: null, steps: null },
-    lockCostCache: { key: null, cost: null, taken: null, needed: null },
+    lockCache: { costKey: null, cost: null, searchKey: null, baseline: null, needed: null },
+    renderToken: 0,
     valuationKey: null,
 };
 

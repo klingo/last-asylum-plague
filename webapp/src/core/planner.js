@@ -448,15 +448,16 @@ function addMine(ctx, mineId, mine, { budget, mineProgress, eventDaysLeft, mineS
  * wanted amount, so no single one crowds out the others), then fix those counts for the real solve.
  * Returns the shortfalls `[{ key, wanted, got }]`.
  */
-function fixLocks(highs, model, fixedVars) {
+function fixLocks(highs, model, fixedVars, solveOptions) {
     const shortfalls = [];
     if (fixedVars.size === 0) {
         return shortfalls;
     }
-    const reach = solveModel(highs, {
-        ...model,
-        objective: new Map([...fixedVars].map(([name, { wanted }]) => [name, 1 / wanted])),
-    });
+    const reach = solveModel(
+        highs,
+        { ...model, objective: new Map([...fixedVars].map(([name, { wanted }]) => [name, 1 / wanted])) },
+        solveOptions,
+    );
     for (const [name, { key, wanted }] of fixedVars) {
         const got = reach.status === 'Optimal' ? Math.round(solutionValue(reach, name)) : 0;
         model.bounds.set(name, { lower: got, upper: got });
@@ -472,13 +473,13 @@ function fixLocks(highs, model, fixedVars) {
  * `lambda` = points per extra Banknote of the budget (an event's extra Banknotes are not part of it),
  * `mu` = Map currency -> points per extra unit.
  */
-function marginalRates(highs, model, plan, balanceRows) {
+function marginalRates(highs, model, plan, balanceRows, solveOptions) {
     const relaxed = { ...model, integers: new Set(), binaries: new Set(), bounds: new Map(model.bounds) };
     for (const name of model.binaries) {
         const reached = Math.round(solutionValue(plan, name));
         relaxed.bounds.set(name, { lower: reached, upper: reached });
     }
-    const rates = solveModel(highs, relaxed);
+    const rates = solveModel(highs, relaxed, solveOptions);
     const lambda = Math.abs(rates.duals.get('budget') || 0);
     const mu = new Map();
     for (const [currencyId, row] of balanceRows) {
@@ -528,6 +529,7 @@ const DEFAULT_OPTIONS = {
     eventDaysLeft: null,
     mineProgress: null,
     mineSafety: 0.5,
+    timeLimit: null,
 };
 
 /** The options with their defaults; like destructuring defaults, an option passed as undefined keeps its default. */
@@ -712,7 +714,8 @@ function createPricing(ctx, mu, rate) {
  * daily pack limits and a mine's free pickaxes; default a whole week), `mineProgress` (`{ mineId: { owned,
  * floor } }`: pickaxes owned and the floor reached this run, Events page), `mineSafety` (the share of runs the
  * pickaxes for the target floor should suffice in: 0.5 = the average (default), 0.9, 0.99, 1 = the worst case),
- * `skippedPackages` (package ids the user skipped, core/skips.js: not bought, nor the higher tiers that need them).
+ * `skippedPackages` (package ids the user skipped, core/skips.js: not bought, nor the higher tiers that need them),
+ * `timeLimit` (seconds a solve may take before it throws; default none: for what-ifs that must not block the page).
  */
 function solveWeeklyPlan(highs, data, options = {}) {
     const opts = withDefaults(options);
@@ -735,14 +738,15 @@ function solveWeeklyPlan(highs, data, options = {}) {
         .concat([...offerVars.keys()], [...pointPurchaseVars.keys()])) {
         model.integers.add(name);
     }
-    const lockShortfalls = fixLocks(highs, model, fixedVars);
-    const plan = solveModel(highs, model);
+    const solveOptions = { timeLimit: opts.timeLimit };
+    const lockShortfalls = fixLocks(highs, model, fixedVars, solveOptions);
+    const plan = solveModel(highs, model, solveOptions);
     if (plan.status !== 'Optimal') {
         throw new Error(`Weekly plan solve failed: ${plan.status}`);
     }
 
     // 2) Marginal rates.
-    const { lambda, mu } = marginalRates(highs, model, plan, balanceRows);
+    const { lambda, mu } = marginalRates(highs, model, plan, balanceRows, solveOptions);
     capCurrencyRates(mu, offerVars, ctx.shops, model, plan);
 
     // 3) The plan as the pages read it.

@@ -116,3 +116,23 @@ test('extra to leave the others alone: the same figure whatever extra is set, ev
     });
     assert.deepEqual(none, { taken: 0, needed: 300 }, 'nothing taken: the extra stays as set');
 });
+
+test('extra to leave the others alone: never asks for more than the event can take, nor solves beyond it', () => {
+    const options = { ...LOCK, budget: 200 };
+    const baseline = plan({ budget: 200 });
+    const asked = [];
+    const solveWith = (extra) => {
+        asked.push(extra);
+        return plan({ ...options, extraEventBanknotes: { bazaar: extra } });
+    };
+    const result = extraToLeaveAlone({
+        eventId: 'bazaar',
+        baseline,
+        current: solveWith(0),
+        extra: 0,
+        maxExtra: 250,
+        solve: solveWith,
+    });
+    assert.equal(result.needed, 250, 'capped at what the packs can take (the lock itself needs 300)');
+    assert.ok(Math.max(...asked) <= 250, `solved only up to the cap: ${asked}`);
+});

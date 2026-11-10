@@ -88,10 +88,17 @@ function toLpText(model) {
 
 /**
  * Solves `model` with `highs`. Returns `{ status, objective, values: Map, duals: Map<rowName, dual> }`.
- * Duals are only meaningful for pure LPs (no integers/binaries).
+ * Duals are only meaningful for pure LPs (no integers/binaries). `timeLimit` (seconds, default none): a solve that
+ * hasn't finished by then throws instead of running on (the solver blocks the page while it runs).
  */
-function solveModel(highs, model) {
-    const result = highs.solve(toLpText(model), { output_flag: false });
+function solveModel(highs, model, { timeLimit = null } = {}) {
+    const result = highs.solve(toLpText(model), {
+        output_flag: false,
+        ...(timeLimit > 0 ? { time_limit: timeLimit } : {}),
+    });
+    if (result.Status === 'Time limit reached') {
+        throw new Error(`Solve stopped at its time limit of ${timeLimit} s`);
+    }
     const values = new Map();
     for (const [name, column] of Object.entries(result.Columns || {})) {
         values.set(name, column.Primal);

@@ -36,7 +36,11 @@ function stepAnalysis(eventId) {
     });
 }
 
-function renderSteps({ eventId }) {
+/**
+ * The step table. Its solves block the page for seconds, so without `compute` a table that isn't cached yet shows a
+ * placeholder, to be drawn again with `compute` after the page has been painted.
+ */
+function renderSteps({ eventId }, { compute = true } = {}) {
     // Only events with packages on sale have something to spend Banknotes on.
     stepsCard.hidden = !eventId || !(maxSpendOf(eventId) > 0);
     if (stepsCard.hidden) {
@@ -44,6 +48,11 @@ function renderSteps({ eventId }) {
     }
     const cacheKey = `${eventId}|${overridesKey()}|${JSON.stringify(getSettings())}`;
     if (ctx.stepCache.key !== cacheKey) {
+        if (!compute) {
+            stepsTable.innerHTML = '';
+            stepsNote.textContent = t('common.calculating');
+            return;
+        }
         ctx.stepCache = { key: cacheKey, steps: stepAnalysis(eventId) };
     }
     const steps = ctx.stepCache.steps;

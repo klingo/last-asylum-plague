@@ -7,6 +7,7 @@ import { eventMaxSpend } from '../../core/catalog.js';
 import { eventSelection, outsideCurrencyId } from '../../core/event-plan.js';
 import { mineProgressFor } from '../../core/mine.js';
 import { planningRun, gameDay } from '../../core/schedule.js';
+import { nextPaint } from '../../ui/loading.js';
 import { ctx } from './state.js';
 
 /**
@@ -55,10 +56,24 @@ const overridesKey = () => JSON.stringify(pageOverrides());
 const maxSpendOf = (eventId) =>
     eventMaxSpend(ctx.data.packages, eventId, { eventDaysLeft: pageOverrides().eventDaysLeft });
 
+/**
+ * Runs `work` once the page has been painted, unless a newer render has started since (`ctx.renderToken`): for what
+ * blocks the page for seconds (the lock note's and the step table's solves), so the rest is on screen first.
+ */
+function afterPaint(work) {
+    const token = ctx.renderToken;
+    void nextPaint().then(() => {
+        if (token === ctx.renderToken) {
+            work();
+        }
+    });
+}
+
 /** The mine's part of the plan (`plan.mines`), or null. */
 const minePlan = (mineId) => ctx.valuation.plan.mines.find((m) => m.mineId === mineId) ?? null;
 
 export {
+    afterPaint,
     extraCurrencyOf,
     extraFor,
     outsideCurrency,

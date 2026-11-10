@@ -7,7 +7,7 @@ import { solveWeeklyPlan } from '../../core/planner.js';
 import { getSettings, updateSettings } from '../../ui/settings.js';
 import { offerWeeklyCapacity } from '../../core/catalog.js';
 import { hasOtherSource as itemHasOtherSource } from '../../core/item-sources.js';
-import { activeLocks, extraToLeaveAlone, withLock, withoutShopLocks } from '../../core/event-plan.js';
+import { activeLocks, extraToLeaveAlone, lockSpendGap, withLock, withoutShopLocks } from '../../core/event-plan.js';
 import { itemDisplayName, itemLinkName, bundleLabel } from '../../ui/labels.js';
 import { banknotesAmount, buyBadge, hydrateItemIcons } from '../../ui/html.js';
 import { gridHeader, gridRow, gridTable, gridSection } from '../../ui/grid.js';
@@ -18,7 +18,7 @@ import { formatThousands } from '../../ui/format.js';
 import { ratioCellHtml, ratioScale } from '../../ui/ratio-bar.js';
 import { ctx } from './state.js';
 import { WIDE, cell, headerCell, iconHtml, numCell } from './cells.js';
-import { extraFor, overridesKey, pageOverrides, selection } from './context.js';
+import { extraFor, maxSpendOf, overridesKey, pageOverrides, selection } from './context.js';
 import { lockNote, shopHeading, shopNote, shopSection, shopTable } from './elements.js';
 
 // itemId -> whether any pack or another shop gives it (for the "Only here" badge), per shop.
@@ -206,15 +206,85 @@ function hasOtherSource(shopId, itemId) {
     return otherSourceCache.get(cacheKey);
 }
 
+// How long a batch of the lock note's solves may take in all: they block the page, and the plans with a big extra are
+// the slow ones.
+const LOCK_NOTE_MS = 4000;
+
 /**
- * The note on the tab of a shop with locks (solves cached per settings): the worth the shop's fixed offers cost (the
- * plan without this shop's locks minus the plan with them). While they leave the other packs alone and fit the spend
- * that is all it says; else a warning: how much of the weekly spend they take from the other packs, the extra
- * Banknotes for the event that would give it back (`extraToLeaveAlone`, against the plan without the locks and the
- * event's extra) and the fixed amounts the spend can't cover. Other tabs only say which shops' locks share the weekly
- * spend.
+ * The lock note's plans: `solve(overrides)` solves the weekly plan again with the page's settings and `overrides`, and
+ * throws once `LOCK_NOTE_MS` are used up (each solve gets what is left as its time limit).
  */
-function renderLockNote() {
+function lockSolver() {
+    const deadline = Date.now() + LOCK_NOTE_MS;
+    return (overrides) => {
+        const seconds = (deadline - Date.now()) / 1000;
+        if (seconds <= 0) {
+            throw new Error('The lock note ran out of time');
+        }
+        return solveWeeklyPlan(
+            ctx.valuation.highs,
+            ctx.data,
+            planOptions(ctx.data, getSettings(), { ...pageOverrides(), ...overrides, timeLimit: seconds }),
+        );
+    };
+}
+
+/**
+ * What the fixed offers of shop `shopId` (of event `eventId`, if any) do to the plan, by solving it again, kept in
+ * `ctx.lockCache` in two parts: `cost` (the worth they cost, with the extra set now) and, whatever extra is set (the
+ * search always ends at the same figure), `baseline` (the plan without the locks and the event's extra) and `needed`
+ * (the extra Banknotes for the event that give back what the locks take, see `extraToLeaveAlone`). Changing only the
+ * extra therefore solves just the cost again. A part that ran out of time is null (`needed` null: the search only).
+ */
+function computeLockEffect(shopId, eventId, { costKey, searchKey }) {
+    const cache = ctx.lockCache;
+    const lockedOffers = withoutShopLocks(getSettings().lockedOffers, shopId);
+    const withExtra = (extra) => ({ extraEventBanknotes: { ...getSettings().extraEventBanknotes, [eventId]: extra } });
+    let unlocked = null;
+    if (cache.costKey !== costKey) {
+        try {
+            unlocked = lockSolver()({ lockedOffers });
+        } catch {
+            // Too slow: the cost stays unknown.
+        }
+        cache.costKey = costKey;
+        cache.cost = unlocked && (unlocked.totalPoints - ctx.valuation.plan.totalPoints) / ctx.valuation.rate;
+    }
+    if (cache.searchKey !== searchKey) {
+        cache.searchKey = searchKey;
+        cache.baseline = null;
+        cache.needed = null;
+        const solve = lockSolver();
+        try {
+            // The event left alone: neither this shop's locks nor its extra Banknotes.
+            cache.baseline = extraFor(eventId) === 0 && unlocked ? unlocked : solve({ lockedOffers, ...withExtra(0) });
+            if (eventId) {
+                const current = extraFor(eventId) === 0 ? ctx.valuation.plan : solve(withExtra(0));
+                cache.needed = extraToLeaveAlone({
+                    eventId,
+                    baseline: cache.baseline,
+                    current,
+                    extra: 0,
+                    maxExtra: maxSpendOf(eventId),
+                    solve: (extra) => solve(withExtra(extra)),
+                }).needed;
+            }
+        } catch {
+            // Too slow: whatever isn't solved yet stays unknown.
+        }
+    }
+}
+
+/**
+ * The note on the tab of a shop with locks: the worth the shop's fixed offers cost (the plan without this shop's locks
+ * minus the plan with them). While they leave the other packs alone and fit the spend that is all it says; else a
+ * warning: how much of the weekly spend they take from the other packs (against the plan without the locks and the
+ * event's extra), the extra Banknotes for the event that would give it back and the fixed amounts the spend can't
+ * cover. Other tabs only say which shops' locks share the weekly spend. The solves block the page for seconds, so
+ * without `compute` a note that isn't cached yet shows a placeholder, to be drawn again with `compute` after the page
+ * has been painted.
+ */
+function renderLockNote({ compute = true } = {}) {
     const shops = ctx.data.exchange_shops || {};
     const active = activeLocks(getSettings().lockedOffers, shops, getSettings().activeEvents);
     lockNote.hidden = active.length === 0;
@@ -231,38 +301,30 @@ function renderLockNote() {
         return;
     }
     const own = active.filter((key) => key.split(':')[0] === shopId);
-    const cacheKey = `${JSON.stringify(getSettings())}|${overridesKey()}|${shopId}`;
-    if (ctx.lockCostCache.key !== cacheKey) {
-        const solve = (overrides) =>
-            solveWeeklyPlan(
-                ctx.valuation.highs,
-                ctx.data,
-                planOptions(ctx.data, getSettings(), { ...pageOverrides(), ...overrides }),
-            );
-        const lockedOffers = withoutShopLocks(getSettings().lockedOffers, shopId);
-        const unlocked = solve({ lockedOffers });
-        const withExtra = (extra) => ({
-            extraEventBanknotes: { ...getSettings().extraEventBanknotes, [eventId]: extra },
-        });
-        // The event left alone: neither this shop's locks nor its extra Banknotes (a 0 extra is no extra).
-        const baseline = extraFor(eventId) > 0 ? solve({ lockedOffers, ...withExtra(0) }) : unlocked;
-        const { taken, needed } = eventId
-            ? extraToLeaveAlone({
-                  eventId,
-                  baseline,
-                  current: ctx.valuation.plan,
-                  extra: extraFor(eventId),
-                  solve: (extra) => solve(withExtra(extra)),
-              })
-            : { taken: 0, needed: 0 };
-        ctx.lockCostCache = {
-            key: cacheKey,
-            cost: (unlocked.totalPoints - ctx.valuation.plan.totalPoints) / ctx.valuation.rate,
-            taken,
-            needed,
-        };
+    // The search doesn't depend on the extra set for the event, the cost does.
+    const settings = getSettings();
+    const withoutExtra = eventId
+        ? { ...settings, extraEventBanknotes: { ...settings.extraEventBanknotes, [eventId]: 0 } }
+        : settings;
+    const keys = {
+        costKey: `${JSON.stringify(settings)}|${overridesKey()}|${shopId}`,
+        searchKey: `${JSON.stringify(withoutExtra)}|${overridesKey()}|${shopId}`,
+    };
+    if (ctx.lockCache.costKey !== keys.costKey || ctx.lockCache.searchKey !== keys.searchKey) {
+        if (!compute) {
+            lockNote.className = 'lock-note text-dim';
+            lockNote.textContent = t('common.calculating');
+            return;
+        }
+        computeLockEffect(shopId, eventId, keys);
     }
-    const { cost, taken, needed } = ctx.lockCostCache;
+    const { cost, baseline, needed } = ctx.lockCache;
+    if (cost === null || baseline === null) {
+        lockNote.className = 'lock-note text-dim';
+        lockNote.textContent = t('events.lockTooComplex');
+        return;
+    }
+    const taken = eventId ? lockSpendGap(ctx.valuation.plan, baseline, eventId) : 0;
     // Fixed amounts the spend can't fully cover: the plan bought as many as possible.
     const shortfalls = (ctx.valuation.plan.lockShortfalls || []).map(({ key, wanted, got }) => {
         const [offerShopId, offerKey] = key.split(':');
@@ -285,17 +347,23 @@ function renderLockNote() {
     // (the total for the event, in hundreds: the same whatever the extra already set).
     const stat = (label, value, className = '') =>
         `<div class="lock-note__stat${className}"><div class="lock-note__label">${label}</div><div class="lock-note__value">${value}</div></div>`;
+    // No extra to suggest where more than the event's packs can take would be needed, or where working it out took too long.
+    const suggest = taken >= 1 && (needed === null || needed > extraFor(eventId));
     const stats = [
         taken >= 1 ? stat(tHtml('events.lockTaken'), banknotesAmount(taken)) : '',
         stat(tHtml('events.lockCost'), worth),
-        taken >= 1
-            ? stat(tHtml('events.lockExtra'), banknotesAmount(Math.ceil(needed / 100) * 100), ' lock-note__stat--fix')
+        suggest
+            ? stat(
+                  tHtml('events.lockExtra'),
+                  needed === null ? t('common.dash') : banknotesAmount(Math.ceil(needed / 100) * 100),
+                  ' lock-note__stat--fix',
+              )
             : '',
     ];
     lockNote.className = 'plan-tile lock-note lock-note--warn';
     lockNote.innerHTML = `<div class="lock-note__head"><span class="lock-note__icon" aria-hidden="true">⚠</span>${tHtml('events.lockWarnTitle', { count })}</div>
         <div class="lock-note__stats">${stats.join('')}</div>
-        ${taken >= 1 ? `<div class="lock-note__hint text-dim">${tHtml('events.lockExtraHint')}</div>` : ''}
+        ${suggest ? `<div class="lock-note__hint text-dim">${tHtml(needed === null ? 'events.lockExtraUnknown' : 'events.lockExtraHint')}</div>` : ''}
         ${
             shortfalls.length > 0
                 ? `<div class="lock-note__short text-warn">${tHtml('events.lockShortfall')}</div><ul class="plan-list text-warn">${shortfalls.join('')}</ul>`

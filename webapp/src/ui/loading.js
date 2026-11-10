@@ -54,4 +54,4 @@ async function withLoading(work) {
     }
 }
 
-export { withLoading };
+export { nextPaint, withLoading };

@@ -19,6 +19,7 @@ import { mineProgressFor } from '../../core/mine.js';
 import { eventImageUrl, mountBanner } from '../../ui/event-banner.js';
 import { ctx } from './state.js';
 import {
+    afterPaint,
     extraCurrencyOf,
     extraFor,
     outsideCurrency,
@@ -95,12 +96,19 @@ function render() {
         event && { image: event.image, name: localizedName(event.name) },
         render,
     );
-    renderLockNote();
+    // The lock note's and the step table's solves block the page for seconds: what isn't cached yet shows a placeholder
+    // and is worked out once the rest is painted (the note first, it is on top).
+    ctx.renderToken++;
+    renderLockNote({ compute: false });
     renderSummary(selected);
     renderPacks(selected);
     renderShop(selected);
     renderMine(selected);
-    renderSteps(selected);
+    renderSteps(selected, { compute: false });
+    afterPaint(() => {
+        renderLockNote();
+        afterPaint(() => renderSteps(selected));
+    });
 }
 
 /**

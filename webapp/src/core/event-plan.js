@@ -138,7 +138,7 @@ function lockSpendGap(locked, baseline, eventId) {
 }
 
 // Rounds of raising the extra by the gap that is left (see `extraToLeaveAlone`) before the figure is taken as it is.
-const MAX_EXTRA_ROUNDS = 6;
+const MAX_EXTRA_ROUNDS = 4;
 
 /**
  * The extra Banknotes for the event that give the other packs their spend back: the locked offers' packs paid from
@@ -146,19 +146,20 @@ const MAX_EXTRA_ROUNDS = 6;
  * the user set (`current`, at `extra`) is only the part of what the locks need that this money has shown so far.
  * Raising the extra by that gap and solving again (`solve(extra)`: the plan with that extra for the event), until none
  * is left, never overshoots (an extra Banknote frees at most one of the weekly spend) and ends at the same figure
- * whatever extra the user started from.
+ * whatever extra the user started from. The extra stops at `maxExtra` (the most the event's packs can take: more
+ * can't be spent, and the plans with huge extras are the slow ones to solve).
  * Returns `{ taken, needed }`: what `current` takes from the other packs, and the total extra that leaves them alone
  * (`extra` itself if `current` takes nothing).
  */
-function extraToLeaveAlone({ eventId, baseline, current, extra, solve }) {
+function extraToLeaveAlone({ eventId, baseline, current, extra, maxExtra = Infinity, solve }) {
     const taken = lockSpendGap(current, baseline, eventId);
     let needed = extra;
     let gap = taken;
-    for (let round = 0; round < MAX_EXTRA_ROUNDS && gap >= 1; round++) {
-        needed += gap;
+    for (let round = 0; round < MAX_EXTRA_ROUNDS && gap >= 1 && needed < maxExtra; round++) {
+        needed = Math.min(needed + gap, maxExtra);
         gap = lockSpendGap(solve(needed), baseline, eventId);
     }
-    return { taken, needed: needed + gap };
+    return { taken, needed: Math.min(needed + gap, maxExtra) };
 }
 
 /** The lock keys that count: those of a shop that exists and is either without event or of an event on. */
