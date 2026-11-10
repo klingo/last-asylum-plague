@@ -60,7 +60,19 @@
 }
 
 .app-tooltip--image {
-    width: 260px;
+    width: 280px;
+}
+
+/* A line split by a tab (tooltip.js fillText): its end right-aligned, dim, on the same line. */
+.app-tooltip__split {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.app-tooltip__split span {
+    flex: none;
+    color: var(--text-dim);
 }
 
 /* Rows with an item icon each (info icon with `data-tooltip-rows`): as wide as the longest line, so none breaks. */

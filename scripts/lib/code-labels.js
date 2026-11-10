@@ -1,7 +1,7 @@
 /**
  * The labels the webapp needs for the data's codes (looked up with `enumLabel(group, code)` in
  * webapp/src/ui/i18n.js): every category of items, packages and events, every hero class and faction,
- * every weekday and purchase type, and the item picker's own groups. Used by `i18n:missing` (per language)
+ * every weekday (in full and abbreviated) and purchase type, and the item picker's own groups. Used by `i18n:missing` (per language)
  * and `verify-data` (English).
  */
 import { PURCHASE_TYPES } from '../../webapp/src/core/catalog.js';
@@ -34,7 +34,10 @@ function codeLabelKeys(data) {
             Object.keys(slot.heroes || {}).forEach((faction) => add('gear.faction', faction));
         }
     }
-    WEEKDAYS.forEach((day) => add('weekday', day));
+    WEEKDAYS.forEach((day) => {
+        add('weekday', day);
+        add('weekdayShort', day);
+    });
     PURCHASE_TYPES.forEach((type) => add('sourceType', type));
     return [...keys].sort();
 }

@@ -7,7 +7,7 @@ import { formatDays, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { formatThousands } from '../../ui/format.js';
 import { ratioColor } from '../../ui/ratio-bar.js';
 import { escapeHtml } from '../../ui/html.js';
-import { formatClock, formatMoment } from '../../ui/datetime.js';
+import { formatClock, formatDaySpan } from '../../ui/datetime.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import { hydratePackThumbs, packThumbHtml } from '../../ui/event-banner.js';
 import { packageImageUrl } from '../../ui/images.js';
@@ -56,11 +56,6 @@ function rotationSummary(rows) {
         : t('calendar.rotation.noneWorthIt', { name: ranked[0].name, ratio: formatThousands(ranked[0].ratio, 2) });
 }
 
-/** When a weekday offer's bar (`start` / `end` in ms) is on sale, in the user's time: "Thu, Nov 5, 03:00 AM". */
-function saleWindowText(bar) {
-    return t('calendar.rotation.onSale', { from: formatMoment(bar.start), to: formatMoment(bar.end) });
-}
-
 /**
  * Weekday offers (`weekly_rotation` packs): today and the next 6 local days, one row per pack family (a bar from the
  * reset that starts the offer's game day to the one that ends it), with a line for now (and how long today's offers
@@ -93,10 +88,9 @@ function renderRotation() {
     const rows = [...families]
         .map(([familyId, { pkg, ratio }]) => {
             const name = localizedName(pkg.name);
-            // The name and ratio; each bar adds its own sale window (exact, in local time: a weekday is the game's).
-            const tooltip = [name, ratio === null ? '' : `${t('common.table.ratio')}: ${formatThousands(ratio, 2)}`]
-                .filter(Boolean)
-                .join('\n');
+            // The name with the ratio right-aligned (a tab splits the line, see tooltip.js); each bar adds its own sale
+            // window (exact, in local time: a weekday is the game's).
+            const tooltip = ratio === null ? name : `${name}\t${t('common.table.ratio')}: ${formatThousands(ratio, 2)}`;
             return {
                 name,
                 tooltip,
@@ -128,7 +122,7 @@ function renderRotation() {
             (row) => `
                 <div class="schedule__row schedule__row--rotation">
                     <div class="schedule__label" title="${escapeHtml(row.name)}">${packThumbHtml(row.packId)}${escapeHtml(row.name)}</div>
-                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, view, `${row.tooltip}\n${saleWindowText(bar)}`, { color: row.color, image: row.imageUrl, mutedImage: !(bar.start <= nowMs && nowMs < bar.end) })).join('')}</div>
+                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, view, `${row.tooltip}\n${formatDaySpan(bar.start, bar.end)}`, { color: row.color, image: row.imageUrl, mutedImage: !(bar.start <= nowMs && nowMs < bar.end) })).join('')}</div>
                 </div>`,
         )
         .join('');

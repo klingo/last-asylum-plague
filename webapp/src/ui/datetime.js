@@ -42,11 +42,27 @@ function formatRunRange(startMs, endMs) {
         : `${formatMoment(startMs)} – ${formatMoment(endMs)}`;
 }
 
-/** "Mon, 12 Oct, 04:00 – Mon, 19 Oct, 04:00 (7 days)": a run of game days (`start` / `end` day numbers) as the moments it starts and ends. */
-function formatRunDays(run) {
-    const { start, end } = runMoments(run);
-    const days = run.end - run.start + 1;
-    return `${formatRunRange(start, end)} (${days === 1 ? t('calendar.schedule.oneDay') : t('calendar.schedule.days', { count: days })})`;
+/**
+ * "Mon, Oct 12 – Mon, Oct 19 · 04:00 AM": a run of whole game days from the day it starts to the day it ends, at the clock
+ * time it starts and ends (the same, so it is named once; the full moments if a clock change moved the end). Short
+ * enough for a hover card.
+ */
+function formatDaySpan(startMs, endMs) {
+    return formatClock(startMs) === formatClock(endMs)
+        ? `${formatDate(startMs)} – ${formatDate(endMs)} · ${formatClock(startMs)}`
+        : formatRunRange(startMs, endMs);
 }
 
-export { pad2, formatDate, formatClock, formatMoment, formatRunRange, formatRunDays };
+/** "7 days" / "1 day": the length of a run of game days (`start` / `end` day numbers). */
+function formatDayCount(run) {
+    const days = run.end - run.start + 1;
+    return days === 1 ? t('calendar.schedule.oneDay') : t('calendar.schedule.days', { count: days });
+}
+
+/** "Mon, Oct 12 – Mon, Oct 19 · 04:00 AM (7 days)": a run of game days with its number of days. */
+function formatRunDays(run) {
+    const { start, end } = runMoments(run);
+    return `${formatDaySpan(start, end)} (${formatDayCount(run)})`;
+}
+
+export { pad2, formatDate, formatClock, formatMoment, formatRunRange, formatDaySpan, formatDayCount, formatRunDays };

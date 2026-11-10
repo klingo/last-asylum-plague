@@ -107,6 +107,30 @@ function fillRows(el, rows) {
     }
 }
 
+/**
+ * The tooltip's plain text (`data-tooltip`) as lines. A tab in a line splits it in two: the text before it left, the text
+ * after it right-aligned on the same line ("Raven Pack\tRatio: 1.20"). Without a tab it is just text.
+ */
+function fillText(el, text) {
+    if (!text.includes('\t')) {
+        el.textContent = text;
+        return;
+    }
+    el.textContent = '';
+    for (const line of text.split('\n')) {
+        const row = document.createElement('div');
+        const [left, right] = line.split('\t');
+        row.textContent = left;
+        if (right !== undefined) {
+            row.className = 'app-tooltip__split';
+            const end = document.createElement('span');
+            end.textContent = right;
+            row.append(end);
+        }
+        el.append(row);
+    }
+}
+
 /** The tile of a loaded picture (core/art-tile.js), from its alpha channel; null without one (or if it can't be read). */
 function tileOf(image) {
     if (!tiles.has(image.src)) {
@@ -180,7 +204,7 @@ function showTooltip(trigger, pinned = false) {
     if (rows) {
         fillRows(el, rows);
     } else {
-        el.textContent = trigger.dataset.tooltip || '';
+        fillText(el, trigger.dataset.tooltip || '');
     }
     el.append(...[actionOf(trigger, pinned)].filter(Boolean));
     // Optional picture above the text (`data-tooltip-image`: an event's art, a weekday offer's own picture on the

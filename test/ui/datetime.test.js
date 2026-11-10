@@ -1,7 +1,7 @@
 import './env.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatDate, formatRunDays, formatRunRange, pad2 } from '../../webapp/src/ui/datetime.js';
+import { formatDate, formatDaySpan, formatRunDays, formatRunRange, pad2 } from '../../webapp/src/ui/datetime.js';
 import { setLocale } from '../../webapp/src/ui/i18n.js';
 import { runMoments } from '../../webapp/src/core/schedule.js';
 import { day } from '../helpers.js';
@@ -39,8 +39,19 @@ test('a run within one local day names its date once; one that ends at midnight 
     );
 });
 
+test('a span of whole days names its clock time once, unless the two moments differ', () => {
+    assert.equal(
+        formatDaySpan(Date.UTC(2026, 10, 2, 2), Date.UTC(2026, 10, 3, 2)),
+        'Mon, Nov 2 – Tue, Nov 3 · 10:00 AM',
+    );
+    assert.equal(
+        formatDaySpan(Date.UTC(2026, 10, 2, 2), Date.UTC(2026, 10, 3, 3)),
+        'Mon, Nov 2, 10:00 AM – Tue, Nov 3, 11:00 AM',
+    );
+});
+
 test('a run of game days is shown with its number of days', () => {
-    assert.equal(formatRunDays({ start: day(0), end: day(6) }), 'Mon, Nov 2, 10:00 AM – Mon, Nov 9, 10:00 AM (7 days)');
+    assert.equal(formatRunDays({ start: day(0), end: day(6) }), 'Mon, Nov 2 – Mon, Nov 9 · 10:00 AM (7 days)');
     assert.match(formatRunDays({ start: day(0), end: day(0) }), / \(1 day\)$/);
 });
 

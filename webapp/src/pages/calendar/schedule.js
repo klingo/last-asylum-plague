@@ -1,9 +1,9 @@
 /**
  * The Event Schedule: one row per event, pass and track over the next weeks, with their forecasts.
  */
-import { formatDays, localizedName, t, tHtml } from '../../ui/i18n.js';
+import { enumLabel, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
-import { formatDate, formatRunDays } from '../../ui/datetime.js';
+import { formatDate, formatDayCount, formatDaySpan } from '../../ui/datetime.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import { getSettings } from '../../ui/settings.js';
 import { SCHEDULE_KIND_LABELS } from '../../ui/labels.js';
@@ -30,15 +30,17 @@ import { ctx } from './state.js';
 import { WEEKS } from './constants.js';
 
 /**
- * A bar's hover card: "Strange Bazaar", the event's own line if it has one (`description`, e.g. its bonus),
- * "Mon, 12 Oct, 04:00 – Mon, 19 Oct, 04:00 (7 days)", "Ends in 3 days" (forecasts with their rhythm). A bar that links
- * to the plan adds "Open its plan" to the card itself (`barHtml`'s `action`), a button on a phone.
+ * A bar's hover card: "Strange Bazaar" with "(7 days)" right-aligned on its line (a tab splits the line, see
+ * tooltip.js), the event's own line if it has one (`description`, e.g. its bonus), "Mon, Oct 12 – Mon, Oct 19 ·
+ * 04:00 AM", "Ends in 3 days" (forecasts with their rhythm). A bar that links to the plan adds "Open its plan" to the
+ * card itself (`barHtml`'s `action`), a button on a phone.
  */
 function scheduleTooltip(bar, row, today) {
+    const { start, end } = runMoments(bar);
     const lines = [
-        row.name,
+        `${row.name}\t(${formatDayCount(bar)})`,
         ...(row.description ? [row.description] : []),
-        formatRunDays(bar),
+        formatDaySpan(start, end),
         runStatusText(runStatus([bar], today)),
     ];
     if (bar.forecast) {
@@ -53,7 +55,7 @@ function scheduleTooltip(bar, row, today) {
             lines.push(
                 t('calendar.schedule.forecastPattern', {
                     days: bar.pattern.days,
-                    weekdays: formatDays(bar.pattern.weekdays),
+                    weekdays: bar.pattern.weekdays.map((day) => enumLabel('weekdayShort', day)).join(', '),
                 }),
             );
         } else {
