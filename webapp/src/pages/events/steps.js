@@ -14,7 +14,7 @@ import { formatThousands } from '../../ui/format.js';
 import { ratioCellHtml, ratioScale } from '../../ui/ratio-bar.js';
 import { ctx } from './state.js';
 import { WIDE, cell, headerCell, numCell } from './cells.js';
-import { extraFor, maxSpendOf, overridesKey, pageOverrides } from './context.js';
+import { maxSpendOf, overridesKey, pageOverrides } from './context.js';
 import { stepsCard, stepsNote, stepsTable } from './elements.js';
 
 /** How much spending on the event is worth it (step-analysis.js `analyseEventSteps`). */
@@ -26,7 +26,7 @@ function stepAnalysis(eventId) {
         maxSpend: maxSpendOf(eventId),
         cheapestPrice: cheapestEventPackPrice(ctx.data.packages, eventId),
         budget: getSettings().budget,
-        extraBanknotes: extraFor(eventId),
+        extraEventBanknotes: getSettings().extraEventBanknotes,
         solve: (overrides) =>
             solveWeeklyPlan(
                 ctx.valuation.highs,

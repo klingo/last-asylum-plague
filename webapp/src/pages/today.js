@@ -393,7 +393,7 @@ function renderPlan() {
         );
     }
     planSummary.innerHTML = tHtml('today.planSummary', {
-        spent: banknotesAmount(plan.spent),
+        spent: banknotesAmount(plan.regularSpent),
         budget: banknotesAmount(plan.budget),
     });
     planTiles.innerHTML = tiles.join('') || `<p class="text-dim">${tHtml('today.planEmpty')}</p>`;

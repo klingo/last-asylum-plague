@@ -29,16 +29,12 @@ const extraFor = (eventId) => (eventId && getSettings().extraEventBanknotes?.[ev
 const mineRun = (eventId) => planningRun(ctx.data, eventId, gameDay(new Date()).day);
 
 /**
- * Planner options of this page: the selected event's extra Banknotes on top of the weekly spend; for a mine, the
- * days left of its run (daily pack limits, free pickaxes), the pickaxes owned, the floor reached and how sure the
- * planned pickaxes should be.
+ * Planner options of this page: for a mine, the days left of its run (daily pack limits, free pickaxes), the
+ * pickaxes owned, the floor reached and how sure the planned pickaxes should be.
  */
 function pageOverrides() {
     const selected = selection();
     const overrides = {};
-    if (extraFor(selected?.eventId) > 0) {
-        overrides.eventBudget = { eventId: selected.eventId, extra: extraFor(selected.eventId) };
-    }
     if (selected?.mine) {
         const run = mineRun(selected.eventId);
         if (run) {

@@ -177,8 +177,8 @@ test('mine: the safety planned with decides whether the pickaxes reach the targe
     );
 });
 
-// Extra Banknotes for the event are only spent where they buy at least what a normal Banknote does (0.5 points from
-// the gem pack): the pick pack also gives a gem, and a gem pack competes for the budget.
+// Extra Banknotes for the event pay for its packs first, and the budget keeps its spend on the other deals: the pick
+// pack also gives a gem, and a gem pack competes for the budget.
 const withGems = {
     ...dig,
     packages: {
@@ -192,26 +192,23 @@ const withGems = {
     },
 };
 const withExtra = (owned) =>
-    planMine(200, { eventBudget: { eventId: 'dig', extra: 5000 }, mineProgress: { dig_mine: { owned } } }, withGems);
+    planMine(200, { extraEventBanknotes: { dig: 5000 }, mineProgress: { dig_mine: { owned } } }, withGems);
+const bought = (plan) => Object.fromEntries(plan.purchases.map((p) => [p.id, p.count]));
 
-test('mine: extra event Banknotes are not spent on pickaxes when plenty are owned', () => {
+test('mine: extra event Banknotes buy the pick packs even when plenty of pickaxes are owned', () => {
+    // Free money for the event: the 3 pick packs (a gem each) it can take; the budget stays on the gem packs.
     const plenty = withExtra(200);
-    assert.deepEqual(
-        plenty.purchases.map((p) => p.id),
-        ['gem_pack'],
-    );
-    assert.equal(plenty.eventExtraUsed, 0);
+    assert.deepEqual(bought(plenty), { pick_pack: 3, gem_pack: 2 });
+    assert.deepEqual(plenty.eventExtraUsed, { dig: 300 });
+    assert.equal(plenty.regularSpent, 200);
     assert.equal(plenty.mines[0].floorReached, 10);
 });
 
-test('mine: extra event Banknotes pay for the pick packs the budget does not cover', () => {
-    // 20 owned + 21 free need 3 pick packs for floor 10 (≈ 67.6): the budget pays 2, the extra the third.
+test('mine: extra event Banknotes pay for the pick packs the pickaxes need, not the budget', () => {
+    // 20 owned + 21 free need 3 pick packs for floor 10 (≈ 67.6): the extra pays all three.
     const few = withExtra(20);
-    assert.deepEqual(
-        few.purchases.map((p) => [p.id, p.count]),
-        [['pick_pack', 3]],
-    );
-    assert.equal(few.eventExtraUsed, 100);
+    assert.deepEqual(bought(few), { pick_pack: 3, gem_pack: 2 });
+    assert.deepEqual(few.eventExtraUsed, { dig: 300 });
     assert.equal(few.mines[0].digs, true);
 });
 

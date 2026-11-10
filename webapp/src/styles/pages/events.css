@@ -30,6 +30,78 @@
     padding: 2px 6px;
 }
 
+/* What the fixed offers cost, above "Your plan", as wide as its tiles. As a warning (`--warn`: they take from the
+   other packs, or don't fit the spend) it stands out: tinted, a thick edge, a headline with an icon and the figures in
+   boxes, the extra to enter highlighted. */
+.lock-note {
+    margin: 12px 0;
+}
+
+.lock-note--warn {
+    padding: 14px 16px;
+    border-color: color-mix(in srgb, var(--warn) 55%, var(--border));
+    border-left: 5px solid var(--warn);
+    background: color-mix(in srgb, var(--warn) 9%, var(--panel-alt));
+}
+
+.lock-note__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.lock-note__icon {
+    color: var(--warn);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.lock-note__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.lock-note__stat {
+    flex: 1 1 200px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+}
+
+.lock-note__stat--fix {
+    border-color: var(--warn);
+    background: color-mix(in srgb, var(--warn) 14%, var(--panel));
+}
+
+.lock-note__label {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+}
+
+.lock-note__value {
+    margin-top: 2px;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.lock-note__hint {
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+.lock-note__short {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid color-mix(in srgb, var(--warn) 35%, var(--border));
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
 /* An offer whose item no pack or other shop gives. */
 .only-here {
     margin-left: 6px;

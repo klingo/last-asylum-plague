@@ -36,7 +36,7 @@ const DEFAULT_SETTINGS = {
     // A browser notification when a new round of Survival Battle begins, while a tab of the app is open (Settings).
     notifySurvivalBattle: false,
     extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
-    extraEventBanknotes: {}, // eventId -> extra Banknotes per week only for that event's packs (Events page)
+    extraEventBanknotes: {}, // eventId -> extra Banknotes per week spent first on that event's packs, counts on every page (Events page)
     skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Deal Ranking's "Skip", core/skips.js)
     lockedOffers: {}, // "<shopId>:<offerKey>" -> exact count the plan buys per week, 0 = never (Events page)
     mineProgress: {}, // mineId -> { pickaxes owned, floor reached, run: start day of the run the floor is from } (Events page)
@@ -70,6 +70,8 @@ function planOptions(settings, { today, basePoints }, overrides = {}) {
         seasonalPasses: settings.seasonalPasses,
         // "Must buy" shop offers shape the one plan on every page.
         lockedOffers: settings.lockedOffers,
+        // Extra Banknotes an event's packs (and so its locked offers) are paid from first, on top of the weekly spend.
+        extraEventBanknotes: settings.extraEventBanknotes,
         // Packs the user skipped on the Deal Ranking (not bought, nor the higher tiers that need them).
         skippedPackages: activeSkips(settings.skippedPackages, today),
         // Currency from outside the packs ("Extra ... per week" of a shop without event, Events page).

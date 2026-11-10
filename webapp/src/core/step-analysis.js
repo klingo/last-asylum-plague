@@ -28,15 +28,18 @@ function stepBetween(previous, plan, rate) {
 /**
  * How much spending on the event is worth it: the weekly plan re-solved with the event's pack spend at 0, at the
  * plan's own spend E₀ and at round levels above it, the rest of the weekly spend unchanged (budget = weekly spend +
- * the event's extra Banknotes − E₀ + level). Above E₀ a level only has to be reached within one cheapest pack (whole
- * packs rarely hit it exactly); levels the event can't reach, or that change nothing, are left out.
- * `{ eventId, base, rate, maxSpend, cheapestPrice, budget, extraBanknotes, solve }`: `maxSpend` the most the event's
- * packages can take, `cheapestPrice` its cheapest pack, `budget` the weekly spend, `extraBanknotes` the event's own.
+ * the event's extra Banknotes the plan spends − E₀ + level; the event's own extra is left out of the re-solves, the
+ * level pins its spend). Above E₀ a level only has to be reached within one cheapest pack (whole packs rarely hit it
+ * exactly); levels the event can't reach, or that change nothing, are left out.
+ * `{ eventId, base, rate, maxSpend, cheapestPrice, budget, extraEventBanknotes, solve }`: `maxSpend` the most the
+ * event's packages can take, `cheapestPrice` its cheapest pack, `budget` the weekly spend, `extraEventBanknotes` the
+ * extra Banknotes of every event (the settings').
  * Returns `[{ isPlan, eventSpend, packs: [{ pkg, count }], stepCost, stepWorth, ratio }]` (cost and worth null for the
  * first step).
  */
-function analyseEventSteps({ eventId, base, rate, maxSpend, cheapestPrice, budget, extraBanknotes, solve }) {
+function analyseEventSteps({ eventId, base, rate, maxSpend, cheapestPrice, budget, extraEventBanknotes, solve }) {
     const e0 = eventPackSpend(base, eventId);
+    const extraUsed = base.eventExtraUsed[eventId] ?? 0;
     const levels = [...new Set([0, e0, ...EVENT_SPEND_LEVELS.filter((level) => level > e0 && level <= maxSpend)])].sort(
         (a, b) => a - b,
     );
@@ -47,9 +50,9 @@ function analyseEventSteps({ eventId, base, rate, maxSpend, cheapestPrice, budge
         }
         try {
             return solve({
-                // The level pins the event's spend; the extra Banknotes are part of the total here.
-                eventBudget: null,
-                budget: budget + extraBanknotes - e0 + level,
+                // The level pins the event's spend; the extra Banknotes it used are part of the total here.
+                extraEventBanknotes: { ...extraEventBanknotes, [eventId]: 0 },
+                budget: budget + extraUsed - e0 + level,
                 eventSpend: level < e0 ? { eventId, max: level } : { eventId, min: Math.max(e0, level - slack) },
             });
         } catch {
@@ -86,29 +89,31 @@ function trackPointsBudget(track, points) {
  * total spend minus the plan of the step before (the weekly plan for the first one), i.e. the best packs the extra
  * Banknotes still buy plus the tier reward, in Banknotes at the weekly spend.
  * `{ track, trackId, rate, budget, rewardOf, solve }`: `rewardOf(tier)` values a tier's reward (`{ worth }`),
- * `budget` is the weekly spend, `solve` gets `{ budget?, activeTrackIds }`.
+ * `budget` is the weekly spend, `solve` gets `{ budget?, activeTrackIds }`. The costs are totals, the events' extra
+ * Banknotes the weekly plan spends (`eventExtraUsed`) included: a tier's solve gets that much less budget.
  * Returns the tiers (`trackTiers`) with `cumulativeCost`, `stepCost`, `reward`, `reached`, `stepWorth`,
  * `packsWorth` and `ratio` (and `atWeeklySpend` for a tier the weekly spend reaches).
  */
 function analyseTrackTiers({ track, trackId, rate, budget, rewardOf, solve }) {
     const activeTrackIds = new Set([trackId]);
+    const base = solve({ activeTrackIds });
+    const extraUsed = Object.values(base.eventExtraUsed).reduce((sum, used) => sum + used, 0);
     const reachedTier = (plan, tier) =>
         plan.trackTiersReached.some((r) => r.trackId === trackId && r.threshold === tier.threshold);
     // The plan at about the threshold's worth of Banknotes (track points per Banknote ~1, rounded down by
     // the pack prices), at least `floor`, a little more if the packs on sale can't quite reach it.
     const solveTier = (tier, floor) => {
-        let tierBudget = Math.max(floor, tier.cumulativeCost, trackPointsBudget(track, tier.threshold));
+        let tierSpend = Math.max(floor, tier.cumulativeCost, trackPointsBudget(track, tier.threshold));
         let plan = null;
         for (let attempt = 0; attempt < 4; attempt++) {
-            plan = solve({ budget: tierBudget, activeTrackIds });
+            plan = solve({ budget: Math.max(0, tierSpend - extraUsed), activeTrackIds });
             if (reachedTier(plan, tier)) {
                 break;
             }
-            tierBudget = Math.ceil(tierBudget * 1.02);
+            tierSpend = Math.ceil(tierSpend * 1.02);
         }
         return plan;
     };
-    const base = solve({ activeTrackIds });
     let previous = { spent: base.spent, totalPoints: base.totalPoints };
     // Tiers the weekly spend already reaches still show what each takes on its own (total spend and step
     // ratio from the tier before, the first one from 0).
@@ -131,7 +136,7 @@ function analyseTrackTiers({ track, trackId, rate, budget, rewardOf, solve }) {
                 ratio: step.ratio,
             };
         }
-        const plan = solveTier(tier, budget);
+        const plan = solveTier(tier, budget + extraUsed);
         const step = stepBetween(previous, plan, rate);
         previous = { spent: plan.spent, totalPoints: plan.totalPoints };
         const reached = reachedTier(plan, tier);

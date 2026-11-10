@@ -5,7 +5,7 @@
  *
  * Pure module (no DOM/i18n), shared with the tests.
  */
-import { eventPurchases } from './step-analysis.js';
+import { eventPackSpend, eventPurchases } from './step-analysis.js';
 import { expectedRolls } from './items.js';
 
 /**
@@ -121,6 +121,46 @@ function withLock(lockedOffers, shopId, offerKey, count) {
     return next;
 }
 
+/** The locks without those of shop `shopId`. Returns a new object. */
+function withoutShopLocks(lockedOffers, shopId) {
+    return Object.fromEntries(Object.entries(lockedOffers || {}).filter(([key]) => key.split(':')[0] !== shopId));
+}
+
+/**
+ * Banknotes of the weekly spend the locks take from everything outside the event's packs: what the `baseline` plan
+ * (the event left alone: without the locks and the event's extra Banknotes) spends there minus what the `locked` plan
+ * does, at least 0. The event's extra Banknotes never pay for anything else, so setting that much extra for the event
+ * gives the other purchases their spend back.
+ */
+function lockSpendGap(locked, baseline, eventId) {
+    const outside = (plan) => plan.spent - eventPackSpend(plan, eventId);
+    return Math.max(0, outside(baseline) - outside(locked));
+}
+
+// Rounds of raising the extra by the gap that is left (see `extraToLeaveAlone`) before the figure is taken as it is.
+const MAX_EXTRA_ROUNDS = 6;
+
+/**
+ * The extra Banknotes for the event that give the other packs their spend back: the locked offers' packs paid from
+ * them. A plan only buys as many fixed offers as its money allows, so the gap (`lockSpendGap`) of the plan at the extra
+ * the user set (`current`, at `extra`) is only the part of what the locks need that this money has shown so far.
+ * Raising the extra by that gap and solving again (`solve(extra)`: the plan with that extra for the event), until none
+ * is left, never overshoots (an extra Banknote frees at most one of the weekly spend) and ends at the same figure
+ * whatever extra the user started from.
+ * Returns `{ taken, needed }`: what `current` takes from the other packs, and the total extra that leaves them alone
+ * (`extra` itself if `current` takes nothing).
+ */
+function extraToLeaveAlone({ eventId, baseline, current, extra, solve }) {
+    const taken = lockSpendGap(current, baseline, eventId);
+    let needed = extra;
+    let gap = taken;
+    for (let round = 0; round < MAX_EXTRA_ROUNDS && gap >= 1; round++) {
+        needed += gap;
+        gap = lockSpendGap(solve(needed), baseline, eventId);
+    }
+    return { taken, needed: needed + gap };
+}
+
 /** The lock keys that count: those of a shop that exists and is either without event or of an event on. */
 function activeLocks(lockedOffers, shops, activeEvents) {
     return Object.keys(lockedOffers || {}).filter((key) => {
@@ -157,4 +197,15 @@ function shopProgress(plan, shopId, shop) {
     return { encounters, spent, total: encounters + spent };
 }
 
-export { activeLocks, eventItemTotals, eventSelection, hasOutsideCurrency, outsideCurrencyId, shopProgress, withLock };
+export {
+    activeLocks,
+    eventItemTotals,
+    eventSelection,
+    extraToLeaveAlone,
+    hasOutsideCurrency,
+    lockSpendGap,
+    outsideCurrencyId,
+    shopProgress,
+    withLock,
+    withoutShopLocks,
+};

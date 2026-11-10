@@ -56,7 +56,7 @@ function modelSummaryText(valuation) {
     const plan = valuation.plan;
     const vars = {
         budget: formatThousands(plan.budget, 0),
-        spent: formatThousands(plan.spent, 0),
+        spent: formatThousands(plan.regularSpent, 0),
         rate: formatThousands(plan.rate, 2),
     };
     return plan.budgetBinding ? t('valuation.summary', vars) : t('valuation.summaryUnbound', vars);

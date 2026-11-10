@@ -70,8 +70,10 @@ to `master` and starts the deployment, so the change shows up on the site after 
   dug); Details lists a stretch's progress reward, the wish rewards and
   the expected tile loot; "How the mine works" lists the rules from the data. The
   pickaxe tile shows where they come from as a bar (owned, free, purchase bonus, each pack) and what's left for the
-  next run. Extra Banknotes for an event are a cap: the plan only spends them where they buy at least what your last
-  normal Banknote does.
+  next run. An event's "Extra Banknotes per week" are money for that event only: its packs (and so the packs the
+  offers you fixed with "must buy" need) are paid from them first, the weekly spend only pays what they don't cover,
+  and they count in the one plan on every page. A note on the shop's tab says how many Banknotes of the weekly
+  spend the fixed offers take from your other packs, and how much extra for the event would give those back.
 - **Item Sources** (`sources.html`) — pick one item: every pack and shop offer on sale this week that gives it,
   nested at any depth (e.g. SR Resource Supplies → Herbs), ranked by Banknotes per unit, with how much each gives and
   an item ratio (worth of the item alone ÷ price).

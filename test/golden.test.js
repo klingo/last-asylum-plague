@@ -86,7 +86,7 @@ const scenarios = {
     // The Events page's what-ifs: extra Banknotes / diamonds, locked offers.
     'plan-events-page': {
         activeEventIds: new Set(['surprise_encounter']),
-        eventBudget: { eventId: 'surprise_encounter', extra: 5000 },
+        extraEventBanknotes: { surprise_encounter: 5000 },
         extraCurrency: { diamonds: 3000 },
         lockedOffers: {
             [`surprise_encounter_shop:${Object.keys(data.exchange_shops.surprise_encounter_shop.offers).sort()[0]}`]: 1,
@@ -101,7 +101,7 @@ const scenarios = {
     // The mine from floor 12 with extra Banknotes: dug to floor 100.
     'plan-mine-dig': {
         activeEventIds: new Set(['dwarven_mine']),
-        eventBudget: { eventId: 'dwarven_mine', extra: 30000 },
+        extraEventBanknotes: { dwarven_mine: 30000 },
         eventDaysLeft: { dwarven_mine: 3 },
         mineProgress: { dwarven_mine: { owned: 150, floor: 12 } },
     },

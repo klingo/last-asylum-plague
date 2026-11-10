@@ -132,12 +132,11 @@ function populateSelect() {
         .join('');
 }
 
-/** With locks or extra currency / Banknotes the plan depends on the selection. */
+/** With locks or extra currency the plan depends on the selection. */
 function onEventChange() {
     if (
         Object.keys(getSettings().lockedOffers || {}).length > 0 ||
         Object.keys(getSettings().extraCurrency || {}).length > 0 ||
-        Object.keys(getSettings().extraEventBanknotes || {}).length > 0 ||
         overridesKey() !== ctx.valuationKey
     ) {
         void ctx.page.recompute();

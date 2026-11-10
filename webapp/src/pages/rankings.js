@@ -333,7 +333,7 @@ function rebuild() {
     const plan = valuation.plan;
     rankingMeta.textContent = t('rankings.planShort', {
         purchases: formatThousands(plan.purchases.length),
-        spent: formatThousands(plan.spent, 0),
+        spent: formatThousands(plan.regularSpent, 0),
         budget: formatThousands(plan.budget, 0),
         count: formatThousands(entries.filter((entry) => entry.rank).length),
     });

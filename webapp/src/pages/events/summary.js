@@ -56,11 +56,11 @@ function renderSummary({ eventId, shopId, shop, mineId, mine }) {
     }
     if (eventId) {
         const purchases = eventPurchases(plan, eventId);
-        // The event's extra Banknotes: how many the plan uses (only where they're worth it, so maybe none).
+        // The event's extra Banknotes: how many the plan spends on its packs (less than set if they can't take more).
         const extraNote =
             extraFor(eventId) > 0
                 ? `<div class="plan-tile__note text-dim">${tHtml('events.extraBanknotesNote', {
-                      used: formatThousands(plan.eventExtraUsed, 0),
+                      used: formatThousands(plan.eventExtraUsed[eventId] ?? 0, 0),
                       amount: formatThousands(extraFor(eventId), 0),
                   })}</div>`
                 : '';

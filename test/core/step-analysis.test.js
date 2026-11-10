@@ -21,7 +21,7 @@ test('spend steps of an event: the plan solved again at higher spends', () => {
         maxSpend: eventMaxSpend(data.packages, eventId),
         cheapestPrice: cheapestEventPackPrice(data.packages, eventId),
         budget: DEFAULT_SETTINGS.budget,
-        extraBanknotes: 0,
+        extraEventBanknotes: {},
         solve,
     });
 

@@ -3,7 +3,8 @@
  * program (HiGHS, see lp.js).
  *
  *   maximize   total points received this week
- *   subject to Banknotes spent <= budget
+ *   subject to Banknotes spent <= budget + the extra Banknotes of each event (`extraEventBanknotes`), which
+ *              only that event's packages can use, and which they use first
  *              every package / exchange offer within its weekly limit (catalog.js)
  *              the rules between packages (package-rows.js: tier ladders, exclusive groups, bundles)
  *              coins/diamonds spent <= coins/diamonds received (per currency)
@@ -21,8 +22,6 @@
  * says so (`income_per_hour`) or the page says so (`extraCurrency`).
  *
  * The solves, in this order:
- * - with an event's extra Banknotes (`eventBudget`) first a plan without them: what a Banknote buys then is the bar
- *   an extra one has to clear;
  * - with locked offers (`fixLocks`) first a solve that buys them as far as the spend allows, then they are fixed;
  * - the integer program gives the actual weekly shopping list (whole purchases);
  * - its continuous relaxation (bonus tiers fixed to the integer result) gives the marginal rates:
@@ -47,8 +46,6 @@ import { targetFloor, freeCurrency, pickaxeOdds, mineSegments, normalRewardBundl
 
 const EPS = 1e-9;
 const HOURS_PER_WEEK = DAYS_PER_WEEK * 24;
-// Variable of the extra Banknotes for one event the plan uses (see addEventRows).
-const EXTRA_USED = 'extra_used';
 
 /**
  * Currency received from a `{itemId: qty}` bundle: direct currency entries plus currency inside
@@ -93,7 +90,9 @@ function createContext(data, options) {
         currencyValues: zeroCurrencies,
         weights: options.weights,
     });
-    const extraForEvent = options.eventBudget?.extra > 0 ? options.eventBudget.extra : 0;
+    const extraEventBanknotes = Object.fromEntries(
+        Object.entries(options.extraEventBanknotes || {}).filter(([, extra]) => extra > 0),
+    );
     const balanceRows = new Map();
     return {
         data,
@@ -102,10 +101,14 @@ function createContext(data, options) {
         shops,
         currencyIds,
         values,
-        extraForEvent,
+        extraEventBanknotes,
         model: createModel('max'),
         budgetRow: { name: 'budget', terms: new Map(), op: '<=', rhs: options.budget },
         balanceRows,
+        /** The extra Banknotes per week the user set for the event's packages (0 = none). */
+        extraFor(eventId) {
+            return extraEventBanknotes[eventId] || 0;
+        },
         /** The terms of currency `currencyId`'s balance row (created on first use). */
         balance(currencyId) {
             if (!balanceRows.has(currencyId)) {
@@ -167,19 +170,19 @@ function addPackages(
 }
 
 /**
- * The Events page's what-ifs on one event's packages: `eventSpend` (`{ eventId, min, max }` Banknotes spent on
- * them) and `eventBudget` (extra Banknotes only they may use: the total may go up by up to `extra`, but everything
- * else still has to fit the normal budget). An extra Banknote is only spent where it buys at least what a Banknote
- * of the plan without the extra does (`extraBanknoteRate` points), so packs that give next to nothing (a mine's
- * pickaxes when you own plenty) aren't bought just because the extra is there.
+ * What the user fixes about one event's packages: `eventSpend` (`{ eventId, min, max }` Banknotes spent on them, the
+ * Events page's step table) and the event's extra Banknotes (`extraEventBanknotes`: up to `extra` Banknotes only they
+ * may use, on top of the budget). The extra is free money for the event: its packages are paid from it first, and only
+ * what it doesn't cover comes out of the budget, so locked offers (which need the event's packs) don't push the
+ * regular deals out as long as the extra covers them.
  */
-function addEventRows(ctx, packageVars, { budget, eventSpend, eventBudget, extraBanknoteRate }) {
+function addEventRows(ctx, packageVars, { eventSpend }) {
     const { model } = ctx;
-    const spendOn = (include) => {
+    const spendOn = (include, sign = 1) => {
         const terms = new Map();
         for (const { name, pkg, scale } of packageVars.values()) {
             if (include(pkg)) {
-                terms.set(name, pkg.price * scale);
+                terms.set(name, sign * pkg.price * scale);
             }
         }
         return terms;
@@ -193,13 +196,17 @@ function addEventRows(ctx, packageVars, { budget, eventSpend, eventBudget, extra
             model.rows.push({ name: 'event_max', terms: new Map(terms), op: '<=', rhs: eventSpend.max });
         }
     }
-    if (ctx.extraForEvent > 0) {
-        const terms = spendOn((pkg) => pkg.event_id !== eventBudget.eventId);
-        model.rows.push({ name: 'rest_budget', terms, op: '<=', rhs: budget });
-        // The extra Banknotes used: they raise the budget, at the cost of what a normal Banknote buys.
-        addTerm(ctx.budgetRow.terms, EXTRA_USED, -1);
-        addTerm(model.objective, EXTRA_USED, -(extraBanknoteRate || 0));
-        model.bounds.set(EXTRA_USED, { upper: ctx.extraForEvent });
+    for (const [eventId, extra] of Object.entries(ctx.extraEventBanknotes)) {
+        // Used extra Banknotes <= spend on the event's packages; they raise the budget by what they cover.
+        const terms = spendOn((pkg) => pkg.event_id === eventId, -1);
+        if (terms.size === 0) {
+            continue;
+        }
+        const used = varName('xe', eventId);
+        terms.set(used, 1);
+        model.rows.push({ name: varName('xer', eventId), terms, op: '<=', rhs: 0 });
+        addTerm(ctx.budgetRow.terms, used, -1);
+        model.bounds.set(used, { upper: extra });
     }
 }
 
@@ -399,7 +406,7 @@ function addMine(ctx, mineId, mine, { budget, mineProgress, eventDaysLeft, mineS
         .map((pkg) => pkg.price);
     const free = freeCurrency(mine, {
         days: eventDaysLeft?.[mine.event_id] ?? DAYS_PER_WEEK,
-        withBonus: prices.length > 0 && budget + ctx.extraForEvent >= DAYS_PER_WEEK * Math.min(...prices),
+        withBonus: prices.length > 0 && budget + ctx.extraFor(mine.event_id) >= DAYS_PER_WEEK * Math.min(...prices),
     });
     const balance = ctx.balance(mine.currency_item_id);
     ctx.balanceRows.get(mine.currency_item_id).rhs += free.total + owned;
@@ -462,8 +469,8 @@ function fixLocks(highs, model, fixedVars) {
 
 /**
  * Marginal rates of the plan: the continuous relaxation with the binaries fixed to the plan's choice.
- * `lambda` = points per extra Banknote (with an event's extra Banknotes, one more general Banknote also
- * relaxes the row of everything else), `mu` = Map currency -> points per extra unit.
+ * `lambda` = points per extra Banknote of the budget (an event's extra Banknotes are not part of it),
+ * `mu` = Map currency -> points per extra unit.
  */
 function marginalRates(highs, model, plan, balanceRows) {
     const relaxed = { ...model, integers: new Set(), binaries: new Set(), bounds: new Map(model.bounds) };
@@ -472,7 +479,7 @@ function marginalRates(highs, model, plan, balanceRows) {
         relaxed.bounds.set(name, { lower: reached, upper: reached });
     }
     const rates = solveModel(highs, relaxed);
-    const lambda = Math.abs(rates.duals.get('budget') || 0) + Math.abs(rates.duals.get('rest_budget') || 0);
+    const lambda = Math.abs(rates.duals.get('budget') || 0);
     const mu = new Map();
     for (const [currencyId, row] of balanceRows) {
         mu.set(currencyId, Math.abs(rates.duals.get(row.name) || 0));
@@ -515,7 +522,7 @@ const DEFAULT_OPTIONS = {
     seasonalPasses: undefined,
     eventSpend: null,
     extraCurrency: null,
-    eventBudget: null,
+    extraEventBanknotes: null,
     lockedOffers: null,
     skippedPackages: null,
     eventDaysLeft: null,
@@ -698,8 +705,8 @@ function createPricing(ctx, mu, rate) {
  * week), `seasonalPasses` (family ids of the seasonal passes on sale; undefined = all), `eventSpend`
  * (`{ eventId, min, max }`: Banknotes spent on that event's packages, for the Events page's what-if steps),
  * `extraCurrency` (`{ currencyId: qty }` obtained outside the packs this week, e.g. diamonds for the VIP
- * Shop; on top of the free income of the shops' currencies, `income_per_hour` in the data), `eventBudget` (`{ eventId, extra }`: up to `extra` Banknotes on top of `budget` that only that event's
- * packages may use, spent only where worth it; see `eventExtraUsed` in the result), `lockedOffers` (`{ "<shopId>:<offerKey>": count }`: shop offers the user fixed to
+ * Shop; on top of the free income of the shops' currencies, `income_per_hour` in the data), `extraEventBanknotes` (`{ eventId: extra }`: up to `extra` Banknotes on top of `budget` that only that
+ * event's packages may use, and they use them first; see `eventExtraUsed` in the result), `lockedOffers` (`{ "<shopId>:<offerKey>": count }`: shop offers the user fixed to
  * `count` per week, 0 = never; if the spend can't afford them all, as many as possible are bought — see
  * `lockShortfalls` in the result), `eventDaysLeft` (`{ eventId: days }`: days left of the event's run, for its
  * daily pack limits and a mine's free pickaxes; default a whole week), `mineProgress` (`{ mineId: { owned,
@@ -710,11 +717,6 @@ function createPricing(ctx, mu, rate) {
 function solveWeeklyPlan(highs, data, options = {}) {
     const opts = withDefaults(options);
     opts.basePoints ??= fitItemPoints(data).points;
-    // What a Banknote buys without the event's extra Banknotes: the bar an extra one has to clear.
-    if (opts.eventBudget?.extra > 0 && opts.extraBanknoteRate == null) {
-        const base = solveWeeklyPlan(highs, data, { ...opts, eventBudget: null });
-        opts.extraBanknoteRate = Number.isFinite(base.rate) ? base.rate : 0;
-    }
     const ctx = createContext(data, opts);
     const { model, balanceRows } = ctx;
 
@@ -745,6 +747,15 @@ function solveWeeklyPlan(highs, data, options = {}) {
 
     // 3) The plan as the pages read it.
     const { purchases, spent } = readPurchases(plan, packageVars);
+    const eventExtraUsed = Object.fromEntries(
+        Object.entries(ctx.extraEventBanknotes).map(([eventId, extra]) => [
+            eventId,
+            Math.min(
+                extra,
+                purchases.filter((p) => p.pkg.event_id === eventId).reduce((sum, p) => sum + p.spend, 0),
+            ),
+        ]),
+    );
     // Progress points outside the shop offers (Surprise Encounters): `count` bought, `free` given.
     const freeOf = (shopId) => [...freePointVars.values()].find((f) => f.shopId === shopId)?.count || 0;
     const pointPurchases = [...pointPurchaseVars]
@@ -775,8 +786,10 @@ function solveWeeklyPlan(highs, data, options = {}) {
         pointPurchases,
         trackTiersReached: reachedOf(trackTierVars),
         mines: readMines(plan, mineVars),
-        // Of the event's extra Banknotes (`eventBudget`), how many the plan spends.
-        eventExtraUsed: ctx.extraForEvent > 0 ? Math.max(0, solutionValue(plan, EXTRA_USED)) : 0,
+        // Per event with extra Banknotes (`extraEventBanknotes`), how many the plan spends on its packages.
+        eventExtraUsed,
+        // The part of `spent` that comes out of the budget (the rest is the events' extra Banknotes).
+        regularSpent: spent - Object.values(eventExtraUsed).reduce((sum, used) => sum + used, 0),
         lockShortfalls,
         currencies: readCurrencies(plan, balanceRows, mu),
         ...createPricing(ctx, mu, rate),

@@ -30,7 +30,7 @@
     "trackTiersReached": [],
     "pointPurchases": {},
     "lockShortfalls": [],
-    "eventExtraUsed": 0,
+    "eventExtraUsed": {},
     "mu": {
         "diamonds": 2.74600008,
         "strange_coin": 277.601604

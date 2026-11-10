@@ -28,7 +28,7 @@
     "trackTiersReached": [],
     "pointPurchases": {},
     "lockShortfalls": [],
-    "eventExtraUsed": 0,
+    "eventExtraUsed": {},
     "mu": {
         "diamonds": 2.74600008,
         "dwarven_pickaxe": 0

@@ -8,6 +8,7 @@ import {
     outsideCurrencyId,
     shopProgress,
     withLock,
+    withoutShopLocks,
 } from '../../webapp/src/core/event-plan.js';
 
 const data = {
@@ -81,6 +82,12 @@ test('locks: set, change, unset (a new object each time); only those of a runnin
     const locks = { 'vip_shop:gem': 1, 'bazaar_shop:x': 1, 'hunt_shop:y': 1, 'gone_shop:z': 1 };
     assert.deepEqual(activeLocks(locks, data.exchange_shops, ['bazaar']), ['vip_shop:gem', 'bazaar_shop:x']);
     assert.deepEqual(activeLocks(undefined, data.exchange_shops, []), []);
+    assert.deepEqual(withoutShopLocks(locks, 'bazaar_shop'), {
+        'vip_shop:gem': 1,
+        'hunt_shop:y': 1,
+        'gone_shop:z': 1,
+    });
+    assert.deepEqual(withoutShopLocks(undefined, 'bazaar_shop'), {});
 });
 
 test('everything the plan gets from an event, sorted by worth', () => {

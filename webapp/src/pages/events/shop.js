@@ -7,7 +7,7 @@ import { solveWeeklyPlan } from '../../core/planner.js';
 import { getSettings, updateSettings } from '../../ui/settings.js';
 import { offerWeeklyCapacity } from '../../core/catalog.js';
 import { hasOtherSource as itemHasOtherSource } from '../../core/item-sources.js';
-import { activeLocks, withLock } from '../../core/event-plan.js';
+import { activeLocks, extraToLeaveAlone, withLock, withoutShopLocks } from '../../core/event-plan.js';
 import { itemDisplayName, itemLinkName, bundleLabel } from '../../ui/labels.js';
 import { banknotesAmount, buyBadge, hydrateItemIcons } from '../../ui/html.js';
 import { gridHeader, gridRow, gridTable, gridSection } from '../../ui/grid.js';
@@ -18,7 +18,7 @@ import { formatThousands } from '../../ui/format.js';
 import { ratioCellHtml, ratioScale } from '../../ui/ratio-bar.js';
 import { ctx } from './state.js';
 import { WIDE, cell, headerCell, iconHtml, numCell } from './cells.js';
-import { overridesKey, pageOverrides, selection } from './context.js';
+import { extraFor, overridesKey, pageOverrides, selection } from './context.js';
 import { lockNote, shopHeading, shopNote, shopSection, shopTable } from './elements.js';
 
 // itemId -> whether any pack or another shop gives it (for the "Only here" badge), per shop.
@@ -207,9 +207,12 @@ function hasOtherSource(shopId, itemId) {
 }
 
 /**
- * "Your N locked offers cost about X Banknotes of worth": the plan without the locks minus the plan
- * with them (one extra solve, cached per settings); a warning instead if the locks don't fit the spend.
- * Shown on the tab of a shop with locks; other tabs only say which shops' locks share the weekly spend.
+ * The note on the tab of a shop with locks (solves cached per settings): the worth the shop's fixed offers cost (the
+ * plan without this shop's locks minus the plan with them). While they leave the other packs alone and fit the spend
+ * that is all it says; else a warning: how much of the weekly spend they take from the other packs, the extra
+ * Banknotes for the event that would give it back (`extraToLeaveAlone`, against the plan without the locks and the
+ * event's extra) and the fixed amounts the spend can't cover. Other tabs only say which shops' locks share the weekly
+ * spend.
  */
 function renderLockNote() {
     const shops = ctx.data.exchange_shops || {};
@@ -218,49 +221,86 @@ function renderLockNote() {
     if (active.length === 0) {
         return;
     }
+    const { shopId, eventId } = selection() ?? {};
     const lockedShops = [...new Set(active.map((key) => key.split(':')[0]))];
-    if (!lockedShops.includes(selection()?.shopId)) {
-        lockNote.className = 'text-dim';
+    if (!lockedShops.includes(shopId)) {
+        lockNote.className = 'lock-note text-dim';
         lockNote.textContent = t('events.lockElsewhere', {
             shops: lockedShops.map((shopId) => localizedName(shops[shopId].name)).join(', '),
         });
         return;
     }
-    const overrides = pageOverrides();
-    const cacheKey = `${JSON.stringify(getSettings())}|${overridesKey()}`;
+    const own = active.filter((key) => key.split(':')[0] === shopId);
+    const cacheKey = `${JSON.stringify(getSettings())}|${overridesKey()}|${shopId}`;
     if (ctx.lockCostCache.key !== cacheKey) {
-        const unlocked = solveWeeklyPlan(
-            ctx.valuation.highs,
-            ctx.data,
-            planOptions(ctx.data, getSettings(), { ...overrides, lockedOffers: {} }),
-        );
+        const solve = (overrides) =>
+            solveWeeklyPlan(
+                ctx.valuation.highs,
+                ctx.data,
+                planOptions(ctx.data, getSettings(), { ...pageOverrides(), ...overrides }),
+            );
+        const lockedOffers = withoutShopLocks(getSettings().lockedOffers, shopId);
+        const unlocked = solve({ lockedOffers });
+        const withExtra = (extra) => ({
+            extraEventBanknotes: { ...getSettings().extraEventBanknotes, [eventId]: extra },
+        });
+        // The event left alone: neither this shop's locks nor its extra Banknotes (a 0 extra is no extra).
+        const baseline = extraFor(eventId) > 0 ? solve({ lockedOffers, ...withExtra(0) }) : unlocked;
+        const { taken, needed } = eventId
+            ? extraToLeaveAlone({
+                  eventId,
+                  baseline,
+                  current: ctx.valuation.plan,
+                  extra: extraFor(eventId),
+                  solve: (extra) => solve(withExtra(extra)),
+              })
+            : { taken: 0, needed: 0 };
         ctx.lockCostCache = {
             key: cacheKey,
             cost: (unlocked.totalPoints - ctx.valuation.plan.totalPoints) / ctx.valuation.rate,
+            taken,
+            needed,
         };
     }
-    const parts = [
-        `<span class="text-dim">${tHtml('events.lockCost', {
-            count: formatThousands(active.length),
-            worth: formatThousands(Math.max(0, ctx.lockCostCache.cost), 0),
-        })}</span>`,
-    ];
+    const { cost, taken, needed } = ctx.lockCostCache;
     // Fixed amounts the spend can't fully cover: the plan bought as many as possible.
-    const shortfalls = ctx.valuation.plan.lockShortfalls || [];
-    if (shortfalls.length > 0) {
-        const items = shortfalls.map(({ key, wanted, got }) => {
-            const [shopId, offerKey] = key.split(':');
-            const offer = shops[shopId]?.offers?.[offerKey];
-            return tHtml('events.lockShortfallItem', {
-                item: offer ? itemDisplayName(ctx.data.items, offer.item_id, getLocale()) : offerKey,
-                got: formatThousands(got),
-                wanted: formatThousands(wanted),
-            });
-        });
-        parts.push(`<span class="text-warn">${tHtml('events.lockShortfall', { items: items.join(', ') })}</span>`);
+    const shortfalls = (ctx.valuation.plan.lockShortfalls || []).map(({ key, wanted, got }) => {
+        const [offerShopId, offerKey] = key.split(':');
+        const offer = shops[offerShopId]?.offers?.[offerKey];
+        return `<li><span>${offer ? itemDisplayName(ctx.data.items, offer.item_id, getLocale()) : offerKey}</span><span>${tHtml(
+            'events.lockShortfallItem',
+            { got: formatThousands(got), wanted: formatThousands(wanted) },
+        )}</span></li>`;
+    });
+    const count = formatThousands(own.length);
+    const worth = banknotesAmount(Math.max(0, cost));
+    // Fixed offers that leave everything else alone: a quiet panel with what they cost.
+    if (taken < 1 && shortfalls.length === 0) {
+        lockNote.className = 'plan-tile lock-note';
+        lockNote.innerHTML = `<div class="plan-tile__label">${tHtml('events.lockTitle', { count })}</div>
+            <ul class="plan-list"><li><span>${tHtml('events.lockCost')}</span><span>${worth}</span></li></ul>`;
+        return;
     }
-    lockNote.className = '';
-    lockNote.innerHTML = parts.join(' ');
+    // Otherwise a warning: what they cost, what they take from the other packs, and the extra that gives it back
+    // (the total for the event, in hundreds: the same whatever the extra already set).
+    const stat = (label, value, className = '') =>
+        `<div class="lock-note__stat${className}"><div class="lock-note__label">${label}</div><div class="lock-note__value">${value}</div></div>`;
+    const stats = [
+        taken >= 1 ? stat(tHtml('events.lockTaken'), banknotesAmount(taken)) : '',
+        stat(tHtml('events.lockCost'), worth),
+        taken >= 1
+            ? stat(tHtml('events.lockExtra'), banknotesAmount(Math.ceil(needed / 100) * 100), ' lock-note__stat--fix')
+            : '',
+    ];
+    lockNote.className = 'plan-tile lock-note lock-note--warn';
+    lockNote.innerHTML = `<div class="lock-note__head"><span class="lock-note__icon" aria-hidden="true">⚠</span>${tHtml('events.lockWarnTitle', { count })}</div>
+        <div class="lock-note__stats">${stats.join('')}</div>
+        ${taken >= 1 ? `<div class="lock-note__hint text-dim">${tHtml('events.lockExtraHint')}</div>` : ''}
+        ${
+            shortfalls.length > 0
+                ? `<div class="lock-note__short text-warn">${tHtml('events.lockShortfall')}</div><ul class="plan-list text-warn">${shortfalls.join('')}</ul>`
+                : ''
+        }`;
 }
 
 export { renderLockNote, renderShop };

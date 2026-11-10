@@ -169,6 +169,9 @@ the Diamond Golden Egg) is worth that currency at its marginal value too (`itemP
   weekday-aware, counting only what random chests guarantee and a shop's free currency (`income_per_hour`) over the
   window. Shop progress points (`bonus_tiers`, `unlock_points`) apply to the weekly plan only.
 - Locks on shop offers (`lockedOffers`, set on Event Shops) apply to the ONE plan on every page.
+- So do an event's extra Banknotes (`extraEventBanknotes`: event id -> Banknotes per week, set on Event Shops): free
+  money only that event's packs may use, so they pay for those packs (and the packs a lock needs) before the weekly
+  spend does. They don't change the marginal rate (`lambda` is the weekly budget's); `regularSpent` is `spent` without them.
 - So do skipped packs (`skippedPackages`: package id -> the first game day the skip ends, set by "Skip" on the Deal
   Ranking; `core/skips.js`, planner option `skippedPackages`). A skip lasts until the weekly reset or the end of the
   pack's event / pass run, and takes the higher tiers that `requires` the skipped one along.

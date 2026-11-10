@@ -50,7 +50,7 @@
         "surprise_encounter_shop": 60
     },
     "lockShortfalls": [],
-    "eventExtraUsed": 0,
+    "eventExtraUsed": {},
     "mu": {
         "diamonds": 5.02694012,
         "star_moon_sigil": 289.551751,
