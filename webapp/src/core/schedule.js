@@ -22,7 +22,8 @@ const HOUR_MS = 3600000;
 const DAY_MS = 24 * HOUR_MS;
 const DAYS_PER_WEEK = 7;
 const WEEK_MS = DAYS_PER_WEEK * DAY_MS;
-// A proven pattern is only trusted this long after its last recorded run (8 weeks); then it is a rough guess again.
+// A proven pattern is only trusted this long after its last recorded run (8 weeks, or two rounds of a slower cycle);
+// then it is a rough guess again.
 const STALE_DAYS = 8 * DAYS_PER_WEEK;
 // Monday first: weekly limits reset on Monday, so a weekday's index is its offset into the week.
 const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -282,8 +283,8 @@ function gapCycle(gaps) {
  *   gaps comes with `pattern: { days, weekdays }` (its length, the weekdays it starts on).
  * - Without one (yet): its usual rhythm, the median days between run starts and the median run length; a rough guess
  *   (`proven` false, `runCount` = the recorded runs it rests on).
- * - A cycle whose last recorded run ended more than STALE_DAYS before `today` is no longer trusted: its runs are a
- *   rough guess too (`stale`), until a new run is recorded.
+ * - A cycle whose last recorded run ended more than STALE_DAYS (or two rounds of the cycle, if that is longer) before
+ *   `today` is no longer trusted: its runs are a rough guess too (`stale`), until a new run is recorded.
  * Only recorded runs count (entries of `runs` with `forecast` are skipped, so the forecast of `scheduleRuns` can be
  * passed in), and only runs after the last of all given ones are returned. A run that isn't proven is only given if
  * it didn't end before `today`. A forecast run never overlaps the next one.
@@ -298,7 +299,8 @@ function forecastRuns(allRuns, { from, to, today }) {
     const last = runs[runs.length - 1];
     const lastEnd = Math.max(...allRuns.map((run) => run.end));
     const cycle = gapCycle(gaps);
-    const proven = Boolean(cycle) && today - last.end <= STALE_DAYS;
+    const cycleDays = cycle ? cycle.reduce((sum, gap) => sum + gap, 0) : 0;
+    const proven = Boolean(cycle) && today - last.end <= Math.max(STALE_DAYS, 2 * cycleDays);
     let gapAt;
     let lengthAt;
     let intervalDays;
@@ -311,7 +313,7 @@ function forecastRuns(allRuns, { from, to, today }) {
             Math.round(median(lengths.filter((_, j) => (((j - (runs.length - k)) % k) + k) % k === slot))),
         );
         lengthAt = (i) => slotLengths[i % k];
-        intervalDays = cycle.reduce((sum, gap) => sum + gap, 0);
+        intervalDays = cycleDays;
         if (k > 1) {
             const weekdays = [...new Set(runs.slice(-k).map((run) => weekdayIndex(run.start)))].sort((a, b) => a - b);
             pattern = { days: intervalDays, weekdays: weekdays.map((index) => WEEKDAYS[index]) };

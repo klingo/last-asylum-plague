@@ -30,12 +30,14 @@ its contents without a common value scale. The tool uses one:
 
 `record-run` fills the `schedule` section of `pack_data.json`: per event, seasonal pass and spend reward track the
 start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;
-the end is computed from the number of days). Recording the same start again corrects the length. Gameplay
+the end is computed from the number of days). Recording the same start again corrects the length. Only the last 12
+runs of an id are kept, and a new run that lands on the id's proven pattern also records the pattern's runs missed in
+between. Gameplay
 events, those without packs (`"category": "ingame_event"` in `events`), can be tracked this way too. The Calendar page shows it as the Event
 Schedule timeline (this week and the next three) with a simple forecast: an entry recorded at least twice
 repeats its usual rhythm (median days between starts, median length). Once the gaps between its runs repeat (a proven
 pattern) its forecast runs count as runs, also today and in the past (Follow the calendar, Running now, ...), so they
-need no recording; 8 weeks after its last recorded run it is a rough guess again until the latest run is recorded
-(`record-run --show` lists those). Below it, Weekday Offers shows which
+need no recording; 8 weeks after its last recorded run (two rounds, for a cycle longer than 4 weeks) it is a rough
+guess again until its runs since then are recorded (`record-run --show` lists those). Below it, Weekday Offers shows which
 `weekly_rotation` packs are on sale today and in the next 6 days (from their `available_days`), each with the
 image of its main item (the package's `icon`, else its first item other than diamonds, VIP points, alliance chests, ...).

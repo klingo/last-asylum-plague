@@ -323,7 +323,7 @@ a.schedule__label--link:hover {
     background: color-mix(in srgb, var(--bar-color) 10%, transparent);
 }
 
-/* Calendar forecasts: a rough guess (no repeating pattern yet, or a proven one last recorded over 8 weeks ago) is
+/* Calendar forecasts: a rough guess (no repeating pattern yet, or a proven one not recorded for too long) is
    striped and fainter than a proven one. After the forecast rules, so this wins. */
 .schedule__bar.schedule__bar--guess,
 .schedule__swatch.schedule__swatch--guess {

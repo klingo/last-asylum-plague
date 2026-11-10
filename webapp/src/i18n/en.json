@@ -219,7 +219,7 @@
     "calendar": {
         "schedule": {
             "heading": "Event Schedule",
-            "lead": "What runs this week, and what is likely coming in the next three. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; a repeating pattern counts as running without being recorded, until its last recorded run is 8 weeks back. Hover a bar for its dates and how long is left; click it (or its name) to open its plan. Dates and times are in your local time; a run starts and ends at the game's daily reset.",
+            "lead": "What runs this week, and what is likely coming in the next three. Forecasts repeat an entry's usual rhythm once it was recorded at least twice; a repeating pattern counts as running without being recorded, until no run was recorded for 8 weeks (two rounds for a slower one). Hover a bar for its dates and how long is left; click it (or its name) to open its plan. Dates and times are in your local time; a run starts and ends at the game's daily reset.",
             "recorded": "Recorded",
             "forecast": "Forecast",
             "forecastGuess": "Forecast (rough guess)",
@@ -236,7 +236,7 @@
             "forecastBasis": "Forecast: every {interval} days",
             "forecastPattern": "Forecast: repeats every {days} days ({weekdays})",
             "forecastGuessBasis": "Rough guess: about every {interval} days",
-            "staleNote": "Last recorded over 8 weeks ago: record its latest run to trust the pattern again",
+            "staleNote": "No run recorded for 8 weeks (two rounds of a slower pattern): record its runs since then to trust the pattern again",
             "empty": "Nothing recorded for these weeks yet."
         },
         "rotation": {

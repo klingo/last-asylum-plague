@@ -277,6 +277,15 @@ test('proven forecast: 8 weeks after the last recorded run it is a rough guess a
     );
 });
 
+test('proven forecast: a slower cycle is trusted for two rounds, not just 8 weeks', () => {
+    // Every 42 days (whole weeks, so two gaps prove it); the last run is day 84 and lasts one day.
+    const runs = [0, 42, 84].map((start) => ({ start, end: start }));
+    const trusted = forecastRuns(runs, { from: 85, to: 200, today: 84 + 84 });
+    assert.ok(trusted.length > 0 && trusted.every((run) => run.proven && !run.stale), '84 days after: still trusted');
+    const stale = forecastRuns(runs, { from: 85, to: 260, today: 84 + 85 });
+    assert.ok(stale.length > 0 && stale.every((run) => !run.proven && run.stale), '85 days after: a rough guess');
+});
+
 test('proven forecast: a pattern not yet repeated stays a guess and counts for nothing', () => {
     const today = MONDAY + 24;
     const runs = scheduleRuns(dataWith(weekly(2)), today).get('weekly_event').runs;

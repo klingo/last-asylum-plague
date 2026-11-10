@@ -14,6 +14,8 @@ import { sortPackData } from './sort-pack-data.js';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const DAYS_PATTERN = /^\d+$/;
+// Runs kept per id: plenty to prove a pattern, and a changed rhythm can prove itself again once the old runs are gone.
+const MAX_RUNS = 12;
 
 /**
  * Records when events (incl. in-game events), seasonal passes and spend reward tracks run, in the `schedule`
@@ -25,9 +27,12 @@ const DAYS_PATTERN = /^\d+$/;
  *   ids    event ids, seasonal pass family ids and/or spend reward track ids (classified automatically)
  *   START  first day, YYYY-MM-DD (default: today, the game day: it starts at 02:00 UTC)
  *   DAYS   how many days it runs, the start day included (end = START + DAYS - 1)
- *   --show print the recorded runs (of the given ids, or all; nothing is written), and the proven patterns whose
- *          last recorded run is over 8 weeks old (they no longer count until you record their latest run)
+ *   --show print the recorded runs (of the given ids, or all; nothing is written), and the proven patterns that are
+ *          no longer trusted (no run recorded for 8 weeks, or two rounds of a slower pattern; they count again once
+ *          their runs since then are recorded)
  * A run with the same start as a recorded one replaces it (to correct its length); other overlaps are refused.
+ * A new run that lands on the id's proven pattern also records the runs of the pattern missed in between. Only the last
+ * 12 runs of an id are kept (git history has the rest).
  * The record-run workflow (.github/workflows/record-run.yml, started from Settings > Admin) runs it too.
  */
 function main() {
@@ -96,13 +101,16 @@ function parseRecordArgs(args) {
 /**
  * Records the run `start`..`end` (YYYY-MM-DD, inclusive) for every id in `data.schedule`. A run with the same start
  * replaces the recorded one (its length is corrected); another overlap is refused, and nothing is recorded then.
- * Returns `{ changes }` (lines to print) or `{ error }`.
+ * A new run that lands on the id's proven pattern also records the pattern's runs missed in between (`missedRuns`).
+ * Only the last MAX_RUNS runs of an id are kept. Returns `{ changes }` (lines to print) or `{ error }`.
  */
 function recordRun(data, ids, start, end) {
     const staged = {};
     const changes = [];
     for (const id of ids) {
-        const runs = (data.schedule?.[id] || []).map((run) => ({ ...run }));
+        const runs = (data.schedule?.[id] || [])
+            .map((run) => ({ ...run }))
+            .sort((a, b) => a.start.localeCompare(b.start));
         const same = runs.find((run) => run.start === start);
         const overlap = runs.find((run) => run !== same && run.start <= end && start <= run.end);
         if (overlap) {
@@ -116,13 +124,39 @@ function recordRun(data, ids, start, end) {
             changes.push(`  ${id}: ${same.start}..${same.end} -> ${start}..${end} (updated)`);
             same.end = end;
         } else {
+            for (const missed of missedRuns(runs, start)) {
+                changes.push(`  ${id}: ${missed.start}..${missed.end} (filled in from the pattern)`);
+                runs.push(missed);
+            }
             changes.push(`  ${id}: ${start}..${end}`);
             runs.push({ start, end });
+        }
+        runs.sort((a, b) => a.start.localeCompare(b.start));
+        for (const dropped of runs.splice(0, Math.max(0, runs.length - MAX_RUNS))) {
+            changes.push(`  ${id}: ${dropped.start}..${dropped.end} dropped (keeps the last ${MAX_RUNS})`);
         }
         staged[id] = runs;
     }
     data.schedule = { ...data.schedule, ...staged };
     return { changes };
+}
+
+/**
+ * The runs (`{ start, end }` dates) the proven pattern of `runs` (sorted) has between its last run and a new one
+ * starting on `start`, if the new run lands exactly on the pattern; else none. The pattern counts as proven as of
+ * `start`, so after a pause past its trust window (see forecastRuns) nothing is invented.
+ */
+function missedRuns(runs, start) {
+    const days = runs.map((run) => ({ start: dayNumber(run.start), end: dayNumber(run.end) }));
+    const first = dayNumber(start);
+    if (days.length === 0 || first <= days[days.length - 1].end) {
+        return [];
+    }
+    const forecast = forecastRuns(days, { from: days[days.length - 1].end + 1, to: first, today: first }).filter(
+        (run) => run.proven,
+    );
+    const landing = forecast.findIndex((run) => run.start === first);
+    return forecast.slice(0, Math.max(landing, 0)).map((run) => ({ start: dayText(run.start), end: dayText(run.end) }));
 }
 
 /** Today's game day (it starts at 02:00 UTC, so before 04:00 CEST it's still yesterday) as YYYY-MM-DD. */
@@ -193,8 +227,9 @@ function printSchedule(schedule, ids) {
 }
 
 /**
- * Ids with a repeating pattern (a forecast the Calendar trusts as runs) whose last recorded run is over 8 weeks old
- * (`stale`, see forecastRuns): the pattern no longer counts until its latest run is recorded again.
+ * Ids with a repeating pattern (a forecast the Calendar trusts as runs) that is no longer trusted (`stale`, see
+ * forecastRuns: no run recorded for 8 weeks, or two rounds of a slower pattern): it counts again once its runs since
+ * then are recorded.
  */
 function printMissed(data, ids) {
     const today = gameDay(new Date()).day;
@@ -210,8 +245,8 @@ function printMissed(data, ids) {
     }
     console.log(
         stale.length > 0
-            ? `\nProven patterns last recorded over 8 weeks ago (record their latest run):\n${stale.join('\n')}`
-            : '\nEvery proven pattern was recorded within the last 8 weeks.',
+            ? `\nProven patterns no longer trusted (record their runs since then):\n${stale.join('\n')}`
+            : '\nEvery proven pattern is still trusted.',
     );
 }
 

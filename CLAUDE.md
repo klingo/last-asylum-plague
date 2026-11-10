@@ -120,8 +120,9 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   with `record-run` (or from Settings > Admin, which starts the `record-run` workflow). Forecasts (`forecastRuns`) are `proven` (a repeating pattern) or a rough guess (median gap,
   shown fainter). `scheduleRuns(data, today)` adds the proven forecast runs up to today, so they count as runs
   everywhere (Calendar, Today, Follow the calendar, skips); without `today` it is the recorded runs only (`record-run`).
-  8 weeks after an id's last recorded run its pattern is `stale`: a rough guess again until recorded (`record-run --show`
-  lists those). Shop events are the ones with packs or a shop; gameplay events (`"category": "ingame_event"`) have none; an event's optional `calendar_group` (`spend_rewards`, `alliance`) moves it to another Calendar group. "Today" is always the game day,
+  8 weeks (or two rounds of a slower cycle) after an id's last recorded run its pattern is `stale`: a rough guess again
+  until its runs since then are recorded (`record-run --show` lists those). `record-run` keeps the last 12 runs per id
+  and fills in the runs a proven pattern missed when a new run lands on it. Shop events are the ones with packs or a shop; gameplay events (`"category": "ingame_event"`) have none; an event's optional `calendar_group` (`spend_rewards`, `alliance`) moves it to another Calendar group. "Today" is always the game day,
   which starts at 02:00 UTC (`gameDay` in `core/schedule.js`). The setup bar's "Follow the calendar" switch (default on) sets the
   selected events and passes to today's on every page load (`ui/calendar-sync.js`, called in `startPage`); a manual
   event / pass change turns it off.
