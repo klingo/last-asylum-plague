@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#262b35" />
+            <stop offset="1" stop-color="#14161b" />
+        </linearGradient>
+        <radialGradient id="glow" cx="0.5" cy="0.4" r="0.7">
+            <stop offset="0" stop-color="#63d68a" stop-opacity="0.35" />
+            <stop offset="1" stop-color="#63d68a" stop-opacity="0" />
+        </radialGradient>
+        <linearGradient id="beak" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#e7e9ee" />
+            <stop offset="1" stop-color="#9aa1b0" />
+        </linearGradient>
+    </defs>
+    <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg)" stroke="#343a46" stroke-width="2" />
+    <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#glow)" />
+    <!-- plague doctor: wide-brimmed hat, hood, glowing lenses, beak -->
+    <path d="M22 17 V10 Q22 6 26 6 H38 Q42 6 42 10 V17 Z" fill="#6b7589" />
+    <rect x="22" y="13" width="20" height="2.5" fill="#d4af37" />
+    <rect x="8" y="16" width="48" height="5.5" rx="2.75" fill="#aab2c3" />
+    <path d="M17 22 H47 V31 Q47 40 32 42 Q17 40 17 31 Z" fill="#4a5568" />
+    <circle cx="25.5" cy="29" r="7" fill="#0c0e12" />
+    <circle cx="38.5" cy="29" r="7" fill="#0c0e12" />
+    <circle cx="25.5" cy="29" r="5" fill="#63d68a" />
+    <circle cx="38.5" cy="29" r="5" fill="#63d68a" />
+    <circle cx="24" cy="27.5" r="1.4" fill="#e9fff0" />
+    <circle cx="37" cy="27.5" r="1.4" fill="#e9fff0" />
+    <path d="M26 35 Q32 32 38 35 Q36 48 32 59 Q28 48 26 35 Z" fill="url(#beak)" />
+    <path d="M32 34 Q32.6 47 32 59" fill="none" stroke="#343a46" stroke-width="1" opacity="0.6" />
+</svg>
