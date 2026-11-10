@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-09"
+        "last_updated": "2026-11-10"
     },
     "items": {
         "alliance_coins": {
@@ -9053,6 +9053,10 @@
             {
                 "start": "2026-10-13",
                 "end": "2026-10-18"
+            },
+            {
+                "start": "2026-11-10",
+                "end": "2026-11-15"
             }
         ],
         "surprise_encounter": [
