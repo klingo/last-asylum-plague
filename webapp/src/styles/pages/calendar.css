@@ -180,6 +180,8 @@
     flex-direction: column;
     justify-content: center;
     padding: 0 6px;
+    overflow: hidden;
+    white-space: nowrap;
     font-size: 0.75rem;
     color: var(--text-dim);
     line-height: 1.2;
@@ -288,8 +290,18 @@ a.schedule__bar {
         --label-width: 160px;
     }
 
-    .schedule__row--hours {
-        display: none;
+    .schedule__chart--days .schedule__week {
+        padding: 0 3px;
+    }
+
+    /* A slot's start time ("11:00 PM", the widest) is about 41px: 7 slots of 54px leave a gap between the times. */
+    .schedule--event-rotation .schedule__chart--days {
+        min-width: 540px;
+    }
+
+    /* A day column (70px) is wide enough for its weekday, "Donnerstag" (64px) the widest in either language. */
+    #rotation .schedule__chart--days {
+        min-width: 650px;
     }
 }
 

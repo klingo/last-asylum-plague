@@ -253,7 +253,7 @@
             "noneWorthIt": "Keines dieser Angebote lohnt sich bei deinen wöchentlichen Ausgaben (am besten: {name}, Ratio {ratio})"
         },
         "eventRotation": {
-            "lead": "Die Phasen von heute bis zu den nächsten 6 Tagen, in deiner Ortszeit. Fahre über einen Balken für seine Zeit.",
+            "lead": "Die aktuelle Phase und die nächsten 24 Stunden, in deiner Ortszeit. Fahre über einen Balken für seine Zeit.",
             "now": "Jetzt · {current} bis {time}, danach {next}",
             "active": "Läuft jetzt",
             "upcoming": "Bevorstehend"

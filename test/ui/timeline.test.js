@@ -13,6 +13,7 @@ import {
     percentOf,
     shareOf,
     viewOf,
+    windowBoundaries,
 } from '../../webapp/src/ui/timeline.js';
 import { isoWeekNumber } from '../../webapp/src/core/schedule.js';
 import { day } from '../helpers.js';
@@ -31,6 +32,14 @@ test('local days start at local midnight, a day is 25 hours long where the clock
     assert.equal(boundaries[1] - boundaries[0], 24 * HOUR);
     assert.equal(boundaries[2] - boundaries[1], 25 * HOUR, 'Sun Oct 25');
     assert.equal(boundaries[3] - boundaries[2], 24 * HOUR);
+});
+
+test('a window has its two ends and the local midnights between them', () => {
+    const at = (day, hour) => new Date(2026, 9, day, hour).getTime();
+    assert.deepEqual(windowBoundaries(at(24, 8), at(24, 20)), [at(24, 8), at(24, 20)]);
+    assert.deepEqual(windowBoundaries(at(24, 20), at(25, 8)), [at(24, 20), at(25, 0), at(25, 8)]);
+    assert.deepEqual(windowBoundaries(at(24, 23), at(26, 3)), [at(24, 23), at(25, 0), at(26, 0), at(26, 3)]);
+    assert.deepEqual(windowBoundaries(at(24, 20), at(26, 0)), [at(24, 20), at(25, 0), at(26, 0)], 'no empty last day');
 });
 
 test('the week starts on the local Monday, the date is the local one', () => {

@@ -253,7 +253,7 @@
             "noneWorthIt": "None of these offers is worth it at your weekly spend (best: {name}, ratio {ratio})"
         },
         "eventRotation": {
-            "lead": "The phases from today through the next 6 days, in your local time. Hover a bar for its time.",
+            "lead": "The phase on now and the next 24 hours, in your local time. Hover a bar for its time.",
             "now": "Now · {current} until {time}, then {next}",
             "active": "On now",
             "upcoming": "Upcoming"

@@ -46,11 +46,11 @@ to `master` and starts the deployment, so the change shows up on the site after 
   without one, as on Today; the picture is also the art of the bar's hover card, like an event's: its tile edge to edge,
   what pops out of the tile popping out of the card, greyed for a bar that isn't on sale right now, as an ended event's;
   the card says the name, the ratio and the exact sale window in local time)
-  and, for each event rotation (Survival Battle), a chart of today and the next 6 days: one row per phase (with its art
-  as a thumbnail, a placeholder tile without, and as the art of its bars' hover cards), a bar for
-  each 4-hour slot (elapsed ones grey), a line for the phase on now, local times in the hover card. Every chart is on
+  and, for each event rotation (Survival Battle), a chart of the slot on now and the 24 hours after it: one row per
+  phase (with its art as a thumbnail, a placeholder tile without, and as the art of its bars' hover cards), a bar for
+  each 4-hour slot with its start time above, a line for now, local times in the hover card. Every chart is on
   the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
-  part-way into a day column. Banners, Today and the Deal Ranking's skips show the same local moments.
+  part-way into a day column (the event rotation's first and last day column are cut to its window). Banners, Today and the Deal Ranking's skips show the same local moments.
 - **Event Shops** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers; an Encounter counts its random reward, the free one every day and

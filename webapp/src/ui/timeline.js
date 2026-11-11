@@ -1,6 +1,6 @@
 /**
  * The Calendar's charts, drawn on the user's local days (columns from local midnight to midnight, 23 or 25 hours long
- * where the clocks change): a bar sits where its moments (ms) fall, so a run that starts at the game day's reset
+ * where the clocks change; a chart of a window, `windowBoundaries`, has its first and last column cut to it): a bar sits where its moments (ms) fall, so a run that starts at the game day's reset
  * begins part-way into a column. Everything is placed by a share of the chart's view `{ from, to }` (ms), so the
  * header columns (`columnsStyle`), the lines (`gridHtml`), the bars (`barHtml`) and the "now" line agree.
  */
@@ -15,6 +15,15 @@ function localDayBoundaries(startMs, count) {
     return Array.from({ length: count + 1 }, (_, index) =>
         new Date(start.getFullYear(), start.getMonth(), start.getDate() + index).getTime(),
     );
+}
+
+/**
+ * The boundaries of a chart that shows only `fromMs` to `toMs`: those two and the local midnights between them, so its
+ * first and last day columns are cut to the window.
+ */
+function windowBoundaries(fromMs, toMs) {
+    const midnights = localDayBoundaries(fromMs, Math.ceil((toMs - fromMs) / DAY_MS) + 1);
+    return [fromMs, ...midnights.filter((ms) => ms > fromMs && ms < toMs), toMs];
 }
 
 /** The local midnight that starts the Monday of the local week `ms` falls in. */
@@ -140,6 +149,7 @@ function barHtml(
 
 export {
     localDayBoundaries,
+    windowBoundaries,
     localWeekStart,
     localDayNumber,
     viewOf,
