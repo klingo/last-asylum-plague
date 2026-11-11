@@ -91,9 +91,13 @@ to `master` and starts the deployment, so the change shows up on the site after 
   whole pass gives (all tiers) with each item's worth, and the pass's worth against its price as a ratio, plus the
   tiers your weekly plan buys.
 - **Gear Upgrade Path** (`gear.html`) — a squad (2 tanks in front, carries and support behind, each hero with its sword,
-  armor, gauntlets and boots) and the guide to its UR gear in two phases: first crafting every piece, then two
+  armor, gauntlets and boots, each drawn like in the game: a card with its level on top and its stars along the bottom; a piece not crafted yet is the game's empty slot, a grey card with its silhouette)
+  and the guide to its UR gear in two phases: first crafting every piece (one line once done), then (unlocked once everything is crafted, a title and hint until then) two
   queues, one card each: the next level step and the next star step (star steps use Gear Blueprints, so you pick the
-  one that fits what you have). A step that needs the other queue first says which one. A switch picks the hero
+  one that fits what you have). A card shows the next step that can be done; a step that needs the other queue first is
+  skipped for now and comes back once it can be done (if nothing in a queue can be done,
+  it says what the first step needs). Players further along click the last step they have done in a full list. On
+  narrow screens the guide comes before the board. A switch picks the hero
   faction (Warriors, Rangers, Warlocks: same path, other heroes); progress is saved in the browser, per faction. Data:
   `heroes` (rarity, faction, class, image), `gear_upgrades` (level caps by stars, minimum levels for stars,
   blueprints, `mr_items`: a piece at 5 stars shows as its MR item, optional cost tables) and `squad_guides` (formation, slots with a hero class and a hero per faction,

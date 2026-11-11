@@ -9552,12 +9552,32 @@
                     "slots": ["carry_1"]
                 },
                 {
+                    "level": 44,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 52,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_1"]
+                },
+                {
                     "level": 60,
                     "items": ["ur_sword"],
                     "slots": ["carry_1"]
                 },
                 {
                     "level": 40,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 44,
+                    "items": ["ur_sword"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 52,
                     "items": ["ur_sword"],
                     "slots": ["carry_2"]
                 },
@@ -9572,12 +9592,32 @@
                     "slots": ["carry_1"]
                 },
                 {
+                    "level": 44,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
+                    "level": 48,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_1"]
+                },
+                {
                     "level": 60,
                     "items": ["ur_gauntlets"],
                     "slots": ["carry_1"]
                 },
                 {
                     "level": 40,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 44,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["carry_2"]
+                },
+                {
+                    "level": 48,
                     "items": ["ur_gauntlets"],
                     "slots": ["carry_2"]
                 },
@@ -9959,6 +9999,41 @@
                     "slots": ["tank_2"]
                 },
                 {
+                    "stars": 2,
+                    "items": ["ur_boots"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_armor"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 2,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_boots"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_armor"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_gauntlets"],
+                    "slots": ["support"]
+                },
+                {
+                    "stars": 4,
+                    "items": ["ur_sword"],
+                    "slots": ["support"]
+                },
+                {
                     "stars": 5,
                     "items": ["ur_armor"],
                     "slots": ["tank_1"]
@@ -9989,36 +10064,6 @@
                     "slots": ["tank_2"]
                 },
                 {
-                    "stars": 2,
-                    "items": ["ur_boots"],
-                    "slots": ["support"]
-                },
-                {
-                    "stars": 2,
-                    "items": ["ur_armor"],
-                    "slots": ["support"]
-                },
-                {
-                    "stars": 2,
-                    "items": ["ur_gauntlets"],
-                    "slots": ["support"]
-                },
-                {
-                    "stars": 4,
-                    "items": ["ur_boots"],
-                    "slots": ["support"]
-                },
-                {
-                    "stars": 4,
-                    "items": ["ur_armor"],
-                    "slots": ["support"]
-                },
-                {
-                    "stars": 4,
-                    "items": ["ur_gauntlets"],
-                    "slots": ["support"]
-                },
-                {
                     "stars": 5,
                     "items": ["ur_sword"],
                     "slots": ["tank_1"]
@@ -10027,11 +10072,6 @@
                     "stars": 5,
                     "items": ["ur_sword"],
                     "slots": ["tank_2"]
-                },
-                {
-                    "stars": 4,
-                    "items": ["ur_sword"],
-                    "slots": ["support"]
                 },
                 {
                     "stars": 5,

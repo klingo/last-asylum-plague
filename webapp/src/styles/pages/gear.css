@@ -6,9 +6,14 @@
     align-items: start;
 }
 
+/* One column: the guide (the next steps) comes before the board, so it is on screen without scrolling. */
 @media (max-width: 1150px) {
     .gear-layout {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .gear-guide {
+        order: -1;
     }
 }
 
@@ -35,30 +40,31 @@
     gap: 12px;
 }
 
-/* One hero: portrait + its gear square, kept together when the row wraps. */
+/* One hero: its portrait and name on top of its gear square, kept together when the row wraps. */
 .gear-slot {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 11px 12px;
+    gap: 8px;
+    padding: 10px 12px 8px;
     background: var(--panel-alt);
     border: 1px solid var(--border);
     border-radius: var(--radius);
 }
 
+/* Left-aligned over the gear square, so the portraits line up whatever the length of the name; the margin is the
+   tile's border and padding, so the portrait's edge meets the first card's. */
 .gear-hero {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 4px;
-    width: 88px;
-    margin: 0;
-    text-align: center;
+    align-self: flex-start;
+    gap: 10px;
+    margin: 0 0 0 4px;
 }
 
 .gear-hero > img {
-    width: 82px;
-    height: 82px;
+    width: 64px;
+    height: 64px;
     border-radius: 8px;
     object-fit: cover;
     background: var(--panel);
@@ -73,16 +79,15 @@
 }
 
 .gear-hero figcaption strong {
-    font-size: 0.92rem;
+    font-size: 1rem;
 }
 
 .gear-class {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 3px;
     color: var(--text-dim);
-    font-size: 0.68rem;
+    font-size: 0.74rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
@@ -90,8 +95,8 @@
 /* Sword | Armor over Gauntlets | Boots (the gear set's layout). */
 .gear-square {
     display: grid;
-    grid-template-columns: repeat(2, 80px);
-    gap: 5px;
+    grid-template-columns: repeat(2, 84px);
+    gap: 4px;
 }
 
 .gear-tile {
@@ -99,88 +104,137 @@
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    padding: 4px 2px;
-    border: 1px solid transparent;
-    border-radius: 6px;
+    padding: 2px;
+    border: 2px solid transparent;
+    border-radius: 9px;
 }
 
-.gear-tile .item-icon {
-    width: 40px;
-    height: 40px;
-}
-
-.gear-tile__level {
-    font-size: 0.72rem;
-    font-variant-numeric: tabular-nums;
-}
-
-.gear-tile__stars {
-    display: flex;
-    gap: 1px;
-}
-
-.gear-tile__stars img {
-    width: 11px;
-    height: 11px;
-}
-
-/* Not crafted yet: a faint outline of the piece. */
-.gear-tile--empty .item-icon,
-.gear-tile--empty .gear-tile__stars {
-    opacity: 0.3;
-}
-
-/* The piece's quality behind it, as in the game: a gradient in its colour, darker at the top, lighter at the bottom
-   (UR orange; MR red once it has 5 stars). */
-.gear-tile .item-icon {
+/* The piece as a card like in the game: its quality colour behind the picture (a gradient, darker at the top; UR
+   orange, MR red once it has 5 stars), the level on a dark band at the top and the stars along the bottom. */
+.gear-tile__art {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 2px solid #f5a524;
+    border-radius: 7px;
     background: linear-gradient(
         to bottom,
-        color-mix(in srgb, #f5a524 18%, var(--panel)),
-        color-mix(in srgb, #f5a524 45%, var(--panel))
+        color-mix(in srgb, #f5a524 40%, var(--panel)),
+        color-mix(in srgb, #f5a524 75%, var(--panel))
     );
 }
 
-.gear-tile--mr .item-icon {
+.gear-tile--mr .gear-tile__art {
     border-color: #ff5a4f;
     background: linear-gradient(
         to bottom,
-        color-mix(in srgb, #ff5a4f 22%, var(--panel)),
-        color-mix(in srgb, #ff5a4f 55%, var(--panel))
+        color-mix(in srgb, #ff5a4f 45%, var(--panel)),
+        color-mix(in srgb, #ff5a4f 80%, var(--panel))
     );
 }
 
-/* Up next: the pieces the next step of a queue will change (before Done is clicked), in the queue's colour, with
-   the target under the stars. A piece in both upgrade queues gets both. */
-.gear-tile--next-craft,
-.gear-tile--next-level,
-.gear-tile--next-stars {
-    border-style: dashed;
+.gear-tile__art .item-icon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 15px 3px 12px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    background: none;
+    object-fit: contain;
 }
 
+.gear-tile__level {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgb(0 0 0 / 0.55);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.gear-tile__stars {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+    background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 0.55));
+}
+
+.gear-tile__stars img {
+    width: 13px;
+    height: 13px;
+}
+
+/* Not crafted yet: the game's empty slot, a grey translucent card with the piece's silhouette. */
+.gear-tile--empty .gear-tile__art {
+    border-color: rgb(255 255 255 / 0.22);
+    background: rgb(255 255 255 / 0.08);
+}
+
+/* The piece that is next to craft: the item itself, dimmed, so it is clear which one to craft. */
+.gear-tile--empty.gear-tile--next-craft .gear-tile__art .item-icon {
+    padding: 8px;
+    opacity: 0.5;
+}
+
+.gear-tile__slot {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+    opacity: 0.3;
+}
+
+/* Up next: the pieces the next step of a queue will change (before Done is clicked), framed and glowing in the
+   queue's colour, with the target under the card. A piece in both upgrade queues gets both colours. */
 .gear-tile--next-craft {
-    border-color: var(--gold);
-    background: color-mix(in srgb, var(--gold) 10%, transparent);
+    --next-color: var(--gold);
 }
 
 .gear-tile--next-level {
-    border-color: var(--teal);
-    background: color-mix(in srgb, var(--teal) 10%, transparent);
+    --next-color: var(--teal);
 }
 
 .gear-tile--next-stars {
-    border-color: var(--purple);
-    background: color-mix(in srgb, var(--purple) 10%, transparent);
+    --next-color: var(--purple);
+}
+
+.gear-tile--next-craft,
+.gear-tile--next-level,
+.gear-tile--next-stars {
+    border-color: var(--next-color);
+    background: color-mix(in srgb, var(--next-color) 22%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--next-color) 55%, transparent);
 }
 
 .gear-tile--next-level.gear-tile--next-stars {
-    box-shadow: inset 0 0 0 1px var(--purple);
+    box-shadow:
+        0 0 0 2px var(--purple),
+        0 0 10px color-mix(in srgb, var(--purple) 55%, transparent);
 }
 
 .gear-tile__next {
-    height: 1.2em;
-    font-size: 0.64rem;
-    font-weight: 600;
-    line-height: 1.2;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 4px;
+    min-height: 1.3em;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.3;
     white-space: nowrap;
 }
 
@@ -194,11 +248,6 @@
 
 .gear-tile__next--stars {
     color: var(--purple);
-}
-
-/* An up-next piece that isn't crafted yet: the preview stays readable on the faded tile. */
-.gear-tile--empty.gear-tile--next-craft .item-icon {
-    opacity: 0.6;
 }
 
 .gear-path {
@@ -499,9 +548,36 @@
     font-size: 0.82rem;
 }
 
-/* Locked until everything is crafted. */
-.gear-phase.is-locked .gear-choices {
-    opacity: 0.45;
+/* Crafting done: the phase is one line (a ▸ / ▾ at its end), its card and list open behind it. */
+.gear-phase__done > summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.gear-phase__done > summary::-webkit-details-marker {
+    display: none;
+}
+
+.gear-phase__done > summary::after {
+    content: '▸';
+    margin-left: auto;
+    color: var(--text-dim);
+}
+
+.gear-phase__done[open] > summary::after {
+    content: '▾';
+}
+
+.gear-phase__body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+/* Locked until everything is crafted: just the title and why. */
+.gear-phase.is-locked .gear-phase__title {
+    color: var(--text-dim);
 }
 
 .gear-choices {
@@ -623,6 +699,12 @@
     color: var(--accent);
     font-size: 0.82rem;
     cursor: pointer;
+}
+
+.gear-list__hint {
+    margin: 8px 0 0;
+    color: var(--text-dim);
+    font-size: 0.78rem;
 }
 
 .gear-list .gear-path {
@@ -825,12 +907,7 @@
 }
 
 .gear-help__sample .gear-tile {
-    width: 80px;
-}
-
-.gear-help__sample .gear-tile .item-icon {
-    width: 40px;
-    height: 40px;
+    width: 84px;
 }
 
 .gear-help__example {
@@ -878,32 +955,40 @@
     margin: -4px 0;
 }
 @media (max-width: 640px) {
-    /* Gear Path: smaller hero boxes (the 2×2 gear square stays), so the board doesn't push the steps off the screen. */
+    /* Gear Path: smaller hero boxes and gear cards, so two heroes fit a row and the board stays short. */
     .gear-slot {
-        gap: 10px;
-        padding: 8px 10px;
-    }
-
-    .gear-hero {
-        width: 72px;
+        padding: 8px 8px 6px;
     }
 
     .gear-hero > img {
-        width: 64px;
-        height: 64px;
+        width: 52px;
+        height: 52px;
     }
 
     .gear-square {
-        grid-template-columns: repeat(2, 72px);
-        gap: 4px;
+        grid-template-columns: repeat(2, 66px);
+        gap: 3px;
     }
 
     .gear-tile {
         padding: 2px;
     }
 
-    .gear-tile .item-icon {
-        width: 36px;
-        height: 36px;
+    .gear-tile__art .item-icon {
+        padding: 13px 2px 10px;
+    }
+
+    .gear-tile__slot {
+        width: 46px;
+        height: 46px;
+    }
+
+    .gear-tile__level {
+        font-size: 0.64rem;
+    }
+
+    .gear-tile__stars img {
+        width: 11px;
+        height: 11px;
     }
 }

@@ -2,9 +2,13 @@
  * Gear Upgrade Path: a squad's formation (front row of tanks, back row of carries and the support) with each hero's
  * gear in a 2×2 square, and the guide to its UR gear (`squad_guides` in pack_data.json) in two phases:
  * 1. Crafting: every hero gets all their UR pieces first, step by step.
- * 2. Upgrades, unlocked after crafting: two queues, one card each (the next level step and the next star step). Which
- *    one to take depends on what you have (star steps use Gear Blueprints). Levels and stars wait for each other
- *    (core/gear-path.js works out what a step needs); a blocked step says what it needs first.
+ *    Once everything is crafted, the phase shrinks to one line.
+ * 2. Upgrades, unlocked after crafting (until then just a title and a hint): two queues, one card each (the next
+ *    level step and the next star step). Which one to take depends on what you have (star steps use Gear
+ *    Blueprints). Levels and stars wait for each other
+ *    (core/gear-path.js works out what a step needs): a card shows the next step that can be done and passes over
+ *    the ones that wait; when nothing can be done, it says what the first one needs.
+ * On narrow screens the guide comes before the board, so the next steps are on screen first.
  * The hero factions (Warriors, Rangers, Warlocks) share the paths; each slot has a hero per faction. The progress
  * (steps done per queue) is saved in this browser, per faction.
  */

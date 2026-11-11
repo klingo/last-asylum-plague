@@ -1,5 +1,6 @@
 /**
- * The squad board: each slot's hero with a 2×2 gear square, and the faction switch.
+ * The squad board: each slot's hero with a 2×2 gear square, and the faction switch. A gear piece is drawn like in the
+ * game: a card in its quality colour with the level on top and the stars along the bottom, inside the picture.
  */
 import { enumLabel, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml, hydrateItemIcons, itemIconSlot } from '../../ui/html.js';
@@ -68,6 +69,9 @@ function shownState() {
     return { state, upcoming };
 }
 
+// The silhouette file of a piece (assets/gear/slots/): its item id without the quality, `ur_sword` -> `sword`.
+const slotImage = (item) => escapeHtml(item.replace(/^ur_/, ''));
+
 function tileHtml(state, upcoming, slot, item) {
     const piece = state[slot][item];
     const shown = shownItem(ctx.gearSet, item, piece.starStep); // at MR: the MR item (its picture and name)
@@ -88,11 +92,21 @@ function tileHtml(state, upcoming, slot, item) {
     const starsHtml = starIcons(piece.starStep)
         .map((name) => `<img src="${ASSETS}gear/stars/${name}.png" alt="" />`)
         .join('');
+    // Not crafted: the game's empty slot, a grey card with the piece's silhouette (assets/gear/slots/); the piece
+    // that is next to craft shows the item itself, dimmed.
+    const crafting = next.some(({ path }) => path === 'craft');
+    const art = piece.crafted
+        ? `${itemIconSlot(shown)}
+                <span class="gear-tile__level">${t('gear.level', { level: piece.level })}</span>
+                <span class="gear-tile__stars">${starsHtml}</span>`
+        : crafting
+          ? itemIconSlot(item)
+          : `<img class="gear-tile__slot" src="${ASSETS}gear/slots/${slotImage(item)}.png" alt="" />`;
     return `
         <div class="${classes.join(' ')}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}" role="img">
-            <span class="gear-tile__level">${piece.crafted ? t('gear.level', { level: piece.level }) : t('common.dash')}</span>
-            ${itemIconSlot(shown)}
-            <span class="gear-tile__stars">${starsHtml}</span>
+            <span class="gear-tile__art">
+                ${art}
+            </span>
             <span class="gear-tile__next">${next.map(({ path, text }) => `<span class="gear-tile__next--${path}">${escapeHtml(text)}</span>`).join(' ')}</span>
         </div>`;
 }

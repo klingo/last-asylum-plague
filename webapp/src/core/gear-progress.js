@@ -6,7 +6,8 @@
  * - The steps of a queue are done by their position `n` in it, in the order they were done (for Undo). Steps can be
  *   done out of order within what their requirements allow.
  * - Levels and stars unlock only once crafting is complete; each also needs steps of the other queue (`entry.needs`,
- *   from crossNeeds: Lv 60 needs 4 stars, stars need their minimum level).
+ *   from crossNeeds: Lv 60 needs 4 stars, stars need their minimum level). A queue's next step is its first open step
+ *   that can be done: one that waits for the other queue is passed over and comes back once it can.
  * - The 5 ★ steps wait while there's no Gear Blueprint (MR) (`mrOnHold`).
  *
  * Pure module (no DOM, no storage: the page saves `snapshot()` and hands it back to `load`), shared with the tests.
@@ -41,11 +42,6 @@ function createProgress(guide, gearSet) {
     const isMrStep = (entry) => entry.path === 'stars' && entry.step.stars === 5;
     const isHeld = (entry) => mrOnHold && isMrStep(entry) && !isDone(entry);
 
-    /** A queue's next step: its first step not done yet (and not on hold). */
-    function nextOf(path) {
-        return entriesOf[path].find((entry) => !isDone(entry) && !isHeld(entry)) || null;
-    }
-
     /** A step can be done now: crafting is complete (for upgrades) and the step it needs from the other queue is done. */
     function canDo(entry) {
         if (entry.kind === 'craft') {
@@ -55,6 +51,16 @@ function createProgress(guide, gearSet) {
             craftComplete() &&
             (!entry.needs || (entry.needs.n !== null && done[entry.needs.path].includes(entry.needs.n)))
         );
+    }
+
+    /**
+     * A queue's next step: its first open step that can be done now. A step that waits for the other queue is passed
+     * over and comes back first as soon as it can be done; if none can be done, it's the first open step (the card
+     * says what it waits for).
+     */
+    function nextOf(path) {
+        const open = entriesOf[path].filter((entry) => !isDone(entry) && !isHeld(entry));
+        return open.find(canDo) || open[0] || null;
     }
 
     /** A done step can be undone: crafting only while nothing is upgraded; an upgrade only while no done step needs it. */
@@ -151,8 +157,8 @@ function createProgress(guide, gearSet) {
         },
 
         /**
-         * A click on a step in a full list: the steps before it done (as far as allowed; steps on hold stay out), the
-         * step itself and those after it undone (as far as allowed).
+         * A click on a step in a full list: the steps before it done (as far as allowed: steps on hold and steps that
+         * can't be done yet stay out), the step itself and those after it undone (as far as allowed).
          */
         jumpTo(path, position) {
             const entries = entriesOf[path];
@@ -169,10 +175,9 @@ function createProgress(guide, gearSet) {
                 if (isDone(entry) || isHeld(entry)) {
                     continue;
                 }
-                if (!canDo(entry)) {
-                    break;
+                if (canDo(entry)) {
+                    done[path].push(entry.n);
                 }
-                done[path].push(entry.n);
             }
         },
 

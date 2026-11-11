@@ -107,7 +107,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
 - `webapp/public/assets/` holds the images: `items/<category>/` (images not sorted yet are found directly in `items/`),
   `events/`, `packages/` (a weekday offer's own picture, `<pack id>.webp`: its thumbnail before the name on Today and the
   Calendar, a placeholder tile without it as with events, and the art of its bar's hover card on the Calendar),
-  `heroes/`, `lord/`, `gear/{stars,classes,factions}/` and `ui/` (the placeholder icon, the Banknote icon).
+  `heroes/`, `lord/`, `gear/{stars,classes,factions,slots}/` (`slots/{sword,armor,gauntlets,boots}.png`: the silhouette of an uncrafted piece, 60×60) and `ui/` (the placeholder icon, the Banknote icon).
 - `webapp/src/i18n/{en,de}.json` holds UI texts and code labels. `scripts/` holds verify-data, i18n:missing,
   record-run and the commit hooks (`scripts/lib/` holds what they share: the data file paths and JSON format, the
   code labels). A script exports its pure parts for the tests and runs `main()` only when started directly.

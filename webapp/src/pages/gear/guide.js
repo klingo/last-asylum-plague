@@ -130,9 +130,10 @@ function progressBarHtml(done, total) {
     return `<div class="gear-progress" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${done}"><span style="width: ${percent}%"></span></div>`;
 }
 
-/** The full list of a queue, behind "Show all steps"; clicking a step marks everything up to it done. */
+/** The full list of a queue, behind "Show all steps"; clicking a step marks it and everything before it done. */
 function listHtml(path) {
     const entries = ctx.progress.entriesOf[path];
+    const next = ctx.progress.nextOf(path);
     const steps = entries
         .map((entry, i) => {
             const need = path === 'craft' ? null : needOf(entry);
@@ -147,7 +148,7 @@ function listHtml(path) {
                 ? `<span class="gear-path__problem text-bad">${tHtml('gear.problem')}</span>`
                 : '';
             return `
-                <li class="gear-path__step${ctx.progress.isDone(entry) ? ' is-done' : ''}${entry === ctx.progress.nextOf(path) ? ' is-next' : ''}${ctx.progress.isHeld(entry) ? ' is-held' : ''}" data-path="${path}" data-position="${i + 1}">
+                <li class="gear-path__step${ctx.progress.isDone(entry) ? ' is-done' : ''}${entry === next ? ' is-next' : ''}${ctx.progress.isHeld(entry) ? ' is-held' : ''}" data-path="${path}" data-position="${i + 1}">
                     <button type="button" class="gear-path__button">
                         <span class="gear-path__number">${i + 1}</span>
                         <span class="gear-path__check" aria-hidden="true"></span>
@@ -162,6 +163,7 @@ function listHtml(path) {
     return `
         <details class="gear-list" data-list="${path}"${openLists.has(path) ? ' open' : ''}>
             <summary>${tHtml('gear.showAll', { path: escapeHtml(laneName(path)), count: entries.length })}</summary>
+            <p class="gear-list__hint">${tHtml('gear.catchUp')}</p>
             <ol class="gear-path">${steps}</ol>
         </details>`;
 }
@@ -198,7 +200,6 @@ const actionLabel = (action) => `${icon(ACTION_ICONS[action])} ${tHtml(`gear.${a
 function nextCardHtml(path, titleKey) {
     const entries = ctx.progress.entriesOf[path];
     const next = ctx.progress.nextOf(path);
-    const locked = path !== 'craft' && !ctx.progress.craftComplete();
     const held = path === 'stars' ? entries.filter(ctx.progress.isHeld).length : 0;
     let body;
     let blocked = '';
@@ -211,7 +212,7 @@ function nextCardHtml(path, titleKey) {
         const uses = blueprint
             ? `<p class="gear-next__uses">${tHtml('gear.uses')} ${itemIconSlot(blueprint)} ${blueprintLink(blueprint)}</p>`
             : '';
-        const need = path === 'craft' || locked || ctx.progress.canAdvance(path) ? null : needOf(next);
+        const need = path === 'craft' || ctx.progress.canAdvance(path) ? null : needOf(next);
         blocked = need ? blockedHtml(need) : '';
         body = `
             <p class="gear-next__step">${stepHtml(next)}</p>
@@ -222,7 +223,7 @@ function nextCardHtml(path, titleKey) {
             ? `<button type="button" class="gear-next__secondary" data-action="craft-all">${actionLabel('craftAll')}</button>`
             : '';
     return `
-        <div class="gear-next gear-next--${path}${locked ? ' is-locked' : ''}">
+        <div class="gear-next gear-next--${path}">
             <div class="gear-next__head">
                 <h4>${icon(LANE_ICONS[path])} ${tHtml(titleKey)}</h4>
                 <span class="gear-next__count">${tHtml('gear.count', { done: ctx.progress.doneCount(path), total: entries.length })}</span>
@@ -249,21 +250,45 @@ function heldNoteHtml() {
     return `<p class="gear-held-note">${ACTION_ICONS.hold} ${tHtml('gear.heldNote', { count: held })} ${itemIconSlot(blueprint)} ${blueprintLink(blueprint)}</p>`;
 }
 
-function renderGuide() {
-    const locked = !ctx.progress.craftComplete();
-    guidePanel.innerHTML = `
-        <div class="gear-guide__head">
-            <h3>${tHtml('gear.progressTitle')}</h3>
-            <button type="button" class="gear-guide__reset" data-action="reset"${ctx.progress.doneCount('craft') + ctx.progress.doneCount('level') + ctx.progress.doneCount('stars') === 0 ? ' disabled' : ''}>${actionLabel('startOver')}</button>
-        </div>
-        <section class="gear-phase${ctx.progress.craftComplete() ? ' is-complete' : ''}">
+/** Phase 1: the crafting card and list; once everything is crafted, one line that opens them. */
+function craftPhaseHtml() {
+    const count = ctx.progress.entriesOf.craft.length;
+    const body = `${nextCardHtml('craft', 'gear.nextCraft')}${listHtml('craft')}`;
+    if (!ctx.progress.craftComplete()) {
+        return `
+        <section class="gear-phase">
             <h3 class="gear-phase__title"><span class="gear-phase__number">1</span>${tHtml('gear.phaseCraft')}</h3>
-            ${nextCardHtml('craft', 'gear.nextCraft')}
-            ${listHtml('craft')}
-        </section>
-        <section class="gear-phase${locked ? ' is-locked' : ''}">
+            ${body}
+        </section>`;
+    }
+    return `
+        <section class="gear-phase is-complete">
+            <details class="gear-phase__done" data-list="craftDone"${openLists.has('craftDone') ? ' open' : ''}>
+                <summary class="gear-phase__title"><span class="gear-phase__number">✓</span>${tHtml('gear.craftDone', { count })}</summary>
+                <div class="gear-phase__body">${body}</div>
+            </details>
+        </section>`;
+}
+
+/** Phase 2's hint: why it's locked, else how to choose; until the first upgrade also how to catch up. */
+function upgradesHintHtml(locked) {
+    if (locked) {
+        return tHtml('gear.locked', { count: ctx.progress.entriesOf.craft.length });
+    }
+    const started = ctx.progress.doneCount('level') + ctx.progress.doneCount('stars') > 0;
+    return `${tHtml('gear.choiceHint')}${started ? '' : ` ${tHtml('gear.catchUpStart')}`}`;
+}
+
+/** Phase 2: locked until everything is crafted (its title and why), then the two queues' cards and lists. */
+function upgradesPhaseHtml(locked) {
+    const head = `
             <h3 class="gear-phase__title"><span class="gear-phase__number">2</span>${tHtml('gear.phaseUpgrades')}</h3>
-            <p class="gear-phase__hint">${locked ? tHtml('gear.locked', { count: ctx.progress.entriesOf.craft.length }) : tHtml('gear.choiceHint')}</p>
+            <p class="gear-phase__hint">${upgradesHintHtml(locked)}</p>`;
+    if (locked) {
+        return `<section class="gear-phase is-locked">${head}</section>`;
+    }
+    return `
+        <section class="gear-phase">${head}
             <div class="gear-choices">
                 ${nextCardHtml('level', 'gear.nextLevel')}
                 ${nextCardHtml('stars', 'gear.nextStar')}
@@ -272,6 +297,17 @@ function renderGuide() {
             ${listHtml('level')}
             ${listHtml('stars')}
         </section>`;
+}
+
+function renderGuide() {
+    const locked = !ctx.progress.craftComplete();
+    guidePanel.innerHTML = `
+        <div class="gear-guide__head">
+            <h3>${tHtml('gear.progressTitle')}</h3>
+            <button type="button" class="gear-guide__reset" data-action="reset"${ctx.progress.doneCount('craft') + ctx.progress.doneCount('level') + ctx.progress.doneCount('stars') === 0 ? ' disabled' : ''}>${actionLabel('startOver')}</button>
+        </div>
+        ${craftPhaseHtml()}
+        ${upgradesPhaseHtml(locked)}`;
     replaceItemIcons(guidePanel, 'item-icon item-icon--xs');
     guidePanel.querySelectorAll('[data-action="done"]').forEach((button) => {
         button.addEventListener('click', () => advance(button.dataset.path, 1));
@@ -284,7 +320,7 @@ function renderGuide() {
     guidePanel
         .querySelector('[data-action="hold"]')
         ?.addEventListener('change', (event) => setMrOnHold(event.target.checked));
-    guidePanel.querySelectorAll('.gear-list').forEach((list) => {
+    guidePanel.querySelectorAll('details[data-list]').forEach((list) => {
         list.addEventListener('toggle', () => {
             if (list.open) {
                 openLists.add(list.dataset.list);

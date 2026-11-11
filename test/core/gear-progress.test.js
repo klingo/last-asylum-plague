@@ -99,6 +99,47 @@ test('a click on a step in a full list marks the steps before it done and those 
     assert.equal(total(progress), 0);
 });
 
+// In the fixture's level queue, step 22 is the first carry's sword to Lv 40, step 23 the same sword to Lv 60 (which
+// needs 4 stars: star step 4), step 24 the second carry's sword to Lv 40.
+test('a level step that waits for stars is passed over, and comes back once the stars are done', () => {
+    const progress = fresh();
+    progress.craftAll();
+    for (let n = 0; n <= 22; n += 1) {
+        progress.advance('level', 1);
+    }
+    const waiting = progress.entriesOf.level[23];
+    assert.equal(progress.canDo(waiting), false);
+    assert.equal(progress.nextOf('level').n, 24, 'the next step that can be done');
+    assert.equal(progress.canAdvance('level'), true);
+
+    for (let n = 0; n <= 4; n += 1) {
+        progress.advance('stars', 1);
+    }
+    assert.equal(progress.nextOf('level'), waiting, 'back at the passed-over step');
+});
+
+test('when no open step can be done, the next one is the first open step (it says what it waits for)', () => {
+    const progress = fresh();
+    assert.equal(progress.nextOf('level').n, 0, 'crafting is not complete yet');
+    assert.equal(progress.canAdvance('level'), false);
+    progress.craftAll();
+    // Every star step waits for a level step at the start (the first one needs Lv 20 on a sword).
+    assert.equal(progress.nextOf('stars').n, 0);
+    assert.equal(progress.canAdvance('stars'), false);
+});
+
+test('a click on a step in a full list passes over the steps before it that cannot be done yet', () => {
+    const progress = fresh();
+    progress.craftAll();
+    progress.jumpTo('level', 25);
+    const expected = [...Array(23).keys(), 24];
+    assert.deepEqual(
+        [...progress.snapshot().level].sort((a, b) => a - b),
+        expected,
+        'step 23 waits for stars',
+    );
+});
+
 test('the MR switch holds the 5 star steps back', () => {
     const progress = fresh();
     const mrSteps = progress.entriesOf.stars.filter((entry) => progress.isMrStep(entry));
