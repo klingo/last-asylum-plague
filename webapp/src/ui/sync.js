@@ -5,8 +5,9 @@
  *
  * The device keeps `{ key, revs, dirty, synced }` under `STORAGE_KEYS.sync`: the key, the `rev` it last saw per entry,
  * the entries changed here since they were last pushed, and when it last synced. A page start pulls (`startSync`,
- * before the page reads its settings), a change is pushed two seconds later (and when the page is hidden), and coming
- * back to a tab pulls again and reloads the page if another device changed something. The merge rules (a change made
+ * before the page reads its settings; skipped within a minute of the last sync, except on a reload by hand), a change
+ * is pushed two seconds later (and when the page is hidden), and coming back to a tab pulls again and reloads the page
+ * if another device changed something. The merge rules (a change made
  * here wins over the server's until it is pushed) are `planPull` / `planConnect` in core/sync.js.
  *
  * A second device joins with a six-digit pairing code (`createPairing` on the one that has the key, `connectWithCode`
@@ -25,6 +26,8 @@ const SYNC_URL = 'https://last-asylum-plague-sync.klingo.workers.dev';
 const REQUEST_TIMEOUT = 8000;
 // A page start waits this long for the server at most, then shows what the device has.
 const START_TIMEOUT = 2500;
+// A page start within this long of the last successful sync (and with nothing to send) doesn't ask the server again.
+const FRESH_MS = 60_000;
 // A change is pushed this long after the last one.
 const PUSH_DELAY = 2000;
 
@@ -221,7 +224,14 @@ async function onVisibilityChange() {
     }
 }
 
-/** Starts the sync of a page: follows the entries from now on and pulls once. Call before the page reads its entries. */
+/** Whether the page was reloaded by hand (F5): the user wants the latest data. */
+const reloaded = () => performance.getEntriesByType('navigation')[0]?.type === 'reload';
+
+/**
+ * Starts the sync of a page: follows the entries from now on and pulls once, unless the device synced a moment ago
+ * (clicking through pages doesn't ask the server every time; a reload by hand does). Call before the page reads its
+ * entries.
+ */
 async function startSync() {
     if (!started) {
         started = true;
@@ -229,7 +239,12 @@ async function startSync() {
         document.addEventListener('visibilitychange', onVisibilityChange);
         window.addEventListener('pagehide', flush);
     }
-    await pullSync(START_TIMEOUT);
+    const state = readState();
+    const fresh =
+        state !== null && state.dirty.length === 0 && state.synced !== null && Date.now() - state.synced < FRESH_MS;
+    if (!fresh || reloaded()) {
+        await pullSync(START_TIMEOUT);
+    }
 }
 
 /** What the Sync page shows: `{ on, key, synced (ms or null), code (of the last call, or null) }`. */

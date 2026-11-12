@@ -28,7 +28,7 @@ lord progress; the language stays per device). "Connect another device" turns sy
 QR code (valid 10 minutes, one use) that the other device types (phone to desktop) or scans (desktop to phone); after a
 confirmation that device's own data is replaced by the synced one. The sync key behind it is only a backup (copy it or
 its link, make a new one, turn sync off here, or delete the data from the server). A change is sent two seconds after it
-is made; a page start and coming back to the tab take what other devices changed (a change made offline wins over an
+is made; a page start (unless the device synced within the last minute; a reload by hand always does) and coming back to the tab take what other devices changed (a change made offline wins over an
 older one elsewhere). The data lives on a small Cloudflare Worker (`worker/`), keyed by the SHA-256 of the key and
 deleted after 180 days without use; the button stays hidden until the build has that server (`SYNC_URL` in
 `ui/sync.js`).

@@ -43,6 +43,8 @@ globalThis.window.location.reload = () => {
 };
 
 const realFetch = globalThis.fetch;
+// How many requests reached the server.
+let requests = 0;
 // The devices: the browser's storage of the one in use is `storage`; the others wait here.
 const parked = new Map();
 let current = 'A';
@@ -53,7 +55,9 @@ let online;
 function connectToServer() {
     d1 = createD1();
     online = true;
+    requests = 0;
     globalThis.fetch = async (url, init) => {
+        requests++;
         if (!online) {
             throw new TypeError('Failed to fetch');
         }
@@ -77,6 +81,11 @@ const serverRow = () =>
         .prepare('SELECT data FROM sync')
         .all()
         .map((row) => JSON.parse(row.data));
+
+/** Makes the device's last sync `ms` old. */
+function ageSync(ms) {
+    writeJson(STORAGE_KEYS.sync, { ...readJson(STORAGE_KEYS.sync), synced: Date.now() - ms });
+}
 
 /** Waits (in turns of the event loop: the worker hashes the key off the main thread) until `done()` holds. */
 async function until(done) {
@@ -378,7 +387,41 @@ test('a page start without sync, or without the server, just goes on', async () 
     await startSync();
     assert.equal(syncStatus().on, false);
     await enableSync();
+    ageSync(2 * 60_000);
     online = false;
     await startSync();
     assert.equal(syncStatus().code, 'network');
+});
+
+test('a page start within a minute of the last sync does not ask the server again', async () => {
+    writeJson(STORAGE_KEYS.settings, { budget: 40 });
+    await enableSync();
+    await startSync();
+    await startSync();
+    assert.equal(requests, 1, 'only the upload that turned sync on');
+
+    ageSync(61_000);
+    await startSync();
+    assert.equal(requests, 2, 'a minute later it asks again');
+});
+
+test('a page start asks the server when something waits to be sent, or after a reload by hand', async () => {
+    writeJson(STORAGE_KEYS.settings, { budget: 40 });
+    await enableSync();
+    await startSync();
+    requests = 0;
+
+    writeJson(STORAGE_KEYS.settings, { budget: 41 });
+    await startSync();
+    assert.equal(serverRow()[0].settings.value.budget, 41, 'the waiting change was sent');
+    assert.ok(requests > 0);
+
+    requests = 0;
+    const navigation = mock.method(globalThis.performance, 'getEntriesByType', () => [{ type: 'reload' }]);
+    try {
+        await startSync();
+        assert.equal(requests, 1, 'F5 pulls although the device just synced');
+    } finally {
+        navigation.mock.restore();
+    }
 });
