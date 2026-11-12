@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/assets/ui/favicon.svg" />
+        <title data-i18n="docTitle.skills"></title>
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="skills.heading"></h2>
+                <p class="page-lead" data-i18n="skills.description"></p>
+                <details class="page-details">
+                    <summary data-i18n="common.howItWorks"></summary>
+                    <div id="skills-help" class="skills-help"></div>
+                </details>
+            </section>
+
+            <section class="card">
+                <div id="skills-empty" class="empty-state" hidden data-i18n="skills.empty"></div>
+                <div id="skills-factions" class="hero-factions" role="group" hidden></div>
+                <div id="skills-layout" class="skills-layout" hidden>
+                    <div class="skills-board">
+                        <div id="skills-heroes" class="skills-heroes"></div>
+                        <aside id="skills-detail" class="skills-detail" aria-live="polite"></aside>
+                    </div>
+                    <div id="skills-guide" class="step-guide skills-guide" aria-live="polite"></div>
+                </div>
+            </section>
+        </main>
+        <footer class="app-footer"><span>Klingo's Companion</span></footer>
+        <script type="module" src="/src/pages/skills/index.js"></script>
+    </body>
+</html>

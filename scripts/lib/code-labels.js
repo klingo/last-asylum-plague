@@ -1,11 +1,13 @@
 /**
  * The labels the webapp needs for the data's codes (looked up with `enumLabel(group, code)` in
  * webapp/src/ui/i18n.js): every category of items, packages and events, every hero class and faction,
- * every weekday (in full and abbreviated) and purchase type, and the item picker's own groups. Used by `i18n:missing` (per language)
+ * every weekday (in full and abbreviated) and purchase type, every hero skill slot and damage type, and the item
+ * picker's own groups. Used by `i18n:missing` (per language)
  * and `verify-data` (English).
  */
 import { PURCHASE_TYPES } from '../../webapp/src/core/catalog.js';
 import { WEEKDAYS } from '../../webapp/src/core/schedule.js';
+import { DAMAGE_TYPES, SKILL_SLOTS } from '../../webapp/src/core/skill-path.js';
 
 // Groups the pages put into the item picker themselves (events.js, spend-rewards.js, seasonal-passes.js, item-picker.js).
 const PICKER_GROUPS = ['shop', 'spend_track', 'seasonal_pass', 'other'];
@@ -39,6 +41,8 @@ function codeLabelKeys(data) {
         add('weekdayShort', day);
     });
     PURCHASE_TYPES.forEach((type) => add('sourceType', type));
+    SKILL_SLOTS.forEach((slot) => add('skills.slot', slot));
+    DAMAGE_TYPES.forEach((type) => add('skills.damage', type));
     return [...keys].sort();
 }
 

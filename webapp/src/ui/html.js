@@ -1,5 +1,5 @@
 /**
- * Small markup helpers shared by the pages: escaping, Banknote amounts, tiles, badges and item icons.
+ * Small markup helpers shared by the pages: escaping, Banknote amounts, tiles, badges, progress bars and item icons.
  *
  * Item icons are rendered as placeholders (`itemIconSlot`) inside a page's markup and swapped for the real
  * <img> once the markup is in the DOM (`hydrateItemIcons`), which wires up the image fallbacks (images.js).
@@ -48,6 +48,12 @@ function statHtml(label, value, className = '', id = '') {
     return `<div class="mine-stat"><div class="mine-stat__label">${label}</div><div class="mine-stat__value ${className}"${id ? ` id="${id}"` : ''}>${value}</div></div>`;
 }
 
+/** A thin progress bar: `done` of `total` steps. */
+function progressBarHtml(done, total) {
+    const percent = total ? Math.round((done / total) * 100) : 0;
+    return `<div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${done}"><span style="width: ${percent}%"></span></div>`;
+}
+
 /** Placeholder for an item's icon (see hydrateItemIcons). */
 function itemIconSlot(itemId) {
     return `<span data-item-id="${escapeHtml(itemId)}"></span>`;
@@ -69,6 +75,7 @@ export {
     buyBadge,
     tileHtml,
     statHtml,
+    progressBarHtml,
     itemIconSlot,
     hydrateItemIcons,
 };

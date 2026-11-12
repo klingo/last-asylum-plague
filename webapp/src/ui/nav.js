@@ -97,7 +97,10 @@ const NAV_GROUPS = [
     },
     {
         key: 'heroes',
-        items: [{ page: 'gear', href: 'gear.html', label: 'nav.gear', description: 'nav.descriptions.gear' }],
+        items: [
+            { page: 'gear', href: 'gear.html', label: 'nav.gear', description: 'nav.descriptions.gear' },
+            { page: 'skills', href: 'skills.html', label: 'nav.skills', description: 'nav.descriptions.skills' },
+        ],
     },
     {
         key: 'lord',

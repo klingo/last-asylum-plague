@@ -8,7 +8,7 @@ Pages: **https://klingo.github.io/last-asylum-plague/**
 
 It answers "what is this pack worth at my weekly spend?": a Deal Ranking of every package on sale, the plan for each
 event shop, seasonal passes and spend reward tracks, item sources, comparisons, a calendar of what runs when, and
-planners for gear upgrades and the lord's specialty skills. Texts are in English and German.
+planners for gear upgrades, hero skills and the lord's specialty skills. Texts are in English and German.
 
 - [docs/pages.md](docs/pages.md): every page and what it shows.
 - [docs/valuation.md](docs/valuation.md): how the worth is calculated, and how the schedule and its forecasts work.

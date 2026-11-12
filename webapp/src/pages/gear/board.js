@@ -2,7 +2,7 @@
  * The squad board: each slot's hero with a 2×2 gear square, and the faction switch. A gear piece is drawn like in the
  * game: a card in its quality colour with the level on top and the stars along the bottom, inside the picture.
  */
-import { enumLabel, t, tHtml } from '../../ui/i18n.js';
+import { t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml, hydrateItemIcons, itemIconSlot } from '../../ui/html.js';
 import {
     MR_STEP,
@@ -18,7 +18,8 @@ import {
 import { ctx } from './state.js';
 import { ASSETS, PATHS } from './constants.js';
 import { board, factionSwitch } from './elements.js';
-import { classIcon, factionIcon, formatStars, heroImage, heroName, heroOf, itemName } from './helpers.js';
+import { formatStars, heroOf, itemName } from './helpers.js';
+import { heroHeadHtml, renderFactionSwitch } from '../../ui/hero-parts.js';
 import { setFaction } from './progress.js';
 
 /** "→ Lv 40", "→ 2 ★", "→ craft": what a queue's next step does to a piece. */
@@ -113,21 +114,13 @@ function tileHtml(state, upcoming, slot, item) {
 
 function slotHtml(state, upcoming, slot) {
     const { class: heroClass } = ctx.guide.slots[slot];
-    const hero = heroOf(slot);
-    const name = heroName(hero);
     const square = ctx.gearSet.layout
         .flat()
         .map((item) => tileHtml(state, upcoming, slot, item))
         .join('');
     return `
         <div class="gear-slot">
-            <figure class="gear-hero">
-                <img src="${heroImage(hero)}" alt="${escapeHtml(name)}" />
-                <figcaption>
-                    <strong>${escapeHtml(name)}</strong>
-                    <span class="gear-class gear-class--${heroClass}">${classIcon(heroClass)}${escapeHtml(enumLabel('gear.class', heroClass))}</span>
-                </figcaption>
-            </figure>
+            ${heroHeadHtml(ctx.data.heroes, heroOf(slot), heroClass)}
             <div class="gear-square">${square}</div>
         </div>`;
 }
@@ -146,19 +139,7 @@ function renderBoard() {
 
 /** Warriors | Rangers | Warlocks, each in its colour (only with more than one faction). */
 function renderFactions() {
-    factionSwitch.hidden = ctx.factions.length < 2;
-    factionSwitch.setAttribute('aria-label', t('gear.factions'));
-    factionSwitch.innerHTML = ctx.factions
-        .map(
-            (faction) => `
-            <button type="button" class="gear-faction${faction === ctx.shownFaction ? ' is-active' : ''}" data-faction="${faction}" style="--faction-color: var(--faction-${faction})" aria-pressed="${faction === ctx.shownFaction}">
-                ${factionIcon(faction)} ${escapeHtml(enumLabel('gear.faction', faction))}
-            </button>`,
-        )
-        .join('');
-    factionSwitch.querySelectorAll('[data-faction]').forEach((button) => {
-        button.addEventListener('click', () => setFaction(button.dataset.faction));
-    });
+    renderFactionSwitch(factionSwitch, { factions: ctx.factions, shown: ctx.shownFaction, onPick: setFaction });
 }
 
 function replaceItemIcons(root, className) {

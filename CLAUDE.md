@@ -86,7 +86,7 @@ the coverage grows.
 ## Architecture
 
 One npm package (ESM). The HTML pages stay in `webapp/` (their URLs are the GitHub Pages URLs); each loads
-`webapp/src/pages/<page>.js` (`<page>/index.js` for the big pages: Events, Gear, Calendar, Settings; their sections are modules next to
+`webapp/src/pages/<page>.js` (`<page>/index.js` for the big pages: Events, Gear, Skills, Calendar, Settings; their sections are modules next to
 it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui/page.js`).
 
 - `webapp/src/core/` holds the pure modules (fit, planner, Compare, schedule, gear path, ...). No DOM or i18n, imports
@@ -95,19 +95,19 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   file. Each module's header comment says what it does; read it before changing the module. Logic a page needs goes
   here, not into the page: `settings-model.js` (defaults, priorities, the planner options the settings make),
   `event-plan.js` and `plan-view.js` (what the Events, Today and Ranking pages show of a plan), `step-analysis.js` (the
-  "spend more" tables), `gear-progress.js` (the gear page's progress), plus the page-specific parts of `catalog.js`,
+  "spend more" tables), `gear-progress.js` (the gear page's progress), `skill-path.js` (the Skill Upgrade Path page's steps and levels), plus the page-specific parts of `catalog.js`,
   `schedule.js`, `mine.js` and `item-sources.js`.
 - `webapp/src/ui/` holds the browser helpers: `valuation.js` (the worth model on top of the planner), `valuation-page.js`
   (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage: every key is listed in `STORAGE_KEYS`, prefix `lapkc_`; a new one goes there),
-  `i18n.js`, `format.js`, `datetime.js`, `html.js`, `labels.js`, `url.js`, `grid.js`, `github.js` (the token and the call that starts the record-run workflow, for Settings > Admin) and the other builders of markup.
-- `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (loaded on every page by
+  `i18n.js`, `format.js`, `datetime.js`, `html.js`, `hero-parts.js` (the hero faction switch and heads of the Gear and Skills pages), `labels.js`, `url.js`, `grid.js`, `github.js` (the token and the call that starts the record-run workflow, for Settings > Admin) and the other builders of markup.
+- `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (shared pieces: hero faction switch and heads, step card / step list / progress bar of the guide pages; loaded on every page by
   `ui/page.js`, in that order) and `pages/<page>.css` (the page script imports its own, after the shared ones). A rule keeps
   its place inside its file; a rule that overrides another of the same specificity (a phone `@media` over the base rule) lives
   in the same file or a later-loaded one.
 - `webapp/public/assets/` holds the images: `items/<category>/` (images not sorted yet are found directly in `items/`),
   `events/`, `packages/` (a weekday offer's own picture, `<pack id>.webp`: its thumbnail before the name on Today and the
   Calendar, a placeholder tile without it as with events, and the art of its bar's hover card on the Calendar),
-  `heroes/`, `lord/`, `gear/{stars,classes,factions,slots}/` (`slots/{sword,armor,gauntlets,boots}.png`: the silhouette of an uncrafted piece, 60×60) and `ui/` (the placeholder icon, the Banknote icon).
+  `heroes/` (portraits; `heroes/skills/<skill id>.png`: the skills' icons, 144×144, one `tenacity.png` for the 8-star skill), `lord/`, `gear/{stars,classes,factions,slots}/` (`slots/{sword,armor,gauntlets,boots}.png`: the silhouette of an uncrafted piece, 60×60) and `ui/` (the placeholder icon, the Banknote icon).
 - `webapp/src/i18n/{en,de}.json` holds UI texts and code labels. `scripts/` holds verify-data, i18n:missing,
   record-run and the commit hooks (`scripts/lib/` holds what they share: the data file paths and JSON format, the
   code labels). A script exports its pure parts for the tests and runs `main()` only when started directly.
@@ -142,6 +142,12 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   orders its three paths, and `verify-data` reports paths that deadlock. A gear set's `mr_items` maps a piece to the item
   it shows as at 5 stars (`shownItem`: the MR piece's name, picture and border); those items are display-only, no pack
   contains them (`mrItemIds`), so Item Priorities leaves them out.
+- The Skill Upgrade Path page (`skills.html`) reads its own file, `data/hero_skills.json` (schema `hero_skills.schema.json`, checked by
+  `verify-data`, not part of `pack_data.json`; the heroes' faction, class and portrait stay in `heroes`). It holds the guide
+  (`order` of the heroes per faction for the priority steps and `foundation_order` for the foundation steps, the `foundation` levels by class, each hero's `path` of target steps and short
+  `note`, `damage_type` (energy or physical, the whole hero's), `awakening_caps`) and every skill by slot (`id` = the icon's file name, `name`, a `description`
+  with `{placeholders}` and `values`: one number per level for each placeholder, `null` where not known yet). Steps and
+  levels are in `core/skill-path.js`. Skill names are data names (`name.de` left blank, never translated by me).
 - The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
   by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs
   (`core/lord-specialty.js`), so don't reorder or insert talents casually. Talents above `max_level` show as "not in

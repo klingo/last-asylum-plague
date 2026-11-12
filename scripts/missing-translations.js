@@ -1,13 +1,22 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { missingCodeLabels } from './lib/code-labels.js';
-import { I18N_DIR, LORD_DATA_PATH, PACK_DATA_PATH, isMain, readJson, splitArgs } from './lib/data-files.js';
+import {
+    HERO_SKILLS_PATH,
+    I18N_DIR,
+    LORD_DATA_PATH,
+    PACK_DATA_PATH,
+    isMain,
+    readJson,
+    splitArgs,
+} from './lib/data-files.js';
 
 const SOURCE_LANG = 'en';
 
 /**
  * Lists missing translations: UI texts (webapp/src/i18n/<lang>.json, compared with en.json), the
- * localized names in data/pack_data.json and data/lord_specialty.json (`{ "en": "...", "<lang>": "..." }`),
+ * localized names in data/pack_data.json, data/lord_specialty.json and data/hero_skills.json (`{ "en": "...",
+ * "<lang>": "..." }`),
  * and the labels of the data's codes (categories, hero classes, ...: scripts/lib/code-labels.js), also those
  * English lacks. A text is missing when English has it and the language's value is absent or empty.
  *
@@ -15,7 +24,7 @@ const SOURCE_LANG = 'en';
  *        (or node scripts/missing-translations.js [lang] [--keys-only] [--data-only])
  *   lang         e.g. "de"; without it, every language that has a webapp/src/i18n/<lang>.json
  *   --keys-only  print only the keys, not the English text next to them
- *   --data-only  only the data names (pack_data.json, lord_specialty.json), not the UI texts
+ *   --data-only  only the data names (pack_data.json, lord_specialty.json, hero_skills.json), not the UI texts
  */
 function main() {
     const { flags, positional } = splitArgs(process.argv.slice(2));
@@ -36,6 +45,7 @@ function main() {
     const source = readJson(path.join(I18N_DIR, `${SOURCE_LANG}.json`));
     const data = readJson(PACK_DATA_PATH);
     const lordData = readJson(LORD_DATA_PATH);
+    const skillData = readJson(HERO_SKILLS_PATH);
     if (!dataOnly) {
         // Labels English lacks too: the page would show the raw code in every language.
         const english = missingCodeLabels(data, source).map((key) => ({ key, english: '' }));
@@ -55,7 +65,9 @@ function main() {
                   .map((key) => ({ key, english: '' }));
         const names = missingDataNames(data, lang);
         const lordNames = missingDataNames(lordData, lang);
-        console.log(`\n=== ${lang}: ${ui.length + labels.length + names.length + lordNames.length} missing ===`);
+        const skillNames = missingDataNames(skillData, lang);
+        const total = ui.length + labels.length + names.length + lordNames.length + skillNames.length;
+        console.log(`\n=== ${lang}: ${total} missing ===`);
         if (!dataOnly) {
             printSection(`UI texts (webapp/src/i18n/${lang}.json)`, ui, keysOnly);
             if (labels.length > 0) {
@@ -64,6 +76,7 @@ function main() {
         }
         printSection('Data names (data/pack_data.json)', names, keysOnly);
         printSection('Lord talents (data/lord_specialty.json)', lordNames, keysOnly);
+        printSection('Hero skills (data/hero_skills.json)', skillNames, keysOnly);
     }
 }
 

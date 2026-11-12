@@ -1,0 +1,123 @@
+/* The pieces of a hero board shared by the Gear Upgrade Path and the Skill Upgrade Path pages (ui/hero-parts.js). */
+
+/* The hero faction switch at the top of the board card: Warriors | Rangers | Warlocks, each in its colour. */
+.hero-factions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.hero-factions[hidden] {
+    display: none;
+}
+
+.hero-faction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--faction-color);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--faction-color);
+    font-weight: 600;
+}
+
+.hero-faction:hover {
+    border-color: var(--faction-color);
+    background: color-mix(in srgb, var(--faction-color) 18%, transparent);
+}
+
+.hero-faction.is-active {
+    background: var(--faction-color);
+    color: #fff;
+}
+
+/* The same look inside "How it works" (not a button there). */
+.hero-faction--chip {
+    padding: 3px 10px;
+    font-size: 0.82rem;
+}
+
+/* The game's faction and class images, next to their names. */
+.hero-badge {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.hero-class .hero-badge {
+    width: 20px;
+    height: 20px;
+}
+
+.hero-faction .hero-badge {
+    width: 22px;
+    height: 22px;
+    margin-left: -6px;
+}
+
+.hero-faction--chip .hero-badge {
+    width: 18px;
+    height: 18px;
+    margin-left: -4px;
+}
+
+/* A hero's portrait (framed in the shown faction's colour) with name and class beside it. */
+.hero-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.hero-head > img {
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--faction-color, var(--border));
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--panel);
+}
+
+.hero-head figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font-size: 0.8rem;
+    line-height: 1.25;
+}
+
+.hero-head figcaption strong {
+    font-size: 1rem;
+}
+
+.hero-class {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--text-dim);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* A hero's small round portrait next to a step's text. */
+.hero-face {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--panel-alt);
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--panel);
+}
+
+@media (max-width: 640px) {
+    .hero-head > img {
+        width: 52px;
+        height: 52px;
+    }
+}

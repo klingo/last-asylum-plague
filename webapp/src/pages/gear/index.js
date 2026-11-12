@@ -15,9 +15,9 @@
 import { startPage } from '../../ui/page.js';
 import '../../styles/pages/gear.css';
 import { createProgress } from '../../core/gear-progress.js';
+import { FACTIONS } from '../../ui/hero-parts.js';
 import { ctx } from './state.js';
 import { renderFactions } from './board.js';
-import { FACTIONS } from './constants.js';
 import { layout } from './elements.js';
 import { renderProgress } from './guide.js';
 import { renderHelp } from './help.js';

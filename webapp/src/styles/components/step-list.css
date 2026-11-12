@@ -1,0 +1,80 @@
+/* The full list of a guide's steps behind its summary, one button per step (Gear Upgrade Path, Skill Upgrade Path): the
+   number, a ✓ once done, the step. The next step has a bar at its left edge. A page adds its own parts. */
+.step-list-section summary {
+    width: fit-content;
+    color: var(--accent);
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.step-list-section__hint {
+    margin: 8px 0 0;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+}
+
+.step-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.step-list-section .step-list {
+    max-height: 420px;
+    margin-top: 8px;
+    overflow-y: auto;
+}
+
+.step-list__item {
+    border-bottom: 1px solid var(--border);
+}
+
+.step-list__button {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 0;
+    background: none;
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.step-list__button:hover {
+    background: var(--panel-alt);
+}
+
+.step-list__item.is-next .step-list__button {
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.step-list__number {
+    min-width: 2ch;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+/* Done steps: a ✓ before the text, slightly dimmed. */
+.step-list__check {
+    width: 1.2ch;
+    color: var(--good);
+}
+
+.step-list__item.is-done .step-list__check::before {
+    content: '✓';
+}
+
+.step-list__item.is-done .step-list__text {
+    color: var(--text-dim);
+}
+
+.step-list__body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.85rem;
+}

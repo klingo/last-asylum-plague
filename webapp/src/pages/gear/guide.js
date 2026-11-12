@@ -2,7 +2,7 @@
  * The guide next to the board: the step lists, each queue's next step with what it needs and costs.
  */
 import { t, tHtml } from '../../ui/i18n.js';
-import { escapeHtml, itemIconSlot } from '../../ui/html.js';
+import { escapeHtml, itemIconSlot, progressBarHtml } from '../../ui/html.js';
 import { formatThousands } from '../../ui/format.js';
 import { starIcons, starStep, stepCost, stepItems, stepSlots } from '../../core/gear-path.js';
 import { ctx } from './state.js';
@@ -51,7 +51,7 @@ function starStripHtml(stars, className = 'gear-stars') {
  */
 function stepHtml(entry) {
     const faces = stepSlots(ctx.guide, entry.step)
-        .map((slot) => `<img class="gear-face" src="${heroImage(heroOf(slot))}" alt="" />`)
+        .map((slot) => `<img class="hero-face" src="${heroImage(heroOf(slot))}" alt="" />`)
         .join('');
     const pieces = stepItems(ctx.gearSet, entry.step)
         .map((item) => itemIconSlot(item))
@@ -125,11 +125,6 @@ function blueprintOf(entry) {
     return entry.step.stars === 5 ? ctx.gearSet.blueprints?.mr : ctx.gearSet.blueprints?.ur;
 }
 
-function progressBarHtml(done, total) {
-    const percent = total ? Math.round((done / total) * 100) : 0;
-    return `<div class="gear-progress" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${done}"><span style="width: ${percent}%"></span></div>`;
-}
-
 /** The full list of a queue, behind "Show all steps"; clicking a step marks it and everything before it done. */
 function listHtml(path) {
     const entries = ctx.progress.entriesOf[path];
@@ -148,12 +143,12 @@ function listHtml(path) {
                 ? `<span class="gear-path__problem text-bad">${tHtml('gear.problem')}</span>`
                 : '';
             return `
-                <li class="gear-path__step${ctx.progress.isDone(entry) ? ' is-done' : ''}${entry === next ? ' is-next' : ''}${ctx.progress.isHeld(entry) ? ' is-held' : ''}" data-path="${path}" data-position="${i + 1}">
-                    <button type="button" class="gear-path__button">
-                        <span class="gear-path__number">${i + 1}</span>
-                        <span class="gear-path__check" aria-hidden="true"></span>
-                        <span class="gear-path__body">
-                            <span class="gear-path__text">${stepHtml(entry)}</span>
+                <li class="step-list__item${ctx.progress.isDone(entry) ? ' is-done' : ''}${entry === next ? ' is-next' : ''}${ctx.progress.isHeld(entry) ? ' is-held' : ''}" data-path="${path}" data-position="${i + 1}">
+                    <button type="button" class="step-list__button">
+                        <span class="step-list__number">${i + 1}</span>
+                        <span class="step-list__check" aria-hidden="true"></span>
+                        <span class="step-list__body">
+                            <span class="step-list__text">${stepHtml(entry)}</span>
                             ${ctx.progress.isHeld(entry) ? `<span class="gear-path__held">${ACTION_ICONS.hold} ${tHtml('gear.onHold')}</span>` : ''}${needHtml}${costHtml(entry)}${problem}
                         </span>
                     </button>
@@ -161,10 +156,10 @@ function listHtml(path) {
         })
         .join('');
     return `
-        <details class="gear-list" data-list="${path}"${openLists.has(path) ? ' open' : ''}>
+        <details class="step-list-section" data-list="${path}"${openLists.has(path) ? ' open' : ''}>
             <summary>${tHtml('gear.showAll', { path: escapeHtml(laneName(path)), count: entries.length })}</summary>
-            <p class="gear-list__hint">${tHtml('gear.catchUp')}</p>
-            <ol class="gear-path">${steps}</ol>
+            <p class="step-list-section__hint">${tHtml('gear.catchUp')}</p>
+            <ol class="step-list">${steps}</ol>
         </details>`;
 }
 
@@ -220,19 +215,19 @@ function nextCardHtml(path, titleKey) {
     }
     const craftAllButton =
         path === 'craft' && !ctx.progress.craftComplete()
-            ? `<button type="button" class="gear-next__secondary" data-action="craft-all">${actionLabel('craftAll')}</button>`
+            ? `<button type="button" class="step-card__secondary" data-action="craft-all">${actionLabel('craftAll')}</button>`
             : '';
     return `
-        <div class="gear-next gear-next--${path}">
-            <div class="gear-next__head">
+        <div class="step-card gear-next--${path}">
+            <div class="step-card__head">
                 <h4>${icon(LANE_ICONS[path])} ${tHtml(titleKey)}</h4>
-                <span class="gear-next__count">${tHtml('gear.count', { done: ctx.progress.doneCount(path), total: entries.length })}</span>
+                <span class="step-card__count">${tHtml('gear.count', { done: ctx.progress.doneCount(path), total: entries.length })}</span>
             </div>
             ${progressBarHtml(ctx.progress.doneCount(path), entries.length)}
             ${body}
-            <div class="gear-next__actions">
-                <button type="button" class="gear-next__done-button" data-action="done" data-path="${path}"${ctx.progress.canAdvance(path) ? '' : ' disabled'}>${actionLabel('done')}</button>
-                <button type="button" class="gear-next__secondary" data-action="undo" data-path="${path}"${ctx.progress.canUndo(path) ? '' : ' disabled'} title="${escapeHtml(path === 'craft' && ctx.progress.doneCount(path) > 0 && !ctx.progress.canUndo(path) ? t('gear.undoCraftBlocked') : '')}">${actionLabel('undo')}</button>
+            <div class="step-card__actions">
+                <button type="button" class="step-card__done" data-action="done" data-path="${path}"${ctx.progress.canAdvance(path) ? '' : ' disabled'}>${actionLabel('done')}</button>
+                <button type="button" class="step-card__secondary" data-action="undo" data-path="${path}"${ctx.progress.canUndo(path) ? '' : ' disabled'} title="${escapeHtml(path === 'craft' && ctx.progress.doneCount(path) > 0 && !ctx.progress.canUndo(path) ? t('gear.undoCraftBlocked') : '')}">${actionLabel('undo')}</button>
                 ${craftAllButton}
             </div>
             ${blocked}
@@ -302,9 +297,9 @@ function upgradesPhaseHtml(locked) {
 function renderGuide() {
     const locked = !ctx.progress.craftComplete();
     guidePanel.innerHTML = `
-        <div class="gear-guide__head">
+        <div class="step-guide__head">
             <h3>${tHtml('gear.progressTitle')}</h3>
-            <button type="button" class="gear-guide__reset" data-action="reset"${ctx.progress.doneCount('craft') + ctx.progress.doneCount('level') + ctx.progress.doneCount('stars') === 0 ? ' disabled' : ''}>${actionLabel('startOver')}</button>
+            <button type="button" class="step-guide__reset" data-action="reset"${ctx.progress.doneCount('craft') + ctx.progress.doneCount('level') + ctx.progress.doneCount('stars') === 0 ? ' disabled' : ''}>${actionLabel('startOver')}</button>
         </div>
         ${craftPhaseHtml()}
         ${upgradesPhaseHtml(locked)}`;
@@ -329,8 +324,8 @@ function renderGuide() {
             }
         });
     });
-    guidePanel.querySelectorAll('.gear-path__step').forEach((li) => {
-        li.querySelector('.gear-path__button').addEventListener('click', () =>
+    guidePanel.querySelectorAll('.step-list__item').forEach((li) => {
+        li.querySelector('.step-list__button').addEventListener('click', () =>
             jumpTo(li.dataset.path, Number(li.dataset.position)),
         );
     });

@@ -52,44 +52,11 @@
     border-radius: var(--radius);
 }
 
-/* Left-aligned over the gear square, so the portraits line up whatever the length of the name; the margin is the
-   tile's border and padding, so the portrait's edge meets the first card's. */
-.gear-hero {
-    display: flex;
-    align-items: center;
+/* The hero over the gear square, left-aligned so the portraits line up whatever the length of the name; the margin is
+   the tile's border and padding, so the portrait's edge meets the first card's. */
+.gear-slot .hero-head {
     align-self: flex-start;
-    gap: 10px;
     margin: 0 0 0 4px;
-}
-
-.gear-hero > img {
-    width: 64px;
-    height: 64px;
-    border-radius: 8px;
-    object-fit: cover;
-    background: var(--panel);
-}
-
-.gear-hero figcaption {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    font-size: 0.8rem;
-    line-height: 1.25;
-}
-
-.gear-hero figcaption strong {
-    font-size: 1rem;
-}
-
-.gear-class {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    color: var(--text-dim);
-    font-size: 0.74rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
 }
 
 /* Sword | Armor over Gauntlets | Boots (the gear set's layout). */
@@ -250,16 +217,6 @@
     color: var(--purple);
 }
 
-.gear-path {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.gear-path__step {
-    border-bottom: 1px solid var(--border);
-}
-
 /* In the full lists: what a step needs from the other queue: ○ still ahead (dim), ✓ done (green). */
 .gear-gate {
     align-self: flex-start;
@@ -278,52 +235,6 @@
 .gear-gate--never {
     color: var(--bad);
     border-color: color-mix(in srgb, var(--bad) 45%, transparent);
-}
-
-/* Done steps: a ✓ before the text, slightly dimmed. */
-.gear-path__check {
-    width: 1.2ch;
-    color: var(--good);
-}
-
-.gear-path__step.is-done .gear-path__check::before {
-    content: '✓';
-}
-
-.gear-path__step.is-done:not(.is-selected) .gear-path__text {
-    color: var(--text-dim);
-}
-
-.gear-path__button {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    padding: 8px 10px;
-    border: none;
-    border-radius: 0;
-    background: none;
-    color: var(--text);
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-}
-
-.gear-path__button:hover {
-    background: var(--panel-alt);
-}
-
-.gear-path__number {
-    min-width: 2ch;
-    color: var(--text-dim);
-    font-variant-numeric: tabular-nums;
-    text-align: right;
-}
-
-.gear-path__body {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    font-size: 0.85rem;
 }
 
 .gear-cost {
@@ -474,38 +385,6 @@
 }
 
 /* Gear Path: the guide next to the board. Phase 1 (crafting) and phase 2 (upgrades: two queues side by side). */
-.gear-guide {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-}
-
-.gear-guide__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.gear-guide__head h3 {
-    margin: 0;
-    font-size: 0.95rem;
-}
-
-/* Start over: a quiet secondary button (it resets everything). */
-.gear-guide__reset {
-    padding: 2px 10px;
-    border: 1px solid var(--border);
-    background: none;
-    color: var(--text-dim);
-    font-size: 0.8rem;
-}
-
-.gear-guide__reset:hover:not(:disabled) {
-    color: var(--text);
-    border-color: var(--text-dim);
-}
-
 .gear-phase {
     display: flex;
     flex-direction: column;
@@ -586,19 +465,7 @@
     gap: 14px;
 }
 
-/* A queue's next step: title, progress, what to do, what it uses / needs first, Done and Undo. */
-.gear-next {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 14px 16px;
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--panel-alt);
-    font-size: 0.85rem;
-}
-
+/* A queue's next step (the card itself is components/step-card.css): its colour, what it uses / needs first. */
 .gear-next--craft {
     border-top-color: var(--gold);
 }
@@ -609,28 +476,6 @@
 
 .gear-next--stars {
     border-top-color: var(--purple);
-}
-
-.gear-next__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-.gear-next__head h4 {
-    margin: 0;
-    font-size: 0.85rem;
-}
-
-.gear-next__count {
-    color: var(--text-dim);
-    font-size: 0.78rem;
-    font-variant-numeric: tabular-nums;
-}
-
-.gear-next p {
-    margin: 0;
 }
 
 .gear-next__uses {
@@ -653,68 +498,6 @@
 
 .gear-next__done {
     color: var(--good);
-}
-
-.gear-next__actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-}
-
-.gear-next__done-button {
-    flex: 1;
-}
-
-/* Undo and "All crafted": quiet secondary buttons next to Done. */
-.gear-next__secondary {
-    padding-left: 10px;
-    padding-right: 10px;
-    background: var(--panel);
-    border-color: var(--border);
-    color: var(--text);
-}
-
-.gear-next__secondary:hover:not(:disabled) {
-    background: var(--panel-alt);
-    border-color: var(--text-dim);
-}
-
-.gear-progress {
-    height: 5px;
-    border-radius: 3px;
-    background: var(--panel);
-    overflow: hidden;
-}
-
-.gear-progress span {
-    display: block;
-    height: 100%;
-    border-radius: 3px;
-    background: var(--good);
-}
-
-/* The full list of a queue, behind its summary. */
-.gear-list summary {
-    width: fit-content;
-    color: var(--accent);
-    font-size: 0.82rem;
-    cursor: pointer;
-}
-
-.gear-list__hint {
-    margin: 8px 0 0;
-    color: var(--text-dim);
-    font-size: 0.78rem;
-}
-
-.gear-list .gear-path {
-    max-height: 420px;
-    margin-top: 8px;
-    overflow-y: auto;
-}
-
-.gear-path__step.is-next .gear-path__button {
-    box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .gear-help__decision {
@@ -759,7 +542,7 @@
     font-size: 0.74rem;
 }
 
-.gear-path__step.is-held .gear-path__text {
+.step-list__item.is-held .step-list__text {
     color: var(--text-dim);
 }
 
@@ -768,51 +551,6 @@
     display: inline-block;
     min-width: 1em;
     text-align: center;
-}
-
-/* The hero faction switch at the top of the board card: Warriors | Rangers | Warlocks, each in its colour. */
-.gear-factions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.gear-factions[hidden] {
-    display: none;
-}
-
-.gear-faction {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border: 1px solid var(--faction-color);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--faction-color);
-    font-weight: 600;
-}
-
-.gear-faction:hover {
-    border-color: var(--faction-color);
-    background: color-mix(in srgb, var(--faction-color) 18%, transparent);
-}
-
-.gear-faction.is-active {
-    background: var(--faction-color);
-    color: #fff;
-}
-
-/* The same look inside "How it works" (not a button there). */
-.gear-faction--chip {
-    padding: 3px 10px;
-    font-size: 0.82rem;
-}
-
-/* The board shows the faction: the portraits framed in its colour. */
-.gear-hero > img {
-    border: 2px solid var(--faction-color, var(--border));
 }
 
 /* A step in pictures: the heroes' portraits, the pieces' icons, the text, the star target. */
@@ -829,16 +567,7 @@
     align-items: center;
 }
 
-.gear-face {
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--panel-alt);
-    border-radius: 50%;
-    object-fit: cover;
-    background: var(--panel);
-}
-
-.gear-step__faces .gear-face + .gear-face {
+.gear-step__faces .hero-face + .hero-face {
     margin-left: -6px;
 }
 
@@ -854,24 +583,6 @@
 .gear-stars img {
     width: 11px;
     height: 11px;
-}
-
-/* A button named in a help sentence, looking like the real one. */
-.gear-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 0 8px;
-    border-radius: 6px;
-    background: var(--accent-dark);
-    color: #fff;
-    font-size: 0.8rem;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.gear-chip.is-disabled {
-    opacity: 0.5;
 }
 
 /* "How it works": the classes, the formation with the heroes, sample tiles, the blocked example. */
@@ -915,31 +626,6 @@
     margin-top: 8px;
 }
 
-/* The game's faction and class images (assets/gear/factions, assets/gear/classes), next to their names. */
-.gear-badge {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
-}
-
-.gear-class .gear-badge {
-    width: 20px;
-    height: 20px;
-}
-
-.gear-faction .gear-badge {
-    width: 22px;
-    height: 22px;
-    margin-left: -6px;
-}
-
-.gear-faction--chip .gear-badge {
-    width: 18px;
-    height: 18px;
-    margin-left: -4px;
-}
-
 .gear-help > section + section {
     padding-top: 18px;
     border-top: 1px solid var(--border);
@@ -958,11 +644,6 @@
     /* Gear Path: smaller hero boxes and gear cards, so two heroes fit a row and the board stays short. */
     .gear-slot {
         padding: 8px 8px 6px;
-    }
-
-    .gear-hero > img {
-        width: 52px;
-        height: 52px;
     }
 
     .gear-square {

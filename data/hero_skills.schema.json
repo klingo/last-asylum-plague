@@ -1,0 +1,199 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "HeroSkills",
+    "description": "The heroes' skills and the order to level them (Skill Upgrade Path page). Names and texts are localized as in pack_data.json; the heroes themselves (faction, class, portrait) are `heroes` in pack_data.json, referenced by id.",
+    "type": "object",
+    "required": [
+        "max_level",
+        "foundation",
+        "layout",
+        "awakening_caps",
+        "order",
+        "foundation_order",
+        "tenacity",
+        "heroes"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "max_level": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The highest skill level of a hero that isn't awakened; the guide's steps stop here."
+        },
+        "foundation": {
+            "type": "object",
+            "description": "The level every upgradable skill of every hero is raised to first, by the hero's class.",
+            "required": ["carry", "tank", "support"],
+            "additionalProperties": false,
+            "properties": {
+                "carry": { "type": "integer", "minimum": 1 },
+                "tank": { "type": "integer", "minimum": 1 },
+                "support": { "type": "integer", "minimum": 1 }
+            }
+        },
+        "layout": {
+            "type": "object",
+            "description": "Where the skills sit on a hero, as in the game: two columns, top to bottom.",
+            "required": ["left", "right"],
+            "additionalProperties": false,
+            "properties": {
+                "left": { "$ref": "#/definitions/slotList" },
+                "right": { "$ref": "#/definitions/slotList" }
+            }
+        },
+        "awakening_caps": {
+            "type": "array",
+            "description": "The skill cap of an awakened hero by awakening level: the entry with the highest `level` the hero reaches. Below the first entry the cap is `max_level`.",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": ["level", "cap"],
+                "additionalProperties": false,
+                "properties": {
+                    "level": { "type": "integer", "minimum": 1 },
+                    "cap": { "type": "integer", "minimum": 1 }
+                }
+            }
+        },
+        "order": {
+            "type": "object",
+            "description": "Per faction its heroes in the order of the priority steps (after the foundation).",
+            "minProperties": 1,
+            "propertyNames": {
+                "$ref": "pack_data.schema.json#/definitions/heroFaction"
+            },
+            "additionalProperties": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "$ref": "pack_data.schema.json#/definitions/id" }
+            }
+        },
+        "foundation_order": {
+            "description": "Per faction its heroes in the order of the foundation steps (every skill to the foundation level). The same heroes as `order`, which is the order of the priority steps after the foundation.",
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+                "$ref": "pack_data.schema.json#/definitions/heroFaction"
+            },
+            "additionalProperties": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "$ref": "pack_data.schema.json#/definitions/id" }
+            }
+        },
+        "tenacity": {
+            "description": "The 8-star skill every hero gets (Lv 1, not upgradable).",
+            "$ref": "#/definitions/skill"
+        },
+        "heroes": {
+            "type": "object",
+            "description": "Per hero its skills, its path (the steps after the foundation) and a short note.",
+            "minProperties": 1,
+            "propertyNames": {
+                "$ref": "pack_data.schema.json#/definitions/id"
+            },
+            "additionalProperties": {
+                "$ref": "#/definitions/hero"
+            }
+        }
+    },
+    "definitions": {
+        "slot": {
+            "type": "string",
+            "enum": ["auto_attack", "active", "ultimate", "passive", "tenacity"]
+        },
+        "upgradableSlot": {
+            "type": "string",
+            "enum": ["auto_attack", "active", "ultimate", "passive"]
+        },
+        "slotList": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/definitions/slot" }
+        },
+        "skill": {
+            "type": "object",
+            "required": ["id", "name"],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "$ref": "pack_data.schema.json#/definitions/id",
+                    "description": "Also the icon: webapp/public/assets/heroes/skills/<id>.png (144×144)."
+                },
+                "name": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString"
+                },
+                "description": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString",
+                    "description": "What the skill does. A {placeholder} is a number that depends on the skill's level: its name is a key of `values`."
+                },
+                "values": {
+                    "type": "object",
+                    "description": "The level-dependent numbers of the description: per placeholder one list, the entry for level n at index n-1; null where the number isn't known yet (shown as ?).",
+                    "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+                    "additionalProperties": {
+                        "type": "array",
+                        "maxItems": 40,
+                        "items": { "type": ["number", "null"] }
+                    }
+                }
+            }
+        },
+        "step": {
+            "type": "object",
+            "description": "A target, not an increment: the skills go to this level (each at least that, one that is further stays).",
+            "required": ["skills", "level"],
+            "additionalProperties": false,
+            "properties": {
+                "skills": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": { "$ref": "#/definitions/upgradableSlot" }
+                },
+                "level": { "type": "integer", "minimum": 1 }
+            }
+        },
+        "hero": {
+            "type": "object",
+            "required": ["damage_type", "skills", "path", "note"],
+            "additionalProperties": false,
+            "properties": {
+                "awakenable": {
+                    "type": "boolean",
+                    "description": "The hero can be awakened: the page asks for the awakening level and shows the skill cap it gives."
+                },
+                "damage_type": {
+                    "type": "string",
+                    "enum": ["energy", "physical"],
+                    "description": "The damage all of the hero's skills deal: a hero is either fully energy or fully physical."
+                },
+                "note": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString",
+                    "description": "Why the path is as it is, in a few sentences."
+                },
+                "skills": {
+                    "type": "object",
+                    "description": "The four upgradable skills by slot.",
+                    "required": ["auto_attack", "active", "ultimate", "passive"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "auto_attack": { "$ref": "#/definitions/skill" },
+                        "active": { "$ref": "#/definitions/skill" },
+                        "ultimate": { "$ref": "#/definitions/skill" },
+                        "passive": { "$ref": "#/definitions/skill" }
+                    }
+                },
+                "path": {
+                    "type": "array",
+                    "description": "The steps after the foundation, in order. A skill no step names stays at the foundation level (e.g. a tank's auto attack).",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/step" }
+                }
+            }
+        }
+    }
+}

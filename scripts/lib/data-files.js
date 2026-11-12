@@ -9,6 +9,7 @@ import path from 'node:path';
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const PACK_DATA_PATH = path.join(ROOT, 'data', 'pack_data.json');
 const LORD_DATA_PATH = path.join(ROOT, 'data', 'lord_specialty.json');
+const HERO_SKILLS_PATH = path.join(ROOT, 'data', 'hero_skills.json');
 const I18N_DIR = path.join(ROOT, 'webapp', 'src', 'i18n');
 
 /** The JSON in `file`. */
@@ -39,4 +40,15 @@ function isMain(meta) {
     return meta.filename === process.argv[1];
 }
 
-export { ROOT, PACK_DATA_PATH, LORD_DATA_PATH, I18N_DIR, readJson, writeJson, formatJson, splitArgs, isMain };
+export {
+    ROOT,
+    PACK_DATA_PATH,
+    LORD_DATA_PATH,
+    HERO_SKILLS_PATH,
+    I18N_DIR,
+    readJson,
+    writeJson,
+    formatJson,
+    splitArgs,
+    isMain,
+};

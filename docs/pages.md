@@ -7,7 +7,7 @@ The top nav starts with **Today** (the home page) and **Calendar**, then groups 
 `webapp/src/ui/nav.js`; each page's short description is the `title` of its link: shown on hover, read out by
 screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
 Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
-**Heroes** (Gear Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
+**Heroes** (Gear Upgrade Path, Skill Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work. The cogwheel next to the language switcher opens
 **Settings** (`settings.html`) has four sections: **Valuation**, the settings that shape every value (Count VIP points
 in the worth); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
@@ -103,6 +103,18 @@ to `master` and starts the deployment, so the change shows up on the site after 
   blueprints, `mr_items`: a piece at 5 stars shows as its MR item, optional cost tables) and `squad_guides` (formation, slots with a hero class and a hero per faction,
   `craft_path` / `level_path` /
   `star_path`) in `pack_data.json`; `verify-data` checks that the paths can be completed without a deadlock.
+- **Skill Upgrade Path** (`skills.html`) — in which order to level up a squad's hero skills, step by step. A switch picks the hero
+  faction (Warriors, Rangers, Warlocks: each has its own five heroes, their order and its own progress, saved in the
+  browser). The board shows the faction's heroes as the squad stands (two tanks, then carry, support, carry; the order they are levelled in is the guide's) with their four upgradable skills as in the game (auto attack and active on the
+  left, ultimate and passive on the right) and the 8-star skill (Lv 1) below; the skills the next step raises are framed
+  with the level it takes them to. Clicking a skill shows its name with its level and the hero's skill cap ("Lv.22/37"), its type, the hero's damage type
+  (energy light blue, physical orange) and its description at the hero's current level; the level-dependent numbers are green, as in the game, with the number the next step reaches in brackets. The guide is a next-step card (Done / Undo, the hero's
+  note) and the full list: first the foundation (every damage dealer's skills to Lv 15, tanks and supports to Lv 10, one
+  step per skill, hero by hero in the foundation's own order of heroes, each hero's skills in the order of its own steps), then each hero's priorities in the faction's order, each to Lv 30. Players further along click the last
+  step they have done. Marlena, Cynthia and Annie can be awakened: the page asks for the awakening level and shows the
+  skill cap it gives (Lv 31 at awakening 3 up to Lv 40 at 40); the steps stay as they are. Data: `data/hero_skills.json`
+  (own schema; `verify-data` checks the heroes, paths and icons), heroes' faction, class and portrait from `heroes` in
+  `pack_data.json`.
 - **Lord Specialty** (`lord-specialty.html`) — a planner for the specialty skills of the two lords (Handyman, Legion
   Commander), drawn like the game's tree: Lv.1 at the bottom, a specialty skill left and right of every unlock level,
   hexagons for active ones, squares for passive ones. Left click adds a point, right click removes one, hovering shows

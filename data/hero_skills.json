@@ -1,0 +1,950 @@
+{
+    "max_level": 30,
+    "foundation": {
+        "carry": 15,
+        "tank": 10,
+        "support": 10
+    },
+    "layout": {
+        "left": ["auto_attack", "active"],
+        "right": ["ultimate", "passive", "tenacity"]
+    },
+    "awakening_caps": [
+        {
+            "level": 3,
+            "cap": 31
+        },
+        {
+            "level": 7,
+            "cap": 32
+        },
+        {
+            "level": 11,
+            "cap": 33
+        },
+        {
+            "level": 15,
+            "cap": 34
+        },
+        {
+            "level": 19,
+            "cap": 35
+        },
+        {
+            "level": 23,
+            "cap": 36
+        },
+        {
+            "level": 27,
+            "cap": 37
+        },
+        {
+            "level": 31,
+            "cap": 38
+        },
+        {
+            "level": 35,
+            "cap": 39
+        },
+        {
+            "level": 40,
+            "cap": 40
+        }
+    ],
+    "order": {
+        "warrior": ["marlena", "zoya", "arthur", "daskal", "harper"],
+        "ranger": ["cynthia", "redlady", "louis", "shadow", "bell"],
+        "warlock": ["ulfrid", "billy", "joker", "annie", "nicole"]
+    },
+    "foundation_order": {
+        "warrior": ["marlena", "zoya", "arthur", "daskal", "harper"],
+        "ranger": ["redlady", "cynthia", "louis", "shadow", "bell"],
+        "warlock": ["ulfrid", "billy", "joker", "annie", "nicole"]
+    },
+    "tenacity": {
+        "id": "tenacity",
+        "name": {
+            "en": "Tenacity",
+            "de": ""
+        },
+        "description": {
+            "en": "ATK, HP, and DEF +{stats}%; skill cooldown speed +{cooldown}%.",
+            "de": "ANG, LP und VER +{stats}%, Abklingzeit der Fähigkeiten +{cooldown}%."
+        },
+        "values": {
+            "stats": [20],
+            "cooldown": [10]
+        }
+    },
+    "heroes": {
+        "marlena": {
+            "awakenable": true,
+            "damage_type": "energy",
+            "note": {
+                "en": "Peerless Blade and Crimson Bloom reach the enemy damage dealers while her basic attack is busy with one front-row target. The passive then raises Energy DMG across her attacks, so it comes before the basic attack.",
+                "de": "Peerless Blade und Crimson Bloom treffen die gegnerischen Schadensverursacher, während ihr Standardangriff mit einem einzelnen Ziel in der ersten Reihe beschäftigt ist. Der Passiv-Skill erhöht dann den Energieschaden aller ihrer Angriffe und kommt deshalb vor dem Standardangriff."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "skybreaker_slash",
+                    "name": {
+                        "en": "Skybreaker Slash",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "crimson_bloom",
+                    "name": {
+                        "en": "Crimson Bloom",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "peerless_blade",
+                    "name": {
+                        "en": "Peerless Blade",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "war_gods_will",
+                    "name": {
+                        "en": "War God's Will",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 30
+                }
+            ]
+        },
+        "zoya": {
+            "damage_type": "energy",
+            "note": {
+                "en": "Take the ultimate and the active up together (20, 25, 30); taking the ultimate straight to 30 first is also fine. Mountain God Wrath makes enemies in the whirlwind take 20% more Energy DMG, which helps Marlena too; that 20% does not grow with the level, so it is no reason to delay the ultimate. After that raise the basic attack and the passive in steps of five, the basic attack slightly ahead: the passive adds Crit Rate, not Crit DMG.",
+                "de": "Ultimate und aktiven Skill zusammen steigern (20, 25, 30); den Ultimate zuerst direkt auf 30 zu bringen ist ebenfalls in Ordnung. Mountain God Wrath lässt Gegner im Wirbel 20% mehr Energieschaden erleiden, was auch Marlena hilft; diese 20% wachsen nicht mit dem Level und sind daher kein Grund, den Ultimate aufzuschieben. Danach Standardangriff und Passiv-Skill in Fünferschritten steigern, der Standardangriff leicht voraus: Der Passiv-Skill gibt Krit-Chance, nicht Krit-Schaden."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "dagger",
+                    "name": {
+                        "en": "Dagger",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "mountain_god_wrath",
+                    "name": {
+                        "en": "Mountain God Wrath",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "forest_hunter",
+                    "name": {
+                        "en": "Forest Hunter",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "lady_of_the_forest",
+                    "name": {
+                        "en": "Lady of the Forest",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate", "active"],
+                    "level": 20
+                },
+                {
+                    "skills": ["ultimate", "active"],
+                    "level": 25
+                },
+                {
+                    "skills": ["ultimate", "active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 20
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 20
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 25
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 25
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                }
+            ]
+        },
+        "arthur": {
+            "damage_type": "physical",
+            "note": {
+                "en": "Take the active and the ultimate up together, then the passive; leave the basic attack at 10. Rock Solid gives him a shield, Earthshattering reduces the Physical DMG nearby allies take, and the passive protects tank heroes only. Invest for front-row survival, not for the damage of the shield strike.",
+                "de": "Aktiven Skill und Ultimate zusammen steigern, dann den Passiv-Skill; der Standardangriff bleibt auf 10. Rock Solid gibt ihm einen Schild, Earthshattering verringert den erlittenen Physischen Schaden von Verbündeten in der Nähe, und der Passiv-Skill schützt nur Tank-Helden. Investiere in das Überleben der ersten Reihe, nicht in den Schaden des Schildschlags."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "battle_shield",
+                    "name": {
+                        "en": "Battle Shield",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "rock_solid",
+                    "name": {
+                        "en": "Rock Solid",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "earthshattering",
+                    "name": {
+                        "en": "Earthshattering",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "strong_will",
+                    "name": {
+                        "en": "Strong Will",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["active", "ultimate"],
+                    "level": 20
+                },
+                {
+                    "skills": ["active", "ultimate"],
+                    "level": 25
+                },
+                {
+                    "skills": ["active", "ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                }
+            ]
+        },
+        "daskal": {
+            "damage_type": "physical",
+            "note": {
+                "en": "Bloodshed Defense shields the whole team: the shield scales with each ally's maximum DEF and absorbs half of the incoming damage while it lasts. The passive adds a shield when a damage dealer falls below 50% HP. Improve these team shields before his self-healing; 10 stars are recommended in a Warrior team.",
+                "de": "Bloodshed Defense schützt das ganze Team: Der Schild skaliert mit der maximalen VER jedes Verbündeten und absorbiert, solange er hält, die Hälfte des erlittenen Schadens. Der Passiv-Skill gibt einen Schild, wenn ein Schadensverursacher unter 50% LP fällt. Verbessere diese Team-Schilde vor seiner Selbstheilung; in einem Krieger-Team werden 10 Sterne empfohlen."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "battle_will",
+                    "name": {
+                        "en": "Battle Will",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "deadly_pierce",
+                    "name": {
+                        "en": "Deadly Pierce",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "bloodshed_defense",
+                    "name": {
+                        "en": "Bloodshed Defense",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "resolute_fight",
+                    "name": {
+                        "en": "Resolute Fight",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 30
+                }
+            ]
+        },
+        "harper": {
+            "damage_type": "energy",
+            "note": {
+                "en": "His buff should land before the allies' ultimates, so the ultimate comes first. War Flute Sound boosts allies of every faction, the passive Warriors only, so check your lineup before investing in the passive. His active protects a single ally, which is why the attack buffs come first. The basic attack can stay at 10; the 8-star Tenacity helps him too.",
+                "de": "Sein Buff sollte vor den Ultimates der Verbündeten wirken, deshalb kommt der Ultimate zuerst. War Flute Sound verstärkt Verbündete aller Fraktionen, der Passiv-Skill nur Krieger. Prüfe also deine Aufstellung, bevor du in den Passiv-Skill investierst. Sein aktiver Skill schützt nur einen Verbündeten, darum kommen die Angriffs-Buffs zuerst. Der Standardangriff kann auf 10 bleiben; auch ihm hilft Tenacity ab 8 Sternen."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "bubble",
+                    "name": {
+                        "en": "Bubble",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "vitality_bubble",
+                    "name": {
+                        "en": "Vitality Bubble",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "war_flute_sound",
+                    "name": {
+                        "en": "War Flute Sound",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "warriors_anthem",
+                    "name": {
+                        "en": "Warrior's Anthem",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                }
+            ]
+        },
+        "redlady": {
+            "damage_type": "energy",
+            "note": {
+                "en": "She targets the enemies with the highest ATK and can stun them. Crimson Rose deals damage to enemy damage dealers with a chance to stun, Bloodthirsty Slaughter hits one target hard and raises the damage it takes. The passive ATK buff comes after these two.",
+                "de": "Sie zielt auf Gegner mit dem höchsten ANG und kann sie betäuben. Crimson Rose verursacht Schaden an gegnerischen Schadensverursachern mit Betäubungschance, Bloodthirsty Slaughter trifft ein Ziel hart und erhöht den Schaden, den es erleidet. Der ANG-Buff des Passiv-Skills kommt nach diesen beiden."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "blood_blade",
+                    "name": {
+                        "en": "Blood Blade",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "bloodthirsty_slaughter",
+                    "name": {
+                        "en": "Bloodthirsty Slaughter",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "crimson_rose",
+                    "name": {
+                        "en": "Crimson Rose",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "lone_flower",
+                    "name": {
+                        "en": "Lone Flower",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 30
+                }
+            ]
+        },
+        "cynthia": {
+            "awakenable": true,
+            "damage_type": "energy",
+            "note": {
+                "en": "Moonfall Dance deals area damage with a higher Crit Rate; follow it with the active's three blades, then the passive's Crit Rate bonus.",
+                "de": "Moonfall Dance verursacht Flächenschaden mit erhöhter Krit-Chance; danach die drei Klingen des aktiven Skills, dann den Krit-Chance-Bonus des Passiv-Skills."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "moon_blade",
+                    "name": {
+                        "en": "Moon Blade",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "lunar_hunt",
+                    "name": {
+                        "en": "Lunar Hunt",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "moonfall_dance",
+                    "name": {
+                        "en": "Moonfall Dance",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "moons_blessing",
+                    "name": {
+                        "en": "Moon's Blessing",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 30
+                }
+            ]
+        },
+        "louis": {
+            "damage_type": "physical",
+            "note": {
+                "en": "Start with personal survival: Cross Whip heals Louis and reduces the damage he takes, the passive reduces it further and lets him survive a lethal hit. The active's Energy DMG protection for two allies comes afterwards. Keep the basic attack at 10. How long the immortality lasts depends on hero development.",
+                "de": "Beginne mit dem eigenen Überleben: Cross Whip heilt Louis und verringert den erlittenen Schaden, der Passiv-Skill verringert ihn weiter und lässt ihn einen tödlichen Treffer überleben. Der Energieschaden-Schutz des aktiven Skills für zwei Verbündete folgt danach. Der Standardangriff bleibt auf 10. Wie lange die Unsterblichkeit anhält, hängt von der Heldenentwicklung ab."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "shackles",
+                    "name": {
+                        "en": "Shackles",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "force_link",
+                    "name": {
+                        "en": "Force Link",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "cross_whip",
+                    "name": {
+                        "en": "Cross Whip",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "indomitable_spirit",
+                    "name": {
+                        "en": "Indomitable Spirit",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                }
+            ]
+        },
+        "shadow": {
+            "damage_type": "physical",
+            "note": {
+                "en": "Staged: Shadow Strike to 20 for the enemy DEF reduction, ultimate and passive to 20 so he lives long enough to apply it again and again, then the active to 30, then ultimate and passive to 30. The basic attack stays at 10. His value is helping the other damage dealers through the DEF reduction, and a stronger debuff is no use if he dies at once.",
+                "de": "Gestaffelt: Shadow Strike auf 20 für die VER-Senkung der Gegner, Ultimate und Passiv-Skill auf 20, damit er lange genug lebt, um sie immer wieder anzuwenden, dann den aktiven Skill auf 30, danach Ultimate und Passiv-Skill auf 30. Der Standardangriff bleibt auf 10. Sein Wert liegt darin, den anderen Schadensverursachern durch die VER-Senkung zu helfen, und ein stärkerer Debuff nützt nichts, wenn er sofort stirbt."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "smoke_cartridge",
+                    "name": {
+                        "en": "Smoke Cartridge",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "shadow_strike",
+                    "name": {
+                        "en": "Shadow Strike",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "shadow_hunt",
+                    "name": {
+                        "en": "Shadow Hunt",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "shadow_veil",
+                    "name": {
+                        "en": "Shadow Veil",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["active"],
+                    "level": 20
+                },
+                {
+                    "skills": ["ultimate", "passive"],
+                    "level": 20
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["ultimate", "passive"],
+                    "level": 30
+                }
+            ]
+        },
+        "bell": {
+            "damage_type": "physical",
+            "note": {
+                "en": "Inspiration boosts the two allies with the highest ATK, whatever their faction; her passive boosts Rangers only. Her healing scales with her own ATK, so a weak weapon limits it: damage buffs first, then her weapon and the healing. Keep the basic attack at 10.",
+                "de": "Inspiration verstärkt die zwei Verbündeten mit dem höchsten ANG, egal welcher Fraktion; ihr Passiv-Skill nur Waldläufer. Ihre Heilung skaliert mit ihrem eigenen ANG, eine schwache Waffe begrenzt sie also: erst die Schadens-Buffs, dann ihre Waffe und die Heilung. Der Standardangriff bleibt auf 10."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "musical_note",
+                    "name": {
+                        "en": "Musical Note",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "healing_sound",
+                    "name": {
+                        "en": "Healing Sound",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "inspiration",
+                    "name": {
+                        "en": "Inspiration",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "battle_anthem",
+                    "name": {
+                        "en": "Battle Anthem",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                }
+            ]
+        },
+        "ulfrid": {
+            "damage_type": "physical",
+            "note": {
+                "en": "Invest in Ulfrid first, so the team survives long enough for its damage dealers to work. Lunar Howl reflects incoming damage back to the attacker, so a longer fight means more reflection. Then his personal damage reduction, then the team protection of the ultimate. Defensive gear matters alongside skill books. Careful: the enemy damage dealer facing him loses HP fast, so placing your strongest damage dealer opposite him can be costly.",
+                "de": "Investiere zuerst in Ulfrid, damit das Team lange genug überlebt, damit seine Schadensverursacher wirken können. Lunar Howl wirft erlittenen Schaden auf den Angreifer zurück, ein längerer Kampf bringt also mehr Reflexion. Danach seine persönliche Schadensverringerung, dann der Team-Schutz des Ultimates. Defensive Ausrüstung ist neben den Skill-Büchern wichtig. Vorsicht: Der gegnerische Schadensverursacher ihm gegenüber verliert schnell LP, deinen stärksten Schadensverursacher ihm gegenüber aufzustellen kann daher teuer werden."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "sharp_claw",
+                    "name": {
+                        "en": "Sharp Claw",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Swings sharp claws, dealing {damage}% ATK Physical DMG to a single enemy.",
+                        "de": ""
+                    },
+                    "values": {
+                        "damage": []
+                    }
+                },
+                "active": {
+                    "id": "lunar_howl",
+                    "name": {
+                        "en": "Lunar Howl",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Howls to the sky, entering Berserk state: when taking damage, reflects {reflect}% of that damage back to the attacker. This effect lasts for 3s.",
+                        "de": ""
+                    },
+                    "values": {
+                        "reflect": []
+                    }
+                },
+                "ultimate": {
+                    "id": "throat_bite",
+                    "name": {
+                        "en": "Throat Bite",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Charges up, then lunges forward and bites the target, dealing {damage}% ATK Physical DMG, and reducing all damage taken by all allied heroes by {reduction}% for 4s.",
+                        "de": ""
+                    },
+                    "values": {
+                        "damage": [],
+                        "reduction": []
+                    }
+                },
+                "passive": {
+                    "id": "wolf_bloodline",
+                    "name": {
+                        "en": "Wolf Bloodline",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "In combat, reduces all damage taken by {reduction}%.",
+                        "de": ""
+                    },
+                    "values": {
+                        "reduction": []
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                }
+            ]
+        },
+        "billy": {
+            "damage_type": "physical",
+            "note": {
+                "en": "Fate's Thread reduces the Energy DMG taken by the two allies with the highest ATK, and the passive then helps Billy stay alive. The ultimate gives a chance of stun immunity whose coverage and effects depend on his stars: an undeveloped Billy does not give the whole team permanent immunity.",
+                "de": "Fate's Thread verringert den erlittenen Energieschaden der zwei Verbündeten mit dem höchsten ANG, und der Passiv-Skill hilft Billy dann beim Überleben. Der Ultimate gibt eine Chance auf Betäubungsimmunität, deren Umfang und Wirkung von seinen Sternen abhängen: Ein unentwickelter Billy verleiht nicht dem ganzen Team dauerhafte Immunität."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "wooden_frame",
+                    "name": {
+                        "en": "Wooden Frame",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "fates_thread",
+                    "name": {
+                        "en": "Fate's Thread",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "truth_and_lies",
+                    "name": {
+                        "en": "Truth and Lies",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "puppet",
+                    "name": {
+                        "en": "Puppet",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 30
+                }
+            ]
+        },
+        "joker": {
+            "damage_type": "physical",
+            "note": {
+                "en": "An exception to leaving basic attacks until later: he deals Physical DMG, his basic attack targets the enemy with the lowest HP, and his ultimate finishes weakened enemies. After the ultimate, raise the basic attack and the active together; the small Crit Rate gain of the passive comes last.",
+                "de": "Eine Ausnahme von der Regel, Standardangriffe später zu steigern: Er verursacht Physischen Schaden, sein Standardangriff zielt auf den Gegner mit den wenigsten LP, und sein Ultimate erledigt geschwächte Gegner. Nach dem Ultimate Standardangriff und aktiven Skill zusammen steigern; der kleine Krit-Chance-Gewinn des Passiv-Skills kommt zuletzt."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "deal_cards",
+                    "name": {
+                        "en": "Deal Cards",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "hearthunt_red_card",
+                    "name": {
+                        "en": "Hearthunt Red Card",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "joker_ace",
+                    "name": {
+                        "en": "Joker Ace",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "frenzied_emotion",
+                    "name": {
+                        "en": "Frenzied Emotion",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack", "active"],
+                    "level": 20
+                },
+                {
+                    "skills": ["auto_attack", "active"],
+                    "level": 25
+                },
+                {
+                    "skills": ["auto_attack", "active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                }
+            ]
+        },
+        "annie": {
+            "awakenable": true,
+            "damage_type": "energy",
+            "note": {
+                "en": "Both main skills combine direct damage with Burning: improve both, then raise Energy DMG through the passive. Check the real gain of each level, since not every part of a skill description scales with the level. She needs a longer battle to deliver damage over time; without support, team survival and further development, don't expect the immediate impact of Marlena or Red Lady.",
+                "de": "Beide Hauptskills verbinden Direktschaden mit Verbrennen: Verbessere beide, dann steigere den Energieschaden über den Passiv-Skill. Prüfe den tatsächlichen Gewinn jedes Levels, denn nicht jeder Teil einer Skill-Beschreibung skaliert mit dem Level. Sie braucht einen längeren Kampf, um Schaden über Zeit zu verursachen; ohne Unterstützung, Team-Überleben und weitere Entwicklung erwarte nicht die sofortige Wirkung von Marlena oder Red Lady."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "candy",
+                    "name": {
+                        "en": "Candy",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "surprise_gift",
+                    "name": {
+                        "en": "Surprise Gift",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "candy_jar",
+                    "name": {
+                        "en": "Candy Jar",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "charged_gummies",
+                    "name": {
+                        "en": "Charged Gummies",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 30
+                }
+            ]
+        },
+        "nicole": {
+            "damage_type": "physical",
+            "note": {
+                "en": "Healing comes first, despite the ultimate's strong Physical DMG and its bonus against Burning targets: Heartwarming Flame heals the two allies with the lowest HP and gives Ulfrid, Annie and Joker time to use their mechanics. Add some passive ATK (it raises Warlock ATK), develop the ultimate, then finish the passive. Her contribution is healing, buffs and damage together; treating her only as a third damage dealer misses the point of this order.",
+                "de": "Heilung kommt zuerst, trotz des starken Physischen Schadens des Ultimates und seines Bonus gegen brennende Ziele: Heartwarming Flame heilt die zwei Verbündeten mit den wenigsten LP und gibt Ulfrid, Annie und Joker Zeit für ihre Mechaniken. Etwas Passiv-ANG dazunehmen (sie erhöht den ANG der Hexenmeister), den Ultimate entwickeln, dann den Passiv-Skill fertigstellen. Ihr Beitrag besteht aus Heilung, Buffs und Schaden zusammen; sie nur als dritten Schadensverursacher zu sehen verfehlt den Sinn dieser Reihenfolge."
+            },
+            "skills": {
+                "auto_attack": {
+                    "id": "ember_dust",
+                    "name": {
+                        "en": "Ember Dust",
+                        "de": ""
+                    }
+                },
+                "active": {
+                    "id": "heartwarming_flame",
+                    "name": {
+                        "en": "Heartwarming Flame",
+                        "de": ""
+                    }
+                },
+                "ultimate": {
+                    "id": "inferno_array",
+                    "name": {
+                        "en": "Inferno Array",
+                        "de": ""
+                    }
+                },
+                "passive": {
+                    "id": "flame_soul_power",
+                    "name": {
+                        "en": "Flame Soul Power",
+                        "de": ""
+                    }
+                }
+            },
+            "path": [
+                {
+                    "skills": ["active"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 20
+                },
+                {
+                    "skills": ["ultimate"],
+                    "level": 30
+                },
+                {
+                    "skills": ["passive"],
+                    "level": 30
+                },
+                {
+                    "skills": ["auto_attack"],
+                    "level": 30
+                }
+            ]
+        }
+    }
+}

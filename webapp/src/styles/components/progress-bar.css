@@ -1,0 +1,14 @@
+/* A thin progress bar (ui/html.js progressBarHtml): the share of steps done. */
+.progress-bar {
+    height: 5px;
+    border-radius: 3px;
+    background: var(--panel);
+    overflow: hidden;
+}
+
+.progress-bar span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--good);
+}

@@ -8,7 +8,7 @@ import { currencyFlows } from '../webapp/src/core/planner.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
 import { normalizePackData } from '../webapp/src/core/pack-data.js';
 import { missingCodeLabels } from './lib/code-labels.js';
-import { I18N_DIR, LORD_DATA_PATH, PACK_DATA_PATH as DATA_PATH } from './lib/data-files.js';
+import { HERO_SKILLS_PATH, I18N_DIR, LORD_DATA_PATH, PACK_DATA_PATH as DATA_PATH } from './lib/data-files.js';
 
 // A pack whose worth is this many times above (or below) its deal % is reported (Pack Worth vs Deal %).
 const PACK_WORTH_OFF = 5;
@@ -20,6 +20,8 @@ const EVENT_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public'
 const EN_TEXTS_PATH = path.join(I18N_DIR, 'en.json');
 const LORD_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.schema.json');
 const LORD_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'lord');
+const HERO_SKILLS_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'hero_skills.schema.json');
+const SKILL_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'heroes', 'skills');
 
 /**
  * Validates data integrity of pack_data.json
@@ -30,6 +32,7 @@ const LORD_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public',
  * - Item points fitted from the deal % (webapp/src/core/point-fit.js) and items whose worth can't be
  *   resolved (webapp/src/core/item-values.js)
  * - The lords' talent trees in data/lord_specialty.json (schema, icons, values per level)
+ * - The heroes' skills and their level guide in data/hero_skills.json (schema, heroes, paths, icons, values)
  */
 async function verifyData() {
     console.log('Starting Pack Data Verification...\n');
@@ -887,6 +890,144 @@ async function verifyData() {
                     }
                 }
             }
+        }
+    });
+
+    // 8d. The heroes' skills and the guide to level them (data/hero_skills.json, Skill Upgrade Path page): its schema, the
+    // heroes exist with the faction they are listed under, every path step is a rising target within the levels, the
+    // skills' icons exist, and a description's {numbers} have values (levels without one are warned about).
+    checkCategory('Hero Skills', ({ reportError, reportWarning }) => {
+        let skillData;
+        let skillSchema;
+        try {
+            skillData = JSON.parse(fs.readFileSync(HERO_SKILLS_PATH, 'utf8'));
+            skillSchema = JSON.parse(fs.readFileSync(HERO_SKILLS_SCHEMA_PATH, 'utf8'));
+        } catch (err) {
+            reportError('Hero Skills', `Failed to read ${HERO_SKILLS_PATH} or its schema: ${err.message}`);
+            return;
+        }
+        const ajv = new Ajv({ allErrors: true, strictTypes: false });
+        ajv.addSchema(schema, 'pack_data.schema.json');
+        const validate = ajv.compile(skillSchema);
+        if (!validate(skillData)) {
+            for (const err of validate.errors) {
+                reportError('Schema', `hero_skills.json ${err.instancePath || 'root'} ${err.message}`);
+            }
+            return;
+        }
+        const heroes = data.heroes || {};
+        const ordered = new Set();
+        for (const [faction, ids] of Object.entries(skillData.order)) {
+            for (const heroId of ids) {
+                ordered.add(heroId);
+                if (!heroes[heroId]) {
+                    reportError(
+                        'Hero Skills',
+                        `Faction "${faction}" lists "${heroId}", which is no hero of pack_data.json.`,
+                    );
+                } else if (heroes[heroId].faction !== faction) {
+                    reportError(
+                        'Hero Skills',
+                        `"${heroId}" is listed under ${faction} but is a ${heroes[heroId].faction}.`,
+                    );
+                }
+                if (!skillData.heroes[heroId]) {
+                    reportError('Hero Skills', `Hero "${heroId}" of the order has no entry in "heroes".`);
+                }
+            }
+        }
+        for (const [faction, ids] of Object.entries(skillData.order)) {
+            const foundation = skillData.foundation_order[faction] || [];
+            if (foundation.length !== ids.length || !ids.every((heroId) => foundation.includes(heroId))) {
+                reportError('Hero Skills', `foundation_order of ${faction} must list the same heroes as its order.`);
+            }
+        }
+        for (const heroId of Object.keys(skillData.heroes)) {
+            if (!ordered.has(heroId)) {
+                reportError('Hero Skills', `Hero "${heroId}" has an entry but is in no faction's order.`);
+            }
+        }
+        skillData.awakening_caps.forEach((entry, i) => {
+            const before = skillData.awakening_caps[i - 1];
+            if (entry.cap > 40 || (before && (entry.level <= before.level || entry.cap <= before.cap))) {
+                reportError(
+                    'Hero Skills',
+                    `awakening_caps entry ${i + 1} (level ${entry.level}, cap ${entry.cap}) doesn't rise.`,
+                );
+            }
+        });
+        const skillIds = new Set();
+        const checkSkill = (where, skill, levels = skillData.max_level) => {
+            if (skillIds.has(skill.id)) {
+                reportError('Hero Skills', `${where}: the skill id "${skill.id}" is used twice.`);
+            }
+            skillIds.add(skill.id);
+            if (!fs.existsSync(path.join(SKILL_IMAGES_DIR, `${skill.id}.png`))) {
+                reportError(
+                    'Hero Skills',
+                    `${where} has no icon (webapp/public/assets/heroes/skills/${skill.id}.png).`,
+                );
+            }
+            const placeholders = new Set();
+            for (const [lang, text] of Object.entries(skill.description || {})) {
+                for (const [, name] of text.matchAll(/\{([a-z][a-z0-9_]*)\}/g)) {
+                    if (lang === 'en') {
+                        placeholders.add(name);
+                    }
+                    if (!skill.values?.[name]) {
+                        reportError(
+                            'Hero Skills',
+                            `${where}: the ${lang} text has {${name}} but there are no values for it.`,
+                        );
+                    }
+                }
+            }
+            for (const name of Object.keys(skill.values || {})) {
+                const list = skill.values[name];
+                if (!placeholders.has(name)) {
+                    reportError('Hero Skills', `${where}: values "${name}" is not used by the English text.`);
+                }
+                const unknown = Array.from({ length: levels }, (_, i) => list[i]).filter(
+                    (value) => typeof value !== 'number',
+                ).length;
+                if (unknown > 0) {
+                    reportWarning(
+                        'Hero Skills',
+                        `${where}: "${name}" lacks values for ${unknown} of the levels 1-${levels}.`,
+                    );
+                }
+            }
+        };
+        checkSkill('Tenacity', skillData.tenacity, 1);
+        for (const [heroId, entry] of Object.entries(skillData.heroes)) {
+            const heroClass = heroes[heroId]?.class;
+            const foundation = skillData.foundation[heroClass];
+            if (!foundation) {
+                reportError('Hero Skills', `Hero "${heroId}" has no foundation level for its class "${heroClass}".`);
+                continue;
+            }
+            for (const [slot, skill] of Object.entries(entry.skills)) {
+                checkSkill(`Hero "${heroId}", ${slot}`, skill);
+            }
+            const levels = Object.fromEntries(Object.keys(entry.skills).map((slot) => [slot, foundation]));
+            entry.path.forEach((step, i) => {
+                const where = `Hero "${heroId}", path step ${i + 1}`;
+                if (step.level > skillData.max_level) {
+                    reportError(
+                        'Hero Skills',
+                        `${where} goes to Lv ${step.level}, above the maximum ${skillData.max_level}.`,
+                    );
+                }
+                for (const slot of step.skills) {
+                    if (step.level <= levels[slot]) {
+                        reportError(
+                            'Hero Skills',
+                            `${where}: ${slot} is at Lv ${levels[slot]} already, so Lv ${step.level} changes nothing.`,
+                        );
+                    }
+                    levels[slot] = Math.max(levels[slot], step.level);
+                }
+            });
         }
     });
 

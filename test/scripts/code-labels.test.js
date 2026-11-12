@@ -39,6 +39,10 @@ test('the labels a dataset needs: categories, hero codes, weekdays, purchase typ
         'weekday.monday',
         'weekdayShort.monday',
         'sourceType.event',
+        'skills.slot.ultimate',
+        'skills.slot.tenacity',
+        'skills.damage.energy',
+        'skills.damage.physical',
     ]) {
         assert.ok(keys.includes(key), key);
     }

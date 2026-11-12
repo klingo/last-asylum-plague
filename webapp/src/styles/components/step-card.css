@@ -1,0 +1,111 @@
+/* The pieces of a guide page (Gear Upgrade Path, Skill Upgrade Path): the card of the next step (a title with its count, a
+   progress bar, what to do, Done / Undo; a page sets the colour of the top border and adds its own parts), a button
+   named in a help sentence, and the guide column with its "Your progress" head. */
+.step-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+    font-size: 0.85rem;
+}
+
+.step-card__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.step-card__head h4 {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.step-card__count {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.step-card p {
+    margin: 0;
+}
+
+.step-card__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.step-card__done {
+    flex: 1;
+}
+
+/* Undo (and "All crafted"): quiet secondary buttons next to Done. */
+.step-card__secondary {
+    padding-left: 10px;
+    padding-right: 10px;
+    background: var(--panel);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.step-card__secondary:hover:not(:disabled) {
+    background: var(--panel-alt);
+    border-color: var(--text-dim);
+}
+
+/* A button named in a help sentence, looking like the real one. */
+.step-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    border-radius: 6px;
+    background: var(--accent-dark);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.step-chip.is-disabled {
+    opacity: 0.5;
+}
+
+/* The guide column (Gear Upgrade Path, Skill Upgrade Path): the "Your progress" head with Start over, then the cards. */
+.step-guide {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.step-guide__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.step-guide__head h3 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Start over: a quiet secondary button (it resets everything). */
+.step-guide__reset {
+    padding: 2px 10px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+.step-guide__reset:hover:not(:disabled) {
+    color: var(--text);
+    border-color: var(--text-dim);
+}

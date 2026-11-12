@@ -3,25 +3,16 @@
  */
 import { enumLabel, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml, itemIconSlot } from '../../ui/html.js';
+import { classIcon, factionHtml } from '../../ui/hero-parts.js';
 import { ctx } from './state.js';
 import { replaceItemIcons, tileHtml } from './board.js';
 import { ACTION_ICONS, LANE_ICONS } from './constants.js';
 import { help } from './elements.js';
 import { actionLabel, blockedHtml, needOf, starStripHtml, stepHtml } from './guide.js';
-import {
-    classIcon,
-    factionIcon,
-    formatStars,
-    heroImage,
-    heroName,
-    heroOf,
-    icon,
-    itemName,
-    laneName,
-} from './helpers.js';
+import { formatStars, heroImage, heroName, heroOf, icon, itemName, laneName } from './helpers.js';
 
 /** A button inside a help sentence, as it looks on the page: "✓ Done". */
-const chipHtml = (action) => `<span class="gear-chip">${actionLabel(action)}</span>`;
+const chipHtml = (action) => `<span class="step-chip">${actionLabel(action)}</span>`;
 
 /**
  * "How it works", in the order you use the page: what it does, the faction, reading the squad, crafting, upgrading,
@@ -40,14 +31,11 @@ function renderHelp() {
 
     // The squad: the factions (as on the switch), the formation with the heroes of the faction shown.
     const factionChips = ctx.factions
-        .map(
-            (faction) =>
-                `<span class="gear-faction gear-faction--chip${faction === ctx.shownFaction ? ' is-active' : ''}" style="--faction-color: var(--faction-${faction})">${factionIcon(faction)} ${escapeHtml(enumLabel('gear.faction', faction))}</span>`,
-        )
+        .map((faction) => factionHtml(faction, faction === ctx.shownFaction, true))
         .join('');
     const slotChip = (slot) => {
         const { class: heroClass } = ctx.guide.slots[slot];
-        return `<span class="gear-help__slot"><img class="gear-face" src="${heroImage(heroOf(slot))}" alt="" />${classIcon(heroClass)}${escapeHtml(enumLabel('gear.class', heroClass))} <span class="text-dim">${escapeHtml(heroName(heroOf(slot)))}</span></span>`;
+        return `<span class="gear-help__slot"><img class="hero-face" src="${heroImage(heroOf(slot))}" alt="" />${classIcon(heroClass)}${escapeHtml(enumLabel('gear.class', heroClass))} <span class="text-dim">${escapeHtml(heroName(heroOf(slot)))}</span></span>`;
     };
     const formation = `
         <div class="gear-help__formation">
@@ -102,10 +90,10 @@ function renderHelp() {
     const exampleHtml = example
         ? `
         <div class="gear-help__example">
-            <div class="gear-next gear-next--level">
-                <div class="gear-next__head"><h4>${icon(LANE_ICONS.level)} ${tHtml('gear.nextLevel')}</h4></div>
+            <div class="step-card gear-next--level">
+                <div class="step-card__head"><h4>${icon(LANE_ICONS.level)} ${tHtml('gear.nextLevel')}</h4></div>
                 <p class="gear-next__step">${stepHtml(example)}</p>
-                <div class="gear-next__actions"><span class="gear-chip is-disabled">${actionLabel('done')}</span></div>
+                <div class="step-card__actions"><span class="step-chip is-disabled">${actionLabel('done')}</span></div>
                 ${blockedHtml(needOf(example))}
             </div>
         </div>`
