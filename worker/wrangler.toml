@@ -1,0 +1,29 @@
+# The sync server (src/index.js). Setup, once, from this folder (needs a free Cloudflare account; see the README):
+#   npx wrangler login
+#   npx wrangler d1 create last-asylum-plague-sync          # then put the printed database_id below
+#   npx wrangler d1 execute last-asylum-plague-sync --remote --file schema.sql
+#   npx wrangler deploy
+# Then set SYNC_URL in webapp/src/ui/sync.js to the URL it prints.
+name = "last-asylum-plague-sync"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+
+[vars]
+# The sites that may call it besides localhost (comma separated, e.g. "https://klingo.github.io,http://192.168.1.20:5173").
+ALLOWED_ORIGINS = "https://klingo.github.io"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "last-asylum-plague-sync"
+database_id = "471ef129-d83e-4d00-bcf9-d103b0e225da"
+
+# At most 60 requests a minute per IP; the strict limits (pairing claims, new keys) are counted in the database.
+[[unsafe.bindings]]
+name = "LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 60, period = 60 }
+
+# Daily clean-up: keys unused for 180 days and expired pairing codes.
+[triggers]
+crons = ["17 3 * * *"]

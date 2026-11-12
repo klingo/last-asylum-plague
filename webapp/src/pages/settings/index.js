@@ -1,6 +1,6 @@
 /**
- * Settings (the cogwheel in the header): the settings that shape every value (Count VIP points in the worth) and the
- * model quality: how well the fitted worths reproduce the packs' deal % (`fitItemPoints` diagnostics, the packs
+ * Settings (the cogwheel in the header): the language, the settings that shape every value (Count VIP points in the
+ * worth) and the model quality: how well the fitted worths reproduce the packs' deal % (`fitItemPoints` diagnostics, the packs
  * furthest off, and how well each pack is predicted from the others: `fitHoldOut`, computed in the background),
  * and the collapsed Admin section that records runs through GitHub (admin.js).
  */
@@ -15,7 +15,7 @@ import { packageDisplayName } from '../../ui/labels.js';
 import { formatPercent, formatThousands } from '../../ui/format.js';
 import { infoIconHtml } from '../../ui/info-icon.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
-import { t } from '../../ui/i18n.js';
+import { LOCALES, getLocale, setLocale, t } from '../../ui/i18n.js';
 import { notificationsSupported, requestNotificationPermission } from '../../ui/notifications.js';
 import { initAdmin, renderAdmin } from './admin.js';
 
@@ -152,6 +152,16 @@ function wireSetting(id, key) {
     });
 }
 
+/** The language choice: switching it translates the page (i18n.js). */
+function wireLanguage() {
+    const select = document.getElementById('lang-select');
+    select.innerHTML = Object.entries(LOCALES)
+        .map(([code, { label }]) => `<option value="${code}">${label}</option>`)
+        .join('');
+    select.value = getLocale();
+    select.addEventListener('change', () => setLocale(select.value));
+}
+
 // Why notifications can't be on (the text key), shown under the switch; null = nothing to say.
 let notifyNote = null;
 
@@ -198,6 +208,7 @@ startPage('settings', {
         hydrateItemIcons(document.querySelector('.settings-values'));
         wireSetting('count-vip-points', 'vipPointsInWorth');
         wireNotifications();
+        wireLanguage();
         renderQuality();
         initAdmin(packData);
     },

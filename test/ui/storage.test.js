@@ -3,6 +3,7 @@ import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import {
     STORAGE_KEYS,
+    onWrite,
     readJson,
     readText,
     removeLegacyKeys,
@@ -17,6 +18,16 @@ test('text is saved and read back, nothing saved gives null', () => {
     assert.equal(readText('k'), null);
     writeText('k', 'v');
     assert.equal(readText('k'), 'v');
+});
+
+test('a write that changes the saved text is told to the listeners, one that does not is not', () => {
+    const told = [];
+    onWrite((key) => told.push(key));
+    writeText('watched', 'a');
+    writeText('watched', 'a');
+    writeJson('watched', { b: 1 });
+    writeJson('watched', { b: 1 });
+    assert.deepEqual(told, ['watched', 'watched']);
 });
 
 test('removed text is gone', () => {

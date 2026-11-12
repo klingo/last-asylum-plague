@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/assets/ui/favicon.svg" />
+        <title data-i18n="docTitle.sync"></title>
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <!-- The same settings and progress on every device (the header's Sync button opens this page). -->
+            <section class="card sync-card">
+                <h2 data-i18n="sync.heading"></h2>
+                <p class="page-lead" data-i18n="sync.description"></p>
+
+                <!-- Whether anything is stored on the sync server yet. -->
+                <p class="sync-state">
+                    <span class="sync-badge" id="sync-badge"></span>
+                    <span id="sync-state-text"></span>
+                </p>
+                <p id="sync-status" hidden></p>
+                <p id="sync-result" hidden></p>
+
+                <!-- A typed code or an opened link asks before it replaces this device's data. -->
+                <div class="sync-box sync-box--ask" id="sync-confirm" hidden>
+                    <p id="sync-confirm-text"></p>
+                    <div class="field__buttons">
+                        <button type="button" id="sync-confirm-yes"></button>
+                        <button
+                            type="button"
+                            class="btn-secondary"
+                            id="sync-confirm-no"
+                            data-i18n="sync.cancel"
+                        ></button>
+                    </div>
+                </div>
+
+                <!-- Sync is off: turn it on here (uploads this device's data), or join one that is on elsewhere. -->
+                <div id="sync-off-box">
+                    <p data-i18n="sync.enableNote"></p>
+                    <div class="field__buttons">
+                        <button type="button" id="sync-enable" data-i18n="sync.enable"></button>
+                    </div>
+
+                    <h3 data-i18n="sync.joinHeading"></h3>
+                    <p class="text-dim" data-i18n="sync.joinNote"></p>
+                    <form class="form-row" id="sync-code-form">
+                        <div class="field field--narrow">
+                            <label for="sync-code" data-i18n="sync.codeLabel"></label>
+                            <input
+                                type="text"
+                                id="sync-code"
+                                inputmode="numeric"
+                                autocomplete="off"
+                                maxlength="40"
+                                placeholder="000 000"
+                            />
+                        </div>
+                        <button type="submit" id="sync-code-submit" data-i18n="sync.join"></button>
+                    </form>
+                </div>
+
+                <!-- Sync is on: add a device. -->
+                <div id="sync-on-box" hidden>
+                    <div class="field__buttons">
+                        <button type="button" id="sync-pair-open" data-i18n="sync.pairOpen"></button>
+                        <button type="button" id="sync-upload" hidden data-i18n="sync.upload"></button>
+                    </div>
+
+                    <!-- The code and the QR code of the device being added. -->
+                    <div class="sync-box" id="sync-pair" hidden>
+                        <div class="sync-pair">
+                            <div class="sync-pair__qr" id="sync-qr"></div>
+                            <div class="sync-pair__text">
+                                <p data-i18n="sync.scan"></p>
+                                <p class="sync-pair__code" id="sync-pair-code"></p>
+                                <p id="sync-pair-note"></p>
+                                <button
+                                    type="button"
+                                    class="btn-secondary"
+                                    id="sync-pair-renew"
+                                    data-i18n="sync.pairRenew"
+                                ></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- What is stored and who can read it. -->
+                <details>
+                    <summary data-i18n="sync.aboutHeading"></summary>
+                    <ul class="sync-about">
+                        <li data-i18n="sync.aboutStored"></li>
+                        <li data-i18n="sync.aboutAccess"></li>
+                        <li data-i18n="sync.aboutExpiry"></li>
+                    </ul>
+                </details>
+
+                <!-- With sync: the key as a backup, and the ways to end it. -->
+                <details id="sync-more" hidden>
+                    <summary data-i18n="sync.moreHeading"></summary>
+                    <p class="text-dim" data-i18n="sync.keyNote"></p>
+                    <div class="form-row">
+                        <div class="field field--wide">
+                            <label for="sync-key" data-i18n="sync.keyLabel"></label>
+                            <input type="text" id="sync-key" readonly />
+                        </div>
+                        <button
+                            type="button"
+                            class="btn-secondary"
+                            id="sync-copy-key"
+                            data-i18n="sync.copyKey"
+                        ></button>
+                        <button
+                            type="button"
+                            class="btn-secondary"
+                            id="sync-copy-link"
+                            data-i18n="sync.copyLink"
+                        ></button>
+                    </div>
+                    <div class="field__buttons">
+                        <button type="button" class="btn-secondary" id="sync-rotate" data-i18n="sync.rotate"></button>
+                        <button type="button" class="btn-secondary" id="sync-off" data-i18n="sync.off"></button>
+                        <button type="button" class="btn-secondary" id="sync-delete" data-i18n="sync.delete"></button>
+                    </div>
+                </details>
+            </section>
+        </main>
+        <footer class="app-footer"><span>Klingo's Companion</span></footer>
+        <script type="module" src="/src/pages/sync.js"></script>
+    </body>
+</html>

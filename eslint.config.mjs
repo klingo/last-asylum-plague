@@ -73,8 +73,9 @@ export default defineConfig([
         },
     },
     {
-        // Command-line tools, tests and config files run in Node; the tools and tests report on the console.
-        files: ['scripts/**/*.js', 'test/**/*.js', '*.{js,mjs}', 'webapp/*.js'],
+        // Command-line tools, tests and config files run in Node; the tools and tests report on the console. The
+        // sync worker runs on Cloudflare, whose globals (fetch, Response, crypto, ...) Node shares.
+        files: ['scripts/**/*.js', 'test/**/*.js', '*.{js,mjs}', 'webapp/*.js', 'worker/**/*.js'],
         languageOptions: {
             globals: { ...globals.node },
         },

@@ -14,7 +14,13 @@
         "gear": "Ausrüstungs-Upgradepfad",
         "skills": "Skill-Upgradepfad",
         "lordSpecialty": "Lord-Spezialisierung",
-        "language": "Sprache",
+        "sync": "Sync",
+        "syncState": {
+            "off": "Synchronisierung ist aus: nichts liegt auf dem Sync-Server",
+            "good": "Synchronisierung ist an und aktuell",
+            "warn": "Synchronisierung ist an, aber Änderungen warten oder der Sync-Server ist ausgelastet oder nicht erreichbar",
+            "bad": "Synchronisierung braucht Aufmerksamkeit: öffne die Sync-Seite"
+        },
         "items": "Gegenstandsprioritäten",
         "compare": "Gegenstände vergleichen",
         "menu": "Menü",
@@ -152,6 +158,7 @@
         "skills": "Skill-Upgradepfad - Klingo's Companion",
         "lordSpecialty": "Lord-Spezialisierung - Klingo's Companion",
         "settings": "Einstellungen - Klingo's Companion",
+        "sync": "Synchronisierung - Klingo's Companion",
         "items": "Gegenstandsprioritäten - Klingo's Companion",
         "compare": "Gegenstände vergleichen - Klingo's Companion"
     },
@@ -166,6 +173,11 @@
         "impact": "Ändert jeden Wert auf jeder Seite",
         "vipOn": "An: Die Werte folgen dem Deal-% des Spiels, in dem VIP-Punkte Teil des Paketpreises sind.",
         "vipOff": "Aus (Standard): VIP-Punkte sind nichts wert; der übrige Inhalt jedes Pakets trägt seinen Preis (Münzen, Spitzhacken und was sie kaufen, steigen).",
+        "language": {
+            "heading": "Sprache",
+            "description": "Die Sprache der App, in diesem Browser gespeichert.",
+            "label": "Sprache"
+        },
         "quality": {
             "heading": "Modellqualität",
             "median": "Mittlerer Paketfehler (Median)",
@@ -218,6 +230,76 @@
                 "network": "GitHub war nicht erreichbar.",
                 "error": "GitHub hat die Anfrage abgelehnt."
             }
+        }
+    },
+    "sync": {
+        "heading": "Synchronisierung",
+        "description": "Nutze dieselben Einstellungen und denselben Fortschritt auf allen deinen Geräten. Kein Konto nötig.",
+        "aboutHeading": "Was wird synchronisiert?",
+        "aboutStored": "Deine Einstellungen und dein Fortschritt: Prioritäten, Wochenbudget, Ausrüstung, Skills und Lord-Spezialisierung. Nicht die Sprache.",
+        "aboutAccess": "Kein Konto: Wer deinen Sync-Schlüssel hat, kann diese Daten sehen und ändern. Es werden keine persönlichen Daten gespeichert.",
+        "aboutExpiry": "Daten, die 180 Tage lang nicht synchronisiert werden, werden gelöscht.",
+        "stateOff": "Synchronisierung ist aus",
+        "stateOffText": "Deine Daten sind nur in diesem Browser gespeichert.",
+        "stateOn": "Synchronisierung ist an",
+        "stateOnText": "Deine Änderungen werden online gespeichert und erscheinen auf deinen verbundenen Geräten.",
+        "enable": "Synchronisierung einschalten",
+        "enableNote": "Lädt die Daten dieses Geräts hoch, damit deine anderen Geräte sie nutzen können.",
+        "pairOpen": "Weiteres Gerät verbinden",
+        "scan": "Scanne den QR-Code mit dem anderen Gerät oder gib diesen Code auf dessen Sync-Seite ein:",
+        "pairLeft": "Noch {time} gültig.",
+        "pairClaimed": "Verbunden ✓",
+        "pairExpired": "Dieser Code ist abgelaufen.",
+        "pairRenew": "Neuer Code",
+        "upload": "Daten dieses Geräts erneut hochladen",
+        "joinHeading": "Nutzt du die Synchronisierung schon auf einem anderen Gerät?",
+        "joinNote": "Gib den Code ein, der dort angezeigt wird. Die Daten dieses Geräts werden ersetzt.",
+        "codeLabel": "Code vom anderen Gerät",
+        "join": "Verbinden",
+        "moreHeading": "Sync-Schlüssel und Optionen",
+        "keyNote": "Dein Sync-Schlüssel ist das Passwort für deine synchronisierten Daten. Halte ihn privat.",
+        "keyLabel": "Sync-Schlüssel",
+        "copyKey": "Schlüssel kopieren",
+        "copyLink": "Link kopieren",
+        "rotate": "Neuer Schlüssel",
+        "off": "Auf diesem Gerät ausschalten",
+        "delete": "Ausschalten und vom Server löschen",
+        "cancel": "Abbrechen",
+        "confirm": {
+            "code": "Mit Code {code} verbinden? Die Daten dieses Geräts werden durch die synchronisierten ersetzt.",
+            "key": "Mit diesem Sync-Schlüssel verbinden? Die Daten dieses Geräts werden durch die synchronisierten ersetzt.",
+            "rotate": "Einen neuen Schlüssel erstellen? Deine anderen Geräte synchronisieren nicht mehr, bis du sie erneut verbindest.",
+            "delete": "Die Daten vom Server löschen und die Synchronisierung hier ausschalten? Andere Geräte behalten ihre eigenen Daten, zeigen aber einen Fehler, bis du die Synchronisierung auch dort ausschaltest."
+        },
+        "yes": {
+            "connect": "Ja, verbinden",
+            "rotate": "Ja, neuer Schlüssel",
+            "delete": "Ja, löschen"
+        },
+        "status": {
+            "synced": "Zuletzt synchronisiert: {time}.",
+            "waiting": "Warte auf die erste Synchronisierung…",
+            "network": "Der Sync-Server ist nicht erreichbar. Deine Änderungen bleiben hier gespeichert und werden später gesendet.",
+            "rateLimited": "Der Server ist ausgelastet. Versuche es in ein paar Minuten erneut.",
+            "notFound": "Der Server hat keine Daten zu diesem Schlüssel (anderswo gelöscht oder 180 Tage nicht genutzt). Lade die Daten dieses Geräts erneut hoch oder schalte die Synchronisierung aus.",
+            "error": "Der Server hat die Anfrage abgelehnt."
+        },
+        "done": {
+            "enabled": "Synchronisierung ist an. Die Daten dieses Geräts liegen jetzt auf dem Sync-Server.",
+            "copied": "Kopiert.",
+            "rotated": "Neuer Schlüssel erstellt. Verbinde deine anderen Geräte erneut.",
+            "deleted": "Vom Server gelöscht. Die Synchronisierung ist auf diesem Gerät aus.",
+            "uploaded": "Hochgeladen."
+        },
+        "error": {
+            "network": "Der Sync-Server war nicht erreichbar.",
+            "rateLimited": "Zu viele Versuche. Warte ein paar Minuten und versuche es erneut.",
+            "notFound": "Der Server hat keine Daten zu diesem Schlüssel.",
+            "error": "Der Sync-Server hat die Anfrage abgelehnt.",
+            "badInput": "Gib den sechsstelligen Code vom anderen Gerät ein (oder einen Sync-Schlüssel).",
+            "badCode": "Dieser Code ist falsch oder abgelaufen. Erstelle auf dem anderen Gerät einen neuen.",
+            "badKey": "Der Server hat keine Daten zu diesem Schlüssel.",
+            "copyFailed": "Kopieren ist hier nicht möglich. Der Schlüssel ist markiert; kopiere ihn von Hand."
         }
     },
     "calendar": {

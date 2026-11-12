@@ -14,7 +14,13 @@
         "gear": "Gear Upgrade Path",
         "skills": "Skill Upgrade Path",
         "lordSpecialty": "Lord Specialty",
-        "language": "Language",
+        "sync": "Sync",
+        "syncState": {
+            "off": "Sync is off: nothing is stored on the sync server",
+            "good": "Sync is on and up to date",
+            "warn": "Sync is on, but changes are waiting or the sync server is busy or not reachable",
+            "bad": "Sync needs attention: open the Sync page"
+        },
         "items": "Item Priorities",
         "compare": "Compare Items",
         "menu": "Menu",
@@ -152,6 +158,7 @@
         "skills": "Skill Upgrade Path - Klingo's Companion",
         "lordSpecialty": "Lord Specialty - Klingo's Companion",
         "settings": "Settings - Klingo's Companion",
+        "sync": "Sync - Klingo's Companion",
         "items": "Item Priorities - Klingo's Companion",
         "compare": "Compare Items - Klingo's Companion"
     },
@@ -166,6 +173,11 @@
         "impact": "Affects every value on every page",
         "vipOn": "On: values follow the game's deal %, where VIP points are part of a pack's price.",
         "vipOff": "Off (default): VIP points are worth nothing; each pack's other contents carry its price (coins, pickaxes and what they buy rise).",
+        "language": {
+            "heading": "Language",
+            "description": "The language of the app, saved in this browser.",
+            "label": "Language"
+        },
         "quality": {
             "heading": "Model quality",
             "median": "Median pack error",
@@ -218,6 +230,76 @@
                 "network": "GitHub couldn't be reached.",
                 "error": "GitHub refused the request."
             }
+        }
+    },
+    "sync": {
+        "heading": "Sync",
+        "description": "Use the same settings and progress on all your devices. No account needed.",
+        "aboutHeading": "What is synced?",
+        "aboutStored": "Your settings and progress: priorities, weekly spend, gear, skills and lord specialty. Not the language.",
+        "aboutAccess": "No account: anyone with your sync key can see and change this data. Nothing personal is stored.",
+        "aboutExpiry": "Data that isn't synced for 180 days is deleted.",
+        "stateOff": "Sync is off",
+        "stateOffText": "Your data is stored only in this browser.",
+        "stateOn": "Sync is on",
+        "stateOnText": "Your changes are saved online and show up on your connected devices.",
+        "enable": "Turn on sync",
+        "enableNote": "Uploads this device's data so your other devices can use it.",
+        "pairOpen": "Connect another device",
+        "scan": "Scan the QR code with the other device, or enter this code on its Sync page:",
+        "pairLeft": "Valid for {time}.",
+        "pairClaimed": "Connected ✓",
+        "pairExpired": "This code has expired.",
+        "pairRenew": "New code",
+        "upload": "Upload this device's data again",
+        "joinHeading": "Already using sync on another device?",
+        "joinNote": "Enter the code shown there. This device's data will be replaced.",
+        "codeLabel": "Code from the other device",
+        "join": "Connect",
+        "moreHeading": "Sync key and options",
+        "keyNote": "Your sync key is the password for your synced data. Keep it private.",
+        "keyLabel": "Sync key",
+        "copyKey": "Copy key",
+        "copyLink": "Copy link",
+        "rotate": "New key",
+        "off": "Turn off on this device",
+        "delete": "Turn off and delete from server",
+        "cancel": "Cancel",
+        "confirm": {
+            "code": "Connect with code {code}? This device's data will be replaced by the synced data.",
+            "key": "Connect with this sync key? This device's data will be replaced by the synced data.",
+            "rotate": "Create a new key? Your other devices stop syncing until you connect them again.",
+            "delete": "Delete the data from the server and turn sync off here? Other devices keep their own data but show an error until you turn sync off there too."
+        },
+        "yes": {
+            "connect": "Yes, connect",
+            "rotate": "Yes, new key",
+            "delete": "Yes, delete"
+        },
+        "status": {
+            "synced": "Last synced: {time}.",
+            "waiting": "Waiting for the first sync…",
+            "network": "The sync server can't be reached. Your changes are kept here and sent later.",
+            "rateLimited": "The server is busy. Try again in a few minutes.",
+            "notFound": "The server has no data for this key (deleted elsewhere, or unused for 180 days). Upload this device's data again, or turn sync off.",
+            "error": "The server refused the request."
+        },
+        "done": {
+            "enabled": "Sync is on. This device's data is now on the sync server.",
+            "copied": "Copied.",
+            "rotated": "New key created. Connect your other devices again.",
+            "deleted": "Deleted from the server. Sync is off on this device.",
+            "uploaded": "Uploaded."
+        },
+        "error": {
+            "network": "The sync server couldn't be reached.",
+            "rateLimited": "Too many tries. Wait a few minutes and try again.",
+            "notFound": "The server has no data for this key.",
+            "error": "The sync server refused the request.",
+            "badInput": "Enter the six-digit code from the other device (or a sync key).",
+            "badCode": "This code is wrong or has expired. Create a new one on the other device.",
+            "badKey": "The server has no data for this key.",
+            "copyFailed": "Copying isn't possible here. The key is selected; copy it by hand."
         }
     },
     "calendar": {

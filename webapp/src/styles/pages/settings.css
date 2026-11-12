@@ -67,6 +67,11 @@
     content: '⚠ ';
 }
 
+/* Settings > Language: the choice is as wide as the longest language name needs, not the card. */
+.settings-language select {
+    width: 200px;
+}
+
 /* Settings: the packs the fit is furthest off. */
 .fit-worst {
     font-size: 0.85rem;

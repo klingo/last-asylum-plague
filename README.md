@@ -15,7 +15,7 @@ planners for gear upgrades, hero skills and the lord's specialty skills. Texts a
 
 ## Quick start
 
-Needs Node.js 22.8 or newer.
+Needs Node.js 22.13 or newer (the tests of the sync server use Node's built-in SQLite).
 
 ```bash
 npm install                    # first time only (one package for everything)
@@ -37,7 +37,8 @@ webapp/                 the HTML pages (their URLs are the Pages URLs), vite.con
   src/i18n/             en.json and de.json: UI texts and the labels of the data's codes
   public/assets/        images: items/<category>/, events/, heroes/, lord/, gear/, ui/
 scripts/                verify-data, i18n:missing, record-run and the commit hooks (lib/: what they share)
-test/                   unit tests (core/, ui/, scripts/) and golden tests on a frozen copy of the data
+worker/                 the sync server (Cloudflare Worker + D1), deployed on its own; see "Sync server" below
+test/                   unit tests (core/, ui/, scripts/, worker/) and golden tests on a frozen copy of the data
 docs/                   pages.md and valuation.md
 ```
 
@@ -64,7 +65,7 @@ sorted yet are also found directly in `items/`, a placeholder shows otherwise). 
 
 ```bash
 npm test                       # unit tests + golden tests (test/)
-npm run test:coverage          # the same with coverage of core/, ui/ and scripts/ (coverage/lcov.info)
+npm run test:coverage          # the same with coverage of core/, ui/, scripts/ and worker/ (coverage/lcov.info)
 UPDATE_GOLDEN=1 npm test       # rewrite test/golden/*.json, only for a change of the model that is intended
 ```
 
@@ -90,6 +91,27 @@ passing checks before it can be merged, add a branch protection rule (or ruleset
 Branches** with **Require status checks to pass before merging** and select `verify-data`, `lint`, `test` and `build`.
 
 Dependabot proposes updates to the npm packages and the GitHub Actions every week (`.github/dependabot.yml`).
+
+## Sync server
+
+The Sync page (the header's Sync button) keeps settings and progress the same on a user's devices. The site is static, so this needs one small
+backend: `worker/` is a Cloudflare Worker with a D1 database (both on the free plan; a flood of requests can only use
+up the daily limits, it can't cost anything). It isn't part of the Pages deployment and is set up once by hand, from
+`worker/`:
+
+```bash
+npx wrangler login
+npx wrangler d1 create last-asylum-plague-sync                          # put the printed database_id into wrangler.toml
+npx wrangler d1 execute last-asylum-plague-sync --remote --file schema.sql
+npx wrangler deploy                                         # prints the Worker's URL
+```
+
+Then set `SYNC_URL` in `webapp/src/ui/sync.js` to that URL and, if the site is served from another origin than
+`https://klingo.github.io`, `ALLOWED_ORIGINS` in `wrangler.toml`. Until `SYNC_URL` is set the Sync button stays hidden.
+To try it locally, run `npx wrangler d1 execute last-asylum-plague-sync --local --file schema.sql` and `npx wrangler dev` in
+`worker/`, and point `SYNC_URL` at `http://localhost:8787` (the Vite dev server on localhost may call it; to scan the QR
+code with a phone on the LAN, add the dev server's address to `ALLOWED_ORIGINS` in `worker/.dev.vars`). The Worker's
+header comment describes its routes and abuse guards.
 
 ## Disclaimer
 

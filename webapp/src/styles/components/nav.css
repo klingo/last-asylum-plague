@@ -178,19 +178,19 @@
     }
 }
 
-/* The settings cogwheel and the language switcher, at the right of the header. */
+/* The Sync button and the settings cogwheel, at the right of the header. */
 .app-header__tools {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-/* As tall as the language switcher next to it, square. */
-.app-settings-link {
+/* The cogwheel: a square. The Sync button beside it has the same height and looks the same. */
+.app-settings-link,
+.app-sync-link {
     display: grid;
     place-items: center;
-    align-self: stretch;
-    width: 37px;
+    height: 37px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--panel-alt);
@@ -199,19 +199,49 @@
     line-height: 1;
 }
 
+.app-settings-link {
+    width: 37px;
+}
+
+.app-sync-link {
+    grid-auto-flow: column;
+    gap: 8px;
+    padding: 0 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* How the sync is doing: green good, amber catching up, red needs you, a grey ring when it is off. */
+.app-sync-dot {
+    width: 9px;
+    height: 9px;
+    box-sizing: border-box;
+    border-radius: 50%;
+}
+
+.app-sync-dot--off {
+    border: 1px solid var(--text-dim);
+}
+
+.app-sync-dot--good {
+    background: var(--good);
+}
+
+.app-sync-dot--warn {
+    background: var(--warn);
+}
+
+.app-sync-dot--bad {
+    background: var(--bad);
+}
+
 .app-settings-link:hover,
-.app-settings-link.active {
+.app-settings-link.active,
+.app-sync-link:hover,
+.app-sync-link.active {
     border-color: var(--accent);
     color: var(--text);
     text-decoration: none;
-}
-
-.lang-switch select {
-    padding: 6px 10px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--panel-alt);
-    color: var(--text);
 }
 
 .app-footer__updated::before,

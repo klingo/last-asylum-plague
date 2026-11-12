@@ -8,8 +8,10 @@ The top nav starts with **Today** (the home page) and **Calendar**, then groups 
 screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
 Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
 **Heroes** (Gear Upgrade Path, Skill Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
-`events.html`, `gear.html`, ...), so saved links still work. The cogwheel next to the language switcher opens
-**Settings** (`settings.html`) has four sections: **Valuation**, the settings that shape every value (Count VIP points
+`events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
+**Settings**.
+
+**Settings** (`settings.html`) has five sections: **Language**, the app's language (saved in this browser); **Valuation**, the settings that shape every value (Count VIP points
 in the worth); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
 4-hour slot of its rotation; switching it on asks the browser for permission, and as there is no server to push from, the
 notification only comes while a tab of the app is open; while it is on, Today marks the Survival Battle bars with a bell); **Model quality**, how well the fitted worths reproduce the
@@ -20,6 +22,16 @@ cover today but aren't recorded yet (one button each), or pick any event, pass o
 days (pre-filled with the median of its recorded runs). Every request first asks for a confirmation; "Yes" starts the
 `record-run` workflow (`.github/workflows/record-run.yml`), which runs `npm run record-run`, verifies the data, commits
 to `master` and starts the deployment, so the change shows up on the site after a couple of minutes.
+
+**Sync** (`sync.html`) keeps the same settings and progress on every device (priorities, weekly spend, gear, skill and
+lord progress; the language stays per device). "Connect another device" turns sync on and shows a six-digit code with a
+QR code (valid 10 minutes, one use) that the other device types (phone to desktop) or scans (desktop to phone); after a
+confirmation that device's own data is replaced by the synced one. The sync key behind it is only a backup (copy it or
+its link, make a new one, turn sync off here, or delete the data from the server). A change is sent two seconds after it
+is made; a page start and coming back to the tab take what other devices changed (a change made offline wins over an
+older one elsewhere). The data lives on a small Cloudflare Worker (`worker/`), keyed by the SHA-256 of the key and
+deleted after 180 days without use; the button stays hidden until the build has that server (`SYNC_URL` in
+`ui/sync.js`).
 
 - **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
   days (recorded runs and proven forecasts), the weekly plan by when to buy it (daily packs, weekly and longer packs,

@@ -9,6 +9,16 @@
     <body>
         <header class="app-header"></header>
         <main>
+            <!-- The language of the app (saved in the browser). -->
+            <section class="card settings-language">
+                <h2 data-i18n="settings.language.heading"></h2>
+                <p class="page-lead" data-i18n="settings.language.description"></p>
+                <div class="field field--narrow">
+                    <label for="lang-select" data-i18n="settings.language.label"></label>
+                    <select id="lang-select"></select>
+                </div>
+            </section>
+
             <!-- Settings that shape every value in the app (saved in the browser, like the weekly spend). -->
             <section class="card settings-values">
                 <h2 data-i18n="settings.heading"></h2>

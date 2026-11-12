@@ -32,3 +32,7 @@ Thumbs.db
 .claude/jobs/
 .claude/worktrees/
 .claude/settings.local.json
+
+# Cloudflare Worker (worker/): local state and secrets
+.wrangler
+.dev.vars

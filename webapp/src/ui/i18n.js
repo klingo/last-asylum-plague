@@ -19,11 +19,11 @@ import de from '../i18n/de.json' with { type: 'json' };
 import { escapeHtml } from './html.js';
 import { STORAGE_KEYS, readText, writeText } from './storage.js';
 
-// The languages: dictionary and the short name on the language switch. A new language needs its
+// The languages: dictionary and the language's own name in the choice on the Settings page. A new language needs its
 // i18n/<code>.json here (and its `name.<code>` in pack_data.schema.json's localizedString).
 const LOCALES = {
-    en: { dictionary: en, label: 'EN' },
-    de: { dictionary: de, label: 'DE' },
+    en: { dictionary: en, label: 'English' },
+    de: { dictionary: de, label: 'Deutsch' },
 };
 const DICTIONARIES = Object.fromEntries(Object.entries(LOCALES).map(([code, { dictionary }]) => [code, dictionary]));
 const SUPPORTED_LOCALES = Object.keys(LOCALES);

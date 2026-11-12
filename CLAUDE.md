@@ -63,7 +63,7 @@ npm run verify-data                                          # validate data/pac
 npm run lint                                                  # eslint .
 npm run format:check                                          # prettier --check (npm run format fixes); CI runs it with lint
 npm test                                                      # node:test: unit tests + golden files (test/)
-npm run test:coverage                                         # the same with Node's coverage of core/, ui/, scripts/; fails below 90 % lines / 85 % branches / 90 % functions
+npm run test:coverage                                         # the same with Node's coverage of core/, ui/, scripts/, worker/; fails below 90 % lines / 85 % branches / 90 % functions
 UPDATE_GOLDEN=1 npm test                                      # rewrite test/golden/*.json (only for an intended change)
 npm run webapp:dev                                            # vite dev server (imports data/pack_data.json directly)
 npm run webapp:build                                          # vite build -> webapp/dist
@@ -73,7 +73,9 @@ npm run record-run -- <ids...> [START] <DAYS> | --show [ids]  # record when even
 ```
 
 Tests (`test/`, run in CI before deploying) mirror the source: `test/core/<module>.test.js`, `test/ui/` (the ui modules
-run in Node on the stand-in browser of `test/ui/env.js`), `test/scripts/`; `test/helpers.js` has the fixture, HiGHS and
+run in Node on the stand-in browser of `test/ui/env.js`), `test/scripts/`, `test/worker/` (the sync worker on an in-memory
+SQLite standing in for D1, `test/worker/d1.js`; `test/ui/sync.test.js` runs the client against that same worker code);
+`test/helpers.js` has the fixture, HiGHS and
 fit setup, the schedule's game days and `near`. They are unit tests on small inline data plus golden tests that pin the fit,
 the weekly plan, Compare, Item Sources and the gear path order on a frozen copy of the data
 (`test/fixtures/pack_data.json`). A data change doesn't touch them; a model change that moves a number fails them.
@@ -99,6 +101,8 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   `schedule.js`, `mine.js` and `item-sources.js`.
 - `webapp/src/ui/` holds the browser helpers: `valuation.js` (the worth model on top of the planner), `valuation-page.js`
   (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage: every key is listed in `STORAGE_KEYS`, prefix `lapkc_`; a new one goes there),
+  `sync.js` (the cross-device sync client; an entry that should sync goes into `SYNCED_ENTRIES` in `core/sync.js`, which the
+  worker shares),
   `i18n.js`, `format.js`, `datetime.js`, `html.js`, `hero-parts.js` (the hero faction switch and heads of the Gear and Skills pages), `labels.js`, `url.js`, `grid.js`, `github.js` (the token and the call that starts the record-run workflow, for Settings > Admin) and the other builders of markup.
 - `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (shared pieces: hero faction switch and heads, step card / step list / progress bar of the guide pages; loaded on every page by
   `ui/page.js`, in that order) and `pages/<page>.css` (the page script imports its own, after the shared ones). A rule keeps
@@ -108,6 +112,11 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   `events/`, `packages/` (a weekday offer's own picture, `<pack id>.webp`: its thumbnail before the name on Today and the
   Calendar, a placeholder tile without it as with events, and the art of its bar's hover card on the Calendar),
   `heroes/` (portraits; `heroes/skills/<skill id>.png`: the skills' icons, 144×144, one `tenacity.png` for the 8-star skill), `lord/`, `gear/{stars,classes,factions,slots}/` (`slots/{sword,armor,gauntlets,boots}.png`: the silhouette of an uncrafted piece, 60×60) and `ui/` (the placeholder icon, the Banknote icon).
+- `worker/` is the one backend: a Cloudflare Worker with a D1 database (`src/index.js`, `schema.sql`, `wrangler.toml`)
+  that syncs the user's settings and progress between devices. It is deployed by hand, not by the Pages workflow (README,
+  "Sync server"), imports only `core/sync.js` from the webapp and is dormant until `SYNC_URL` in `ui/sync.js` is set (the
+  header hides the Sync button that opens `sync.html`). A device pairs with a six-digit code or a QR code; the sync key is the login, so it travels in a
+  header and the server keeps only its hash. Synced entries: settings, gear / skill progress, lord setup (not the language).
 - `webapp/src/i18n/{en,de}.json` holds UI texts and code labels. `scripts/` holds verify-data, i18n:missing,
   record-run and the commit hooks (`scripts/lib/` holds what they share: the data file paths and JSON format, the
   code labels). A script exports its pure parts for the tests and runs `main()` only when started directly.

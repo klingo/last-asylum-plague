@@ -1,12 +1,13 @@
 /**
  * The page header and footer, drawn by `renderNav(pageId)` (see page.js): Today, Calendar and the menus of the other
- * pages (`NAV_GROUPS`, below), the settings cogwheel and the language switcher; on phones a ☰ button shows the menus
+ * pages (`NAV_GROUPS`, below), the Sync button (once the build has a sync server) and the settings cogwheel; on phones a ☰ button shows the menus
  * stacked. The footer gets two stamps: when the data was last updated and when the site last changed. Both are
  * translated again on a language switch.
  */
-import { t, getLocale, setLocale, LOCALES, tHtml } from './i18n.js';
+import { t, getLocale, tHtml } from './i18n.js';
 import { escapeAttr } from './html.js';
 import { BASE_URL } from './base-url.js';
+import { syncAvailable, syncLevel } from './sync.js';
 
 // Date the pack data was last updated (`metadata.last_updated`), shown in the footer.
 let dataDate = null;
@@ -115,6 +116,21 @@ const NAV_GROUPS = [
     },
 ];
 
+/** The Sync button's dot and tooltip: how the sync is doing (green, amber, red; grey when it is off). */
+function updateSyncIndicator() {
+    const link = document.querySelector('.app-sync-link');
+    if (!link) {
+        return;
+    }
+    const level = syncLevel();
+    const state = t(`nav.syncState.${level}`);
+    link.querySelector('.app-sync-dot').className = `app-sync-dot app-sync-dot--${level}`;
+    link.title = state;
+    link.setAttribute('aria-label', `${t('nav.sync')}: ${state}`);
+}
+
+window.addEventListener('syncchange', updateSyncIndicator);
+
 // Remembered across `renderNav()` calls so the "localechange" listener below can re-render
 // with the same active page without having to re-derive it from the (about to be replaced) DOM.
 let currentActivePage = 'today';
@@ -130,7 +146,7 @@ function closeMenus(keep = null) {
 }
 
 /**
- * Renders the shared top navigation bar (menus with their pages, plus the settings cogwheel and the language switcher)
+ * Renders the shared top navigation bar (menus with their pages, plus the Sync button and the settings cogwheel)
  * and marks the current page and its menu as active. Re-run automatically on every
  * "localechange" event so the nav's own text stays in sync, without each page having to
  * remember to do it.
@@ -142,10 +158,6 @@ function renderNav(activePage) {
         return;
     }
     const base = BASE_URL;
-    const locale = getLocale();
-    const langOptions = Object.entries(LOCALES)
-        .map(([code, { label }]) => `<option value="${code}" ${code === locale ? 'selected' : ''}>${label}</option>`)
-        .join('');
     const link = (href, label, active, description) =>
         `<a href="${base}${href}" class="${active ? 'active' : ''}" title="${escapeAttr(t(description))}" ${active ? 'aria-current="page"' : ''}>${tHtml(label)}</a>`;
     const groups = NAV_GROUPS.map((group) => {
@@ -172,17 +184,12 @@ function renderNav(activePage) {
             ${groups}
         </nav>
         <div class="app-header__tools">
+            ${syncAvailable() ? `<a href="${base}sync.html" class="app-sync-link${activePage === 'sync' ? ' active' : ''}" ${activePage === 'sync' ? 'aria-current="page"' : ''}><span class="app-sync-dot" aria-hidden="true"></span>${tHtml('nav.sync')}</a>` : ''}
             <a href="${base}settings.html" class="app-settings-link${activePage === 'settings' ? ' active' : ''}" title="${tHtml('nav.settings')}" aria-label="${tHtml('nav.settings')}" ${activePage === 'settings' ? 'aria-current="page"' : ''}>⚙</a>
-            <label class="lang-switch">
-                <span class="sr-only">${tHtml('nav.language')}</span>
-                <select id="lang-select">${langOptions}</select>
-            </label>
         </div>
     `;
 
-    header.querySelector('#lang-select').addEventListener('change', (event) => {
-        setLocale(event.target.value);
-    });
+    updateSyncIndicator();
     const toggle = header.querySelector('.app-nav__toggle');
     toggle.addEventListener('click', () => {
         const open = header.classList.toggle('nav-open');

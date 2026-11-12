@@ -5,7 +5,7 @@
     "description": "Static webapp (item, package and exchange-shop valuation) for Last Asylum: Plague, deployed to GitHub Pages.",
     "type": "module",
     "engines": {
-        "node": ">=22.8"
+        "node": ">=22.13"
     },
     "scripts": {
         "format": "prettier --write \"**/*.{js,jsx,json,css}\"",
@@ -16,7 +16,7 @@
         "record-run": "node scripts/record-run.js",
         "sort-pack-data": "node scripts/sort-pack-data.js",
         "test": "node --test \"test/**/*.test.js\"",
-        "test:coverage": "node -e \"require('node:fs').mkdirSync('coverage', { recursive: true })\" && node --test --experimental-test-coverage --test-coverage-include=\"webapp/src/core/**\" --test-coverage-include=\"webapp/src/ui/**\" --test-coverage-include=\"scripts/**\" --test-coverage-exclude=\"test/**\" --test-coverage-lines=90 --test-coverage-branches=85 --test-coverage-functions=90 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=spec --test-reporter-destination=coverage/report.txt --test-reporter=lcov --test-reporter-destination=coverage/lcov.info \"test/**/*.test.js\"",
+        "test:coverage": "node -e \"require('node:fs').mkdirSync('coverage', { recursive: true })\" && node --test --experimental-test-coverage --test-coverage-include=\"webapp/src/core/**\" --test-coverage-include=\"webapp/src/ui/**\" --test-coverage-include=\"scripts/**\" --test-coverage-include=\"worker/**\" --test-coverage-exclude=\"test/**\" --test-coverage-lines=90 --test-coverage-branches=85 --test-coverage-functions=90 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=spec --test-reporter-destination=coverage/report.txt --test-reporter=lcov --test-reporter-destination=coverage/lcov.info \"test/**/*.test.js\"",
         "update-last-updated": "node scripts/update-last-updated.js",
         "verify-data": "node scripts/verify-data.js",
         "webapp:dev": "vite webapp",
@@ -24,7 +24,8 @@
         "webapp:preview": "vite preview webapp"
     },
     "dependencies": {
-        "highs": "^1.15.3"
+        "highs": "^1.15.3",
+        "uqr": "^0.1.3"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",

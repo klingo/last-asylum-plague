@@ -14,6 +14,7 @@ const STORAGE_KEYS = {
     lordSetup: 'lapkc_lord_setup', // the Lord Specialty's level, extra points, lord and builds
     notified: 'lapkc_notified', // the last notification shown per kind, so tabs and reloads don't repeat it
     githubToken: 'lapkc_github_token', // the personal access token of Settings > Admin (ui/github.js)
+    sync: 'lapkc_sync', // the sync key and what this device last synced (ui/sync.js); never synced itself
 };
 
 // What earlier versions of the app saved (prefix `lasps_`): nothing reads it any more, so it is removed.
@@ -28,10 +29,21 @@ function readText(key) {
     }
 }
 
+const writeListeners = new Set();
+
+/** Calls `listener(key)` whenever a write changes what is saved under a key (the sync follows the entries so). */
+function onWrite(listener) {
+    writeListeners.add(listener);
+}
+
 /** Saves `text` under `key`. */
 function writeText(key, text) {
     try {
+        const changed = window.localStorage.getItem(key) !== text;
         window.localStorage.setItem(key, text);
+        if (changed) {
+            writeListeners.forEach((listener) => listener(key));
+        }
     } catch {
         // Not saved.
     }
@@ -70,4 +82,4 @@ function removeLegacyKeys() {
     }
 }
 
-export { STORAGE_KEYS, readText, writeText, removeText, readJson, writeJson, removeLegacyKeys };
+export { STORAGE_KEYS, onWrite, readText, writeText, removeText, readJson, writeJson, removeLegacyKeys };
