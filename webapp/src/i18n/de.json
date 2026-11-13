@@ -803,7 +803,7 @@
             "awakeningTitle": "Erweckte Helden",
             "awakeningText": "Ein erweckter Held kann seine Skills über Lv {max} hinaus steigern, bis zur Grenze, die seine Erweckungslevel ergibt. Gib die Erweckungslevel von Marlena, Cynthia oder Annie ein, und die Seite zeigt die Grenze. Die Schritte bleiben, wie sie sind.",
             "detailTitle": "Skill-Details",
-            "detailText": "Klick auf einen Skill, um zu lesen, was er auf dem aktuellen Level des Helden bewirkt; die Zahl, die der nächste Schritt erreicht, folgt in Klammern.",
+            "detailText": "Klick auf einen Skill, um zu lesen, was er auf dem aktuellen Level des Helden bewirkt; die Zahl, die der nächste Schritt erreicht, folgt in Klammern. Die Zahlen sind die eines Helden mit 10 Sternen und stimmen so mit dem Spiel überein; unter der Beschreibung stehen die Stern-Boni des Skills, jeweils mit dem Stern, bei dem sie freigeschaltet werden.",
             "fixTitle": "Fehler und dein Fortschritt",
             "undoText": "{undo} nimmt den letzten Schritt zurück.",
             "listText": "Schon weiter im Spiel? Öffne die ganze Liste unter der Karte und klick auf den letzten Schritt, den du erledigt hast: Er und alles davor zählt als erledigt, alles danach als offen.",

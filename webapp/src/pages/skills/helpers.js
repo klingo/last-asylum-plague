@@ -8,6 +8,8 @@ import { heroImage as heroImageOf, heroName as heroNameOf } from '../../ui/hero-
 import { ctx } from './state.js';
 
 const ICONS = `${BASE_URL}assets/heroes/skills/`;
+// The filled star of the gear pages, after the star a bonus unlocks at.
+const STAR_ICON = `${BASE_URL}assets/gear/stars/5_5_ur.png`;
 // The icons of the buttons, as on the buttons themselves and in "How it works".
 const ACTION_ICONS = { done: '✓', undo: '↶', startOver: '↺' };
 
@@ -48,4 +50,5 @@ export {
     skillName,
     skillOf,
     slotLabel,
+    STAR_ICON,
 };

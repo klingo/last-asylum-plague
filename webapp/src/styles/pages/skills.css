@@ -209,6 +209,36 @@
     color: var(--good);
 }
 
+/* The star bonuses under the description, one row each: the star it unlocks at (number, right-aligned so the star
+   pictures line up under each other), the star picture, then the bonus. */
+.skills-bonus {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    gap: 4px 4px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+}
+
+/* The rows are the grid's: their cells sit in the list's three columns. */
+.skills-bonus li {
+    display: contents;
+}
+
+.skills-bonus__stars {
+    color: var(--text-dim);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.skills-bonus__star {
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 4px;
+}
+
 .skills-detail__meta {
     display: flex;
     flex-wrap: wrap;

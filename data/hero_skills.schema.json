@@ -132,13 +132,53 @@
                 },
                 "values": {
                     "type": "object",
-                    "description": "The level-dependent numbers of the description: per placeholder one list, the entry for level n at index n-1; null where the number isn't known yet (shown as ?).",
+                    "description": "The numbers of the description without any star bonus: per placeholder one list, the entry for level n at index n-1, null where the number isn't known yet (shown as ?); or one number for what doesn't depend on the level (a duration, a target count).",
                     "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
                     "additionalProperties": {
-                        "type": "array",
-                        "maxItems": 40,
-                        "items": { "type": ["number", "null"] }
+                        "oneOf": [
+                            { "type": "number" },
+                            {
+                                "type": "array",
+                                "maxItems": 40,
+                                "items": { "type": ["number", "null"] }
+                            }
+                        ]
                     }
+                },
+                "star_bonuses": {
+                    "type": "array",
+                    "description": "The hero's star bonuses of this skill, by the star they unlock at. The page shows the skill as of a 10-star hero: all of them applied.",
+                    "maxItems": 3,
+                    "items": { "$ref": "#/definitions/starBonus" }
+                }
+            }
+        },
+        "starBonus": {
+            "type": "object",
+            "description": "A star bonus as the game words it. `scale` and `add` give a number's total change as of this star, from its base in `values` (a later bonus on the same number replaces an earlier one, \"increases to 100%\"); `description` is the skill's whole text from this star on (an added effect), replacing the earlier one.",
+            "required": ["stars", "text"],
+            "additionalProperties": false,
+            "properties": {
+                "stars": { "type": "integer", "minimum": 1, "maximum": 10 },
+                "text": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString",
+                    "description": "The bonus, shown below the skill's description."
+                },
+                "scale": {
+                    "type": "object",
+                    "description": "Per placeholder the relative change in percent: base × (1 + n / 100).",
+                    "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+                    "additionalProperties": { "type": "number" }
+                },
+                "add": {
+                    "type": "object",
+                    "description": "Per placeholder the absolute change, added after `scale` (percentage points, seconds, targets).",
+                    "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+                    "additionalProperties": { "type": "number" }
+                },
+                "description": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString",
+                    "description": "The skill's whole text from this star on; its {placeholders} are keys of the skill's `values`."
                 }
             }
         },

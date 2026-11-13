@@ -155,7 +155,10 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   `verify-data`, not part of `pack_data.json`; the heroes' faction, class and portrait stay in `heroes`). It holds the guide
   (`order` of the heroes per faction for the priority steps and `foundation_order` for the foundation steps, the `foundation` levels by class, each hero's `path` of target steps and short
   `note`, `damage_type` (energy or physical, the whole hero's), `awakening_caps`) and every skill by slot (`id` = the icon's file name, `name`, a `description`
-  with `{placeholders}` and `values`: one number per level for each placeholder, `null` where not known yet). Steps and
+  with `{placeholders}` and `values`: one number per level for each placeholder, `null` where not known yet, or one number for what doesn't depend on the
+  level; the base, without star bonuses) and up to three `star_bonuses` (`stars` it unlocks at, `text`, and `scale` in percent /
+  `add` on the placeholders' base values, or a full `description` that replaces the skill's; a later bonus on the same number
+  replaces an earlier one). The page shows every hero at 10 stars, so all bonuses are applied (`starredSkill`). Steps and
   levels are in `core/skill-path.js`. Skill names are data names (`name.de` left blank, never translated by me).
 - The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
   by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs

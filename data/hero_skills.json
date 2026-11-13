@@ -655,8 +655,40 @@
                         "de": ""
                     },
                     "values": {
-                        "damage": []
-                    }
+                        "damage": [87.16]
+                    },
+                    "star_bonuses": [
+                        {
+                            "stars": 1,
+                            "text": {
+                                "en": "Deals 40% extra damage.",
+                                "de": ""
+                            },
+                            "scale": {
+                                "damage": 40
+                            }
+                        },
+                        {
+                            "stars": 5,
+                            "text": {
+                                "en": "Extra damage increases to 100%.",
+                                "de": ""
+                            },
+                            "scale": {
+                                "damage": 100
+                            }
+                        },
+                        {
+                            "stars": 10,
+                            "text": {
+                                "en": "Extra damage increases to 200%.",
+                                "de": ""
+                            },
+                            "scale": {
+                                "damage": 200
+                            }
+                        }
+                    ]
                 },
                 "active": {
                     "id": "lunar_howl",

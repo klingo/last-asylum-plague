@@ -120,12 +120,12 @@ deleted after 180 days without use; the button stays hidden until the build has 
   browser). The board shows the faction's heroes as the squad stands (two tanks, then carry, support, carry; the order they are levelled in is the guide's) with their four upgradable skills as in the game (auto attack and active on the
   left, ultimate and passive on the right) and the 8-star skill (Lv 1) below; the skills the next step raises are framed
   with the level it takes them to. Clicking a skill shows its name with its level and the hero's skill cap ("Lv.22/37"), its type, the hero's damage type
-  (energy light blue, physical orange) and its description at the hero's current level; the level-dependent numbers are green, as in the game, with the number the next step reaches in brackets. The guide is a next-step card (Done / Undo, the hero's
+  (energy light blue, physical orange) and its description at the hero's current level; the level-dependent numbers are green, as in the game, with the number the next step reaches in brackets. Heroes are taken to be at 10 stars: the numbers (and the text, where a bonus adds an effect) have the skill's star bonuses applied, as the game shows them, and the bonuses are listed below the description, each with the star it unlocks at (a yellow star). The guide is a next-step card (Done / Undo, the hero's
   note) and the full list: first the foundation (every damage dealer's skills to Lv 15, tanks and supports to Lv 10, one
   step per skill, hero by hero in the foundation's own order of heroes, each hero's skills in the order of its own steps), then each hero's priorities in the faction's order, each to Lv 30. Players further along click the last
   step they have done. Marlena, Cynthia and Annie can be awakened: the page asks for the awakening level and shows the
   skill cap it gives (Lv 31 at awakening 3 up to Lv 40 at 40); the steps stay as they are. Data: `data/hero_skills.json`
-  (own schema; `verify-data` checks the heroes, paths and icons), heroes' faction, class and portrait from `heroes` in
+  (own schema; `verify-data` checks the heroes, paths, icons and star bonuses), heroes' faction, class and portrait from `heroes` in
   `pack_data.json`.
 - **Lord Specialty** (`lord-specialty.html`) — a planner for the specialty skills of the two lords (Handyman, Legion
   Commander), drawn like the game's tree: Lv.1 at the bottom, a specialty skill left and right of every unlock level,

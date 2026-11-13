@@ -803,7 +803,7 @@
             "awakeningTitle": "Awakened heroes",
             "awakeningText": "An awakened hero can level its skills above Lv {max}, up to the cap its awakening level gives. Enter the awakening level of Marlena, Cynthia or Annie and the page shows the cap. The steps stay as they are.",
             "detailTitle": "Skill details",
-            "detailText": "Click a skill to read what it does at the hero's current level; the number the next step reaches follows in brackets.",
+            "detailText": "Click a skill to read what it does at the hero's current level; the number the next step reaches follows in brackets. The numbers are those of a 10-star hero, so they match the game; below the description the skill's star bonuses are listed, each with the star it unlocks at.",
             "fixTitle": "Mistakes and your progress",
             "undoText": "{undo} takes back the last step.",
             "listText": "Already further in the game? Open the full list under the card and click the last step you have done: it and everything before it counts as done, everything after it as not done.",

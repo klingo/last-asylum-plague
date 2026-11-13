@@ -8,6 +8,7 @@ import {
     skillCap,
     skillLevels,
     skillSteps,
+    starredSkill,
 } from '../../webapp/src/core/skill-path.js';
 
 const heroes = { a: { class: 'carry' }, b: { class: 'tank' }, c: { class: 'support' } };
@@ -159,4 +160,54 @@ test('a description as text and level numbers, with the next one and the "%" uni
         [{ sign: '', now: 5, next: null, unit: '' }, ' and ', { sign: '', now: null, next: null, unit: '' }],
         'the same value on both levels has no next; a placeholder without values is unknown',
     );
+});
+
+test('a single number is the same at every level, with no next', () => {
+    assert.deepEqual(describeSkill('Lasts {duration}s', { duration: 3 }, 5, 10), [
+        'Lasts ',
+        { sign: '', now: 3, next: null, unit: '' },
+        's',
+    ]);
+});
+
+test('a skill with all its star bonuses: a later bonus on a number replaces the earlier, add follows scale', () => {
+    const skill = {
+        description: { en: 'Deals {damage}% for {duration}s' },
+        values: { damage: [87.16, null, 90], duration: 3, targets: [2] },
+        star_bonuses: [
+            { stars: 10, text: { en: 'three' }, scale: { damage: 200 } },
+            { stars: 1, text: { en: 'one' }, scale: { damage: 40 }, add: { duration: 1 } },
+            { stars: 5, text: { en: 'five' }, scale: { damage: 100 } },
+        ],
+    };
+    const { description, values, bonuses } = starredSkill(skill);
+    assert.deepEqual(
+        values.damage,
+        [261.5, null, 270],
+        'the 10-star bonus counts: x3, rounded to one decimal; unknown stays',
+    );
+    assert.equal(values.duration, 4, 'the only bonus on it');
+    assert.deepEqual(values.targets, [2], 'a number no bonus names is as entered');
+    assert.equal(description, skill.description);
+    assert.deepEqual(
+        bonuses.map((bonus) => bonus.stars),
+        [1, 5, 10],
+        'in the order of the stars',
+    );
+    assert.deepEqual(skill.values.damage, [87.16, null, 90], 'the skill itself is not changed');
+});
+
+test('a bonus with its own description replaces the skill text; a skill without bonuses is unchanged', () => {
+    const skill = {
+        description: { en: 'Hits {damage}%' },
+        values: { damage: [10] },
+        star_bonuses: [
+            { stars: 2, text: { en: 'a' }, description: { en: 'Hits {damage}% and stuns' } },
+            { stars: 6, text: { en: 'b' }, description: { en: 'Hits {damage}% and stuns for {stun}s' } },
+        ],
+    };
+    assert.deepEqual(starredSkill(skill).description, { en: 'Hits {damage}% and stuns for {stun}s' });
+    const plain = { description: { en: 'Hits {damage}%' }, values: { damage: [10] } };
+    assert.deepEqual(starredSkill(plain), { description: plain.description, values: { damage: [10] }, bonuses: [] });
+    assert.deepEqual(starredSkill({ description: { en: 'x' } }).values, {});
 });

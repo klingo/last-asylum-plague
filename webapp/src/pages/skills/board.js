@@ -7,10 +7,19 @@ import { enumLabel, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
 import { formatThousands } from '../../ui/format.js';
 import { heroHeadHtml, renderFactionSwitch } from '../../ui/hero-parts.js';
-import { START_LEVEL, describeSkill, nextChange, skillCap, skillLevels } from '../../core/skill-path.js';
+import { START_LEVEL, describeSkill, nextChange, skillCap, skillLevels, starredSkill } from '../../core/skill-path.js';
 import { ctx } from './state.js';
 import { detailPanel, factionSwitch, heroesPanel } from './elements.js';
-import { boardHeroes, factionHeroes, heroClass, skillIcon, skillName, skillOf, slotLabel } from './helpers.js';
+import {
+    STAR_ICON,
+    boardHeroes,
+    factionHeroes,
+    heroClass,
+    skillIcon,
+    skillName,
+    skillOf,
+    slotLabel,
+} from './helpers.js';
 import { maxAwakening, setAwakening, setFaction } from './progress.js';
 
 /** The level a hero's skill is at on the board (the 8-star skill is Lv 1 and stays so). */
@@ -94,17 +103,25 @@ const maxLevelOf = (hero, slot) => (slot === 'tenacity' ? START_LEVEL : skillCap
 /**
  * The selected skill: its icon, name with its level and highest level as in the game ("Moon Blade: Lv.22/37", the
  * level in green), the skill's type and the hero's damage type (right-aligned; both light blue for energy,
- * orange for physical) and its description at the hero's current level.
+ * orange for physical), its description at the hero's current level as a 10-star hero has it, and below it the star
+ * bonuses with the star each unlocks at.
  */
 function detailHtml(levels, next, selected) {
     const { hero, slot } = selected;
     const skill = skillOf(hero, slot);
     const level = levelOf(levels, hero, slot);
     const target = next?.hero === hero && next.slots.includes(slot) ? next.level : level;
-    const text = localizedName(skill.description);
+    const starred = starredSkill(skill);
+    const text = localizedName(starred.description);
     const description = text
-        ? descriptionHtml(describeSkill(text, skill.values, level, target))
+        ? descriptionHtml(describeSkill(text, starred.values, level, target))
         : `<span class="text-dim">${tHtml('skills.noDescription')}</span>`;
+    const bonuses = starred.bonuses
+        .map(
+            (bonus) =>
+                `<li><span class="skills-bonus__stars">${bonus.stars}</span><img class="skills-bonus__star" src="${STAR_ICON}" alt="" /><span>${escapeHtml(localizedName(bonus.text))}</span></li>`,
+        )
+        .join('');
     const damageType = ctx.skills.heroes[hero].damage_type;
     const damage = damageType
         ? `<span class="skills-detail__damage">${escapeHtml(enumLabel('skills.damage', damageType))}</span>`
@@ -119,6 +136,7 @@ function detailHtml(levels, next, selected) {
                 ${damage}
             </div>
             <p>${description}</p>
+            ${bonuses ? `<ul class="skills-bonus">${bonuses}</ul>` : ''}
         </div>`;
 }
 

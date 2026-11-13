@@ -1,7 +1,7 @@
 /**
  * A faction's hero skill guide step by step (`data/hero_skills.json`, Skill Upgrade Path page): the steps in order, every
- * skill's level after a number of steps, what the next step changes, the skill cap of an awakened hero, and a skill's
- * description split into text and the level-dependent numbers.
+ * skill's level after a number of steps, what the next step changes, the skill cap of an awakened hero, a skill as a
+ * 10-star hero has it (star bonuses applied), and a skill's description split into text and the level-dependent numbers.
  *
  * - A hero has four upgradable skills (the slots `auto_attack`, `active`, `ultimate`, `passive`) and the 8-star
  *   `tenacity`, which is Lv 1 and can't be upgraded. A skill starts at Lv 1.
@@ -12,6 +12,8 @@
  * - Steps are targets ("ultimate and active to Lv 20"), not increments: a skill that is further already stays. A skill
  *   no step names stays where the foundation left it (a tank's auto attack at 10).
  * - Progress is the number of steps done: the queue is strictly in order.
+ * - A skill's `values` are its numbers without star bonuses. Heroes are taken to be at 10 stars (every bonus unlocked),
+ *   which is what the game's description shows then (`starredSkill`).
  *
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
@@ -109,19 +111,54 @@ function skillCap(skillData, awakeningLevel) {
 }
 
 /**
+ * A number with the star bonuses applied: from the highest-star bonus that names it (its `scale` in percent, then its
+ * `add`), a later bonus replaces an earlier one ("increases to 100%"). Rounded to one decimal, as the game shows it;
+ * an unknown number (null) stays unknown.
+ */
+function starredValue(base, bonuses, name) {
+    const bonus = bonuses.findLast((entry) => entry.scale?.[name] !== undefined || entry.add?.[name] !== undefined);
+    if (!bonus || typeof base !== 'number') {
+        return base;
+    }
+    const value = base * (1 + (bonus.scale?.[name] ?? 0) / 100) + (bonus.add?.[name] ?? 0);
+    return Math.round(value * 10) / 10;
+}
+
+/**
+ * A skill (or the 8-star one) as a hero with every star bonus has it: `{ description, values, bonuses }`. The
+ * description is the one of the last bonus that has its own, else the skill's; `values` have the bonuses applied
+ * (`starredValue`); `bonuses` are the skill's star bonuses in the order of their stars.
+ */
+function starredSkill(skill) {
+    const bonuses = [...(skill.star_bonuses ?? [])].sort((a, b) => a.stars - b.stars);
+    const values = Object.fromEntries(
+        Object.entries(skill.values ?? {}).map(([name, value]) => [
+            name,
+            Array.isArray(value)
+                ? value.map((base) => starredValue(base, bonuses, name))
+                : starredValue(value, bonuses, name),
+        ]),
+    );
+    const description = bonuses.findLast((bonus) => bonus.description)?.description ?? skill.description;
+    return { description, values, bonuses };
+}
+
+/**
  * A skill's description `text` as parts, in order: plain strings, and `{ sign, now, next, unit }` for each `{name}` (the
- * game shows these numbers in green). `now` is the value from `values[name]` (index level - 1), null where it isn't
- * known; `next` the value at `nextLevel` when that is above `level` and the value is known and different, else null;
+ * game shows these numbers in green). `now` is the value from `values[name]` (index level - 1, or the one number of a
+ * value that doesn't depend on the level), null where it isn't known; `next` the value at `nextLevel` when that is above `level` and the value is known and different, else null;
  * `sign` is the "+" right before the placeholder and `unit` the "%" right after it (both belong to each number,
  * "+522.9% (→ +535.35%)"), else "".
  */
 function describeSkill(text, values, level, nextLevel) {
     const parts = [];
     let from = 0;
+    // A value is a list by level, or one number for every level.
+    const at = (value, n) => (Array.isArray(value) ? value[n - 1] : value);
     for (const match of text.matchAll(/(\+?)\{([a-z][a-z0-9_]*)\}(%?)/g)) {
         const list = values?.[match[2]];
-        const now = list?.[level - 1];
-        const next = nextLevel > level ? list?.[nextLevel - 1] : null;
+        const now = at(list, level);
+        const next = nextLevel > level ? at(list, nextLevel) : null;
         parts.push(text.slice(from, match.index), {
             sign: match[1],
             now: typeof now === 'number' ? now : null,
@@ -145,4 +182,5 @@ export {
     skillCap,
     skillLevels,
     skillSteps,
+    starredSkill,
 };

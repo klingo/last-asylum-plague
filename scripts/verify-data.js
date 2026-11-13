@@ -32,7 +32,7 @@ const SKILL_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public'
  * - Item points fitted from the deal % (webapp/src/core/point-fit.js) and items whose worth can't be
  *   resolved (webapp/src/core/item-values.js)
  * - The lords' talent trees in data/lord_specialty.json (schema, icons, values per level)
- * - The heroes' skills and their level guide in data/hero_skills.json (schema, heroes, paths, icons, values)
+ * - The heroes' skills and their level guide in data/hero_skills.json (schema, heroes, paths, icons, values, star bonuses)
  */
 async function verifyData() {
     console.log('Starting Pack Data Verification...\n');
@@ -895,7 +895,8 @@ async function verifyData() {
 
     // 8d. The heroes' skills and the guide to level them (data/hero_skills.json, Skill Upgrade Path page): its schema, the
     // heroes exist with the faction they are listed under, every path step is a rising target within the levels, the
-    // skills' icons exist, and a description's {numbers} have values (levels without one are warned about).
+    // skills' icons exist, a description's {numbers} have values (levels without one are warned about), and the star
+    // bonuses rise in their stars and change numbers that have values.
     checkCategory('Hero Skills', ({ reportError, reportWarning }) => {
         let skillData;
         let skillSchema;
@@ -969,16 +970,26 @@ async function verifyData() {
                 );
             }
             const placeholders = new Set();
-            for (const [lang, text] of Object.entries(skill.description || {})) {
-                for (const [, name] of text.matchAll(/\{([a-z][a-z0-9_]*)\}/g)) {
-                    if (lang === 'en') {
-                        placeholders.add(name);
-                    }
-                    if (!skill.values?.[name]) {
-                        reportError(
-                            'Hero Skills',
-                            `${where}: the ${lang} text has {${name}} but there are no values for it.`,
-                        );
+            // The texts with {numbers}: the description and the full descriptions of the star bonuses.
+            const texts = [
+                [where, skill.description],
+                ...(skill.star_bonuses || []).map((bonus) => [
+                    `${where}, ${bonus.stars}-star bonus`,
+                    bonus.description,
+                ]),
+            ];
+            for (const [textWhere, description] of texts) {
+                for (const [lang, text] of Object.entries(description || {})) {
+                    for (const [, name] of text.matchAll(/\{([a-z][a-z0-9_]*)\}/g)) {
+                        if (lang === 'en') {
+                            placeholders.add(name);
+                        }
+                        if (skill.values?.[name] === undefined) {
+                            reportError(
+                                'Hero Skills',
+                                `${textWhere}: the ${lang} text has {${name}} but there are no values for it.`,
+                            );
+                        }
                     }
                 }
             }
@@ -987,9 +998,10 @@ async function verifyData() {
                 if (!placeholders.has(name)) {
                     reportError('Hero Skills', `${where}: values "${name}" is not used by the English text.`);
                 }
-                const unknown = Array.from({ length: levels }, (_, i) => list[i]).filter(
-                    (value) => typeof value !== 'number',
-                ).length;
+                const unknown = Array.isArray(list)
+                    ? Array.from({ length: levels }, (_, i) => list[i]).filter((value) => typeof value !== 'number')
+                          .length
+                    : 0;
                 if (unknown > 0) {
                     reportWarning(
                         'Hero Skills',
@@ -997,6 +1009,20 @@ async function verifyData() {
                     );
                 }
             }
+            (skill.star_bonuses || []).forEach((bonus, i, bonuses) => {
+                const bonusWhere = `${where}, ${bonus.stars}-star bonus`;
+                if (i > 0 && bonus.stars <= bonuses[i - 1].stars) {
+                    reportError(
+                        'Hero Skills',
+                        `${bonusWhere} doesn't come after the ${bonuses[i - 1].stars}-star one.`,
+                    );
+                }
+                for (const name of [...Object.keys(bonus.scale || {}), ...Object.keys(bonus.add || {})]) {
+                    if (skill.values?.[name] === undefined) {
+                        reportError('Hero Skills', `${bonusWhere} changes "${name}", which has no values.`);
+                    }
+                }
+            });
         };
         checkSkill('Tenacity', skillData.tenacity, 1);
         for (const [heroId, entry] of Object.entries(skillData.heroes)) {
