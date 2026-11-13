@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-12"
+        "last_updated": "2026-11-13"
     },
     "items": {
         "alliance_coins": {
@@ -8857,6 +8857,10 @@
             {
                 "start": "2026-11-10",
                 "end": "2026-11-10"
+            },
+            {
+                "start": "2026-11-13",
+                "end": "2026-11-13"
             }
         ],
         "demon_king_warlock_blight": [
