@@ -1,11 +1,12 @@
 /**
- * The pieces of a hero board that the Gear Upgrade Path and the Skill Upgrade Path pages share: the hero factions and their
- * switch (Warriors | Rangers | Warlocks), a hero's portrait with name and class, and the game's faction / class
- * badges (assets/gear/factions, assets/gear/classes). The labels are the code labels `gear.faction.*` / `gear.class.*`.
+ * The pieces of a hero board that the hero pages (My Heroes, Gear Upgrade Path, Skill Upgrade Path) share: the hero factions
+ * and their switch (Warriors | Rangers | Warlocks), the squad's order of a faction's heroes, a hero's portrait with name and
+ * class (with the frame an awakening gives), and the game's faction / class badges (assets/gear/factions, assets/gear/classes). The labels are the code labels `gear.faction.*` / `gear.class.*`.
  */
 import { enumLabel, localizedName, t } from './i18n.js';
 import { escapeHtml } from './html.js';
 import { BASE_URL } from './base-url.js';
+import { awakeningFrame, hasAwakenedPortrait } from '../core/hero-stars.js';
 
 const ASSETS = `${BASE_URL}assets/`;
 // In this order on the faction switch.
@@ -15,15 +16,49 @@ const FACTIONS = ['warrior', 'ranger', 'warlock'];
 const heroName = (heroes, heroId) => localizedName(heroes?.[heroId]?.name) || heroId;
 /** The URL of a hero's portrait. */
 const heroImage = (heroes, heroId) => `${ASSETS}heroes/${escapeHtml(heroes?.[heroId]?.image ?? heroId)}.png`;
+/** The URL of a hero's awakened portrait (from awakening level 40, `hasAwakenedPortrait`). */
+const awakenedHeroImage = (heroes, heroId) =>
+    `${ASSETS}heroes/awakened/${escapeHtml(heroes?.[heroId]?.image ?? heroId)}.png`;
+/** The URL of a skill's icon (`id` of a skill in data/hero_skills.json). */
+const skillImage = (id) => `${ASSETS}heroes/skills/${escapeHtml(id)}.png`;
+/** The URL of the portrait frame of an awakening level (`AWAKENING_FRAMES` of core/hero-stars.js). */
+const frameImage = (frame) => `${ASSETS}heroes/frames/awakening_${frame}.png`;
+/** The URL of the padlock on the awakening milestones that are not reached yet. */
+const lockImage = `${ASSETS}ui/lock.png`;
+/** The URL of a hero's exclusive weapon picture. */
+const weaponImage = (heroId) => `${ASSETS}heroes/weapons/${escapeHtml(heroId)}.png`;
+/** The picture of a star icon (`YELLOW_STAR` / `starIcons` of core/hero-stars.js). */
+const starImage = (icon) => `${ASSETS}gear/stars/${icon}.png`;
 const factionIcon = (faction) => `<img class="hero-badge" src="${ASSETS}gear/factions/${faction}.png" alt="" />`;
 const classIcon = (heroClass) => `<img class="hero-badge" src="${ASSETS}gear/classes/${heroClass}.png" alt="" />`;
 
-/** A hero's portrait (framed in the shown faction's colour) with the name and the class beside it. */
-function heroHeadHtml(heroes, heroId, heroClass) {
+/**
+ * The `heroes` (ids) of a faction as the squad stands, left to right: the two tanks, then carry, support, carry (the
+ * slots of the first squad guide of the pack data, as on the Gear Upgrade Path page). `heroes` as given when the guide
+ * doesn't place exactly these.
+ */
+function squadHeroes(data, heroes, faction) {
+    const guide = Object.values(data.squad_guides || {})[0];
+    const standing = guide
+        ? [...guide.formation.front, ...guide.formation.back].map((slot) => guide.slots[slot]?.heroes?.[faction])
+        : [];
+    return standing.length === heroes.length && heroes.every((hero) => standing.includes(hero)) ? standing : heroes;
+}
+
+/**
+ * A hero's portrait with the name and the class beside it. The portrait has a border in the shown faction's colour; an
+ * awakened hero (`awakening`, its awakening level) has the frame of its level over the portrait instead, and from
+ * level 40 its awakened picture.
+ */
+function heroHeadHtml(heroes, heroId, heroClass, awakening = 0) {
     const name = heroName(heroes, heroId);
+    const frame = awakeningFrame(awakening);
+    const portrait = frame
+        ? `<span class="hero-portrait has-frame" style="--hero-frame: url('${frameImage(frame)}')">`
+        : '<span class="hero-portrait">';
     return `
         <figure class="hero-head">
-            <img src="${heroImage(heroes, heroId)}" alt="${escapeHtml(name)}" />
+            ${portrait}<img src="${hasAwakenedPortrait(awakening) ? awakenedHeroImage(heroes, heroId) : heroImage(heroes, heroId)}" alt="${escapeHtml(name)}" /></span>
             <figcaption>
                 <strong>${escapeHtml(name)}</strong>
                 <span class="hero-class">${classIcon(heroClass)}${escapeHtml(enumLabel('gear.class', heroClass))}</span>
@@ -51,4 +86,18 @@ function renderFactionSwitch(element, { factions, shown, onPick }) {
     });
 }
 
-export { FACTIONS, classIcon, factionHtml, factionIcon, heroHeadHtml, heroImage, heroName, renderFactionSwitch };
+export {
+    FACTIONS,
+    classIcon,
+    factionHtml,
+    factionIcon,
+    heroHeadHtml,
+    heroImage,
+    heroName,
+    lockImage,
+    renderFactionSwitch,
+    skillImage,
+    squadHeroes,
+    starImage,
+    weaponImage,
+};

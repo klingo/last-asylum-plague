@@ -7,6 +7,8 @@ import { resolveItemValues, bundleValue } from '../webapp/src/core/item-values.j
 import { currencyFlows } from '../webapp/src/core/planner.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
 import { normalizePackData } from '../webapp/src/core/pack-data.js';
+import { AWAKENING_FRAMES, MAX_WEAPON_STARS } from '../webapp/src/core/hero-stars.js';
+import { awakeningSkills, weaponBonuses } from '../webapp/src/core/skill-path.js';
 import { missingCodeLabels } from './lib/code-labels.js';
 import { HERO_SKILLS_PATH, I18N_DIR, LORD_DATA_PATH, PACK_DATA_PATH as DATA_PATH } from './lib/data-files.js';
 
@@ -22,6 +24,10 @@ const LORD_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_spec
 const LORD_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'lord');
 const HERO_SKILLS_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'hero_skills.schema.json');
 const SKILL_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'heroes', 'skills');
+const WEAPON_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'heroes', 'weapons');
+const FRAME_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'heroes', 'frames');
+const HERO_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'heroes');
+const LOCK_ICON_PATH = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'ui', 'lock.png');
 
 /**
  * Validates data integrity of pack_data.json
@@ -32,7 +38,7 @@ const SKILL_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public'
  * - Item points fitted from the deal % (webapp/src/core/point-fit.js) and items whose worth can't be
  *   resolved (webapp/src/core/item-values.js)
  * - The lords' talent trees in data/lord_specialty.json (schema, icons, values per level)
- * - The heroes' skills and their level guide in data/hero_skills.json (schema, heroes, paths, icons, values, star bonuses)
+ * - The heroes' skills and their level guide in data/hero_skills.json (schema, heroes, paths, icons, values, star bonuses, weapons, portrait frames)
  */
 async function verifyData() {
     console.log('Starting Pack Data Verification...\n');
@@ -896,7 +902,7 @@ async function verifyData() {
     // 8d. The heroes' skills and the guide to level them (data/hero_skills.json, Skill Upgrade Path page): its schema, the
     // heroes exist with the faction they are listed under, every path step is a rising target within the levels, the
     // skills' icons exist, a description's {numbers} have values (levels without one are warned about), and the star
-    // bonuses rise in their stars and change numbers that have values.
+    // bonuses (a skill's, and the hero weapon's) rise in their stars and change numbers that have values.
     checkCategory('Hero Skills', ({ reportError, reportWarning }) => {
         let skillData;
         let skillSchema;
@@ -957,8 +963,42 @@ async function verifyData() {
                 );
             }
         });
+        // The portrait frames of the awakening levels (warned about: the pictures are drawn by hand).
+        for (const level of AWAKENING_FRAMES) {
+            if (!fs.existsSync(path.join(FRAME_IMAGES_DIR, `awakening_${level}.png`))) {
+                reportWarning(
+                    'Hero Skills',
+                    `The portrait frame of awakening level ${level} is missing (webapp/public/assets/heroes/frames/awakening_${level}.png).`,
+                );
+            }
+        }
+        if (!fs.existsSync(LOCK_ICON_PATH)) {
+            reportWarning(
+                'Hero Skills',
+                'The padlock of the awakening milestones is missing (webapp/public/assets/ui/lock.png).',
+            );
+        }
         const skillIds = new Set();
-        const checkSkill = (where, skill, levels = skillData.max_level) => {
+        // Bonuses unlock at rising stars; what a bonus changes has values (`values` of its skill).
+        const checkRising = (where, bonuses) => {
+            bonuses.forEach((bonus, i) => {
+                if (i > 0 && bonus.stars <= bonuses[i - 1].stars) {
+                    reportError(
+                        'Hero Skills',
+                        `${where}, ${bonus.stars}-star bonus doesn't come after the ${bonuses[i - 1].stars}-star one.`,
+                    );
+                }
+            });
+        };
+        const checkChanges = (bonusWhere, bonus, values) => {
+            for (const name of [...Object.keys(bonus.scale || {}), ...Object.keys(bonus.add || {})]) {
+                if (values?.[name] === undefined) {
+                    reportError('Hero Skills', `${bonusWhere} changes "${name}", which has no values.`);
+                }
+            }
+        };
+        // `weapon`: the bonuses of the hero's weapon on this skill (their descriptions use its values too).
+        const checkSkill = (where, skill, { levels = skillData.max_level, weapon = [] } = {}) => {
             if (skillIds.has(skill.id)) {
                 reportError('Hero Skills', `${where}: the skill id "${skill.id}" is used twice.`);
             }
@@ -977,6 +1017,7 @@ async function verifyData() {
                     `${where}, ${bonus.stars}-star bonus`,
                     bonus.description,
                 ]),
+                ...weapon.map((bonus) => [`${where}, weapon ${bonus.stars}-star bonus`, bonus.description]),
             ];
             for (const [textWhere, description] of texts) {
                 for (const [lang, text] of Object.entries(description || {})) {
@@ -1009,22 +1050,15 @@ async function verifyData() {
                     );
                 }
             }
-            (skill.star_bonuses || []).forEach((bonus, i, bonuses) => {
-                const bonusWhere = `${where}, ${bonus.stars}-star bonus`;
-                if (i > 0 && bonus.stars <= bonuses[i - 1].stars) {
-                    reportError(
-                        'Hero Skills',
-                        `${bonusWhere} doesn't come after the ${bonuses[i - 1].stars}-star one.`,
-                    );
-                }
-                for (const name of [...Object.keys(bonus.scale || {}), ...Object.keys(bonus.add || {})]) {
-                    if (skill.values?.[name] === undefined) {
-                        reportError('Hero Skills', `${bonusWhere} changes "${name}", which has no values.`);
-                    }
-                }
-            });
+            checkRising(where, skill.star_bonuses || []);
+            for (const bonus of skill.star_bonuses || []) {
+                checkChanges(`${where}, ${bonus.stars}-star bonus`, bonus, skill.values);
+            }
+            for (const bonus of weapon) {
+                checkChanges(`${where}, weapon ${bonus.stars}-star bonus`, bonus, skill.values);
+            }
         };
-        checkSkill('Tenacity', skillData.tenacity, 1);
+        checkSkill('Tenacity', skillData.tenacity, { levels: 1 });
         for (const [heroId, entry] of Object.entries(skillData.heroes)) {
             const heroClass = heroes[heroId]?.class;
             const foundation = skillData.foundation[heroClass];
@@ -1033,7 +1067,59 @@ async function verifyData() {
                 continue;
             }
             for (const [slot, skill] of Object.entries(entry.skills)) {
-                checkSkill(`Hero "${heroId}", ${slot}`, skill);
+                checkSkill(`Hero "${heroId}", ${slot}`, skill, { weapon: weaponBonuses(entry, slot) });
+            }
+            if (entry.awakening_skills && !entry.awakenable) {
+                reportError('Hero Skills', `Hero "${heroId}" has awakening skills but is not awakenable.`);
+            }
+            const awakeningLevels = new Set();
+            for (const skill of awakeningSkills(entry)) {
+                if (!AWAKENING_FRAMES.includes(skill.level) || awakeningLevels.has(skill.level)) {
+                    reportError(
+                        'Hero Skills',
+                        `Hero "${heroId}": awakening skill at level ${skill.level} isn't a frame level (${AWAKENING_FRAMES.join(', ')}) or comes twice.`,
+                    );
+                }
+                awakeningLevels.add(skill.level);
+                if (!fs.existsSync(path.join(SKILL_IMAGES_DIR, `${skill.id}.png`))) {
+                    reportWarning(
+                        'Hero Skills',
+                        `Hero "${heroId}": awakening skill "${skill.id}" (level ${skill.level}) has no icon (webapp/public/assets/heroes/skills/${skill.id}.png).`,
+                    );
+                }
+            }
+            if (entry.awakenable) {
+                const image = heroes[heroId]?.image ?? heroId;
+                if (!fs.existsSync(path.join(HERO_IMAGES_DIR, 'awakened', `${image}.png`))) {
+                    reportWarning(
+                        'Hero Skills',
+                        `Hero "${heroId}" has no awakened portrait (webapp/public/assets/heroes/awakened/${image}.png).`,
+                    );
+                }
+            }
+            if (entry.weapon) {
+                const where = `Hero "${heroId}", weapon`;
+                if (!fs.existsSync(path.join(WEAPON_IMAGES_DIR, `${heroId}.png`))) {
+                    reportError(
+                        'Hero Skills',
+                        `${where} has no picture (webapp/public/assets/heroes/weapons/${heroId}.png).`,
+                    );
+                }
+                checkRising(where, entry.weapon.bonuses);
+                for (const bonus of entry.weapon.bonuses) {
+                    if (!bonus.skill && (bonus.scale || bonus.add || bonus.description)) {
+                        reportError(
+                            'Hero Skills',
+                            `${where}, ${bonus.stars}-star bonus changes a skill but names none.`,
+                        );
+                    }
+                }
+                if (entry.weapon.bonuses.length < MAX_WEAPON_STARS) {
+                    reportWarning(
+                        'Hero Skills',
+                        `${where} has ${entry.weapon.bonuses.length} of its ${MAX_WEAPON_STARS} bonuses.`,
+                    );
+                }
             }
             const levels = Object.fromEntries(Object.keys(entry.skills).map((slot) => [slot, foundation]));
             entry.path.forEach((step, i) => {

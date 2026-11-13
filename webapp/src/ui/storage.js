@@ -10,7 +10,8 @@ const STORAGE_KEYS = {
     settings: 'lapkc_settings', // the shared settings (ui/settings.js)
     setupOpen: 'lapkc_setup_open', // '1' | '0': the setup bar's controls shown
     gearProgress: 'lapkc_gear_progress', // the Gear Upgrade Path's progress per guide and faction
-    skillProgress: 'lapkc_skill_progress', // the Skill Upgrade Path's progress (steps done) and awakening levels, per faction
+    skillProgress: 'lapkc_skill_progress', // the Skill Upgrade Path's progress (steps done), per faction
+    heroStars: 'lapkc_hero_stars', // My Heroes: the stars of each hero and its weapon and its awakening level, and the faction shown
     lordSetup: 'lapkc_lord_setup', // the Lord Specialty's level, extra points, lord and builds
     notified: 'lapkc_notified', // the last notification shown per kind, so tabs and reloads don't repeat it
     githubToken: 'lapkc_github_token', // the personal access token of Settings > Admin (ui/github.js)

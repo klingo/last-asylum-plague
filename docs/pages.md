@@ -7,7 +7,7 @@ The top nav starts with **Today** (the home page) and **Calendar**, then groups 
 `webapp/src/ui/nav.js`; each page's short description is the `title` of its link: shown on hover, read out by
 screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
 Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
-**Heroes** (Gear Upgrade Path, Skill Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
+**Heroes** (My Heroes, Gear Upgrade Path, Skill Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
 **Settings**.
 
@@ -102,6 +102,18 @@ deleted after 180 days without use; the button stays hidden until the build has 
   pre-selected, and the Calendar's pass bars link here): its banner and when it runs, its price, everything the
   whole pass gives (all tiers) with each item's worth, and the pass's worth against its price as a ratio, plus the
   tiers your weekly plan buys.
+- **My Heroes** (`heroes.html`) — what you have of each of your heroes, per faction (a switch picks Warriors, Rangers or
+  Warlocks; the heroes stand as the squad does). Five star icons per hero show its stars, yellow up to 5 and red from 6
+  on (the red ones replace the yellow ones), set from 0 to 10 with a slider under them in whole stars (the game's fifths aren't
+  tracked). A hero with an exclusive weapon (`weapon` in `data/hero_skills.json`) shows it below as the game does: its name, a card with its picture, and its own stars below the card
+  (0-10, set the same way). Under the stars, a hero's and a weapon's, the number is shown small in yellow. Marlena, Cynthia and Annie also have an awakening level, below a divider like the weapon, as in
+  the game: the level in big orange, five milestones (the skills the awakening levels 1, 10, 20, 30 and 40 unlock, `awakening_skills`
+  in the data, the hero's portrait where one isn't known yet; greyed with a padlock until reached; a click jumps there,
+  hovering or tapping shows the skill's title, the level it unlocks at and its description) above a slider from 0 to 40 with an orange track, and the
+  skill cap it gives. Only a hero with 10 stars can be awakened (the block is locked below that); from awakening level 1, 10, 20, 30 and 40 on, the portrait of the hero (here, on the Gear Upgrade
+  Path and on the Skill Upgrade Path) has the frame of that level over it instead of the faction-coloured border, and from
+  awakening level 40 its awakened picture. Saved
+  in the browser and synced; the Skill Upgrade Path reads them.
 - **Gear Upgrade Path** (`gear.html`) — a squad (2 tanks in front, carries and support behind, each hero with its sword,
   armor, gauntlets and boots, each drawn like in the game: a card with its level on top and its stars along the bottom; a piece not crafted yet is the game's empty slot, a grey card with its silhouette)
   and the guide to its UR gear in two phases: first crafting every piece (one line once done), then (unlocked once everything is crafted, a title and hint until then) two
@@ -120,11 +132,11 @@ deleted after 180 days without use; the button stays hidden until the build has 
   browser). The board shows the faction's heroes as the squad stands (two tanks, then carry, support, carry; the order they are levelled in is the guide's) with their four upgradable skills as in the game (auto attack and active on the
   left, ultimate and passive on the right) and the 8-star skill (Lv 1) below; the skills the next step raises are framed
   with the level it takes them to. Clicking a skill shows its name with its level and the hero's skill cap ("Lv.22/37"), its type, the hero's damage type
-  (energy light blue, physical orange) and its description at the hero's current level; the level-dependent numbers are green, as in the game, with the number the next step reaches in brackets. Heroes are taken to be at 10 stars: the numbers (and the text, where a bonus adds an effect) have the skill's star bonuses applied, as the game shows them, and the bonuses are listed below the description, each with the star it unlocks at (a yellow star). The guide is a next-step card (Done / Undo, the hero's
+  (energy light blue, physical orange) and its description at the hero's current level; the level-dependent numbers are green, as in the game, with the number the next step reaches in brackets. The numbers (and the text, where a bonus adds an effect) have the skill's star bonuses applied that the hero's stars (My Heroes) have unlocked, as the game shows them; below the description all the skill's bonuses are listed, each behind a yellow star as in the game, the locked ones dimmed with a red "[Unlocks at 10★ Hero]" note, then the bonuses of the hero's weapon on that skill (locked ones "[Unlocks at 4★ Weapon]"). The guide is a next-step card (Done / Undo, the hero's
   note) and the full list: first the foundation (every damage dealer's skills to Lv 15, tanks and supports to Lv 10, one
   step per skill, hero by hero in the foundation's own order of heroes, each hero's skills in the order of its own steps), then each hero's priorities in the faction's order, each to Lv 30. Players further along click the last
-  step they have done. Marlena, Cynthia and Annie can be awakened: the page asks for the awakening level and shows the
-  skill cap it gives (Lv 31 at awakening 3 up to Lv 40 at 40); the steps stay as they are. Data: `data/hero_skills.json`
+  step they have done. Marlena, Cynthia and Annie can be awakened: their awakening level (entered on My Heroes) gives the
+  skill cap shown in the details (Lv 31 at awakening 3 up to Lv 40 at 40); the steps stay as they are. Data: `data/hero_skills.json`
   (own schema; `verify-data` checks the heroes, paths, icons and star bonuses), heroes' faction, class and portrait from `heroes` in
   `pack_data.json`.
 - **Lord Specialty** (`lord-specialty.html`) — a planner for the specialty skills of the two lords (Handyman, Legion

@@ -1,7 +1,7 @@
 /**
  * A faction's hero skill guide step by step (`data/hero_skills.json`, Skill Upgrade Path page): the steps in order, every
- * skill's level after a number of steps, what the next step changes, the skill cap of an awakened hero, a skill as a
- * 10-star hero has it (star bonuses applied), and a skill's description split into text and the level-dependent numbers.
+ * skill's level after a number of steps, what the next step changes, the skill cap of an awakened hero, a skill with the
+ * star bonuses a hero has unlocked, and a skill's description split into text and the level-dependent numbers.
  *
  * - A hero has four upgradable skills (the slots `auto_attack`, `active`, `ultimate`, `passive`) and the 8-star
  *   `tenacity`, which is Lv 1 and can't be upgraded. A skill starts at Lv 1.
@@ -12,8 +12,9 @@
  * - Steps are targets ("ultimate and active to Lv 20"), not increments: a skill that is further already stays. A skill
  *   no step names stays where the foundation left it (a tank's auto attack at 10).
  * - Progress is the number of steps done: the queue is strictly in order.
- * - A skill's `values` are its numbers without star bonuses. Heroes are taken to be at 10 stars (every bonus unlocked),
- *   which is what the game's description shows then (`starredSkill`).
+ * - A skill's `values` are its numbers without star bonuses. The player's stars (My Heroes page, core/hero-stars.js)
+ *   decide which of a skill's star bonuses are unlocked, and the stars of the hero's weapon which of the weapon's bonuses
+ *   on the skill; the description then shows what the game shows (`starredSkill`).
  *
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
@@ -125,22 +126,48 @@ function starredValue(base, bonuses, name) {
 }
 
 /**
- * A skill (or the 8-star one) as a hero with every star bonus has it: `{ description, values, bonuses }`. The
- * description is the one of the last bonus that has its own, else the skill's; `values` have the bonuses applied
- * (`starredValue`); `bonuses` are the skill's star bonuses in the order of their stars.
+ * The skills the awakening levels of a hero unlock (`awakening_skills`): `[{ level, id, name, description }]`, its own
+ * skills by slot resolved (the icon `id`, and the name unless the entry gives its own title); `description` is the
+ * entry's, if it has one. None without.
  */
-function starredSkill(skill) {
-    const bonuses = [...(skill.star_bonuses ?? [])].sort((a, b) => a.stars - b.stars);
+function awakeningSkills(heroEntry) {
+    return (heroEntry?.awakening_skills ?? []).map((entry) => {
+        const skill = entry.skill ? heroEntry.skills[entry.skill] : entry;
+        return { level: entry.level, id: skill.id, name: entry.name ?? skill.name, description: entry.description };
+    });
+}
+
+const byStars = (a, b) => a.stars - b.stars;
+
+/** The bonuses of the hero's weapon that change the skill in `slot`, in the order of their stars (none without a weapon). */
+function weaponBonuses(heroEntry, slot) {
+    return (heroEntry?.weapon?.bonuses ?? []).filter((bonus) => bonus.skill === slot).sort(byStars);
+}
+
+/**
+ * A skill (or the 8-star one) as a hero with `stars` stars and a weapon with `weapon` stars has it:
+ * `{ description, values, bonuses, weapon }`. The unlocked bonuses apply in order, the skill's star bonuses first, then
+ * the weapon's (`weaponOnSkill`, from `weaponBonuses`: the ones for this skill); the description is the one of the last
+ * of them that has its own, else the skill's, and `values` have them applied (`starredValue`). `bonuses` are all the
+ * skill's star bonuses and `weapon` all of the weapon's on it, each in the order of their stars with `unlocked`.
+ */
+function starredSkill(skill, { stars = 0, weapon = 0 } = {}, weaponOnSkill = []) {
+    const own = [...(skill.star_bonuses ?? [])].sort(byStars);
+    const unlocked = [
+        ...own.filter((bonus) => bonus.stars <= stars),
+        ...weaponOnSkill.filter((bonus) => bonus.stars <= weapon),
+    ];
     const values = Object.fromEntries(
         Object.entries(skill.values ?? {}).map(([name, value]) => [
             name,
             Array.isArray(value)
-                ? value.map((base) => starredValue(base, bonuses, name))
-                : starredValue(value, bonuses, name),
+                ? value.map((base) => starredValue(base, unlocked, name))
+                : starredValue(value, unlocked, name),
         ]),
     );
-    const description = bonuses.findLast((bonus) => bonus.description)?.description ?? skill.description;
-    return { description, values, bonuses };
+    const description = unlocked.findLast((bonus) => bonus.description)?.description ?? skill.description;
+    const listed = (bonuses, reached) => bonuses.map((bonus) => ({ ...bonus, unlocked: bonus.stars <= reached }));
+    return { description, values, bonuses: listed(own, stars), weapon: listed(weaponOnSkill, weapon) };
 }
 
 /**
@@ -176,6 +203,7 @@ export {
     SKILL_SLOTS,
     START_LEVEL,
     UPGRADABLE_SLOTS,
+    awakeningSkills,
     describeSkill,
     foundationLevel,
     nextChange,
@@ -183,4 +211,5 @@ export {
     skillLevels,
     skillSteps,
     starredSkill,
+    weaponBonuses,
 };

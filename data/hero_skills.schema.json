@@ -164,6 +164,10 @@
                     "$ref": "pack_data.schema.json#/definitions/localizedString",
                     "description": "The bonus, shown below the skill's description."
                 },
+                "skill": {
+                    "$ref": "#/definitions/upgradableSlot",
+                    "description": "Only in a weapon's bonuses: the skill it changes. A bonus without one is a plain stat buff (text only); one with it can also have `scale` / `add` / `description` once the numbers are known."
+                },
                 "scale": {
                     "type": "object",
                     "description": "Per placeholder the relative change in percent: base × (1 + n / 100).",
@@ -179,6 +183,48 @@
                 "description": {
                     "$ref": "pack_data.schema.json#/definitions/localizedString",
                     "description": "The skill's whole text from this star on; its {placeholders} are keys of the skill's `values`."
+                }
+            }
+        },
+        "awakeningSkill": {
+            "type": "object",
+            "description": "The skill an awakening level unlocks, shown on that level's milestone on My Heroes (its icon, and its title and description in the tooltip): one of the hero's own skills (`skill`, its slot: its icon, and its name unless `name` gives the title the awakening shows) or a skill of its own (`id`, the icon's file name, and `name`).",
+            "required": ["level"],
+            "additionalProperties": false,
+            "properties": {
+                "level": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "The awakening level, one where the portrait's frame changes (AWAKENING_FRAMES in core/hero-stars.js)."
+                },
+                "skill": { "$ref": "#/definitions/upgradableSlot" },
+                "id": {
+                    "$ref": "pack_data.schema.json#/definitions/id",
+                    "description": "Also the icon: webapp/public/assets/heroes/skills/<id>.png (144×144)."
+                },
+                "name": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString",
+                    "description": "The skill's title as the game shows it."
+                },
+                "description": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString",
+                    "description": "What the skill does, as the game words it (plain text)."
+                }
+            },
+            "oneOf": [{ "required": ["skill"] }, { "required": ["id", "name"] }]
+        },
+        "weapon": {
+            "type": "object",
+            "description": "The hero's exclusive weapon (0-10 stars): every star unlocks one bonus, four of them change a skill, the others are plain stat buffs.",
+            "required": ["name", "bonuses"],
+            "additionalProperties": false,
+            "properties": {
+                "name": { "$ref": "pack_data.schema.json#/definitions/localizedString" },
+                "bonuses": {
+                    "type": "array",
+                    "description": "By the weapon star they unlock at, rising. The picture is webapp/public/assets/heroes/weapons/<hero id>.png.",
+                    "maxItems": 10,
+                    "items": { "$ref": "#/definitions/starBonus" }
                 }
             }
         },
@@ -227,6 +273,12 @@
                         "passive": { "$ref": "#/definitions/skill" }
                     }
                 },
+                "awakening_skills": {
+                    "type": "array",
+                    "description": "The skills the awakening levels unlock, by level, for an awakenable hero: the milestones of My Heroes show their icons (the hero's portrait where a level has none).",
+                    "items": { "$ref": "#/definitions/awakeningSkill" }
+                },
+                "weapon": { "$ref": "#/definitions/weapon" },
                 "path": {
                     "type": "array",
                     "description": "The steps after the foundation, in order. A skill no step names stays at the foundation level (e.g. a tank's auto attack).",

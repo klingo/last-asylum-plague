@@ -105,5 +105,5 @@ test('connecting takes the server entries and drops the others from the device',
     });
     assert.deepEqual(plan.apply, { settings: { budget: 1 } });
     assert.deepEqual(plan.revs, { settings: 7 });
-    assert.deepEqual(plan.remove, ['gearProgress', 'skillProgress', 'lordSetup']);
+    assert.deepEqual(plan.remove, ['gearProgress', 'skillProgress', 'heroStars', 'lordSetup']);
 });

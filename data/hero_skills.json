@@ -114,6 +114,68 @@
                     }
                 }
             },
+            "awakening_skills": [
+                {
+                    "level": 1,
+                    "skill": "auto_attack",
+                    "name": {
+                        "en": "Battle Skill: Skybreaker Slash",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "When Skybreaker Slash triggers a Crit, Marlena gains 1 stack of [Battle Will], with a stack cap equal to 2X the number of Warrior heroes on the team. Each stack of [Battle Will] grants Marlena 1% DMG Bonus and 1% DMG↓",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 10,
+                    "skill": "active",
+                    "name": {
+                        "en": "Battle Skill: Crimson Bloom",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Crimson Bloom deals damage to all enemies; if Marlena's [Battle Will] exceeds 5 stacks, inflict [Dread] on all enemies (reduces their damage by 5%)",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 20,
+                    "id": "war_gods_will",
+                    "name": {
+                        "en": "Blade Tempest",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "At battle start, Marlena attacks the 3 enemies with the highest HP, dealing 2500% ATK Energy Dmg. On hit, Marlena gains 3 stacks of [Battle Will]",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 30,
+                    "id": "soul_of_warrior",
+                    "name": {
+                        "en": "[Faction Enhance] Soul of Warrior",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "In battle, increase all allied Warrior Heroes' ATK, HP, and DEF by 8%",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 40,
+                    "skill": "ultimate",
+                    "name": {
+                        "en": "Battle Skill: Peerless Blade",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Unleash 5 additional sword winds with damage reduced to 60% of original.",
+                        "de": ""
+                    }
+                }
+            ],
             "path": [
                 {
                     "skills": ["ultimate"],
@@ -299,6 +361,88 @@
                     }
                 }
             },
+            "weapon": {
+                "name": {
+                    "en": "Crimson Greatsword",
+                    "de": ""
+                },
+                "bonuses": [
+                    {
+                        "stars": 1,
+                        "text": {
+                            "en": "Hero DEF↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 2,
+                        "text": {
+                            "en": "Hero HP↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 3,
+                        "text": {
+                            "en": "Hero ATK↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 4,
+                        "skill": "auto_attack",
+                        "text": {
+                            "en": "[Battle Will] Extra damage increases to 300%.",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 5,
+                        "text": {
+                            "en": "Hero Energy DMG Taken↓ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 6,
+                        "skill": "passive",
+                        "text": {
+                            "en": "[Resolute Fight] Support Hero also gets a Shield when HP is below 50%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 7,
+                        "text": {
+                            "en": "Hero Physical DMG Taken↓ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 8,
+                        "skill": "active",
+                        "text": {
+                            "en": "[Deadly Pierce] Extra HP recover increases to 400%.",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 9,
+                        "text": {
+                            "en": "Hero DMG Dealt↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 10,
+                        "skill": "ultimate",
+                        "text": {
+                            "en": "[Bloodshed Defense] Shield effect increases by 30%.",
+                            "de": ""
+                        }
+                    }
+                ]
+            },
             "path": [
                 {
                     "skills": ["ultimate"],
@@ -461,6 +605,68 @@
                     }
                 }
             },
+            "awakening_skills": [
+                {
+                    "level": 1,
+                    "skill": "auto_attack",
+                    "name": {
+                        "en": "Battle Skill: Moon Blade",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Each Moon Blade cast grants Cynthia 1 stack of [Moonlight], capped at 4x the number of Ranger Heroes in your team. Each stack grants Cynthia 1% Energy Dmg Bonus",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 10,
+                    "skill": "active",
+                    "name": {
+                        "en": "Battle Skill: Lunar Hunt",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Lunar Hunt deals 20% additional damage and grants Cynthia 2 stacks of [Moonlight].",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 20,
+                    "skill": "ultimate",
+                    "name": {
+                        "en": "Battle Skill: Moonfall Dance",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Consume up to 10 stacks of [Moonlight]. Moonfall Dance deals 1 additional attack at 60% ATK * number of [Moonlight] stacks consumed as Energy Dmg to the target",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 30,
+                    "id": "soul_of_ranger",
+                    "name": {
+                        "en": "[Faction Enhance] Soul of Ranger",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "In battle, increase all allied Ranger Heroes' ATK, HP, and DEF by 8%",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 40,
+                    "id": "moons_blessing",
+                    "name": {
+                        "en": "Lunar Blessing",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "When Cynthia lands a Crit on an enemy target, damage increases by an additional 20%",
+                        "de": ""
+                    }
+                }
+            ],
             "path": [
                 {
                     "skills": ["ultimate"],
@@ -515,6 +721,88 @@
                         "de": ""
                     }
                 }
+            },
+            "weapon": {
+                "name": {
+                    "en": "Thorn Shackles",
+                    "de": ""
+                },
+                "bonuses": [
+                    {
+                        "stars": 1,
+                        "text": {
+                            "en": "Hero DEF↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 2,
+                        "text": {
+                            "en": "Hero HP↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 3,
+                        "text": {
+                            "en": "Hero ATK↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 4,
+                        "skill": "auto_attack",
+                        "text": {
+                            "en": "[Shackles] Extra damage increases to 300%.",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 5,
+                        "text": {
+                            "en": "Hero Energy DMG Taken↓ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 6,
+                        "skill": "passive",
+                        "text": {
+                            "en": "[Indomitable Spirit] Duration +1s",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 7,
+                        "text": {
+                            "en": "Hero Physical DMG Taken↓ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 8,
+                        "skill": "active",
+                        "text": {
+                            "en": "[Force Link] Target +1",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 9,
+                        "text": {
+                            "en": "Hero DMG Dealt↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 10,
+                        "skill": "ultimate",
+                        "text": {
+                            "en": "[Cross Whip] Damage reduction increases by 5%",
+                            "de": ""
+                        }
+                    }
+                ]
             },
             "path": [
                 {
@@ -734,6 +1022,91 @@
                     }
                 }
             },
+            "weapon": {
+                "name": {
+                    "en": "Wolven Claw",
+                    "de": ""
+                },
+                "bonuses": [
+                    {
+                        "stars": 1,
+                        "text": {
+                            "en": "Hero DEF↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 2,
+                        "text": {
+                            "en": "Hero HP↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 3,
+                        "text": {
+                            "en": "Hero ATK↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 4,
+                        "skill": "auto_attack",
+                        "text": {
+                            "en": "[Sharp Claw] Extra damage increases to 300%.",
+                            "de": ""
+                        },
+                        "scale": {
+                            "damage": 300
+                        }
+                    },
+                    {
+                        "stars": 5,
+                        "text": {
+                            "en": "Hero Energy DMG Taken↓ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 6,
+                        "skill": "passive",
+                        "text": {
+                            "en": "[Wolf Bloodline] Effect increases by 5%.",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 7,
+                        "text": {
+                            "en": "Hero Physical DMG Taken↓ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 8,
+                        "skill": "active",
+                        "text": {
+                            "en": "[Lunar Howl] While in Berserk state, DEF increases by 10%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 9,
+                        "text": {
+                            "en": "Hero DMG Dealt↑ 10.00%",
+                            "de": ""
+                        }
+                    },
+                    {
+                        "stars": 10,
+                        "skill": "ultimate",
+                        "text": {
+                            "en": "[Throat Bite] Effect increases by 7%.",
+                            "de": ""
+                        }
+                    }
+                ]
+            },
             "path": [
                 {
                     "skills": ["active"],
@@ -900,6 +1273,68 @@
                     }
                 }
             },
+            "awakening_skills": [
+                {
+                    "level": 1,
+                    "skill": "auto_attack",
+                    "name": {
+                        "en": "Battle Skill: Candy",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Candy has a 50% Probabilities to inflict [Burn] on the target for 2s, dealing 200% Energy Dmg per second. When the team successfully applies [Burn], additionally apply 1 stack of [Scorch] to the target. [Scorch] deals 35% of Annie's ATK as damage per second, lasting 20s, with a maximum stack count equal to the number of allied Warlock Heroes.",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 10,
+                    "skill": "active",
+                    "name": {
+                        "en": "Battle Skill: Surprise Gift",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Surprise Gift damage increased by 15% for each stack of [Scorch] the target has, damage increased by an additional 4%.",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 20,
+                    "skill": "ultimate",
+                    "name": {
+                        "en": "Battle Skill: Candy Jar",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "Deals additional Energy DMG to all enemies with [Scorch], equal to 250% of Annie's ATK x the target's [Scorch] stacks.",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 30,
+                    "id": "soul_of_warlock",
+                    "name": {
+                        "en": "[Faction Enhance] Soul of Warlock",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "During battle, increase all allied Warlock Heroes' ATK, HP, and DEF by 8%",
+                        "de": ""
+                    }
+                },
+                {
+                    "level": 40,
+                    "skill": "passive",
+                    "name": {
+                        "en": "Sweet Troublemaker",
+                        "de": ""
+                    },
+                    "description": {
+                        "en": "When normal attack triggers [Burn], apply 1 additional [Burn] to a random enemy hero. [Scorch] duration increased to 30s, and max stack increased by allied Warlock Hero count +3",
+                        "de": ""
+                    }
+                }
+            ],
             "path": [
                 {
                     "skills": ["ultimate"],

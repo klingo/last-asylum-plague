@@ -1,0 +1,364 @@
+/* My Heroes: a card per hero of the faction (portrait, name, the star icons with a slider under them; below a divider
+   each the awakening level for an awakenable hero and the weapon for a hero with one). */
+
+/* The five heroes in one row; fewer per row on narrower screens. */
+.heroes-list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+}
+
+/* A card spans four rows of the list's grid (portrait, stars, awakening, weapon) on a subgrid of its own, so each part
+   sits at the same height in every card of a row, also where a card has nothing there. */
+.heroes-hero {
+    min-width: 0;
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    justify-items: center;
+    align-items: start;
+    padding: 12px 14px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+/* Portrait and name stacked, the card is narrow. */
+.heroes-hero .hero-head {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+}
+
+.heroes-hero .hero-head figcaption {
+    align-items: center;
+}
+
+.heroes-hero > .hero-head {
+    grid-row: 1;
+}
+
+.heroes-hero > .heroes-rating {
+    grid-row: 2;
+}
+
+.heroes-awakening {
+    grid-row: 3;
+}
+
+.heroes-weapon {
+    grid-row: 4;
+}
+
+/* The stars (five icons, or the weapon's card) and the slider that sets them. */
+.heroes-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.heroes-stars__icons {
+    display: flex;
+}
+
+.heroes-stars__icons img {
+    width: 28px;
+    height: 28px;
+}
+
+/* The number of stars under the icons, small and yellow like the stars. */
+.heroes-count {
+    color: #f7c531;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+/* The marks under a star slider (one per step, at the handle's position for it; longer at 0, 5 and 10), close under its
+   track. */
+.heroes-marks {
+    position: relative;
+    width: 100%;
+    height: 6px;
+    margin-top: -8px;
+}
+
+.heroes-mark {
+    position: absolute;
+    top: 0;
+    left: calc(8px + (100% - 16px) * var(--p));
+    width: 1px;
+    height: 4px;
+    background: var(--text-dim);
+    transform: translateX(-50%);
+}
+
+.heroes-mark--long {
+    height: 6px;
+}
+
+/* The sliders fill the card. Drawn here (a 16 px handle on a thin track) so the milestones above the awakening slider
+   sit where the handle is at their level. */
+.heroes-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.heroes-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--text-dim) 40%, transparent);
+}
+
+.heroes-slider::-moz-range-track {
+    height: 4px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--text-dim) 40%, transparent);
+}
+
+.heroes-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.heroes-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.heroes-slider:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.heroes-slider:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* What comes below the stars, each under a divider: the awakening level and the weapon. */
+.heroes-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+/* The awakening as in the game: the level big in orange, the milestones (the portrait as it looks at each frame level, in
+   colour once reached, greyed with a padlock before) above a slider whose track is orange up to the handle, and the
+   skill cap. */
+.heroes-awakening {
+    --awakening-color: #f5a524;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+.heroes-awakening__title {
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.heroes-awakening__level {
+    color: var(--awakening-color);
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.heroes-awakening__cap {
+    color: var(--text);
+}
+
+/* The slider's track is orange up to the handle (the handle is 16 px wide, its centre at `--p` of the travel). */
+.heroes-awakening .heroes-slider::-webkit-slider-runnable-track {
+    background: linear-gradient(
+        to right,
+        var(--awakening-color) calc(8px + (100% - 16px) * var(--p)),
+        color-mix(in srgb, var(--text-dim) 40%, transparent) 0
+    );
+}
+
+.heroes-awakening .heroes-slider::-moz-range-track {
+    background: linear-gradient(
+        to right,
+        var(--awakening-color) calc(8px + (100% - 16px) * var(--p)),
+        color-mix(in srgb, var(--text-dim) 40%, transparent) 0
+    );
+}
+
+.heroes-awakening .heroes-slider::-webkit-slider-thumb {
+    background: var(--awakening-color);
+}
+
+.heroes-awakening .heroes-slider::-moz-range-thumb {
+    background: var(--awakening-color);
+}
+
+/* The milestones, each at the handle's position for its level: the icon of the skill it unlocks (the hero's portrait where
+   it isn't known), its level under it; greyed with the padlock (--lock, set on the block) until reached. A button: it
+   jumps there. */
+.heroes-nodes {
+    position: relative;
+    width: 100%;
+    height: 44px;
+}
+
+.heroes-node {
+    position: absolute;
+    top: 0;
+    left: calc(8px + (100% - 16px) * var(--p));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: none;
+    transform: translateX(-50%);
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.heroes-node:hover {
+    background: none;
+}
+
+.heroes-node[aria-disabled='true'] {
+    cursor: not-allowed;
+}
+
+.heroes-node.is-reached {
+    color: var(--text);
+}
+
+.heroes-node__art {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background:
+        var(--node-picture) center / cover no-repeat,
+        var(--panel);
+}
+
+.heroes-node.is-reached .heroes-node__art {
+    border-color: var(--awakening-color);
+}
+
+.heroes-node:not(.is-reached) .heroes-node__art {
+    filter: grayscale(1) brightness(0.5);
+}
+
+.heroes-node:not([aria-disabled='true']):hover .heroes-node__art {
+    outline: 1px solid var(--awakening-color);
+}
+
+.heroes-node__lock {
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    background: var(--lock) center / contain no-repeat;
+    transform: translate(-50%, -50%);
+}
+
+.heroes-node.is-reached .heroes-node__lock {
+    display: none;
+}
+
+/* A hero with fewer than 10 stars can't be awakened yet. */
+.heroes-awakening.is-locked {
+    opacity: 0.55;
+}
+
+.heroes-slider:disabled {
+    cursor: not-allowed;
+}
+
+/* The hero's weapon (the last section): its name, its card, and its stars below the card like the hero's. */
+
+/* The weapon card like the game's gear cards, as big as a hero's portrait: the UR orange behind the picture, which fills
+   the card. */
+.heroes-weapon__card {
+    position: relative;
+    width: 80px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 2px solid #f5a524;
+    border-radius: 7px;
+    background: linear-gradient(
+        to bottom,
+        color-mix(in srgb, #f5a524 40%, var(--panel)),
+        color-mix(in srgb, #f5a524 75%, var(--panel))
+    );
+}
+
+.heroes-weapon__card > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* The art of the pictures leaves a margin of about 10% round it: blown up slightly to fill the card like the game's. */
+    transform: scale(1.04);
+}
+
+/* "How it works". */
+.heroes-help > section + section {
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+    .heroes-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .heroes-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .heroes-stars__icons img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .heroes-weapon__card {
+        width: 64px;
+    }
+
+    /* Narrower cards: smaller milestones, so the first two (the closest) don't touch. */
+    .heroes-node__art {
+        width: 24px;
+        height: 24px;
+    }
+
+    .heroes-node__lock {
+        top: 12px;
+    }
+}

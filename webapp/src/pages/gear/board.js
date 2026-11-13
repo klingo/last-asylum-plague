@@ -20,6 +20,8 @@ import { ASSETS, PATHS } from './constants.js';
 import { board, factionSwitch } from './elements.js';
 import { formatStars, heroOf, itemName } from './helpers.js';
 import { heroHeadHtml, renderFactionSwitch } from '../../ui/hero-parts.js';
+import { heroLevel } from '../../core/hero-stars.js';
+import { STORAGE_KEYS, readJson } from '../../ui/storage.js';
 import { setFaction } from './progress.js';
 
 /** "→ Lv 40", "→ 2 ★", "→ craft": what a queue's next step does to a piece. */
@@ -120,7 +122,7 @@ function slotHtml(state, upcoming, slot) {
         .join('');
     return `
         <div class="gear-slot">
-            ${heroHeadHtml(ctx.data.heroes, heroOf(slot), heroClass)}
+            ${heroHeadHtml(ctx.data.heroes, heroOf(slot), heroClass, heroLevel(readJson(STORAGE_KEYS.heroStars), heroOf(slot)).awakening)}
             <div class="gear-square">${square}</div>
         </div>`;
 }

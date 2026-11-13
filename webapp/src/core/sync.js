@@ -9,9 +9,9 @@
 
 // The entries that sync: the user's settings and progress. The language, the setup bar's state and the other
 // per-device entries stay on the device.
-const SYNCED_ENTRIES = ['settings', 'gearProgress', 'skillProgress', 'lordSetup'];
+const SYNCED_ENTRIES = ['settings', 'gearProgress', 'skillProgress', 'heroStars', 'lordSetup'];
 
-// The largest request the server takes (the four entries are a few KB).
+// The largest request the server takes (the entries are a few KB).
 const MAX_BODY_BYTES = 64 * 1024;
 
 // A sync key is 128 random bits in base32 (26 characters); a pairing code is six digits.

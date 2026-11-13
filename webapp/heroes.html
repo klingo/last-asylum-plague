@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/assets/ui/favicon.svg" />
+        <title data-i18n="docTitle.heroes"></title>
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="heroes.heading"></h2>
+                <p class="page-lead" data-i18n="heroes.description"></p>
+                <details class="page-details">
+                    <summary data-i18n="common.howItWorks"></summary>
+                    <div id="heroes-help" class="heroes-help"></div>
+                </details>
+            </section>
+
+            <section class="card">
+                <div id="heroes-empty" class="empty-state" hidden data-i18n="heroes.empty"></div>
+                <div id="heroes-factions" class="hero-factions" role="group" hidden></div>
+                <div id="heroes-list" class="heroes-list"></div>
+            </section>
+        </main>
+        <footer class="app-footer"><span>Klingo's Companion</span></footer>
+        <script type="module" src="/src/pages/heroes.js"></script>
+    </body>
+</html>

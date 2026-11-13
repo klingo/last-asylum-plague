@@ -20,6 +20,10 @@
  * tap elsewhere, the same trigger, Escape or a scroll, and a trigger with `data-tooltip-action` (its label) and an
  * `href` gets that link as an explicit button in the card. A pinned card is no longer `aria-hidden` (it holds a link).
  * The mouse and the keyboard keep hover / focus to preview and a click / Enter to follow the link.
+ *
+ * A trigger can have a title (`data-tooltip-title`): the card's first line, in bold with a thin line under it, above the
+ * text (`data-tooltip`). A leading "[Tag]" of the title is green; a note (`data-tooltip-note`) follows it in red, not bold.
+ * They are part of the accessible name only if the caller puts them into the `aria-label`.
  */
 
 import { createItemImage } from './images.js';
@@ -205,6 +209,26 @@ function showTooltip(trigger, pinned = false) {
         fillRows(el, rows);
     } else {
         fillText(el, trigger.dataset.tooltip || '');
+    }
+    if (trigger.dataset.tooltipTitle) {
+        const title = document.createElement('div');
+        title.className = 'app-tooltip__title';
+        const [, tag = '', rest = trigger.dataset.tooltipTitle] =
+            trigger.dataset.tooltipTitle.match(/^(\[[^\]]*\])\s*(.*)$/) ?? [];
+        if (tag) {
+            const tagEl = document.createElement('span');
+            tagEl.className = 'app-tooltip__tag';
+            tagEl.textContent = tag;
+            title.append(tagEl, ' ');
+        }
+        title.append(rest);
+        if (trigger.dataset.tooltipNote) {
+            const note = document.createElement('span');
+            note.className = 'app-tooltip__note';
+            note.textContent = trigger.dataset.tooltipNote;
+            title.append(' ', note);
+        }
+        el.prepend(title);
     }
     el.append(...[actionOf(trigger, pinned)].filter(Boolean));
     // Optional picture above the text (`data-tooltip-image`: an event's art, a weekday offer's own picture on the

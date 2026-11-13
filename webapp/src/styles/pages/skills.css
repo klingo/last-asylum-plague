@@ -54,34 +54,6 @@
     align-items: center;
 }
 
-.skills-awakening {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    margin-top: 2px;
-    color: var(--text-dim);
-    font-size: 0.78rem;
-    text-align: center;
-}
-
-.skills-awakening label {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 2px 6px;
-}
-
-.skills-awakening input {
-    width: 56px;
-    padding: 2px 6px;
-}
-
-.skills-awakening__cap {
-    color: var(--text);
-}
-
 /* Auto attack | ultimate, active | passive, and the 8-star skill below the right column, as in the game. */
 .skills-grid {
     display: grid;
@@ -209,12 +181,11 @@
     color: var(--good);
 }
 
-/* The star bonuses under the description, one row each: the star it unlocks at (number, right-aligned so the star
-   pictures line up under each other), the star picture, then the bonus. */
+/* The star bonuses under the description, one row each: a star, then the bonus (the stars line up under each other). */
 .skills-bonus {
     display: grid;
-    grid-template-columns: auto auto 1fr;
-    align-items: center;
+    grid-template-columns: auto 1fr;
+    align-items: start;
     gap: 4px 4px;
     margin: 8px 0 0;
     padding: 0;
@@ -222,21 +193,29 @@
     font-size: 0.85rem;
 }
 
-/* The rows are the grid's: their cells sit in the list's three columns. */
+/* The rows are the grid's: their cells sit in the list's two columns. */
 .skills-bonus li {
     display: contents;
-}
-
-.skills-bonus__stars {
-    color: var(--text-dim);
-    text-align: right;
-    font-variant-numeric: tabular-nums;
 }
 
 .skills-bonus__star {
     width: 1.2em;
     height: 1.2em;
-    margin-right: 4px;
+    margin: 0.1em 4px 0 0;
+}
+
+/* What unlocks a bonus that is still locked (not dimmed): a darker red. */
+.skills-bonus__unlock {
+    color: color-mix(in srgb, var(--bad) 75%, #000);
+}
+
+/* A bonus the hero's stars haven't unlocked yet. */
+.skills-bonus .is-locked {
+    opacity: 0.4;
+}
+
+.skills-bonus__star.is-locked {
+    filter: grayscale(1);
 }
 
 .skills-detail__meta {

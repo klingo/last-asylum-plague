@@ -103,7 +103,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage: every key is listed in `STORAGE_KEYS`, prefix `lapkc_`; a new one goes there),
   `sync.js` (the cross-device sync client; an entry that should sync goes into `SYNCED_ENTRIES` in `core/sync.js`, which the
   worker shares),
-  `i18n.js`, `format.js`, `datetime.js`, `html.js`, `hero-parts.js` (the hero faction switch and heads of the Gear and Skills pages), `labels.js`, `url.js`, `grid.js`, `github.js` (the token and the call that starts the record-run workflow, for Settings > Admin) and the other builders of markup.
+  `i18n.js`, `format.js`, `datetime.js`, `html.js`, `hero-parts.js` (the hero faction switch, squad order and heads of the hero pages), `labels.js`, `url.js`, `grid.js`, `github.js` (the token and the call that starts the record-run workflow, for Settings > Admin) and the other builders of markup.
 - `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (shared pieces: hero faction switch and heads, step card / step list / progress bar of the guide pages; loaded on every page by
   `ui/page.js`, in that order) and `pages/<page>.css` (the page script imports its own, after the shared ones). A rule keeps
   its place inside its file; a rule that overrides another of the same specificity (a phone `@media` over the base rule) lives
@@ -111,12 +111,12 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
 - `webapp/public/assets/` holds the images: `items/<category>/` (images not sorted yet are found directly in `items/`),
   `events/`, `packages/` (a weekday offer's own picture, `<pack id>.webp`: its thumbnail before the name on Today and the
   Calendar, a placeholder tile without it as with events, and the art of its bar's hover card on the Calendar),
-  `heroes/` (portraits; `heroes/skills/<skill id>.png`: the skills' icons, 144×144, one `tenacity.png` for the 8-star skill), `lord/`, `gear/{stars,classes,factions,slots}/` (`slots/{sword,armor,gauntlets,boots}.png`: the silhouette of an uncrafted piece, 60×60) and `ui/` (the placeholder icon, the Banknote icon).
+  `heroes/` (portraits; `heroes/skills/<skill id>.png`: the skills' icons, 144×144, one `tenacity.png` for the 8-star skill; `heroes/weapons/<hero id>.png`: a hero's exclusive weapon; `heroes/awakened/<image>.png`: the portrait of an awakenable hero from awakening level 40, same file name as its normal one; `heroes/frames/awakening_<level>.png`: the portrait frame of awakening level 1, 10, 20, 30 and 40, a square with a transparent middle drawn over the portrait), `lord/`, `gear/{stars,classes,factions,slots}/` (`slots/{sword,armor,gauntlets,boots}.png`: the silhouette of an uncrafted piece, 60×60) and `ui/` (the placeholder icon, the Banknote icon, `lock.png`: the padlock of the awakening milestones not reached yet).
 - `worker/` is the one backend: a Cloudflare Worker with a D1 database (`src/index.js`, `schema.sql`, `wrangler.toml`)
   that syncs the user's settings and progress between devices. It is deployed by hand, not by the Pages workflow (README,
   "Sync server"), imports only `core/sync.js` from the webapp and is dormant until `SYNC_URL` in `ui/sync.js` is set (the
   header hides the Sync button that opens `sync.html`). A device pairs with a six-digit code or a QR code; the sync key is the login, so it travels in a
-  header and the server keeps only its hash. Synced entries: settings, gear / skill progress, lord setup (not the language).
+  header and the server keeps only its hash. Synced entries: settings, gear / skill progress, hero stars, lord setup (not the language).
 - `webapp/src/i18n/{en,de}.json` holds UI texts and code labels. `scripts/` holds verify-data, i18n:missing,
   record-run and the commit hooks (`scripts/lib/` holds what they share: the data file paths and JSON format, the
   code labels). A script exports its pure parts for the tests and runs `main()` only when started directly.
@@ -158,8 +158,16 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   with `{placeholders}` and `values`: one number per level for each placeholder, `null` where not known yet, or one number for what doesn't depend on the
   level; the base, without star bonuses) and up to three `star_bonuses` (`stars` it unlocks at, `text`, and `scale` in percent /
   `add` on the placeholders' base values, or a full `description` that replaces the skill's; a later bonus on the same number
-  replaces an earlier one). The page shows every hero at 10 stars, so all bonuses are applied (`starredSkill`). Steps and
-  levels are in `core/skill-path.js`. Skill names are data names (`name.de` left blank, never translated by me).
+  replaces an earlier one). A hero may have a `weapon` (`name`, up to 10 `bonuses`, one per weapon star, same shape as a
+  star bonus plus `skill`, the slot it changes; without one it is a plain stat buff, text only; the picture is
+  `assets/heroes/weapons/<hero id>.png`). An awakenable hero may have `awakening_skills` (per frame level `{ level, skill }`, one of
+  its own slots, or `{ level, id, name }`, a skill of its own with its icon in `heroes/skills/<id>.png`; `name` also gives a
+  `skill` entry the title the game shows, and an optional `description` its text): the skills on the milestones of My Heroes
+  (icon, and title, level and description in the tooltip). What the player has of a hero (My Heroes page, `heroStars` in storage, `core/hero-stars.js`) decides
+  what shows: the hero's stars which star bonuses apply (`starredSkill`), its weapon's stars which of the weapon's bonuses on a
+  skill (`weaponBonuses`, listed below the skill's star bonuses), its awakening level (only with 10 stars) the skill cap (`awakening_caps`) and the
+  portrait's frame. Steps and levels are in
+  `core/skill-path.js`. Skill names are data names (`name.de` left blank, never translated by me).
 - The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
   by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs
   (`core/lord-specialty.js`), so don't reorder or insert talents casually. Talents above `max_level` show as "not in

@@ -6,21 +6,21 @@
 import { enumLabel, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
 import { formatThousands } from '../../ui/format.js';
-import { heroHeadHtml, renderFactionSwitch } from '../../ui/hero-parts.js';
-import { START_LEVEL, describeSkill, nextChange, skillCap, skillLevels, starredSkill } from '../../core/skill-path.js';
+import { heroHeadHtml, renderFactionSwitch, starImage } from '../../ui/hero-parts.js';
+import {
+    START_LEVEL,
+    describeSkill,
+    nextChange,
+    skillCap,
+    skillLevels,
+    starredSkill,
+    weaponBonuses,
+} from '../../core/skill-path.js';
+import { YELLOW_STAR, heroLevel } from '../../core/hero-stars.js';
 import { ctx } from './state.js';
 import { detailPanel, factionSwitch, heroesPanel } from './elements.js';
-import {
-    STAR_ICON,
-    boardHeroes,
-    factionHeroes,
-    heroClass,
-    skillIcon,
-    skillName,
-    skillOf,
-    slotLabel,
-} from './helpers.js';
-import { maxAwakening, setAwakening, setFaction } from './progress.js';
+import { boardHeroes, factionHeroes, heroClass, skillIcon, skillName, skillOf, slotLabel } from './helpers.js';
+import { setFaction } from './progress.js';
 
 /** The level a hero's skill is at on the board (the 8-star skill is Lv 1 and stays so). */
 const levelOf = (levels, hero, slot) => (slot === 'tenacity' ? START_LEVEL : levels[hero][slot]);
@@ -52,31 +52,17 @@ function tileHtml(hero, slot, levels, next, selected) {
         </button>`;
 }
 
-/** An awakenable hero's awakening level and the skill cap it gives. */
-function awakeningHtml(hero) {
-    const level = ctx.awakening[hero] ?? 0;
-    return `
-        <div class="skills-awakening">
-            <label>
-                <span>${tHtml('skills.awakening')}</span>
-                <input type="number" min="0" max="${maxAwakening()}" step="1" inputmode="numeric" value="${level}" data-awakening="${hero}" />
-            </label>
-            <span class="skills-awakening__cap">${tHtml('skills.skillCap', { cap: skillCap(ctx.skills, level) })}</span>
-        </div>`;
-}
-
 function heroHtml(hero, levels, next, selected) {
     const column = (slots) =>
         slots.map((slot) => tileHtml(hero, slot, levels, next, isSelected(selected, hero, slot))).join('');
     const { left, right } = ctx.skills.layout;
     return `
         <div class="skills-hero">
-            ${heroHeadHtml(ctx.data.heroes, hero, heroClass(hero))}
+            ${heroHeadHtml(ctx.data.heroes, hero, heroClass(hero), heroLevel(ctx.heroStars, hero).awakening)}
             <div class="skills-grid">
                 <div class="skills-col">${column(left)}</div>
                 <div class="skills-col">${column(right)}</div>
             </div>
-            ${ctx.skills.heroes[hero].awakenable ? awakeningHtml(hero) : ''}
         </div>`;
 }
 
@@ -98,30 +84,41 @@ function descriptionHtml(parts) {
 }
 
 /** The highest level of a hero's skill: the hero's skill cap (its awakening), the 8-star skill stays at Lv 1. */
-const maxLevelOf = (hero, slot) => (slot === 'tenacity' ? START_LEVEL : skillCap(ctx.skills, ctx.awakening[hero] ?? 0));
+const maxLevelOf = (hero, slot) =>
+    slot === 'tenacity' ? START_LEVEL : skillCap(ctx.skills, heroLevel(ctx.heroStars, hero).awakening);
 
 /**
  * The selected skill: its icon, name with its level and highest level as in the game ("Moon Blade: Lv.22/37", the
  * level in green), the skill's type and the hero's damage type (right-aligned; both light blue for energy,
- * orange for physical), its description at the hero's current level as a 10-star hero has it, and below it the star
- * bonuses with the star each unlocks at.
+ * orange for physical), its description at the hero's current level with the star bonuses its stars (My Heroes) have
+ * unlocked, and below it all the skill's star bonuses, then the hero weapon's bonuses on the skill, each behind a
+ * yellow star as in the game. A locked bonus is dimmed and followed by what unlocks it in red ("[Unlocks at 10★ Hero]").
  */
 function detailHtml(levels, next, selected) {
     const { hero, slot } = selected;
     const skill = skillOf(hero, slot);
     const level = levelOf(levels, hero, slot);
     const target = next?.hero === hero && next.slots.includes(slot) ? next.level : level;
-    const starred = starredSkill(skill);
+    const onWeapon = slot === 'tenacity' ? [] : weaponBonuses(ctx.skills.heroes[hero], slot);
+    const starred = starredSkill(skill, heroLevel(ctx.heroStars, hero), onWeapon);
     const text = localizedName(starred.description);
     const description = text
         ? descriptionHtml(describeSkill(text, starred.values, level, target))
         : `<span class="text-dim">${tHtml('skills.noDescription')}</span>`;
-    const bonuses = starred.bonuses
-        .map(
-            (bonus) =>
-                `<li><span class="skills-bonus__stars">${bonus.stars}</span><img class="skills-bonus__star" src="${STAR_ICON}" alt="" /><span>${escapeHtml(localizedName(bonus.text))}</span></li>`,
-        )
-        .join('');
+    // A bonus row: a star and the bonus; a locked one is dimmed and says what unlocks it (`unlockKey`).
+    const bonusRows = (list, unlockKey) =>
+        list
+            .map((bonus) => {
+                const locked = bonus.unlocked ? '' : ' is-locked';
+                const unlock = bonus.unlocked
+                    ? ''
+                    : ` <span class="skills-bonus__unlock">${tHtml(unlockKey, { stars: bonus.stars })}</span>`;
+                return `<li><img class="skills-bonus__star${locked}" src="${starImage(YELLOW_STAR)}" alt="" /><span><span class="skills-bonus__text${locked}">${escapeHtml(localizedName(bonus.text))}</span>${unlock}</span></li>`;
+            })
+            .join('');
+    // The weapon's bonuses on this skill follow the star bonuses.
+    const bonuses =
+        bonusRows(starred.bonuses, 'skills.unlocksAtHero') + bonusRows(starred.weapon, 'skills.unlocksAtWeapon');
     const damageType = ctx.skills.heroes[hero].damage_type;
     const damage = damageType
         ? `<span class="skills-detail__damage">${escapeHtml(enumLabel('skills.damage', damageType))}</span>`
@@ -156,9 +153,6 @@ function renderBoard() {
             // Below the heroes: scroll just enough to show it if it is out of view.
             detailPanel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         });
-    });
-    heroesPanel.querySelectorAll('[data-awakening]').forEach((input) => {
-        input.addEventListener('change', () => setAwakening(input.dataset.awakening, Number(input.value)));
     });
 }
 

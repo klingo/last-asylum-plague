@@ -65,7 +65,7 @@
     margin-left: -4px;
 }
 
-/* A hero's portrait (framed in the shown faction's colour) with name and class beside it. */
+/* A hero's portrait with name and class beside it. */
 .hero-head {
     display: flex;
     align-items: center;
@@ -73,13 +73,37 @@
     margin: 0;
 }
 
-.hero-head > img {
-    width: 64px;
-    height: 64px;
+.hero-portrait {
+    position: relative;
+    flex: none;
+    width: 80px;
+    height: 80px;
+}
+
+/* The picture, framed in the shown faction's colour. */
+.hero-portrait > img {
+    display: block;
+    width: 100%;
+    height: 100%;
     border: 2px solid var(--faction-color, var(--border));
     border-radius: 8px;
     object-fit: cover;
     background: var(--panel);
+}
+
+/* An awakened hero: the frame of its awakening level (--hero-frame, set on the element) in place of the coloured border. The
+   picture keeps its size; the frame is drawn around it, 4% beyond each side: its art (a 116 px opening in 144 px) then
+   covers the picture's edge and reaches only a little outside it. */
+.hero-portrait.has-frame > img {
+    border-color: transparent;
+}
+
+.hero-portrait.has-frame::after {
+    content: '';
+    position: absolute;
+    inset: -4%;
+    background: var(--hero-frame) center / 100% 100% no-repeat;
+    pointer-events: none;
 }
 
 .hero-head figcaption {
@@ -107,8 +131,8 @@
 
 /* A hero's small round portrait next to a step's text. */
 .hero-face {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
     border: 1px solid var(--panel-alt);
     border-radius: 50%;
     object-fit: cover;
@@ -116,8 +140,8 @@
 }
 
 @media (max-width: 640px) {
-    .hero-head > img {
-        width: 52px;
-        height: 52px;
+    .hero-portrait {
+        width: 64px;
+        height: 64px;
     }
 }

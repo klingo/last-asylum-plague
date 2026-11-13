@@ -59,6 +59,30 @@
     display: none;
 }
 
+/* The card's title (`data-tooltip-title`): bold, with a thin line under it (none when nothing follows). */
+.app-tooltip__title {
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 700;
+}
+
+.app-tooltip__title:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+/* A leading "[Tag]" of the title, and the note after it (`data-tooltip-note`, not bold). */
+.app-tooltip__tag {
+    color: var(--good);
+}
+
+.app-tooltip__note {
+    color: var(--bad);
+    font-weight: 400;
+}
+
 .app-tooltip--image {
     width: 280px;
 }
