@@ -53,12 +53,14 @@ function squadHeroes(data, heroes, faction) {
 function heroHeadHtml(heroes, heroId, heroClass, awakening = 0) {
     const name = heroName(heroes, heroId);
     const frame = awakeningFrame(awakening);
-    const portrait = frame
-        ? `<span class="hero-portrait has-frame" style="--hero-frame: url('${frameImage(frame)}')">`
-        : '<span class="hero-portrait">';
+    // The frame is an element with its picture as an inline `background-image`: a relative URL in a CSS variable would be
+    // resolved against the stylesheet, not the page (and break in the build, where the base is relative).
+    const frameEl = frame
+        ? `<span class="hero-portrait__frame" style="background-image: url('${frameImage(frame)}')"></span>`
+        : '';
     return `
         <figure class="hero-head">
-            ${portrait}<img src="${hasAwakenedPortrait(awakening) ? awakenedHeroImage(heroes, heroId) : heroImage(heroes, heroId)}" alt="${escapeHtml(name)}" /></span>
+            <span class="hero-portrait${frame ? ' has-frame' : ''}"><img src="${hasAwakenedPortrait(awakening) ? awakenedHeroImage(heroes, heroId) : heroImage(heroes, heroId)}" alt="${escapeHtml(name)}" />${frameEl}</span>
             <figcaption>
                 <strong>${escapeHtml(name)}</strong>
                 <span class="hero-class">${classIcon(heroClass)}${escapeHtml(enumLabel('gear.class', heroClass))}</span>

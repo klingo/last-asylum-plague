@@ -91,18 +91,19 @@
     background: var(--panel);
 }
 
-/* An awakened hero: the frame of its awakening level (--hero-frame, set on the element) in place of the coloured border. The
+/* An awakened hero: the frame of its awakening level (`hero-portrait__frame`, its picture inline) in place of the coloured border. The
    picture keeps its size; the frame is drawn around it, 4% beyond each side: its art (a 116 px opening in 144 px) then
    covers the picture's edge and reaches only a little outside it. */
 .hero-portrait.has-frame > img {
     border-color: transparent;
 }
 
-.hero-portrait.has-frame::after {
-    content: '';
+.hero-portrait__frame {
     position: absolute;
     inset: -4%;
-    background: var(--hero-frame) center / 100% 100% no-repeat;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     pointer-events: none;
 }
 

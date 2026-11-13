@@ -214,7 +214,7 @@
 }
 
 /* The milestones, each at the handle's position for its level: the icon of the skill it unlocks (the hero's portrait where
-   it isn't known), its level under it; greyed with the padlock (--lock, set on the block) until reached. A button: it
+   it isn't known), its level under it; greyed with the padlock until reached (the pictures are inline backgrounds). A button: it
    jumps there. */
 .heroes-nodes {
     position: relative;
@@ -258,9 +258,10 @@
     height: 26px;
     border: 1px solid var(--border);
     border-radius: 4px;
-    background:
-        var(--node-picture) center / cover no-repeat,
-        var(--panel);
+    background-color: var(--panel);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .heroes-node.is-reached .heroes-node__art {
@@ -281,7 +282,9 @@
     left: 50%;
     width: 14px;
     height: 14px;
-    background: var(--lock) center / contain no-repeat;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
     transform: translate(-50%, -50%);
 }
 

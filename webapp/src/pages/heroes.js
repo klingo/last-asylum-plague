@@ -194,7 +194,7 @@ function nodesHtml(heroId, awakening, name, locked) {
         const tooltip = skill
             ? ` data-tooltip-title="${escapeHtml(title)}" data-tooltip-note="${reached ? '' : escapeHtml(note)}" data-locked-note="${escapeHtml(note)}" data-tooltip="${escapeHtml(text)}"`
             : '';
-        return `<button type="button" class="heroes-node${reached ? ' is-reached' : ''}" data-hero="${heroId}" data-node="${level}" style="--p: ${level / MAX.awakening}; --node-picture: url('${picture}')"${tooltip} aria-label="${label}" aria-disabled="${locked}"><span class="heroes-node__art"></span><span class="heroes-node__lock"></span><span class="heroes-node__label">${level}</span></button>`;
+        return `<button type="button" class="heroes-node${reached ? ' is-reached' : ''}" data-hero="${heroId}" data-node="${level}" style="--p: ${level / MAX.awakening}"${tooltip} aria-label="${label}" aria-disabled="${locked}"><span class="heroes-node__art" style="background-image: url('${picture}')"></span><span class="heroes-node__lock" style="background-image: url('${lockImage}')"></span><span class="heroes-node__label">${level}</span></button>`;
     }).join('')}</div>`;
 }
 const skillCapHtml = (awakening) => tHtml('heroes.skillCap', { cap: skillCap(skillData, awakening) });
@@ -205,7 +205,7 @@ const skillCapHtml = (awakening) => tHtml('heroes.skillCap', { cap: skillCap(ski
  */
 function awakeningHtml(heroId, awakening, name, locked) {
     return `
-        <div class="heroes-section heroes-awakening${locked ? ' is-locked' : ''}" style="--lock: url('${lockImage}')">
+        <div class="heroes-section heroes-awakening${locked ? ' is-locked' : ''}">
             <div class="heroes-awakening__title">${tHtml('heroes.awakening')}</div>
             <div class="heroes-awakening__level" data-awakening-level>${awakeningLevelHtml(awakening)}</div>
             ${nodesHtml(heroId, awakening, name, locked)}

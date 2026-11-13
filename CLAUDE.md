@@ -45,6 +45,9 @@ A static webapp that values items, packages and exchange-shop offers from `data/
   `${t(...)}` in a template or `escapeHtml(t(...))`; `t()` stays for plain text (`textContent`, tooltip text). A new language: its
   dictionary in `LOCALES` (`ui/i18n.js`) and its key in the schema's `localizedString`.
 - Gold is reserved for Banknote amounts (`banknotesHtml`); diamonds are blue, other numbers plain.
+- Never put a `url()` into a CSS custom property (`--x: url(...)`): a relative URL there is resolved against the
+  stylesheet, not the page, so it works in the dev server (base `/`) and breaks in the build (base `./`). Use an inline
+  `background-image` on an element, or an `<img>`.
 
 ## Formatting Conventions
 
