@@ -364,7 +364,7 @@
                         {
                             "text": {
                                 "en": "For every 10 Raven Fruits consumed",
-                                "de": "Für jede 10 verbrauchten Rabenfrüchte"
+                                "de": "Für jede 10 verbrauchte Rabenfrüchte"
                             },
                             "points": 1,
                             "item_id": "raven_fruit"
@@ -467,8 +467,8 @@
                 {
                     "id": "raven",
                     "name": {
-                        "en": "Raven",
-                        "de": ""
+                        "en": "Enhance Raven",
+                        "de": "Rabenverbesserung"
                     },
                     "image": "alliance_duel_phase1",
                     "earn_points": [
@@ -556,8 +556,8 @@
                 {
                     "id": "construction",
                     "name": {
-                        "en": "Construction",
-                        "de": ""
+                        "en": "Territory Development",
+                        "de": "Gebietsentwicklung"
                     },
                     "image": "alliance_duel_phase2",
                     "earn_points": [
@@ -622,8 +622,8 @@
                 {
                     "id": "research",
                     "name": {
-                        "en": "Research",
-                        "de": ""
+                        "en": "Tech Research",
+                        "de": "Tech-Forschung"
                     },
                     "image": "alliance_duel_phase3",
                     "earn_points": [
@@ -723,8 +723,8 @@
                 {
                     "id": "heroes",
                     "name": {
-                        "en": "Heroes",
-                        "de": ""
+                        "en": "Enhance Heroes",
+                        "de": "Heldenverbesserung"
                     },
                     "image": "alliance_duel_phase4",
                     "earn_points": [
@@ -798,7 +798,7 @@
                     "id": "war_preparation",
                     "name": {
                         "en": "War Preparation",
-                        "de": ""
+                        "de": "Kriegsvorbereitung"
                     },
                     "image": "alliance_duel_phase5",
                     "earn_points": [
@@ -871,7 +871,7 @@
                     "id": "raid_the_enemy",
                     "name": {
                         "en": "Raid the Enemy",
-                        "de": ""
+                        "de": "Feindlicher Überfall"
                     },
                     "image": "alliance_duel_phase6",
                     "earn_points": [
@@ -910,7 +910,7 @@
                         {
                             "text": {
                                 "en": "For each Lv.10 soldier defeated (specific match)",
-                                "de": ""
+                                "de": "Für jeden besiegten Lv.10-Soldaten (bestimmtes Match)"
                             },
                             "points": 165
                         },

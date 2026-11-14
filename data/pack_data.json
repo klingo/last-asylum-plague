@@ -2237,7 +2237,7 @@
         "rock_loot": {
             "name": {
                 "en": "Rock Loot",
-                "de": ""
+                "de": "Stein Beute"
             },
             "category": "chest",
             "rarity": "mr",
@@ -2641,7 +2641,7 @@
         "survivor_recruit_ticket": {
             "name": {
                 "en": "Survivor Recruit Ticket",
-                "de": "ÜBL. Rektrut.-ticket"
+                "de": "ÜBL. Rekrut.-ticket"
             },
             "category": "consumable",
             "rarity": "ur"
@@ -2787,7 +2787,7 @@
         },
         "ur_adventure_chest": {
             "name": {
-                "en": "UR Adventure Chest",
+                "en": "UR Adventurer Chest",
                 "de": "UR Abenteurer Truhe"
             },
             "category": "chest",
@@ -3993,7 +3993,7 @@
         "gear_pass": {
             "name": {
                 "en": "Gear Pass",
-                "de": ""
+                "de": "Ausrüstungspass"
             },
             "image": "gear_pass",
             "category": "value_event",
@@ -4639,7 +4639,7 @@
         "moon_coin_deluxe_pack": {
             "name": {
                 "en": "Moon Coin Deluxe Pack",
-                "de": ""
+                "de": "Mondmünze Deluxe-Paket"
             },
             "category": "special_event",
             "event_id": "full_moon_night",
@@ -4656,7 +4656,7 @@
         "moon_coin_majestic_pack": {
             "name": {
                 "en": "Moon Coin Majestic Pack",
-                "de": ""
+                "de": "Mondmünze Majestätisches Paket"
             },
             "category": "special_event",
             "event_id": "full_moon_night",
@@ -4674,7 +4674,7 @@
         "moon_coin_premium_pack": {
             "name": {
                 "en": "Moon Coin Premium Pack",
-                "de": ""
+                "de": "Mondmünze Premium-Paket"
             },
             "category": "special_event",
             "event_id": "full_moon_night",
@@ -4691,7 +4691,7 @@
         "moon_coin_rare_pack": {
             "name": {
                 "en": "Moon Coin Rare Pack",
-                "de": ""
+                "de": "Mondmünze Seltenes Paket"
             },
             "category": "special_event",
             "event_id": "full_moon_night",
@@ -4709,7 +4709,7 @@
         "moon_coin_special_pack": {
             "name": {
                 "en": "Moon Coin Special Pack",
-                "de": ""
+                "de": "Mondmünze Spezialpaket"
             },
             "category": "special_event",
             "event_id": "full_moon_night",
@@ -4726,7 +4726,7 @@
         "moon_coin_supreme_pack": {
             "name": {
                 "en": "Moon Coin Supreme Pack",
-                "de": ""
+                "de": "Mondmünze Supreme-Paket"
             },
             "category": "special_event",
             "event_id": "full_moon_night",
@@ -4744,7 +4744,7 @@
         "moon_coin_value_pack": {
             "name": {
                 "en": "Moon Coin Value Pack",
-                "de": ""
+                "de": "Mondmünze Wertpaket"
             },
             "category": "special_event",
             "event_id": "full_moon_night",
@@ -5295,7 +5295,7 @@
         "recluse_coin_rare_pack": {
             "name": {
                 "en": "Recluse Coin Rare Pack",
-                "de": "Einsiedler-Münze Seltenes Paket"
+                "de": "Einsiedler-Münzen Seltenes Paket"
             },
             "category": "special_event",
             "event_id": "recluse_merchant",
@@ -5914,7 +5914,7 @@
         "ur_gear_crafting": {
             "name": {
                 "en": "UR Gear Crafting",
-                "de": "UR-Ausrüstungs Fertigen"
+                "de": "UR-Ausrüstung Fertigen"
             },
             "category": "weekly_special",
             "price": 4999,

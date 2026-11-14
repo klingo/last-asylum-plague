@@ -120,7 +120,7 @@
                     "skill": "auto_attack",
                     "name": {
                         "en": "Battle Skill: Skybreaker Slash",
-                        "de": ""
+                        "de": "Kampffähigkeit: Himmelsbrecher-Schnitt"
                     },
                     "description": {
                         "en": "When Skybreaker Slash triggers a Crit, Marlena gains 1 stack of [Battle Will], with a stack cap equal to 2X the number of Warrior Heroes on the team. Each stack of [Battle Will] grants Marlena 1% DMG Bonus and 1% DMG↓",
@@ -132,7 +132,7 @@
                     "skill": "active",
                     "name": {
                         "en": "Battle Skill: Crimson Bloom",
-                        "de": ""
+                        "de": "Kampffähigkeit: Rote Blüte"
                     },
                     "description": {
                         "en": "Crimson Bloom deals damage to all enemies; if Marlena's [Battle Will] exceeds 5 stacks, inflict [Dread] on all enemies (reduces their damage by 5%)",
@@ -168,7 +168,7 @@
                     "skill": "ultimate",
                     "name": {
                         "en": "Battle Skill: Peerless Blade",
-                        "de": ""
+                        "de": "Kampffähigkeit: Unvergleichliche Klinge"
                     },
                     "description": {
                         "en": "Unleash 5 additional sword winds with damage reduced to 60% of original.",
@@ -623,7 +623,7 @@
                     "skill": "active",
                     "name": {
                         "en": "Battle Skill: Lunar Hunt",
-                        "de": ""
+                        "de": "Kampffähigkeit: Mondjagd"
                     },
                     "description": {
                         "en": "Lunar Hunt deals 20% additional damage and grants Cynthia 2 stacks of [Moonlight].",
@@ -635,7 +635,7 @@
                     "skill": "ultimate",
                     "name": {
                         "en": "Battle Skill: Moonfall Dance",
-                        "de": ""
+                        "de": "Kampffähigkeit: Monduntergang-Tanz"
                     },
                     "description": {
                         "en": "Consume up to 10 stacks of [Moonlight]. Moonfall Dance deals 1 additional attack at 60% ATK * number of [Moonlight] stacks consumed as Energy Dmg to the target",
