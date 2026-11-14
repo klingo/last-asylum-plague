@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-13"
+        "last_updated": "2026-11-14"
     },
     "items": {
         "alliance_coins": {
@@ -8921,6 +8921,10 @@
             {
                 "start": "2026-11-11",
                 "end": "2026-11-11"
+            },
+            {
+                "start": "2026-11-14",
+                "end": "2026-11-14"
             }
         ],
         "dwarven_mine": [
