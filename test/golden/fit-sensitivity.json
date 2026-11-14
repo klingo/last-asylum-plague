@@ -1,26 +1,26 @@
 {
     "antitoxin": {
-        "factor": 1.22039874,
+        "factor": 1.21955548,
         "family": "weekly_hero_exp_pass"
     },
     "black_raven_fortress": {
-        "factor": 1.03811821,
+        "factor": 1.03964334,
         "family": "login_rewards"
     },
     "cloth": {
-        "factor": 1.08152893,
+        "factor": 1.07809636,
         "family": "ur_gear_crafting"
     },
     "construction_speedup": {
-        "factor": 1.5746957,
+        "factor": 1.56495684,
         "family": "premium_monthly_pass"
     },
     "copper_coin": {
-        "factor": 1.88161927,
+        "factor": 1.88386112,
         "family": "copper_coin_pack_24h"
     },
     "demons_eye": {
-        "factor": 1.03811821,
+        "factor": 1.03964334,
         "family": "login_rewards"
     },
     "direct_relocate": {
@@ -32,119 +32,119 @@
         "family": "dragon_blood_pack"
     },
     "exclusive_weapon_shard": {
-        "factor": 1.1170133,
+        "factor": 1.1173169,
         "family": "hero_exclusive_weapon_pack"
     },
     "fantasy_city": {
-        "factor": 1.03811821,
+        "factor": 1.03964334,
         "family": "login_rewards"
     },
     "gear_blueprint_mr": {
-        "factor": 1.03811821,
+        "factor": 1.03964334,
         "family": "login_rewards"
     },
     "gear_blueprint_ur": {
-        "factor": 1.03789995,
-        "family": "weekly_herb_pass"
+        "factor": 1.03595711,
+        "family": "login_rewards"
     },
     "gearstone": {
-        "factor": 1.10110862,
+        "factor": 1.13177513,
         "family": "gear_pass"
     },
     "grain": {
-        "factor": 1.04667367,
+        "factor": 1.04632385,
         "family": "weekly_grain_pass"
     },
     "healing_speedup": {
-        "factor": 1.94495085,
+        "factor": 1.90787267,
         "family": "quick_research_pack"
     },
     "herbs": {
-        "factor": 1.09089156,
+        "factor": 1.08701767,
         "family": "weekly_herb_pass"
     },
     "hero_awaken_shard": {
-        "factor": 1.19428504,
+        "factor": 1.19285101,
         "family": "hero_awaken_growth_pack"
     },
     "lv1_alliance_chest": {
-        "factor": 2.63080855,
+        "factor": 2.63707896,
         "family": "hero_shard"
     },
     "lv1_attackers_claw": {
-        "factor": 1.06690868,
+        "factor": 1.06622279,
         "family": "raven_gear_special_pack"
     },
     "lv1_eye_of_perception": {
-        "factor": 1.06690868,
+        "factor": 1.06622279,
         "family": "raven_gear_special_pack"
     },
     "lv1_feather_of_the_night": {
-        "factor": 1.06690868,
+        "factor": 1.06622279,
         "family": "raven_gear_special_pack"
     },
     "lv1_heart_of_wisdom": {
-        "factor": 1.06690868,
+        "factor": 1.06622279,
         "family": "raven_gear_special_pack"
     },
     "lv1_sharp_beak": {
-        "factor": 1.06690868,
+        "factor": 1.06622279,
         "family": "raven_gear_special_pack"
     },
     "lv1_tail_of_wind": {
-        "factor": 1.06690868,
+        "factor": 1.06622279,
         "family": "raven_gear_special_pack"
     },
     "lv2_alliance_chest": {
-        "factor": 1.36379974,
+        "factor": 1.36856327,
         "family": "login_rewards"
     },
     "lv3_alliance_chest": {
-        "factor": 1.20633292,
+        "factor": 1.20722927,
         "family": "mystic_cabinet_i"
     },
     "lv4_alliance_chest": {
-        "factor": 1.33203111,
+        "factor": 1.31706547,
         "family": "stamina_discount_pack"
     },
     "lv5_alliance_chest": {
-        "factor": 1.40604412,
+        "factor": 1.39775178,
         "family": "development_pack"
     },
     "lv6_alliance_chest": {
-        "factor": 1.13994215,
+        "factor": 1.13848577,
         "family": "enhance_might"
     },
     "mystic_cabin_permanent": {
-        "factor": 1.03811821,
+        "factor": 1.03964334,
         "family": "login_rewards"
     },
     "r_epigraph": {
-        "factor": 2.44814632,
+        "factor": 1.98110581,
         "family": "raven_epigraph_offer"
     },
     "raven_essence": {
-        "factor": 1.12940077,
+        "factor": 1.09967695,
         "family": "era_of_revival_raven_essence_weekly_pass"
     },
     "raven_evolve_guide": {
-        "factor": 7.74817122,
+        "factor": 7.54596609,
         "family": "raven_evolve_guide"
     },
     "raven_fruit": {
-        "factor": 1.06122594,
+        "factor": 1.06186197,
         "family": "raven_essence_pack"
     },
     "recruit_ticket": {
-        "factor": 2.97077083,
+        "factor": 2.9945753,
         "family": "premium_monthly_pass"
     },
     "red_nutcracker": {
-        "factor": 1.03811821,
+        "factor": 1.03964334,
         "family": "login_rewards"
     },
     "research_speedup": {
-        "factor": 1.94495085,
+        "factor": 1.90787267,
         "family": "quick_research_pack"
     },
     "research_tome": {
@@ -152,11 +152,11 @@
         "family": "research_tome_pack"
     },
     "skill_badge": {
-        "factor": 1.06915566,
+        "factor": 1.06615283,
         "family": "login_rewards"
     },
     "sr_epigraph": {
-        "factor": 1.45521537,
+        "factor": 1.44014129,
         "family": "epigraph_pass"
     },
     "sr_hero_shard": {
@@ -176,7 +176,7 @@
         "family": "curio_boost"
     },
     "ssr_epigraph": {
-        "factor": 1.1720696,
+        "factor": 1.4948981,
         "family": "raven_epigraph"
     },
     "ssr_epigraph_shard": {
@@ -196,15 +196,15 @@
         "family": "value_gear_pack"
     },
     "stamina": {
-        "factor": 1.02489025,
+        "factor": 1.02500691,
         "family": "falcon_tower_pass"
     },
     "study_scroll": {
-        "factor": 1.18637264,
+        "factor": 1.18900184,
         "family": "mystic_cabinet_iii"
     },
     "survivor_recruit_ticket": {
-        "factor": 1.60776508,
+        "factor": 1.58270519,
         "family": "survivor_pack"
     },
     "survivor_token": {
@@ -212,15 +212,15 @@
         "family": "survivor_pack"
     },
     "timber": {
-        "factor": 1.04667367,
+        "factor": 1.04632385,
         "family": "weekly_timber_pass"
     },
     "top_up_exp": {
-        "factor": 1.1494671,
+        "factor": 1.14732178,
         "family": "premium_herb_pack"
     },
     "training_speedup": {
-        "factor": 1.94495085,
+        "factor": 1.90787267,
         "family": "quick_research_pack"
     },
     "twin_dragon_brooch": {
@@ -228,7 +228,7 @@
         "family": "twin_dragon_brooch_pack"
     },
     "universal_curio_shard": {
-        "factor": 1.06949265,
+        "factor": 1.06910856,
         "family": "curio_pack_pack"
     },
     "ur_armor": {
@@ -240,15 +240,15 @@
         "family": "value_gear_pack"
     },
     "ur_curio": {
-        "factor": 1.04946727,
+        "factor": 1.04657965,
         "family": "login_rewards"
     },
     "ur_epigraph": {
-        "factor": 1.1800821,
+        "factor": 1.12922478,
         "family": "raven_epigraph"
     },
     "ur_epigraph_shard": {
-        "factor": 1.15710793,
+        "factor": 1.11408454,
         "family": "raven_epigraph"
     },
     "ur_gauntlets": {
@@ -256,7 +256,7 @@
         "family": "value_gear_pack"
     },
     "ur_hero_shard": {
-        "factor": 1.11824794,
+        "factor": 1.11561961,
         "family": "hero_special_pack"
     },
     "ur_sword": {
@@ -264,7 +264,7 @@
         "family": "value_gear_pack"
     },
     "vip_points": {
-        "factor": 1.04841775,
+        "factor": 1.04962879,
         "family": "login_rewards"
     }
 }

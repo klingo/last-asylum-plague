@@ -5,13 +5,13 @@
         "stepCost": 998,
         "cumulativeCost": 998,
         "reward": {
-            "worth": 225.376831
+            "worth": 241.852862
         },
         "reached": true,
         "atWeeklySpend": true,
-        "stepWorth": 1825.90138,
-        "packsWorth": 1600.52455,
-        "ratio": 1.8295605
+        "stepWorth": 1965.06541,
+        "packsWorth": 1723.21254,
+        "ratio": 1.96900341
     },
     {
         "threshold": 3000,
@@ -19,13 +19,13 @@
         "stepCost": 2083.09917,
         "cumulativeCost": 3081.09917,
         "reward": {
-            "worth": 225.376831
+            "worth": 241.852862
         },
         "reached": true,
         "atWeeklySpend": true,
-        "stepWorth": 3546.88403,
-        "packsWorth": 3321.5072,
-        "ratio": 1.70269572
+        "stepWorth": 3798.82954,
+        "packsWorth": 3556.97668,
+        "ratio": 1.82364316
     },
     {
         "threshold": 10000,
@@ -33,52 +33,52 @@
         "stepCost": 7074.09917,
         "cumulativeCost": 10155.1983,
         "reward": {
-            "worth": 450.753661
+            "worth": 483.705724
         },
         "reached": true,
         "atWeeklySpend": true,
-        "stepWorth": 9161.61389,
-        "packsWorth": 8710.86023,
-        "ratio": 1.29509266
+        "stepWorth": 9807.9834,
+        "packsWorth": 9324.27768,
+        "ratio": 1.38646394
     },
     {
         "threshold": 20000,
         "stepPoints": 10000,
-        "stepCost": 10097,
-        "cumulativeCost": 20252.1983,
+        "stepCost": 10091,
+        "cumulativeCost": 20246.1983,
         "reward": {
-            "worth": 901.507323
+            "worth": 967.411447
         },
         "reached": true,
         "atWeeklySpend": true,
-        "stepWorth": 11327.7584,
-        "packsWorth": 10426.2511,
-        "ratio": 1.12189348
+        "stepWorth": 11483.7074,
+        "packsWorth": 10516.2959,
+        "ratio": 1.1380148
     },
     {
         "threshold": 30000,
         "stepPoints": 10000,
-        "stepCost": 10260.1983,
-        "cumulativeCost": 30250.1983,
+        "stepCost": 10257.1983,
+        "cumulativeCost": 30242.1983,
         "reward": {
-            "worth": 901.507323
+            "worth": 967.411447
         },
         "reached": true,
-        "stepWorth": 12102.1031,
-        "packsWorth": 11200.5957,
-        "ratio": 1.17951941
+        "stepWorth": 12311.42,
+        "packsWorth": 11344.0086,
+        "ratio": 1.20027122
     },
     {
         "threshold": 50000,
         "stepPoints": 20000,
-        "stepCost": 20495,
+        "stepCost": 20503,
         "cumulativeCost": 50745.1983,
         "reward": {
-            "worth": 1352.26098
+            "worth": 1451.11717
         },
         "reached": true,
-        "stepWorth": 21540.9173,
-        "packsWorth": 20188.6563,
-        "ratio": 1.0510328
+        "stepWorth": 21367.9799,
+        "packsWorth": 19916.8628,
+        "ratio": 1.04218797
     }
 ]
