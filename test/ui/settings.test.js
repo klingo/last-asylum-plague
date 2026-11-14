@@ -67,10 +67,12 @@ test('a change is saved and told to the listeners', () => {
     assert.equal(JSON.parse(storage.get(STORAGE_KEYS.settings)).budget, 1234);
 });
 
-test('the Survival Battle notification is off unless saved on', () => {
-    assert.equal(loadSettings().notifySurvivalBattle, false);
-    save({ notifySurvivalBattle: true });
-    assert.equal(loadSettings().notifySurvivalBattle, true);
-    save({ notifySurvivalBattle: 'yes' });
-    assert.equal(loadSettings().notifySurvivalBattle, false, 'only a boolean counts');
+test('the notifications are off unless saved on', () => {
+    for (const key of ['notifySurvivalBattle', 'notifyScrambleSoon', 'notifyScrambleStart']) {
+        assert.equal(loadSettings()[key], false);
+        save({ [key]: true });
+        assert.equal(loadSettings()[key], true);
+        save({ [key]: 'yes' });
+        assert.equal(loadSettings()[key], false, 'only a boolean counts');
+    }
 });

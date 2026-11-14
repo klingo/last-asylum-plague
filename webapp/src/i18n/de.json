@@ -197,10 +197,15 @@
         "notifications": {
             "heading": "Benachrichtigungen",
             "description": "Browser-Benachrichtigungen, solange ein Tab dieser App geöffnet ist. Sind alle Tabs geschlossen, wird nichts angezeigt, und jeder Browser fragt, ob Benachrichtigungen erlaubt sind.",
-            "survivalBattle": "Überlebenskampf",
             "survivalBattleOn": "An: eine Benachrichtigung, wenn eine neue Runde des Überlebenskampfs beginnt (alle 4 Stunden).",
-            "survivalBattleOff": "Aus (Standard): keine Benachrichtigung.",
             "survivalBattleBody": "Die neue Runde des Überlebenskampfs hat begonnen! Erfülle die Aufgaben, um deine Stärke zu steigern!",
+            "scrambleSoon": "1 Stunde vorher",
+            "scrambleSoonOn": "An: eine Benachrichtigung 1 Stunde vor dem Beginn (jeden Samstag).",
+            "scrambleSoonBody": "{name} beginnt in 1 Stunde.",
+            "atStart": "Zum Beginn",
+            "scrambleStartOn": "An: eine Benachrichtigung, wenn es beginnt (jeden Samstag).",
+            "scrambleStartBody": "{name} hat begonnen!",
+            "off": "Aus (Standard): keine Benachrichtigung.",
             "denied": "Benachrichtigungen sind für diese Seite nicht erlaubt. Erlaube sie, wenn der Browser fragt (oder in dessen Website-Einstellungen), und schalte dies dann wieder ein.",
             "unsupported": "Dieser Browser kann keine Benachrichtigungen anzeigen.",
             "revoked": "Diese Einstellung ist an, aber Benachrichtigungen sind für diese Seite im Browser blockiert, daher wird nichts angezeigt."

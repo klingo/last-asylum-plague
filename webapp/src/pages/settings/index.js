@@ -1,6 +1,6 @@
 /**
  * Settings (the cogwheel in the header): the language, the settings that shape every value (Count VIP points in the
- * worth) and the model quality: how well the fitted worths reproduce the packs' deal % (`fitItemPoints` diagnostics, the packs
+ * worth), the notifications and the model quality: how well the fitted worths reproduce the packs' deal % (`fitItemPoints` diagnostics, the packs
  * furthest off, and how well each pack is predicted from the others: `fitHoldOut`, computed in the background),
  * and the collapsed Admin section that records runs through GitHub (admin.js).
  */
@@ -15,7 +15,7 @@ import { packageDisplayName } from '../../ui/labels.js';
 import { formatPercent, formatThousands } from '../../ui/format.js';
 import { infoIconHtml } from '../../ui/info-icon.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
-import { LOCALES, getLocale, setLocale, t } from '../../ui/i18n.js';
+import { LOCALES, getLocale, localizedName, setLocale, t } from '../../ui/i18n.js';
 import { notificationsSupported, requestNotificationPermission } from '../../ui/notifications.js';
 import { initAdmin, renderAdmin } from './admin.js';
 
@@ -171,35 +171,56 @@ function renderNotifyNote() {
     note.textContent = notifyNote === null ? '' : t(notifyNote);
 }
 
+// The notification switches: the input's id and the setting it holds.
+const NOTIFY_SWITCHES = [
+    ['notify-survival-battle', 'notifySurvivalBattle'],
+    ['notify-scramble-soon', 'notifyScrambleSoon'],
+    ['notify-scramble-start', 'notifyScrambleStart'],
+];
+
+/** An event's notification group is headed by its name (a data name, so not in the dictionary). */
+function renderNotifyHeadings() {
+    const headings = [
+        ['notify-survival-battle-heading', 'survival_battle'],
+        ['notify-scramble-heading', data.kingdom_war?.royal_city_scramble.event_id],
+    ];
+    for (const [id, eventId] of headings) {
+        document.getElementById(id).textContent = localizedName(data.events?.[eventId]?.name);
+    }
+}
+
 /**
- * The Survival Battle notification switch. Switching it on asks the browser for permission (from this click); if it
- * isn't given, or there are no notifications in this browser, the switch goes back off and says why.
+ * The notification switches. Switching one on asks the browser for permission (from this click); if it isn't given,
+ * or there are no notifications in this browser, the switch goes back off and says why.
  */
 function wireNotifications() {
-    const input = document.getElementById('notify-survival-battle');
-    input.checked = getSettings().notifySurvivalBattle === true;
-    showSettingState(input);
-    if (input.checked && (!notificationsSupported() || Notification.permission !== 'granted')) {
-        // Still on, but the browser no longer allows it: nothing will be shown.
-        notifyNote = 'settings.notifications.revoked';
+    renderNotifyHeadings();
+    for (const [id, key] of NOTIFY_SWITCHES) {
+        const input = document.getElementById(id);
+        input.checked = getSettings()[key] === true;
+        showSettingState(input);
+        if (input.checked && (!notificationsSupported() || Notification.permission !== 'granted')) {
+            // Still on, but the browser no longer allows it: nothing will be shown.
+            notifyNote = 'settings.notifications.revoked';
+        }
+        input.addEventListener('change', async () => {
+            notifyNote = null;
+            if (input.checked) {
+                const permission = await requestNotificationPermission();
+                if (permission !== 'granted') {
+                    input.checked = false;
+                    notifyNote =
+                        permission === 'unsupported'
+                            ? 'settings.notifications.unsupported'
+                            : 'settings.notifications.denied';
+                }
+            }
+            updateSettings({ [key]: input.checked });
+            showSettingState(input);
+            renderNotifyNote();
+        });
     }
     renderNotifyNote();
-    input.addEventListener('change', async () => {
-        notifyNote = null;
-        if (input.checked) {
-            const permission = await requestNotificationPermission();
-            if (permission !== 'granted') {
-                input.checked = false;
-                notifyNote =
-                    permission === 'unsupported'
-                        ? 'settings.notifications.unsupported'
-                        : 'settings.notifications.denied';
-            }
-        }
-        updateSettings({ notifySurvivalBattle: input.checked });
-        showSettingState(input);
-        renderNotifyNote();
-    });
 }
 
 startPage('settings', {
@@ -214,6 +235,7 @@ startPage('settings', {
     },
     onLocaleChange() {
         renderQuality();
+        renderNotifyHeadings();
         renderNotifyNote();
         renderAdmin();
     },

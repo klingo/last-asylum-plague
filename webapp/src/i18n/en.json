@@ -197,10 +197,15 @@
         "notifications": {
             "heading": "Notifications",
             "description": "Browser notifications while a tab of this app is open. Nothing is shown once every tab is closed, and each browser asks you to allow notifications.",
-            "survivalBattle": "Survival Battle",
             "survivalBattleOn": "On: a notification when a new round of Survival Battle begins (every 4 hours).",
-            "survivalBattleOff": "Off (default): no notification.",
             "survivalBattleBody": "The new round of Survival Battle has begun! Complete the quests to enhance your strength!",
+            "scrambleSoon": "1 hour before",
+            "scrambleSoonOn": "On: a notification 1 hour before it starts (every Saturday).",
+            "scrambleSoonBody": "{name} starts in 1 hour.",
+            "atStart": "At the start",
+            "scrambleStartOn": "On: a notification when it starts (every Saturday).",
+            "scrambleStartBody": "{name} has started!",
+            "off": "Off (default): no notification.",
             "denied": "Notifications aren't allowed for this site. Allow them when the browser asks (or in its site settings), then switch this on again.",
             "unsupported": "This browser can't show notifications.",
             "revoked": "This setting is on, but notifications are blocked for this site in the browser, so none will be shown."

@@ -22,8 +22,10 @@ function loadSettings() {
     if (typeof stored.followsCalendar === 'boolean') {
         settings.followsCalendar = stored.followsCalendar;
     }
-    if (typeof stored.notifySurvivalBattle === 'boolean') {
-        settings.notifySurvivalBattle = stored.notifySurvivalBattle;
+    for (const key of ['notifySurvivalBattle', 'notifyScrambleSoon', 'notifyScrambleStart']) {
+        if (typeof stored[key] === 'boolean') {
+            settings[key] = stored[key];
+        }
     }
     if (stored.extraCurrency && typeof stored.extraCurrency === 'object') {
         settings.extraCurrency = Object.fromEntries(

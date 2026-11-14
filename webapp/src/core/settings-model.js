@@ -35,6 +35,9 @@ const DEFAULT_SETTINGS = {
     followsCalendar: true,
     // A browser notification when a new round of Survival Battle begins, while a tab of the app is open (Settings).
     notifySurvivalBattle: false,
+    // The same for the Royal City Scramble: one an hour before it starts and one when it starts (Settings).
+    notifyScrambleSoon: false,
+    notifyScrambleStart: false,
     extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week spent first on that event's packs, counts on every page (Events page)
     skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Deal Ranking's "Skip", core/skips.js)

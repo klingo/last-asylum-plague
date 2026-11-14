@@ -16,6 +16,19 @@
     margin-top: 10px;
 }
 
+/* Settings that belong together: a heading over their rows, set off from the settings around it. */
+.setting-group {
+    margin-top: 10px;
+    padding: 12px 14px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.setting-group__title {
+    margin: 0 0 10px;
+    font-size: 0.95rem;
+}
+
 /* A setting that changes every value in the app. */
 .setting-row--impact {
     border-left-color: var(--warn);

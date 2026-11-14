@@ -13,7 +13,7 @@ import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, tileHtml } fro
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { eventPlanHref, pageHref } from '../ui/url.js';
 import { bellIconHtml, infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
-import { notifiesRotation } from '../ui/notifications.js';
+import { notifiesRotation, notifiesScramble } from '../ui/notifications.js';
 import { SCHEDULE_KIND_LABELS, SCHEDULE_KINDS, packageDisplayName } from '../ui/labels.js';
 import {
     gridCell,
@@ -131,6 +131,7 @@ function warEntry(war, eventId, name, start, end, state) {
         image: event.image,
         href: null,
         dates: formatRunRange(start, end),
+        notify: eventId === war.royal_city_scramble.event_id && notifiesScramble(),
         start,
         end,
     };
