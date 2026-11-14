@@ -6,18 +6,25 @@ import { fitItemPoints, fitSensitivity, isDependent } from '../webapp/src/core/p
 import { resolveItemValues, bundleValue } from '../webapp/src/core/item-values.js';
 import { currencyFlows } from '../webapp/src/core/planner.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
-import { normalizePackData } from '../webapp/src/core/pack-data.js';
+import { calendarSections, normalizePackData } from '../webapp/src/core/pack-data.js';
 import { dayNumber, weekdayIndex } from '../webapp/src/core/schedule.js';
 import { AWAKENING_FRAMES, MAX_WEAPON_STARS } from '../webapp/src/core/hero-stars.js';
 import { awakeningSkills, weaponBonuses } from '../webapp/src/core/skill-path.js';
 import { missingCodeLabels } from './lib/code-labels.js';
-import { HERO_SKILLS_PATH, I18N_DIR, LORD_DATA_PATH, PACK_DATA_PATH as DATA_PATH } from './lib/data-files.js';
+import {
+    EVENTS_PATH,
+    HERO_SKILLS_PATH,
+    I18N_DIR,
+    LORD_DATA_PATH,
+    PACK_DATA_PATH as DATA_PATH,
+} from './lib/data-files.js';
 
 // A pack whose worth is this many times above (or below) its deal % is reported (Pack Worth vs Deal %).
 const PACK_WORTH_OFF = 5;
 // Hours in a week: an event rotation's phase length must divide it.
 const WEEK_HOURS = 168;
 const SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'pack_data.schema.json');
+const EVENTS_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'events.schema.json');
 const ITEM_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'items');
 const EVENT_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'events');
 const EN_TEXTS_PATH = path.join(I18N_DIR, 'en.json');
@@ -31,9 +38,9 @@ const HERO_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public',
 const LOCK_ICON_PATH = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'ui', 'lock.png');
 
 /**
- * Validates data integrity of pack_data.json
+ * Validates data integrity of pack_data.json and events.json (the event calendar)
  * - JSON Schema compliance (Ajv)
- * - Relational integrity (items, packages, exchange shops)
+ * - Relational integrity (items, packages, exchange shops, the events they refer to, the schedule)
  * - Package tier ladder gap detection
  * - Drop table probability distributions
  * - Item points fitted from the deal % (webapp/src/core/point-fit.js) and items whose worth can't be
@@ -83,41 +90,51 @@ async function verifyData() {
         console.log(`Checking File System...\n  - [ERROR] [File System] Data file not found at ${DATA_PATH}\n`);
         return finish(1, 0);
     }
-    if (!fs.existsSync(SCHEMA_PATH)) {
-        console.log(`Checking File System...\n  - [ERROR] [File System] Schema file not found at ${SCHEMA_PATH}\n`);
-        return finish(1, 0);
+    for (const file of [EVENTS_PATH, SCHEMA_PATH, EVENTS_SCHEMA_PATH]) {
+        if (!fs.existsSync(file)) {
+            console.log(`Checking File System...\n  - [ERROR] [File System] File not found at ${file}\n`);
+            return finish(1, 0);
+        }
     }
 
-    let data;
+    let packData;
+    let eventData;
     let schema;
-    try {
-        data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
-    } catch (err) {
-        console.log(`Checking JSON Syntax...\n  - [ERROR] [JSON Parse] Failed to parse ${DATA_PATH}: ${err.message}\n`);
-        return finish(1, 0);
-    }
-
-    try {
-        schema = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
-    } catch (err) {
-        console.log(
-            `Checking JSON Syntax...\n  - [ERROR] [JSON Parse] Failed to parse ${SCHEMA_PATH}: ${err.message}\n`,
-        );
-        return finish(1, 0);
+    let eventsSchema;
+    for (const [file, assign] of [
+        [DATA_PATH, (json) => (packData = json)],
+        [EVENTS_PATH, (json) => (eventData = json)],
+        [SCHEMA_PATH, (json) => (schema = json)],
+        [EVENTS_SCHEMA_PATH, (json) => (eventsSchema = json)],
+    ]) {
+        try {
+            assign(JSON.parse(fs.readFileSync(file, 'utf8')));
+        } catch (err) {
+            console.log(`Checking JSON Syntax...\n  - [ERROR] [JSON Parse] Failed to parse ${file}: ${err.message}\n`);
+            return finish(1, 0);
+        }
     }
 
     // 2. Schema Validation via Ajv
     checkCategory('JSON Schema', ({ reportError }) => {
         const ajv = new Ajv({ allErrors: true });
         const validate = ajv.compile(schema);
-        const valid = validate(data);
-
-        if (!valid && validate.errors) {
+        if (!validate(packData) && validate.errors) {
             for (const err of validate.errors) {
                 reportError('Schema', `${err.instancePath || 'root'} ${err.message}`);
             }
         }
+        // The calendar's schema takes the definitions it shares from the pack data's.
+        const validateEvents = ajv.addSchema(schema, 'pack_data.schema.json').compile(eventsSchema);
+        if (!validateEvents(eventData) && validateEvents.errors) {
+            for (const err of validateEvents.errors) {
+                reportError('Schema', `events.json ${err.instancePath || 'root'} ${err.message}`);
+            }
+        }
     });
+
+    // The checks below read both files as one: the economy and the calendar (raw, tier ladders not expanded).
+    const data = { ...packData, ...calendarSections(eventData) };
 
     const items = data.items || {};
     const packages = data.packages || {};
@@ -1181,8 +1198,8 @@ async function verifyData() {
     // 9. Points fitted from the deal % (webapp/src/core/point-fit.js), and items whose worth can't
     // be resolved from them (not in any pack with a deal %, and nothing to derive one from).
     // Currencies are valued by what they buy, so they're skipped here.
-    // The core modules read the normalized data (tier ladders expanded); the checks above read the raw file.
-    const normalized = normalizePackData(data);
+    // The core modules read the normalized data (tier ladders expanded); the checks above read the raw files.
+    const normalized = normalizePackData(packData, eventData);
     const fit = fitItemPoints(normalized);
     const { diagnostics } = fit;
     const percent = (value) => `${(value * 100).toFixed(1)}%`;

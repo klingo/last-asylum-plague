@@ -3,7 +3,7 @@
 [![Verify and deploy](https://github.com/klingo/last-asylum-plague/actions/workflows/deploy-webapp.yml/badge.svg)](https://github.com/klingo/last-asylum-plague/actions/workflows/deploy-webapp.yml)
 
 A small static webapp that values the items, packages and exchange-shop offers of the mobile game **Last Asylum:
-Plague** from `data/pack_data.json`. Everything is computed live in the browser (no server) and deployed to GitHub
+Plague** from `data/pack_data.json` and `data/events.json`. Everything is computed live in the browser (no server) and deployed to GitHub
 Pages: **https://klingo.github.io/last-asylum-plague/**
 
 It answers "what is this pack worth at my weekly spend?": a Deal Ranking of every package on sale, the plan for each
@@ -19,7 +19,7 @@ Needs Node.js 22.13 or newer (the tests of the sync server use Node's built-in S
 
 ```bash
 npm install                    # first time only (one package for everything)
-npm run webapp:dev             # Vite dev server; the app imports data/pack_data.json directly
+npm run webapp:dev             # Vite dev server; the app imports the data files directly
 npm run webapp:build           # production build into webapp/dist (npm run webapp:preview serves it)
 npm run lint                   # eslint
 npm run format:check           # prettier --check (npm run format fixes)
@@ -28,7 +28,7 @@ npm run format:check           # prettier --check (npm run format fixes)
 ## Project structure
 
 ```text
-data/                   pack_data.json (+ schema) and lord_specialty.json (+ schema): the game's data
+data/                   pack_data.json, events.json (the event calendar), lord_specialty.json, hero_skills.json (+ schemas): the game's data
 webapp/                 the HTML pages (their URLs are the Pages URLs), vite.config.js
   src/core/             the valuation and planning: pure modules without DOM, shared with the scripts and tests
   src/ui/               browser helpers: settings, i18n, formatting, grids, the setup bar
@@ -44,10 +44,11 @@ docs/                   pages.md and valuation.md
 
 ## Editing the data
 
-1. Edit `data/pack_data.json` (its shape: `data/pack_data.schema.json`).
+1. Edit `data/pack_data.json` (its shape: `data/pack_data.schema.json`) or, for events, rotations, the Kingdom War and the
+   schedule, `data/events.json` (`data/events.schema.json`).
 2. `npm run verify-data` checks the schema, the references, items without a worth, packs far off their deal %, code
    labels and the image files.
-3. On commit, a hook sorts the file, stamps `metadata.last_updated` and formats it (husky + lint-staged).
+3. On commit, a hook sorts each of the two files, stamps its `metadata.last_updated` and formats it (husky + lint-staged).
 4. `npm run i18n:missing -- de` lists what German still lacks: UI texts, code labels and data names. The German names
    in the data are taken from the game by hand, never translated or guessed.
 5. `npm run record-run -- <ids...> [START] <DAYS>` records when events, seasonal passes and spend reward tracks run
@@ -70,7 +71,7 @@ UPDATE_GOLDEN=1 npm test       # rewrite test/golden/*.json, only for a change o
 ```
 
 The unit tests run on small inline data; the golden tests pin the fit, the weekly plan, Compare, Item Sources and the
-gear path order on a frozen copy of the data (`test/fixtures/pack_data.json`), so a data change doesn't move them but a
+gear path order on a frozen copy of the data (`test/fixtures/pack_data.json`, `events.json`), so a data change doesn't move them but a
 change of the model does. `test:coverage` fails below 90 % lines, 85 % branches and 90 % functions (set in
 `package.json`) and counts the files the tests import: the DOM-bound code (`pages/`, parts of `ui/`) is not in it.
 

@@ -3,7 +3,7 @@
     "title": "PackData",
     "description": "Schema for Last Asylum pack solver data",
     "type": "object",
-    "required": ["metadata", "items", "packages", "exchange_shops", "events"],
+    "required": ["metadata", "items", "packages", "exchange_shops"],
     "additionalProperties": false,
     "properties": {
         "metadata": {
@@ -46,29 +46,6 @@
                 "$ref": "#/definitions/mine"
             }
         },
-        "events": {
-            "type": "object",
-            "description": "Registry of every toggleable \"event\" a package or exchange shop can be tied to via its `event_id` (whether or not it has its own exchange shop), giving it a display name.",
-            "propertyNames": {
-                "$ref": "#/definitions/eventId"
-            },
-            "additionalProperties": {
-                "$ref": "#/definitions/event"
-            }
-        },
-        "event_rotations": {
-            "type": "object",
-            "description": "In-game events that cycle through phases on a fixed clock (Survival Battle, Alliance Duel): which phase is on now and which comes next (core/schedule.js `rotationSlots`, shown on the Today page), and a chart of them on the Calendar (its hover cards list how to earn points). Keyed by the event's id; the Calendar and Today show them in this order (not sorted).",
-            "propertyNames": {
-                "$ref": "#/definitions/eventId"
-            },
-            "additionalProperties": {
-                "$ref": "#/definitions/eventRotation"
-            }
-        },
-        "kingdom_war": {
-            "$ref": "#/definitions/kingdomWar"
-        },
         "spend_reward_conversions": {
             "allOf": [
                 {
@@ -86,34 +63,6 @@
             },
             "additionalProperties": {
                 "$ref": "#/definitions/spendRewardTrack"
-            }
-        },
-        "schedule": {
-            "type": "object",
-            "description": "When each event (incl. in-game events), seasonal pass family and spend reward track ran: its runs as inclusive start/end dates, oldest first, recorded with `npm run record-run`. Feeds the timeline and forecast on the Calendar page.",
-            "propertyNames": {
-                "$ref": "#/definitions/id"
-            },
-            "additionalProperties": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["start", "end"],
-                    "properties": {
-                        "start": {
-                            "type": "string",
-                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-                            "description": "First day (YYYY-MM-DD)."
-                        },
-                        "end": {
-                            "type": "string",
-                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-                            "description": "Last day (YYYY-MM-DD), inclusive."
-                        }
-                    }
-                }
             }
         },
         "heroes": {
@@ -750,193 +699,6 @@
                 "kingdom_war",
                 "alliance_duel"
             ]
-        },
-        "event": {
-            "type": "object",
-            "required": ["name"],
-            "additionalProperties": false,
-            "properties": {
-                "name": {
-                    "$ref": "#/definitions/localizedString"
-                },
-                "description": {
-                    "$ref": "#/definitions/localizedString",
-                    "description": "A short line about the event (e.g. its bonus: \"Warlock Hero DMG +50%\"), shown below its name in the Calendar's hover card."
-                },
-                "image": {
-                    "$ref": "#/definitions/eventImage"
-                },
-                "category": {
-                    "$ref": "#/definitions/packageCategory"
-                },
-                "calendar_group": {
-                    "type": "string",
-                    "enum": ["spend_rewards", "alliance"],
-                    "description": "Show the event in this group of the Calendar's schedule instead of the one its category gives. `spend_rewards`: reward ladders that count something other than Banknotes (e.g. materials used on gear) and so aren't `spend_reward_tracks`. `alliance`: gameplay events you primarily play with your alliance (or can only play with it, e.g. by joining rallies)."
-                }
-            }
-        },
-        "eventRotation": {
-            "type": "object",
-            "description": "An in-game event that runs through a fixed list of phases, `hours` each, from the start of the week: `week` names the phase of every slot, in order. The same week repeats every week.",
-            "required": ["event_id", "week_starts", "hours", "phases", "week"],
-            "additionalProperties": false,
-            "properties": {
-                "event_id": {
-                    "$ref": "#/definitions/eventId"
-                },
-                "week_starts": {
-                    "$ref": "#/definitions/weekday",
-                    "description": "The weekday whose daily reset (02:00 UTC = 00:00 server time) starts the week, and so its first slot."
-                },
-                "hours": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 168,
-                    "description": "Length of every slot in hours; `week` has 168 ÷ `hours` slots."
-                },
-                "phases": {
-                    "type": "array",
-                    "minItems": 2,
-                    "description": "The distinct phases (what each is called, looks like and earns points with); `week` says when each runs.",
-                    "items": {
-                        "$ref": "#/definitions/rotationPhase"
-                    }
-                },
-                "week": {
-                    "type": "array",
-                    "minItems": 1,
-                    "description": "The phase (its `id`) of every slot of the week, starting with the first slot at the start of the week, or `null` for a slot without a phase (the Alliance Duel's Sunday). Not a plain loop: the sequence is as the game runs it, so list every slot.",
-                    "items": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/definitions/id"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    }
-                }
-            }
-        },
-        "kingdomWar": {
-            "type": "object",
-            "description": "The Kingdom War: a cycle of war weeks and a break that repeats forever (core/kingdom-war.js, shown in the Calendar's Kingdom War box and on the Today page), and the Royal City Scramble that runs every Saturday of it. A war week runs from its Monday's daily reset through its first `days` game days (until the end of Saturday); the Sundays around it are off.",
-            "required": ["event_id", "cycle_start", "days", "weeks", "royal_city_scramble"],
-            "additionalProperties": false,
-            "properties": {
-                "event_id": {
-                    "$ref": "#/definitions/eventId"
-                },
-                "cycle_start": {
-                    "type": "string",
-                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-                    "description": "The Monday (YYYY-MM-DD) on which a cycle started, i.e. the first war week (any past one: the cycle repeats every `weeks` weeks from it)."
-                },
-                "days": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 7,
-                    "description": "How many game days a war week lasts, from its Monday's reset (6: until the end of Saturday)."
-                },
-                "weeks": {
-                    "type": "array",
-                    "minItems": 1,
-                    "description": "The weeks of the cycle, in order, from `cycle_start`: a war week (its `id` and name), or `null` for a break week.",
-                    "items": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/definitions/kingdomWarWeek"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    }
-                },
-                "royal_city_scramble": {
-                    "type": "object",
-                    "description": "The Royal City Scramble: every week of the cycle (the break too), on `weekday`, from `start_hour` hours after that day's reset (= server time, as the reset is 00:00 server time) for `hours` hours.",
-                    "required": ["event_id", "weekday", "start_hour", "hours"],
-                    "additionalProperties": false,
-                    "properties": {
-                        "event_id": {
-                            "$ref": "#/definitions/eventId"
-                        },
-                        "weekday": {
-                            "$ref": "#/definitions/weekday"
-                        },
-                        "start_hour": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 23
-                        },
-                        "hours": {
-                            "type": "integer",
-                            "minimum": 1,
-                            "maximum": 24
-                        }
-                    }
-                }
-            }
-        },
-        "kingdomWarWeek": {
-            "type": "object",
-            "required": ["id", "name"],
-            "additionalProperties": false,
-            "properties": {
-                "id": {
-                    "$ref": "#/definitions/id"
-                },
-                "name": {
-                    "$ref": "#/definitions/localizedString"
-                }
-            }
-        },
-        "rotationPhase": {
-            "type": "object",
-            "required": ["id", "name"],
-            "additionalProperties": false,
-            "properties": {
-                "id": {
-                    "$ref": "#/definitions/id"
-                },
-                "name": {
-                    "$ref": "#/definitions/localizedString"
-                },
-                "image": {
-                    "$ref": "#/definitions/eventImage",
-                    "description": "The phase's own art (a banner in webapp/public/assets/events/, e.g. survival_battle_build_territory): the Today page shows it while the phase is on, the Calendar's chart as a thumbnail before its name. Without one, the event's own image."
-                },
-                "earn_points": {
-                    "type": "array",
-                    "minItems": 1,
-                    "description": "How to earn points in this phase. The Calendar's hover card lists them in this order, so put the Diamonds rule first.",
-                    "items": {
-                        "$ref": "#/definitions/earnPoint"
-                    }
-                }
-            }
-        },
-        "earnPoint": {
-            "type": "object",
-            "description": "One way to earn points: the activity in the game's words (`text`, without the points) and the `points` it gives; `item_id` names the item the rule is about (the one consumed, or the one a bought pack contains), if there is one.",
-            "required": ["text", "points"],
-            "additionalProperties": false,
-            "properties": {
-                "text": {
-                    "$ref": "#/definitions/localizedString"
-                },
-                "points": {
-                    "type": "number",
-                    "exclusiveMinimum": 0,
-                    "description": "The points one such activity gives (per unit the text names)."
-                },
-                "item_id": {
-                    "$ref": "#/definitions/id"
-                }
-            }
         },
         "spendRewardConversions": {
             "type": "array",

@@ -1,9 +1,9 @@
 {
-    "data/pack_data.json": [
+    "data/{pack_data,events}.json": [
         "node scripts/sort-pack-data.js",
         "node scripts/update-last-updated.js",
         "prettier --write"
     ],
     "*.{js,jsx,ts,tsx}": "eslint",
-    "!(*data/pack_data.json)*.{js,jsx,ts,tsx,json,css,less}": "prettier --write"
+    "!(*data/{pack_data,events}.json)*.{js,jsx,ts,tsx,json,css,less}": "prettier --write"
 }

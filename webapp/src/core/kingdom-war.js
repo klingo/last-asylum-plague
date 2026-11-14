@@ -1,5 +1,5 @@
 /**
- * The Kingdom War (`kingdom_war` in pack_data.json), a cycle that repeats forever: its weeks in order from
+ * The Kingdom War (`kingdom_war` in events.json), a cycle that repeats forever: its weeks in order from
  * `cycle_start` (a Monday), each a war week (Week 1, Week 2, Week 3: Finals) or `null` for a break week, and the Royal
  * City Scramble, which runs every Saturday of it, the break included.
  * - the periods (`warPeriods`): the war weeks, each from its Monday's reset through its first `days` game days (until

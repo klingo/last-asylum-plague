@@ -2,7 +2,7 @@
  * Minimal, dependency-free i18n layer for the webapp.
  *
  * UI copy lives in ../i18n/<locale>.json (key/value dictionaries, looked up via `t()`).
- * Translated game data (item/package/exchange shop names) lives directly in pack_data.json
+ * Translated game data (item/package/exchange shop and event names) lives directly in pack_data.json and events.json
  * as `{ en, de, ... }` objects, resolved via `localizedName()`.
  *
  * Locale resolution order: `?lang=` URL param > localStorage > browser language > default.

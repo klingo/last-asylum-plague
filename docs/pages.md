@@ -42,7 +42,7 @@ deleted after 180 days without use; the button stays hidden until the build has 
   name, a placeholder tile without one) with their ratio, what the plan buys and what each gives (Details). Running entries are
   ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
   plan buys from it.
-  Survival Battle (`event_rotations` in `pack_data.json`: the 42 four-hour slots of its week, from Sunday's reset, the
+  Survival Battle (`event_rotations` in `events.json`: the 42 four-hour slots of its week, from Sunday's reset, the
   same every week) and the Alliance Duel (a phase a day from Monday's reset, Sunday off) show the phase on now (none on
   the Alliance Duel's Sunday) and the next one, with their local times and how to earn points in them.
   The Kingdom War (`kingdom_war`) adds the war week on now (not in the break) and the next one, and the Royal City
@@ -72,7 +72,7 @@ deleted after 180 days without use; the button stays hidden until the build has 
   Every chart is on
   the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
   part-way into a day column (a windowed event rotation's first and last day column are cut to its window). Banners, Today and the Deal Ranking's skips show the same local moments.
-  Below them the **Kingdom War** box (`kingdom_war` in `pack_data.json`, `core/kingdom-war.js`): the current week and the
+  Below them the **Kingdom War** box (`kingdom_war` in `events.json`, `core/kingdom-war.js`): the current week and the
   4 after it, a row for each war week (Week 1, Week 2, Week 3: Finals: Monday's reset to the end of Saturday, its name
   on the bar; the break is the empty gap between Week 3 and the next Week 1) and one for the Royal City Scramble, a
   faint bar on every Saturday (the break week too) with the 4 hours as a thin bar on top (to scale, so the day is easy to see and the hours are where they fall).

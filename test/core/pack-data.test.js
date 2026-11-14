@@ -25,6 +25,17 @@ const raw = {
     },
 };
 
+test('normalize: the event data is merged in, and the pack data keeps its metadata', () => {
+    const data = normalizePackData(
+        { ...raw, metadata: { last_updated: '2026-01-01' } },
+        { metadata: { last_updated: '2026-02-02' }, events: { e: { name: { en: 'E' } } }, schedule: { e: [] } },
+    );
+    assert.deepEqual(Object.keys(data.events), ['e']);
+    assert.deepEqual(data.schedule, { e: [] });
+    assert.equal(data.metadata.last_updated, '2026-01-01');
+    assert.equal(normalizePackData(raw).events, undefined);
+});
+
 test('normalize: an offer still without cost or quantity is left out, so it cannot spoil the fit', () => {
     const data = normalizePackData(raw);
     assert.deepEqual(Object.keys(data.exchange_shops.shop.offers), ['complete']);

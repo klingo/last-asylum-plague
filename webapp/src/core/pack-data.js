@@ -1,7 +1,8 @@
 /**
- * pack_data.json as the core modules read it. Everything in core/ takes the NORMALIZED data: package tier
- * ladders expanded into one package per tier (`normalizePackData`, once, when the data is loaded: ui
- * data.js, scripts/verify-data.js after its schema checks, the tests).
+ * pack_data.json and events.json as the core modules read them. Everything in core/ takes the NORMALIZED data: the
+ * event calendar (events.json: events, rotations, Kingdom War, schedule) merged in next to the economy, package tier
+ * ladders expanded into one package per tier (`normalizePackData`, once, when the data is loaded: ui data.js,
+ * scripts/verify-data.js after its schema checks, scripts/record-run.js, the tests).
  */
 
 /**
@@ -73,13 +74,20 @@ function completeTracks(tracks, sharedConversions) {
     );
 }
 
+/** The sections of the event data (events.json) without its `metadata` (the last update of that file). */
+function calendarSections(eventData) {
+    return Object.fromEntries(Object.entries(eventData).filter(([key]) => key !== 'metadata'));
+}
+
 /**
- * The raw pack data with its packages expanded, its shops complete and its spend reward tracks' conversions filled
- * in (the shape every core module expects).
+ * The raw pack data with the event calendar (`eventData`, events.json) merged in, its packages expanded, its shops
+ * complete and its spend reward tracks' conversions filled in (the shape every core module expects). The pack data's
+ * `metadata` stays.
  */
-function normalizePackData(raw) {
+function normalizePackData(raw, eventData = {}) {
     return {
         ...raw,
+        ...calendarSections(eventData),
         packages: expandPackageFamilies(raw.packages || {}),
         ...(raw.exchange_shops ? { exchange_shops: completeShops(raw.exchange_shops) } : {}),
         ...(raw.spend_reward_tracks
@@ -116,4 +124,4 @@ function buildPassFamilies(packages) {
     return families;
 }
 
-export { normalizePackData, expandPackageFamilies, packageFamilyId, seasonalPassFamilies };
+export { normalizePackData, calendarSections, expandPackageFamilies, packageFamilyId, seasonalPassFamilies };

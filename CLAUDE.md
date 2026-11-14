@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Klingo's Companion (Last Asylum: Plague)
 
-A static webapp that values items, packages and exchange-shop offers from `data/pack_data.json` (mobile game
+A static webapp that values items, packages and exchange-shop offers from `data/pack_data.json` and `data/events.json` (mobile game
 "Last Asylum: Plague"), computed live in the browser, deployed to GitHub Pages.
 
 ## Scope Discipline
@@ -28,15 +28,16 @@ A static webapp that values items, packages and exchange-shop offers from `data/
 
 ## Conventions
 
-- `data/pack_data.json` is auto-processed on commit (husky + lint-staged): sort → update-last-updated → prettier.
+- `data/pack_data.json` and `data/events.json` are auto-processed on commit (husky + lint-staged): sort → update-last-updated
+  (each file its own `metadata.last_updated`; the nav shows pack_data's) → prettier.
 - Don't hardcode item points in `pack_data.json`; worth comes from the deal % fit and the user's priorities. Fix a
   bad value with better data (contents, deal %, `crafted_from`, `value_equivalent`, ...).
 - Any change, addition or removal in `webapp/src/i18n/en.json` must be mirrored in `de.json` in the same change
   (translate it yourself; same keys and order, `{placeholders}` unchanged).
-- Never translate `name.de` in `data/pack_data.json` yourself: those are taken manually from the game, not guessed.
+- Never translate `name.de` in `data/pack_data.json` or `data/events.json` yourself: those are taken manually from the game, not guessed.
   Leave them blank (`npm run i18n:missing` lists them).
 - Where texts live: names of the data's entities (items, packages, events, shops, tracks, heroes) in
-  `pack_data.json` as `name: { en, de }` (`en` required), and an event's or an item's (regular or choice) optional short `description: { en, de }`;
+  `pack_data.json` and `events.json` as `name: { en, de }` (`en` required), and an event's or an item's (regular or choice) optional short `description: { en, de }`;
   UI texts and the labels of the data's codes (`category.*`, `sourceType.*`, `weekday.*`, `gear.class.*`,
   `gear.faction.*`, looked up with `enumLabel(group, code)`) in `en.json` / `de.json`. A new category or other code
   needs its label in both (`i18n:missing` and `verify-data` list missing ones). A translation is plain text. A
@@ -62,13 +63,13 @@ A static webapp that values items, packages and exchange-shop offers from `data/
 ## Commands
 
 ```bash
-npm run verify-data                                          # validate data/pack_data.json (schema, references, item worth, pack worth vs deal %, code labels)
+npm run verify-data                                          # validate data/pack_data.json + events.json (schema, references, item worth, pack worth vs deal %, code labels)
 npm run lint                                                  # eslint .
 npm run format:check                                          # prettier --check (npm run format fixes); CI runs it with lint
 npm test                                                      # node:test: unit tests + golden files (test/)
 npm run test:coverage                                         # the same with Node's coverage of core/, ui/, scripts/, worker/; fails below 90 % lines / 85 % branches / 90 % functions
 UPDATE_GOLDEN=1 npm test                                      # rewrite test/golden/*.json (only for an intended change)
-npm run webapp:dev                                            # vite dev server (imports data/pack_data.json directly)
+npm run webapp:dev                                            # vite dev server (imports data/pack_data.json and events.json directly)
 npm run webapp:build                                          # vite build -> webapp/dist
 npm run webapp:preview                                        # serve the built webapp/dist
 npm run i18n:missing -- [lang] [--keys-only] [--data-only]     # missing translations (UI texts, code labels, data names)
@@ -81,7 +82,7 @@ SQLite standing in for D1, `test/worker/d1.js`; `test/ui/sync.test.js` runs the 
 `test/helpers.js` has the fixture, HiGHS and
 fit setup, the schedule's game days and `near`. They are unit tests on small inline data plus golden tests that pin the fit,
 the weekly plan, Compare, Item Sources and the gear path order on a frozen copy of the data
-(`test/fixtures/pack_data.json`). A data change doesn't touch them; a model change that moves a number fails them.
+(`test/fixtures/pack_data.json` and `events.json`). A data change doesn't touch them; a model change that moves a number fails them.
 If that is intended, explain the diff, then run `UPDATE_GOLDEN=1 npm test`. HiGHS breaks ties by row order, so
 reordering the model's rows can swap one equally good shopping list for another (same points, other packs).
 CI runs `test:coverage` (the table goes to the job summary, `coverage/lcov.info` is an artifact). Node lists only the
@@ -129,6 +130,9 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
 
 ### Data rules worth knowing
 
+- The event calendar is its own file, `data/events.json` (schema `events.schema.json`, merged with `pack_data.json` when loaded:
+  `normalizePackData(raw, eventData)`, so core modules see one `data`): `events`, `event_rotations`, `kingdom_war` and `schedule`. Shops,
+  mines and spend reward tracks stay in `pack_data.json` and point at events by `event_id`.
 - `schedule` records per event, seasonal pass family and spend reward track its runs as inclusive dates; add them
   with `record-run` (or from Settings > Admin, which starts the `record-run` workflow). Forecasts (`forecastRuns`) are `proven` (a repeating pattern) or a rough guess (median gap,
   shown fainter). `scheduleRuns(data, today)` adds the proven forecast runs up to today, so they count as runs
@@ -220,4 +224,4 @@ the Diamond Golden Egg) is worth that currency at its marginal value too (`itemP
 
 - `README.md` — what the project is, how to run, edit, test and deploy it.
 - `docs/pages.md` — the pages one by one; `docs/valuation.md` — how the worth is calculated, the schedule and its forecasts.
-- `data/pack_data.schema.json` — full shape of `pack_data.json`.
+- `data/pack_data.schema.json` — full shape of `pack_data.json`; `data/events.schema.json` — that of `events.json`.

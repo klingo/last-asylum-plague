@@ -26,9 +26,9 @@ function lastChange() {
 // or from a GitHub Pages project path (https://<user>.github.io/<repo>/).
 export default defineConfig({
     base: './',
-    // data/pack_data.json is imported from outside the webapp folder.
+    // data/pack_data.json and data/events.json are imported from outside the webapp folder.
     server: { fs: { allow: [resolve(root, '..')] } },
-    // The pack data as one JSON.parse'd string (faster than an object literal of that size).
+    // The data files as one JSON.parse'd string (faster than an object literal of that size).
     json: { stringify: true },
     define: { __LAST_CHANGE__: JSON.stringify(lastChange()) },
     build: {

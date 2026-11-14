@@ -1,5 +1,6 @@
 import fs from 'node:fs';
-import { PACK_DATA_PATH, readJson, writeJson, isMain } from './lib/data-files.js';
+import path from 'node:path';
+import { PACK_DATA_PATH, EVENTS_PATH, readJson, writeJson, isMain } from './lib/data-files.js';
 
 /** `date` as YYYY-MM-DD in local time. */
 function localDate(date) {
@@ -18,15 +19,22 @@ function stampLastUpdated(data, today) {
     return true;
 }
 
+/**
+ * Stamps the data files named on the command line (the commit hook passes the staged ones, the record-run workflow
+ * events.json), pack_data.json without arguments. Each file has its own date.
+ */
 function main() {
-    if (!fs.existsSync(PACK_DATA_PATH)) {
-        return;
-    }
-    const data = readJson(PACK_DATA_PATH);
     const today = localDate(new Date());
-    if (stampLastUpdated(data, today)) {
-        writeJson(PACK_DATA_PATH, data);
-        console.log(`Updated metadata.last_updated to ${today}`);
+    const named = process.argv.slice(2).map((file) => path.resolve(file));
+    for (const file of named.length > 0 ? named : [PACK_DATA_PATH]) {
+        if (![PACK_DATA_PATH, EVENTS_PATH].includes(file) || !fs.existsSync(file)) {
+            continue;
+        }
+        const data = readJson(file);
+        if (stampLastUpdated(data, today)) {
+            writeJson(file, data);
+            console.log(`Updated ${path.basename(file)} metadata.last_updated to ${today}`);
+        }
     }
 }
 

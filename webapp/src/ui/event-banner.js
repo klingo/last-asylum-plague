@@ -1,5 +1,5 @@
 /**
- * The game's art for events, spend reward tracks and seasonal passes (`image` in pack_data.json:
+ * The game's art for events, spend reward tracks and seasonal passes (`image` in events.json and pack_data.json:
  * assets/events/<image>.webp, 720×360), and when they run: "Ends in 6d 5h", "Starts in 05:06:44" (a live countdown on
  * the banners; runs start and end at the game day's reset, 02:00 UTC, shown in the user's local time). Used by the Calendar (thumbnails, hover
  * cards; also a weekday offer's own picture, `assets/packages/<pack id>.webp` or its day's, as its thumbnail), Event Shops, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).

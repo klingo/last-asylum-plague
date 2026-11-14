@@ -9,8 +9,8 @@ import {
     recordableIds,
     scheduleRuns,
 } from '../webapp/src/core/schedule.js';
-import { ROOT, PACK_DATA_PATH, readJson, writeJson, splitArgs, isMain } from './lib/data-files.js';
-import { sortPackData } from './sort-pack-data.js';
+import { ROOT, PACK_DATA_PATH, EVENTS_PATH, readJson, writeJson, splitArgs, isMain } from './lib/data-files.js';
+import { sortEventData } from './sort-pack-data.js';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const DAYS_PATTERN = /^\d+$/;
@@ -19,7 +19,7 @@ const MAX_RUNS = 12;
 
 /**
  * Records when events (incl. in-game events), seasonal passes and spend reward tracks run, in the `schedule`
- * section of data/pack_data.json: per id a list of runs `{ start, end }` (inclusive dates). The Home page draws
+ * section of data/events.json: per id a list of runs `{ start, end }` (inclusive dates). The Home page draws
  * them as a timeline and forecasts the next runs from them.
  *
  * Usage: npm run record-run -- <ids...> [START] <DAYS> | --show [ids...] | --help
@@ -37,14 +37,16 @@ const MAX_RUNS = 12;
  */
 function main() {
     const args = process.argv.slice(2);
-    const data = readJson(PACK_DATA_PATH);
-    const kinds = recordableIds(normalizePackData(data));
+    // The event data is what is recorded into; the passes and tracks the ids can name are in the pack data.
+    const data = readJson(EVENTS_PATH);
+    const game = normalizePackData(readJson(PACK_DATA_PATH), data);
+    const kinds = recordableIds(game);
     const { flags } = splitArgs(args);
     const { ids, dates, counts } = parseRecordArgs(args);
 
     if (flags.has('--show')) {
         printSchedule(data.schedule || {}, ids);
-        printMissed(data, ids);
+        printMissed(game, ids);
         return;
     }
     // Nothing to record (or --help): show how to use it.
@@ -80,9 +82,9 @@ function main() {
     if (result.error) {
         fail(result.error);
     }
-    writeJson(PACK_DATA_PATH, sortPackData(data));
+    writeJson(EVENTS_PATH, sortEventData(data));
     // Same tidy-up as the commit hook: prettier formatting.
-    execSync('npx prettier --write data/pack_data.json', { cwd: ROOT, stdio: 'ignore' });
+    execSync('npx prettier --write data/events.json', { cwd: ROOT, stdio: 'ignore' });
 
     console.log(`Recorded (${daysText(start, end)}):`);
     console.log(result.changes.join('\n'));
@@ -117,7 +119,7 @@ function recordRun(data, ids, start, end) {
             return {
                 error:
                     `${id}: ${start}..${end} overlaps its recorded run ${overlap.start}..${overlap.end}. Nothing was written. ` +
-                    'Fix it in data/pack_data.json ("schedule") if that run is wrong.',
+                    'Fix it in data/events.json ("schedule") if that run is wrong.',
             };
         }
         if (same) {
@@ -186,7 +188,7 @@ function printUsage(kinds, events) {
     const ingame = [...kinds.events].filter((id) => events[id]?.category === 'ingame_event');
     const shoppable = [...kinds.events].filter((id) => events[id]?.category !== 'ingame_event');
     const lines = [
-        'Records when events, seasonal passes and spend reward tracks run (data/pack_data.json "schedule").',
+        'Records when events, seasonal passes and spend reward tracks run (data/events.json "schedule").',
         '',
         'Usage: npm run record-run -- <ids...> [START] <DAYS>   START = first day (YYYY-MM-DD, default: today),',
         '                                                       DAYS = how long it runs, the start day included',

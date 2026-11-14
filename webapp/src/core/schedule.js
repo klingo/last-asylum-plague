@@ -1,7 +1,7 @@
 /**
  * Everything about time in the game. Days are whole numbers (days since 1970-01-01), so time zones and daylight
  * saving can't shift them; "today" is the game day, which starts at 02:00 UTC (`gameDay`).
- * - the recorded schedule (`schedule` in pack_data.json: per id its runs as inclusive start/end dates) as day
+ * - the recorded schedule (`schedule` in events.json: per id its runs as inclusive start/end dates) as day
  *   numbers (`scheduleRuns`), plus a simple forecast for ids that ran at least twice (`forecastRuns`); with `today`
  *   the runs of a proven pattern up to today count as runs;
  * - what can be recorded: the ids (`recordableIds`), the forecast runs on today that aren't recorded yet
@@ -431,7 +431,7 @@ function rotationSlot(rotation, weekStartMs, k) {
 }
 
 /**
- * Where an event rotation (`event_rotations` in pack_data.json: a list of slots of `hours` each, `week`, naming the
+ * Where an event rotation (`event_rotations` in events.json: a list of slots of `hours` each, `week`, naming the
  * phase of every slot from the start of the week, or `null` for a slot without one) stands at `nowMs`:
  * `{ current, next }`, each `{ slot, phaseId, phase, start, end }` (ms). `current` is null in a slot without a phase
  * (the Alliance Duel's Sunday), `next` is the next slot that has one. The week starts at the daily reset (02:00 UTC)

@@ -1,0 +1,135 @@
+{
+    "metadata": {
+        "last_updated": "2026-01-01"
+    },
+    "events": {
+        "blades_out": {
+            "name": {
+                "en": "Blades Out",
+                "de": ""
+            },
+            "category": "special_event"
+        },
+        "claires_inner_demon": {
+            "name": {
+                "en": "Claire's Inner Demon",
+                "de": "Claires innerer Dämon"
+            },
+            "category": "ingame_event"
+        },
+        "dwarven_mine": {
+            "name": {
+                "en": "Dwarven Mine",
+                "de": "Zwergenmine"
+            },
+            "category": "special_event",
+            "image": "dwarven_mine"
+        },
+        "full_moon_night": {
+            "name": {
+                "en": "Full Moon Night",
+                "de": ""
+            },
+            "category": "special_event"
+        },
+        "gear_upgrade": {
+            "name": {
+                "en": "Gear Upgrade",
+                "de": "Ausrüstungs-Upgrade"
+            },
+            "category": "ingame_event"
+        },
+        "mystic_cabinet": {
+            "name": {
+                "en": "Mystic Cabinet",
+                "de": ""
+            },
+            "category": "season_event"
+        },
+        "pandemic_experience": {
+            "name": {
+                "en": "Pandemic Experience",
+                "de": "Pandemieerfahrung"
+            },
+            "category": "ingame_event"
+        },
+        "recluse_merchant": {
+            "name": {
+                "en": "Recluse Merchant",
+                "de": "Einsiedler-Händler"
+            },
+            "category": "special_event"
+        },
+        "strange_bazaar": {
+            "name": {
+                "en": "Strange Bazaar",
+                "de": "Seltsamer Basar"
+            },
+            "category": "special_event"
+        },
+        "surprise_encounter": {
+            "name": {
+                "en": "Surprise Encounter",
+                "de": "Überraschende Begegnung"
+            },
+            "category": "special_event"
+        },
+        "weekly_special": {
+            "name": {
+                "en": "Weekly Special",
+                "de": "Wöchentliches Spezial"
+            },
+            "category": "special_event"
+        }
+    },
+    "schedule": {
+        "ancient_recipe_antitoxin": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-18"
+            }
+        ],
+        "claires_inner_demon": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-13"
+            }
+        ],
+        "dwarven_mine": [
+            {
+                "start": "2026-10-20",
+                "end": "2026-10-25"
+            }
+        ],
+        "exclusive_weapon_pass": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-18"
+            }
+        ],
+        "gear_upgrade": [
+            {
+                "start": "2026-10-17",
+                "end": "2026-10-18"
+            }
+        ],
+        "pandemic_experience": [
+            {
+                "start": "2026-10-14",
+                "end": "2026-10-16"
+            }
+        ],
+        "strange_bazaar": [
+            {
+                "start": "2026-10-13",
+                "end": "2026-10-18"
+            }
+        ],
+        "tempered_arms": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-20"
+            }
+        ]
+    }
+}

@@ -1,5 +1,5 @@
 /**
- * Shared test helpers: the frozen pack data fixture (so the goldens don't move when data/pack_data.json is
+ * Shared test helpers: the frozen pack data and event data fixtures (so the goldens don't move when data/pack_data.json is
  * edited) with the solver and the fit on it, the planner options the pages use, game days for the schedule tests,
  * `near`, and golden files (`UPDATE_GOLDEN=1 npm test` rewrites them; a normal run compares).
  */
@@ -12,14 +12,16 @@ import { fitItemPoints } from '../webapp/src/core/point-fit.js';
 import { loadHighs } from '../webapp/src/core/lp.js';
 
 const FIXTURE_PATH = path.join(import.meta.dirname, 'fixtures', 'pack_data.json');
+const EVENTS_FIXTURE_PATH = path.join(import.meta.dirname, 'fixtures', 'events.json');
 const GOLDEN_DIR = path.join(import.meta.dirname, 'golden');
 // Relative tolerance for numbers (float noise across platforms, not real changes).
 const TOLERANCE = 1e-6;
 
-/** The fixture as the webapp sees it: package tier ladders expanded (ui data.js does the same). */
+/** The fixtures as the webapp sees them: merged, package tier ladders expanded (ui data.js does the same). */
 function loadFixture() {
     const raw = JSON.parse(fs.readFileSync(FIXTURE_PATH, 'utf8'));
-    return normalizePackData(raw);
+    const events = JSON.parse(fs.readFileSync(EVENTS_FIXTURE_PATH, 'utf8'));
+    return normalizePackData(raw, events);
 }
 
 /** The fixture with HiGHS and the deal % fit on it: `{ data, highs, fit }`. */

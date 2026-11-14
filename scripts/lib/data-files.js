@@ -8,6 +8,7 @@ import path from 'node:path';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const PACK_DATA_PATH = path.join(ROOT, 'data', 'pack_data.json');
+const EVENTS_PATH = path.join(ROOT, 'data', 'events.json');
 const LORD_DATA_PATH = path.join(ROOT, 'data', 'lord_specialty.json');
 const HERO_SKILLS_PATH = path.join(ROOT, 'data', 'hero_skills.json');
 const I18N_DIR = path.join(ROOT, 'webapp', 'src', 'i18n');
@@ -43,6 +44,7 @@ function isMain(meta) {
 export {
     ROOT,
     PACK_DATA_PATH,
+    EVENTS_PATH,
     LORD_DATA_PATH,
     HERO_SKILLS_PATH,
     I18N_DIR,

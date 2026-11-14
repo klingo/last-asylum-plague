@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sortPackData } from '../../scripts/sort-pack-data.js';
-import { PACK_DATA_PATH, readJson } from '../../scripts/lib/data-files.js';
+import { sortPackData, sortEventData } from '../../scripts/sort-pack-data.js';
+import { PACK_DATA_PATH, EVENTS_PATH, readJson } from '../../scripts/lib/data-files.js';
 
 test('sections and their entries are sorted by id, numeric keys by number', () => {
     const data = sortPackData({
@@ -36,13 +36,15 @@ test('conversions and tiers of spend reward tracks are sorted by price and thres
     );
 });
 
-test('the schedule has its ids alphabetical and each id with its runs oldest first', () => {
-    const data = sortPackData({
+test('the events and the schedule have their ids alphabetical, each id with its runs oldest first', () => {
+    const data = sortEventData({
+        events: { b: {}, a: {} },
         schedule: {
             b: [{ start: '2026-02-01' }, { start: '2026-01-01' }],
             a: [],
         },
     });
+    assert.deepEqual(Object.keys(data.events), ['a', 'b']);
     assert.deepEqual(Object.keys(data.schedule), ['a', 'b']);
     assert.deepEqual(
         data.schedule.b.map((run) => run.start),
@@ -51,18 +53,18 @@ test('the schedule has its ids alphabetical and each id with its runs oldest fir
 });
 
 test('orders that carry meaning stay: rotations, their phases and guide paths', () => {
-    const data = sortPackData({
+    const events = sortEventData({
         event_rotations: {
             z: { phases: [{ id: 'z' }, { id: 'a' }], week: ['z', 'a'] },
             a: { phases: [], week: [] },
         },
-        squad_guides: { g: { craft_path: [{ item: 'z' }, { item: 'a' }] } },
     });
-    assert.deepEqual(Object.keys(data.event_rotations), ['z', 'a']);
+    assert.deepEqual(Object.keys(events.event_rotations), ['z', 'a']);
     assert.deepEqual(
-        data.event_rotations.z.phases.map((phase) => phase.id),
+        events.event_rotations.z.phases.map((phase) => phase.id),
         ['z', 'a'],
     );
+    const data = sortPackData({ squad_guides: { g: { craft_path: [{ item: 'z' }, { item: 'a' }] } } });
     assert.deepEqual(
         data.squad_guides.g.craft_path.map((step) => step.item),
         ['z', 'a'],
@@ -71,6 +73,12 @@ test('orders that carry meaning stay: rotations, their phases and guide paths', 
 
 test('data without these sections is fine, and the real data is already sorted', () => {
     assert.deepEqual(sortPackData({}), {});
-    const data = readJson(PACK_DATA_PATH);
-    assert.equal(JSON.stringify(sortPackData(structuredClone(data))), JSON.stringify(data));
+    assert.deepEqual(sortEventData({}), {});
+    for (const [file, sort] of [
+        [PACK_DATA_PATH, sortPackData],
+        [EVENTS_PATH, sortEventData],
+    ]) {
+        const data = readJson(file);
+        assert.equal(JSON.stringify(sort(structuredClone(data))), JSON.stringify(data));
+    }
 });

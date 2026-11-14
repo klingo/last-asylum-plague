@@ -28,7 +28,7 @@ its contents without a common value scale. The tool uses one:
 
 ## Schedule and forecasts
 
-`record-run` fills the `schedule` section of `pack_data.json`: per event, seasonal pass and spend reward track the
+`record-run` fills the `schedule` section of `events.json`: per event, seasonal pass and spend reward track the
 start and end date of each run, e.g. `npm run record-run -- strange_bazaar 2026-10-12 7` (start defaults to today;
 the end is computed from the number of days). Recording the same start again corrects the length. Only the last 12
 runs of an id are kept, and a new run that lands on the id's proven pattern also records the pattern's runs missed in

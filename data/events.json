@@ -1,0 +1,1366 @@
+{
+    "metadata": {
+        "last_updated": "2026-11-14"
+    },
+    "events": {
+        "alliance_duel": {
+            "name": {
+                "en": "Alliance Duel",
+                "de": ""
+            },
+            "category": "ingame_event"
+        },
+        "blades_out": {
+            "name": {
+                "en": "Blades Out",
+                "de": "Klingen Raus"
+            },
+            "category": "special_event",
+            "image": "blades_out"
+        },
+        "canyon_conquest": {
+            "name": {
+                "en": "Canyon Conquest",
+                "de": "Schluchteroberung"
+            },
+            "category": "ingame_event",
+            "calendar_group": "alliance",
+            "image": "canyon_conquest"
+        },
+        "claires_inner_demon": {
+            "name": {
+                "en": "Claire's Inner Demon",
+                "de": "Claires innerer Dämon"
+            },
+            "category": "ingame_event",
+            "calendar_group": "alliance",
+            "image": "claires_inner_demon"
+        },
+        "crystal_cluster_valley": {
+            "name": {
+                "en": "Crystal Cluster Valley",
+                "de": "Kristallcluster-Tal"
+            },
+            "category": "ingame_event",
+            "image": "crystal_cluster_valley"
+        },
+        "demon_king_ranger_blight": {
+            "name": {
+                "en": "Demon King: Ranger Blight",
+                "de": "Dämonenkönig: Ranger-Seuche"
+            },
+            "description": {
+                "en": "Warlock Hero DMG +50%",
+                "de": "Hexenmeister-Held SCH +50%"
+            },
+            "category": "ingame_event",
+            "image": "demon_king_ranger_blight"
+        },
+        "demon_king_warlock_blight": {
+            "name": {
+                "en": "Demon King: Warlock Blight",
+                "de": "Dämonenkönig: Hexenmeister-Seuche"
+            },
+            "description": {
+                "en": "Warrior Hero DMG +50%",
+                "de": "Krieger-Held SCH +50%"
+            },
+            "category": "ingame_event",
+            "image": "demon_king_warlock_blight"
+        },
+        "demon_king_warrior_blight": {
+            "name": {
+                "en": "Demon King: Warrior Blight",
+                "de": "Dämonenkönig: Krieger-Seuche"
+            },
+            "description": {
+                "en": "Ranger Hero DMG +50%",
+                "de": "Ranger-Held SCH +50%"
+            },
+            "category": "ingame_event",
+            "image": "demon_king_warrior_blight"
+        },
+        "dwarven_mine": {
+            "name": {
+                "en": "Dwarven Mine",
+                "de": "Zwergenmine"
+            },
+            "category": "special_event",
+            "image": "dwarven_mine"
+        },
+        "elixir_scramble": {
+            "name": {
+                "en": "Elixir Scramble",
+                "de": "Elixir-Gerangle"
+            },
+            "category": "ingame_event",
+            "calendar_group": "alliance",
+            "image": "elixir_scramble"
+        },
+        "full_moon_night": {
+            "name": {
+                "en": "Full Moon Night",
+                "de": ""
+            },
+            "category": "special_event"
+        },
+        "gear_upgrade": {
+            "name": {
+                "en": "Gear Upgrade",
+                "de": "Ausrüstungs-Upgrade"
+            },
+            "category": "ingame_event",
+            "calendar_group": "spend_rewards",
+            "image": "gear_upgrade"
+        },
+        "halloween_ball": {
+            "name": {
+                "en": "Halloween Ball",
+                "de": "Halloween-Ball"
+            },
+            "category": "special_event",
+            "image": "halloween_bazaar"
+        },
+        "hunt_battle": {
+            "name": {
+                "en": "Hunt Battle",
+                "de": "Jagd-Kampf"
+            },
+            "category": "ingame_event",
+            "calendar_group": "alliance",
+            "image": "hunt_battle"
+        },
+        "kingdom_war": {
+            "name": {
+                "en": "Kingdom War",
+                "de": ""
+            },
+            "category": "ingame_event",
+            "image": "kingdom_war"
+        },
+        "mystic_cabinet": {
+            "name": {
+                "en": "Mystic Cabinet",
+                "de": "Mystischer Schrank"
+            },
+            "category": "season_event"
+        },
+        "pandemic_experience": {
+            "name": {
+                "en": "Pandemic Experience",
+                "de": "Pandemieerfahrung"
+            },
+            "category": "ingame_event",
+            "calendar_group": "alliance",
+            "image": "pandemic_experience"
+        },
+        "quiz_of_wisdom": {
+            "name": {
+                "en": "Quiz of Wisdom",
+                "de": "Quiz der Weisheit"
+            },
+            "category": "ingame_event",
+            "image": "quiz_of_wisdom"
+        },
+        "recluse_merchant": {
+            "name": {
+                "en": "Recluse Merchant",
+                "de": "Einsiedler-Händler"
+            },
+            "category": "special_event",
+            "image": "recluse_merchant"
+        },
+        "royal_city_scramble": {
+            "name": {
+                "en": "Royal City Scramble",
+                "de": ""
+            },
+            "category": "ingame_event",
+            "image": "royal_city_scramble"
+        },
+        "shadow_blight": {
+            "name": {
+                "en": "Shadow Blight",
+                "de": "Schatten-Seuche"
+            },
+            "category": "ingame_event",
+            "image": "shadow_blight"
+        },
+        "strange_bazaar": {
+            "name": {
+                "en": "Strange Bazaar",
+                "de": "Seltsamer Basar"
+            },
+            "category": "special_event",
+            "image": "strange_bazaar"
+        },
+        "surprise_encounter": {
+            "name": {
+                "en": "Surprise Encounter",
+                "de": "Überraschende Begegnung"
+            },
+            "category": "special_event",
+            "image": "surprise_encounter"
+        },
+        "survival_battle": {
+            "name": {
+                "en": "Survival Battle",
+                "de": "Überlebenskampf"
+            },
+            "category": "ingame_event"
+        },
+        "thief_hunt": {
+            "name": {
+                "en": "Thief Hunt",
+                "de": "Diebesjagd"
+            },
+            "category": "special_event",
+            "image": "thief_hunt"
+        },
+        "wandering_phantom": {
+            "name": {
+                "en": "Wandering Phantom",
+                "de": "Wanderndes Phantom"
+            },
+            "category": "ingame_event",
+            "calendar_group": "alliance",
+            "image": "wandering_phantom"
+        },
+        "weekly_special": {
+            "name": {
+                "en": "Weekly Special",
+                "de": "Wöchentliches Spezial"
+            },
+            "category": "special_event",
+            "image": "weekly_special"
+        }
+    },
+    "event_rotations": {
+        "survival_battle": {
+            "event_id": "survival_battle",
+            "week_starts": "sunday",
+            "hours": 4,
+            "phases": [
+                {
+                    "id": "build_territory",
+                    "name": {
+                        "en": "Build Territory",
+                        "de": "Gebietsbau"
+                    },
+                    "image": "survival_battle_build_territory",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup",
+                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                            },
+                            "points": 10,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Building Might",
+                                "de": "Erhöhe die Gebäude-Macht um 1"
+                            },
+                            "points": 1,
+                            "item_id": "construction_speedup"
+                        }
+                    ]
+                },
+                {
+                    "id": "train_soldiers",
+                    "name": {
+                        "en": "Train Soldiers",
+                        "de": "Soldatentraining"
+                    },
+                    "image": "survival_battle_train_soldiers",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Training Boost",
+                                "de": "Benutze 1 Min. Trainingsboost"
+                            },
+                            "points": 10,
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Train 1 Lv.10 soldier",
+                                "de": "Trainiere 1 Lv.10 Soldat"
+                            },
+                            "points": 31,
+                            "item_id": "training_speedup"
+                        }
+                    ]
+                },
+                {
+                    "id": "technology_research",
+                    "name": {
+                        "en": "Technology Research",
+                        "de": "Technologieforschung"
+                    },
+                    "image": "survival_battle_technology_research",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup",
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung"
+                            },
+                            "points": 10,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Tech Might",
+                                "de": "Erhöhe Technologiemacht um 1"
+                            },
+                            "points": 1,
+                            "item_id": "research_speedup"
+                        }
+                    ]
+                },
+                {
+                    "id": "enhance_raven",
+                    "name": {
+                        "en": "Enhance Raven",
+                        "de": "Rabenverbesserung"
+                    },
+                    "image": "survival_battle_enhance_raven",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "For every 10 Raven Fruits consumed",
+                                "de": "Für jede 10 verbrauchten Rabenfrüchte"
+                            },
+                            "points": 1,
+                            "item_id": "raven_fruit"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Stamina",
+                                "de": "Verbrauche 1 Ausdauer"
+                            },
+                            "points": 100,
+                            "item_id": "stamina"
+                        }
+                    ]
+                },
+                {
+                    "id": "enhance_heroes",
+                    "name": {
+                        "en": "Enhance Heroes",
+                        "de": "Heldenverbesserung"
+                    },
+                    "image": "survival_battle_enhance_heroes",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Recruit heroes once",
+                                "de": "Rekrutiere Helden einmal"
+                            },
+                            "points": 400,
+                            "item_id": "recruit_ticket"
+                        },
+                        {
+                            "text": {
+                                "en": "For every 1950 Antitoxin consumed",
+                                "de": "Für jeweils 1950 verbrauchtes Gegengift"
+                            },
+                            "points": 1,
+                            "item_id": "antitoxin"
+                        }
+                    ]
+                }
+            ],
+            "week": [
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes",
+                "build_territory",
+                "train_soldiers",
+                "technology_research",
+                "enhance_raven",
+                "enhance_heroes"
+            ]
+        },
+        "alliance_duel": {
+            "event_id": "alliance_duel",
+            "week_starts": "monday",
+            "hours": 24,
+            "phases": [
+                {
+                    "id": "raven",
+                    "name": {
+                        "en": "Raven",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase1",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Get 1 UR Epigraph Shard for each Epigraph Chest opened",
+                                "de": ""
+                            },
+                            "points": 2812.5,
+                            "item_id": "ur_epigraph_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 660 Antitoxin",
+                                "de": ""
+                            },
+                            "points": 2.5,
+                            "item_id": "antitoxin"
+                        },
+                        {
+                            "text": {
+                                "en": "Complete Falcon Quest once",
+                                "de": ""
+                            },
+                            "points": 30000
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Raven Essence",
+                                "de": ""
+                            },
+                            "points": 6250,
+                            "item_id": "raven_essence"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Stamina",
+                                "de": "Verbrauche 1 Ausdauer"
+                            },
+                            "points": 375,
+                            "item_id": "stamina"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Raven Fruit",
+                                "de": ""
+                            },
+                            "points": 7.5,
+                            "item_id": "raven_fruit"
+                        },
+                        {
+                            "text": {
+                                "en": "Gather 100 Grain",
+                                "de": ""
+                            },
+                            "points": 12.5,
+                            "item_id": "grain"
+                        },
+                        {
+                            "text": {
+                                "en": "Gather 100 Timber",
+                                "de": ""
+                            },
+                            "points": 12.5,
+                            "item_id": "timber"
+                        },
+                        {
+                            "text": {
+                                "en": "Gather 60 Herbs",
+                                "de": ""
+                            },
+                            "points": 12.5,
+                            "item_id": "herbs"
+                        }
+                    ]
+                },
+                {
+                    "id": "construction",
+                    "name": {
+                        "en": "Construction",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase2",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Excl. Wpn. Shard",
+                                "de": ""
+                            },
+                            "points": 25000,
+                            "item_id": "exclusive_weapon_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup",
+                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Building Might",
+                                "de": "Erhöhe die Gebäude-Macht um 1"
+                            },
+                            "points": 30,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Execute 1 UR Covert Operation",
+                                "de": ""
+                            },
+                            "points": 225000,
+                            "item_id": "covert_order"
+                        },
+                        {
+                            "text": {
+                                "en": "Dispatch a UR Caravan",
+                                "de": ""
+                            },
+                            "points": 300000,
+                            "item_id": "trade_agreement"
+                        },
+                        {
+                            "text": {
+                                "en": "Recruit survivor once",
+                                "de": ""
+                            },
+                            "points": 4500,
+                            "item_id": "survivor_recruit_ticket"
+                        }
+                    ]
+                },
+                {
+                    "id": "research",
+                    "name": {
+                        "en": "Research",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase3",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.1 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 2750,
+                            "item_id": "lv1_raven_gear_chest"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.2 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 8250
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.3 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 25000,
+                            "item_id": "lv3_raven_gear_chest"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.4 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 75000
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.5 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 225000,
+                            "item_id": "lv5_raven_gear_chest"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.6 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 675000
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.7 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 2025000
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup",
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Tech Might",
+                                "de": "Erhöhe Technologiemacht um 1"
+                            },
+                            "points": 30,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Study Scroll",
+                                "de": ""
+                            },
+                            "points": 750,
+                            "item_id": "study_scroll"
+                        },
+                        {
+                            "text": {
+                                "en": "Complete Falcon Quest once",
+                                "de": ""
+                            },
+                            "points": 30000
+                        }
+                    ]
+                },
+                {
+                    "id": "heroes",
+                    "name": {
+                        "en": "Heroes",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase4",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Hero Awaken Shard or Awaken Omni Shard",
+                                "de": ""
+                            },
+                            "points": 25000,
+                            "item_id": "hero_awaken_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Recruit heroes once",
+                                "de": "Rekrutiere Helden einmal"
+                            },
+                            "points": 4500,
+                            "item_id": "recruit_ticket"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 660 Antitoxin",
+                                "de": ""
+                            },
+                            "points": 2.5,
+                            "item_id": "antitoxin"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 UR Hero Shard",
+                                "de": ""
+                            },
+                            "points": 25000,
+                            "item_id": "ur_hero_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 SSR Hero Shard",
+                                "de": ""
+                            },
+                            "points": 8750,
+                            "item_id": "ssr_hero_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 SR Hero Shard",
+                                "de": ""
+                            },
+                            "points": 2500,
+                            "item_id": "sr_hero_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1 Skill Badge",
+                                "de": ""
+                            },
+                            "points": 25,
+                            "item_id": "skill_badge"
+                        }
+                    ]
+                },
+                {
+                    "id": "war_preparation",
+                    "name": {
+                        "en": "War Preparation",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase5",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Train 1 Lv.10 soldier",
+                                "de": "Trainiere 1 Lv.10 Soldat"
+                            },
+                            "points": 330,
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Training Boost",
+                                "de": "Benutze 1 Min. Trainingsboost"
+                            },
+                            "points": 150,
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Building Might",
+                                "de": "Erhöhe die Gebäude-Macht um 1"
+                            },
+                            "points": 30,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Tech Might",
+                                "de": "Erhöhe Technologiemacht um 1"
+                            },
+                            "points": 30,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup",
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup",
+                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Complete Falcon Quest once",
+                                "de": ""
+                            },
+                            "points": 30000
+                        }
+                    ]
+                },
+                {
+                    "id": "raid_the_enemy",
+                    "name": {
+                        "en": "Raid the Enemy",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase6",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup",
+                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup",
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Training Boost",
+                                "de": "Benutze 1 Min. Trainingsboost"
+                            },
+                            "points": 150,
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.10 soldier defeated (specific match)",
+                                "de": ""
+                            },
+                            "points": 165
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.10 soldier defeated",
+                                "de": ""
+                            },
+                            "points": 33
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.10 soldier lost",
+                                "de": ""
+                            },
+                            "points": 27.5
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Healing Speedup",
+                                "de": ""
+                            },
+                            "points": 150,
+                            "item_id": "healing_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Execute 1 UR Covert Operation",
+                                "de": ""
+                            },
+                            "points": 225000,
+                            "item_id": "covert_order"
+                        },
+                        {
+                            "text": {
+                                "en": "Dispatch a UR Caravan",
+                                "de": ""
+                            },
+                            "points": 300000,
+                            "item_id": "trade_agreement"
+                        }
+                    ]
+                }
+            ],
+            "week": ["raven", "construction", "research", "heroes", "war_preparation", "raid_the_enemy", null]
+        }
+    },
+    "kingdom_war": {
+        "event_id": "kingdom_war",
+        "cycle_start": "2026-10-26",
+        "days": 6,
+        "weeks": [
+            {
+                "id": "week_1",
+                "name": {
+                    "en": "Week 1",
+                    "de": ""
+                }
+            },
+            {
+                "id": "week_2",
+                "name": {
+                    "en": "Week 2",
+                    "de": ""
+                }
+            },
+            {
+                "id": "finals",
+                "name": {
+                    "en": "Week 3: Finals",
+                    "de": ""
+                }
+            },
+            null
+        ],
+        "royal_city_scramble": {
+            "event_id": "royal_city_scramble",
+            "weekday": "saturday",
+            "start_hour": 12,
+            "hours": 4
+        }
+    },
+    "schedule": {
+        "ancient_recipe_antitoxin": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-18"
+            },
+            {
+                "start": "2026-11-09",
+                "end": "2026-11-15"
+            }
+        ],
+        "artisans_request_gearstone": [
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-08"
+            }
+        ],
+        "artisans_request_tempered_steel": [
+            {
+                "start": "2026-10-19",
+                "end": "2026-10-25"
+            }
+        ],
+        "blades_out": [
+            {
+                "start": "2026-10-27",
+                "end": "2026-11-01"
+            }
+        ],
+        "canyon_conquest": [
+            {
+                "start": "2026-10-26",
+                "end": "2026-11-02"
+            },
+            {
+                "start": "2026-11-09",
+                "end": "2026-11-16"
+            }
+        ],
+        "claires_inner_demon": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-13"
+            },
+            {
+                "start": "2026-10-26",
+                "end": "2026-10-27"
+            },
+            {
+                "start": "2026-11-09",
+                "end": "2026-11-10"
+            }
+        ],
+        "crystal_cluster_valley": [
+            {
+                "start": "2026-10-18",
+                "end": "2026-10-18"
+            },
+            {
+                "start": "2026-10-25",
+                "end": "2026-10-25"
+            },
+            {
+                "start": "2026-11-01",
+                "end": "2026-11-01"
+            },
+            {
+                "start": "2026-11-08",
+                "end": "2026-11-08"
+            }
+        ],
+        "demon_king_ranger_blight": [
+            {
+                "start": "2026-10-20",
+                "end": "2026-10-20"
+            },
+            {
+                "start": "2026-10-23",
+                "end": "2026-10-23"
+            },
+            {
+                "start": "2026-10-27",
+                "end": "2026-10-27"
+            },
+            {
+                "start": "2026-10-30",
+                "end": "2026-10-30"
+            },
+            {
+                "start": "2026-11-03",
+                "end": "2026-11-03"
+            },
+            {
+                "start": "2026-11-06",
+                "end": "2026-11-06"
+            },
+            {
+                "start": "2026-11-10",
+                "end": "2026-11-10"
+            },
+            {
+                "start": "2026-11-13",
+                "end": "2026-11-13"
+            }
+        ],
+        "demon_king_warlock_blight": [
+            {
+                "start": "2026-10-22",
+                "end": "2026-10-22"
+            },
+            {
+                "start": "2026-10-26",
+                "end": "2026-10-26"
+            },
+            {
+                "start": "2026-10-29",
+                "end": "2026-10-29"
+            },
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-02"
+            },
+            {
+                "start": "2026-11-05",
+                "end": "2026-11-05"
+            },
+            {
+                "start": "2026-11-09",
+                "end": "2026-11-09"
+            },
+            {
+                "start": "2026-11-12",
+                "end": "2026-11-12"
+            }
+        ],
+        "demon_king_warrior_blight": [
+            {
+                "start": "2026-10-21",
+                "end": "2026-10-21"
+            },
+            {
+                "start": "2026-10-24",
+                "end": "2026-10-24"
+            },
+            {
+                "start": "2026-10-28",
+                "end": "2026-10-28"
+            },
+            {
+                "start": "2026-10-31",
+                "end": "2026-10-31"
+            },
+            {
+                "start": "2026-11-04",
+                "end": "2026-11-04"
+            },
+            {
+                "start": "2026-11-07",
+                "end": "2026-11-07"
+            },
+            {
+                "start": "2026-11-11",
+                "end": "2026-11-11"
+            },
+            {
+                "start": "2026-11-14",
+                "end": "2026-11-14"
+            }
+        ],
+        "dwarven_mine": [
+            {
+                "start": "2026-10-20",
+                "end": "2026-10-25"
+            }
+        ],
+        "elixir_scramble": [
+            {
+                "start": "2026-11-06",
+                "end": "2026-11-06"
+            }
+        ],
+        "epigraph_pass": [
+            {
+                "start": "2026-10-19",
+                "end": "2026-10-25"
+            }
+        ],
+        "exclusive_weapon_pass": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-18"
+            },
+            {
+                "start": "2026-11-09",
+                "end": "2026-11-15"
+            }
+        ],
+        "falcon_tower_pass": [
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-08"
+            }
+        ],
+        "gear_pass": [
+            {
+                "start": "2026-10-26",
+                "end": "2026-11-01"
+            }
+        ],
+        "gear_upgrade": [
+            {
+                "start": "2026-10-17",
+                "end": "2026-10-18"
+            },
+            {
+                "start": "2026-10-24",
+                "end": "2026-10-25"
+            },
+            {
+                "start": "2026-10-31",
+                "end": "2026-11-01"
+            },
+            {
+                "start": "2026-11-07",
+                "end": "2026-11-08"
+            },
+            {
+                "start": "2026-11-14",
+                "end": "2026-11-15"
+            }
+        ],
+        "halloween_ball": [
+            {
+                "start": "2026-10-26",
+                "end": "2026-11-01"
+            }
+        ],
+        "halloween_cookie": [
+            {
+                "start": "2026-10-26",
+                "end": "2026-11-01"
+            }
+        ],
+        "heroes_assemble": [
+            {
+                "start": "2026-10-21",
+                "end": "2026-11-03"
+            }
+        ],
+        "hunt_battle": [
+            {
+                "start": "2026-10-19",
+                "end": "2026-10-20"
+            },
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-03"
+            }
+        ],
+        "mystic_cabinet": [
+            {
+                "start": "2026-11-01",
+                "end": "2026-11-01"
+            }
+        ],
+        "pandemic_experience": [
+            {
+                "start": "2026-10-14",
+                "end": "2026-10-16"
+            },
+            {
+                "start": "2026-10-28",
+                "end": "2026-10-30"
+            },
+            {
+                "start": "2026-11-11",
+                "end": "2026-11-13"
+            }
+        ],
+        "quiz_of_wisdom": [
+            {
+                "start": "2026-10-18",
+                "end": "2026-10-18"
+            },
+            {
+                "start": "2026-10-25",
+                "end": "2026-10-25"
+            },
+            {
+                "start": "2026-11-01",
+                "end": "2026-11-01"
+            },
+            {
+                "start": "2026-11-08",
+                "end": "2026-11-08"
+            }
+        ],
+        "ravens_might": [
+            {
+                "start": "2026-11-04",
+                "end": "2026-11-17"
+            }
+        ],
+        "recluse_merchant": [
+            {
+                "start": "2026-09-28",
+                "end": "2026-10-25"
+            }
+        ],
+        "shadow_blight": [
+            {
+                "start": "2026-10-18",
+                "end": "2026-10-18"
+            },
+            {
+                "start": "2026-11-01",
+                "end": "2026-11-01"
+            }
+        ],
+        "strange_bazaar": [
+            {
+                "start": "2026-10-13",
+                "end": "2026-10-18"
+            },
+            {
+                "start": "2026-11-10",
+                "end": "2026-11-15"
+            }
+        ],
+        "surprise_encounter": [
+            {
+                "start": "2026-11-03",
+                "end": "2026-11-08"
+            }
+        ],
+        "tempered_arms": [
+            {
+                "start": "2026-10-12",
+                "end": "2026-10-20"
+            }
+        ],
+        "thief_hunt": [
+            {
+                "start": "2026-10-21",
+                "end": "2026-10-23"
+            },
+            {
+                "start": "2026-11-04",
+                "end": "2026-11-06"
+            }
+        ],
+        "wandering_phantom": [
+            {
+                "start": "2026-10-25",
+                "end": "2026-10-25"
+            },
+            {
+                "start": "2026-11-08",
+                "end": "2026-11-08"
+            }
+        ],
+        "weekly_special": [
+            {
+                "start": "2026-10-19",
+                "end": "2026-10-25"
+            },
+            {
+                "start": "2026-11-02",
+                "end": "2026-11-08"
+            }
+        ]
+    }
+}

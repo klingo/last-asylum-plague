@@ -64,7 +64,7 @@ jobs:
                       git reset --hard origin/master
                       # shellcheck disable=SC2086 # the ids are separate arguments
                       npm run record-run -- $IDS $START $DAYS
-                      node scripts/update-last-updated.js
+                      node scripts/update-last-updated.js data/events.json
                       npm run verify-data
                       if git diff --quiet; then
                           echo 'Nothing changed.'
