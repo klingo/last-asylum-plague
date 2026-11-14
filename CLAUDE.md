@@ -147,6 +147,12 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   every slot is listed. `rotationSlots` (`core/schedule.js`) gives the phase on now and the next; the Today page shows
   them. The event itself stays a plain `ingame_event` in `events`. Times are UTC; the game's server time is UTC−2 (its
   00:00 = our 02:00).
+- `kingdom_war` is the Kingdom War, a cycle that repeats forever: `cycle_start` (a Monday), `weeks` (a war week `{ id, name }`
+  or `null` for a break week; Week 1, Week 2, Week 3: Finals, break), `days` (a war week lasts that many game days from its
+  Monday's reset: 6, until the end of Saturday) and the `royal_city_scramble` (`weekday`, `start_hour` after the
+  reset = server time, `hours`; every week of the cycle, the break too). `core/kingdom-war.js` gives the periods (a break
+  also takes the Sundays around it) and the scramble's slots; the Calendar's Kingdom War box and the Today page show them.
+  Nothing is recorded in `schedule` for it.
 - Spend reward tracks share one list of Banknote packs and the points they count (`spend_reward_conversions`);
   `normalizePackData` gives it to every track without its own `conversions` (`[]` = 1 point per Banknote).
 - `image` on events, tracks and passes is a banner in `webapp/public/assets/events/` (720×360); `verify-data`

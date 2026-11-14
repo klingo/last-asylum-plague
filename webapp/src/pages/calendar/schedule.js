@@ -3,7 +3,7 @@
  */
 import { enumLabel, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
-import { formatDate, formatDayCount, formatDaySpan } from '../../ui/datetime.js';
+import { formatDayCount, formatDaySpan } from '../../ui/datetime.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import { getSettings } from '../../ui/settings.js';
 import { SCHEDULE_KIND_LABELS } from '../../ui/labels.js';
@@ -21,11 +21,11 @@ import {
     columnsStyle,
     gridHtml,
     localDayBoundaries,
-    localDayNumber,
     localWeekStart,
     viewOf,
+    weekHeadersHtml,
 } from '../../ui/timeline.js';
-import { gameDay, isoWeekNumber, runMoments, runStatus, scheduleBars } from '../../core/schedule.js';
+import { gameDay, runMoments, runStatus, scheduleBars } from '../../core/schedule.js';
 import { ctx } from './state.js';
 import { WEEKS } from './constants.js';
 
@@ -98,15 +98,6 @@ function renderSchedule() {
         return;
     }
 
-    const weeks = Array.from({ length: WEEKS }, (_, index) => boundaries[index * 7])
-        .map(
-            (monday, index) => `
-                <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
-                    <strong>${tHtml('calendar.schedule.week', { week: isoWeekNumber(localDayNumber(monday)) })}</strong>
-                    <span>${escapeHtml(formatDate(monday, { day: 'numeric', month: 'short' }))}</span>
-                </div>`,
-        )
-        .join('');
     const groups = Object.entries(SCHEDULE_KIND_LABELS)
         .map(([kind, labelKey]) => {
             const groupRows = rows
@@ -160,7 +151,7 @@ function renderSchedule() {
             <div class="schedule__chart" ${chartAttrs(boundaries, 7, nowMs)}>
                 <div class="schedule__row schedule__row--axis">
                     <div class="schedule__label"></div>
-                    <div class="schedule__track schedule__weeks" style="${columnsStyle(boundaries, 7)}">${weeks}</div>
+                    <div class="schedule__track schedule__weeks" style="${columnsStyle(boundaries, 7)}">${weekHeadersHtml(boundaries, WEEKS)}</div>
                 </div>
                 ${groups}
                 ${gridHtml(boundaries, 7)}

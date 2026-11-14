@@ -43,6 +43,8 @@ deleted after 180 days without use; the button stays hidden until the build has 
   plan buys from it.
   Survival Battle (`event_rotations` in `pack_data.json`: the 42 four-hour slots of its week, from Sunday's reset, the
   same every week) shows the phase on now and the next one, with their local times and how to earn points in them.
+  The Kingdom War (`kingdom_war`) adds the war week on now (not in the break) and the next one, and the Royal City
+  Scramble while it runs, or from three days before the next one.
 
 - **Deal Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
@@ -65,6 +67,12 @@ deleted after 180 days without use; the button stays hidden until the build has 
   each 4-hour slot with its start time above, a line for now, local times in the hover card. Every chart is on
   the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
   part-way into a day column (the event rotation's first and last day column are cut to its window). Banners, Today and the Deal Ranking's skips show the same local moments.
+  Below them the **Kingdom War** box (`kingdom_war` in `pack_data.json`, `core/kingdom-war.js`): the current week and the
+  4 after it, a row for each war week (Week 1, Week 2, Week 3: Finals: Monday's reset to the end of Saturday, its name
+  on the bar; the break is the empty gap between Week 3 and the next Week 1) and one for the Royal City Scramble, a
+  faint bar on every Saturday (the break week too) with the 4 hours as a thin bar on top (to scale, so the day is easy to see and the hours are where they fall).
+  The faint bar has the hover card (the scramble's local hours, 12:00–16:00 server time). A line says which week is on
+  now and when it ends (or when the next one starts), and when the scramble is on or next.
 - **Event Shops** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers; an Encounter counts its random reward, the free one every day and

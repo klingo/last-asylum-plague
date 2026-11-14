@@ -1,8 +1,9 @@
 /**
  * Calendar: the Event Schedule (recorded runs and their forecast, `scheduleRuns` / `forecastRuns` in core/schedule.js;
  * each entry with the game's art and a hover card), the Weekday Offers of the next 7 days (`weekly_rotation` packs by
- * their `available_days`, coloured by their ratio) and, for each event rotation (Survival Battle), a chart of today and
- * the next 6 days: one row per phase, a bar per slot. Every chart is on the user's local days (`ui/timeline.js`); the
+ * their `available_days`, coloured by their ratio), for each event rotation (Survival Battle) a chart of today and
+ * the next 6 days: one row per phase, a bar per slot, and the Kingdom War (its weeks, the break and the Royal City
+ * Scramble, `core/kingdom-war.js`) over 5 weeks. Every chart is on the user's local days (`ui/timeline.js`); the
  * game's day starts at 02:00 UTC, where its runs' bars begin and end.
  */
 import { startPage } from '../../ui/page.js';
@@ -15,12 +16,14 @@ import { gameDay } from '../../core/schedule.js';
 import { ctx } from './state.js';
 import { nowText, renderRotation } from './rotation.js';
 import { renderEventRotations } from './event-rotations.js';
+import { renderKingdomWar } from './kingdom-war.js';
 import { renderSchedule } from './schedule.js';
 
 function render() {
     renderSchedule();
     renderRotation();
     renderEventRotations();
+    renderKingdomWar();
 }
 
 /**

@@ -346,6 +346,14 @@
             "active": "Läuft jetzt",
             "upcoming": "Bevorstehend"
         },
+        "kingdomWar": {
+            "lead": "Kriegswochen laufen von Montag bis zum Ende des Samstags, danach folgt eine Pausenwoche. {scramble} findet jeden Samstag statt.",
+            "now": "Jetzt · {week}, endet {time}",
+            "nowBreak": "Jetzt · Pause, {next} beginnt {time}",
+            "nowOff": "Jetzt · spielfrei, {next} beginnt {time}",
+            "scrambleNow": "{name} läuft, bis {time}",
+            "scrambleNext": "Nächstes Event {name}: {range}"
+        },
         "status": {
             "endsIn": "Endet in {time}",
             "startsIn": "Beginnt in {time}",

@@ -27,6 +27,11 @@
     --bar-color: var(--series-a);
 }
 
+/* The Kingdom War: the Royal City Scramble has its own colour. */
+.schedule__row--scramble {
+    --bar-color: var(--series-a);
+}
+
 .schedule__row--pass {
     --bar-color: var(--purple);
 }
@@ -228,6 +233,30 @@
 
 a.schedule__bar {
     cursor: pointer;
+}
+
+/* A text in the bar (`label`), clipped to it. */
+.schedule__bar--label {
+    padding: 0 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 16px;
+    white-space: nowrap;
+    color: var(--bg);
+}
+
+/* The Royal City Scramble in the Kingdom War's overview: the whole day it is on as a faint bar, its exact hours as a
+   thin one on top (4 hours are narrower than a pixel there, so it keeps a minimum width). */
+.schedule__bar--day {
+    background: color-mix(in srgb, var(--bar-color) 30%, transparent);
+}
+
+/* Decoration only: the hover card is the day bar's, the pointer goes through to it. */
+.schedule__bar--hours {
+    min-width: 4px;
+    pointer-events: none;
 }
 
 /* Cut by the window's edge: square, fading end (it continues outside the shown weeks). The mask reaches 4px past

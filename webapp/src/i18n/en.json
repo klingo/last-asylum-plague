@@ -346,6 +346,14 @@
             "active": "On now",
             "upcoming": "Upcoming"
         },
+        "kingdomWar": {
+            "lead": "War weeks run from Monday to the end of Saturday, followed by a break week. {scramble} is every Saturday.",
+            "now": "Now · {week}, ends {time}",
+            "nowBreak": "Now · break, {next} starts {time}",
+            "nowOff": "Now · off day, {next} starts {time}",
+            "scrambleNow": "{name} on now, until {time}",
+            "scrambleNext": "Next {name}: {range}"
+        },
         "status": {
             "endsIn": "Ends in {time}",
             "startsIn": "Starts in {time}",

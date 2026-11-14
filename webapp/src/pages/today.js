@@ -1,6 +1,7 @@
 /**
  * Today (the home page, `index.html`): what runs today (art, name, countdown, linking to its page) and what starts in
  * the next few days (recorded runs and proven forecasts), the phase on now of each event rotation (Survival Battle),
+ * the Kingdom War's week on now and its Royal City Scramble,
  * the weekly plan by when to buy it (daily packs, weekly and longer packs, each event's packs and shop offers) and
  * today's weekday offers with their ratio.
  */
@@ -44,7 +45,8 @@ import { formatRunRange } from '../ui/datetime.js';
 import { isOnSale } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { groupPlanByWhen } from '../core/plan-view.js';
-import { WEEKDAYS, gameDay, listRuns, rotationSlots, runMoments, weekdayIndex } from '../core/schedule.js';
+import { DAY_MS, WEEKDAYS, gameDay, listRuns, rotationSlots, runMoments, weekdayIndex } from '../core/schedule.js';
+import { scrambleStatus, warStatus } from '../core/kingdom-war.js';
 
 // An upcoming entry's fill grows over the last hours before it starts (the same for all, whatever it is).
 const SOON_FILL_MS = 4 * 3600000;
@@ -75,6 +77,8 @@ const offerExpanded = new Set();
  *   when it starts and ends in local time (and "expected" for a forecast), a link if it has a page.
  * - A phase of an event rotation (Survival Battle): the phase's name as the title, the event's name beside it, the
  *   slot's times in local time, and (as an info icon) how to earn points in it.
+ * - A war week or the Royal City Scramble of the Kingdom War: its name as the title, the war's name beside it, its
+ *   times in local time.
  */
 function runEntry(id, kind, run, state, forecast = false) {
     const moments = runMoments(run);
@@ -112,6 +116,54 @@ function rotationEntry(rotation, slot, state) {
         start: slot.start,
         end: slot.end,
     };
+}
+
+/** An entry of the Kingdom War (`kingdom_war`): `name` is its title (a war week's, or the scramble's event), `start` / `end` ms. */
+function warEntry(war, eventId, name, start, end, state) {
+    const event = data.events[eventId];
+    return {
+        id: eventId,
+        kind: 'ingame',
+        state,
+        forecast: false,
+        title: name,
+        description: localizedName(data.events[war.event_id].name),
+        image: event.image,
+        href: null,
+        dates: formatRunRange(start, end),
+        start,
+        end,
+    };
+}
+
+/**
+ * The Kingdom War's entries: the war week on now (none in the break or on a day off), the next war week and the
+ * Royal City Scramble, on now or, once it is near (`SOON_DAYS`), the next one.
+ */
+function kingdomWarEntries(war, now, today) {
+    const running = [];
+    const soon = [];
+    const weekEntry = (period, state) => {
+        const { start, end } = runMoments(period);
+        return warEntry(war, war.event_id, localizedName(period.week.name), start, end, state);
+    };
+    const status = warStatus(war, today);
+    if (status.current?.kind === 'week') {
+        running.push(weekEntry(status.current, 'running'));
+    }
+    if (status.next && status.next.start - today <= SOON_DAYS) {
+        soon.push(weekEntry(status.next, 'upcoming'));
+    }
+    const scramble = scrambleStatus(war, now);
+    const scrambleId = war.royal_city_scramble.event_id;
+    const scrambleName = localizedName(data.events[scrambleId].name);
+    if (scramble.current) {
+        running.push(warEntry(war, scrambleId, scrambleName, scramble.current.start, scramble.current.end, 'running'));
+    }
+    if (scramble.next && scramble.next.start - now <= SOON_DAYS * DAY_MS) {
+        soon.push(warEntry(war, scrambleId, scrambleName, scramble.next.start, scramble.next.end, 'upcoming'));
+    }
+    return { running, soon };
 }
 
 /**
@@ -194,7 +246,7 @@ function updateProgress() {
 
 /**
  * What runs today (ending first) and what starts in the next days: recorded runs and proven forecasts, plus the phase
- * an event rotation (Survival Battle) is in and the one that follows it.
+ * an event rotation (Survival Battle) is in and the one that follows it, and the Kingdom War's entries.
  */
 function renderSchedule() {
     const today = gameDay(new Date()).day;
@@ -207,6 +259,11 @@ function renderSchedule() {
         const { current, next } = rotationSlots(rotation, now);
         running.push(rotationEntry(rotation, current, 'running'));
         soon.push(rotationEntry(rotation, next, 'upcoming'));
+    }
+    if (data.kingdom_war) {
+        const war = kingdomWarEntries(data.kingdom_war, now, today);
+        running.push(...war.running);
+        soon.push(...war.soon);
     }
     const order = (a, b) => SCHEDULE_KINDS.indexOf(a.kind) - SCHEDULE_KINDS.indexOf(b.kind);
     // The one ending first on top (the kind only breaks ties).

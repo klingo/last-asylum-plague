@@ -13,6 +13,7 @@ import {
     percentOf,
     shareOf,
     viewOf,
+    weekHeadersHtml,
     windowBoundaries,
 } from '../../webapp/src/ui/timeline.js';
 import { isoWeekNumber } from '../../webapp/src/core/schedule.js';
@@ -74,6 +75,32 @@ test('day headers: today, tomorrow, then the weekday', () => {
     assert.match(html, /schedule__week schedule__week--current/);
     assert.match(html, /<strong>Today<\/strong>\s*<span>Oct 24<\/span>/);
     assert.match(html, /<strong>Tuesday<\/strong>\s*<span>Oct 27<\/span>/);
+});
+
+test('week headers: the ISO week and the date of every week, the first one current', () => {
+    const monday = localDayBoundaries(localWeekStart(new Date(2026, 10, 4).getTime()), 14);
+    const html = weekHeadersHtml(monday, 2);
+    assert.equal(html.match(/schedule__week/g).length, 2 + 1, 'a header each, the first also --current');
+    assert.match(html, /schedule__week schedule__week--current">\s*<strong>W45<\/strong>\s*<span>Nov 2<\/span>/);
+    assert.match(html, /<strong>W46<\/strong>\s*<span>Nov 9<\/span>/);
+});
+
+test('a bar with a label has the text inside it; a class name is added to its classes', () => {
+    const labelled = barHtml({ start: boundaries[2], end: boundaries[4] }, view, 'Week', {
+        label: 'Week <3>',
+        className: 'schedule__bar--day',
+    });
+    assert.match(labelled, /^<span class="schedule__bar schedule__bar--label schedule__bar--day"/);
+    assert.match(labelled, /width: calc\(/);
+    assert.match(labelled, />Week &lt;3&gt;<\/span>$/);
+    assert.doesNotMatch(barHtml({ start: boundaries[2], end: boundaries[4] }, view, 'Week'), /--label|--day/);
+});
+
+test('a bar without a tooltip is decoration: no hover card, not focusable', () => {
+    const html = barHtml({ start: boundaries[2], end: boundaries[4] }, view, null, { className: 'schedule__bar--day' });
+    assert.match(html, /^<span class="schedule__bar schedule__bar--day" style="left: /);
+    assert.match(html, /aria-hidden="true"><\/span>$/);
+    assert.doesNotMatch(html, /tabindex|data-tooltip|aria-label/);
 });
 
 test('a bar sits at its moments; where the view cuts it, it has no inset and fades', () => {

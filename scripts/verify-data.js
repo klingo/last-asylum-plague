@@ -7,6 +7,7 @@ import { resolveItemValues, bundleValue } from '../webapp/src/core/item-values.j
 import { currencyFlows } from '../webapp/src/core/planner.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
 import { normalizePackData } from '../webapp/src/core/pack-data.js';
+import { dayNumber, weekdayIndex } from '../webapp/src/core/schedule.js';
 import { AWAKENING_FRAMES, MAX_WEAPON_STARS } from '../webapp/src/core/hero-stars.js';
 import { awakeningSkills, weaponBonuses } from '../webapp/src/core/skill-path.js';
 import { missingCodeLabels } from './lib/code-labels.js';
@@ -655,6 +656,37 @@ async function verifyData() {
                     }
                 }
             }
+        }
+    });
+
+    // 7d. The Kingdom War: both events exist, the cycle starts on a Monday, the week ids are unique and there is a war
+    // week, and the scramble fits in its day.
+    checkCategory('Kingdom War', ({ reportError }) => {
+        const war = data.kingdom_war;
+        if (!war) {
+            return;
+        }
+        for (const eventId of [war.event_id, war.royal_city_scramble.event_id]) {
+            if (!events[eventId]) {
+                reportError('Kingdom War Event', `The Kingdom War names the unknown event "${eventId}".`);
+            }
+        }
+        if (!isRealDate(war.cycle_start) || weekdayIndex(dayNumber(war.cycle_start)) !== 0) {
+            reportError('Kingdom War Cycle', `cycle_start "${war.cycle_start}" is not a Monday.`);
+        }
+        const weekIds = war.weeks.filter(Boolean).map((week) => week.id);
+        if (weekIds.length === 0) {
+            reportError('Kingdom War Cycle', 'The cycle has no war week.');
+        }
+        if (new Set(weekIds).size !== weekIds.length) {
+            reportError('Kingdom War Cycle', 'Two war weeks have the same id.');
+        }
+        const { start_hour: startHour, hours } = war.royal_city_scramble;
+        if (startHour + hours > 24) {
+            reportError(
+                'Kingdom War Scramble',
+                `The scramble (from hour ${startHour}, ${hours} hours) runs past the end of its game day.`,
+            );
         }
     });
 

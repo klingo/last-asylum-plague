@@ -4,10 +4,10 @@
  * begins part-way into a column. Everything is placed by a share of the chart's view `{ from, to }` (ms), so the
  * header columns (`columnsStyle`), the lines (`gridHtml`), the bars (`barHtml`) and the "now" line agree.
  */
-import { t } from './i18n.js';
+import { t, tHtml } from './i18n.js';
 import { escapeHtml } from './html.js';
 import { formatDate } from './datetime.js';
-import { DAY_MS, HOUR_MS, dayStartMs, gameDay } from '../core/schedule.js';
+import { DAY_MS, HOUR_MS, dayStartMs, gameDay, isoWeekNumber } from '../core/schedule.js';
 
 /** The local midnights that start `count` days from the local day of `startMs`, and the one that ends the last (`count + 1`). */
 function localDayBoundaries(startMs, count) {
@@ -92,6 +92,19 @@ function dayHeadersHtml(boundaries) {
         .join('');
 }
 
+/** The week columns of a chart: "W46" with the date of its first day, `weeks` of them from the first boundary. */
+function weekHeadersHtml(boundaries, weeks) {
+    return Array.from({ length: weeks }, (_, index) => boundaries[index * 7])
+        .map(
+            (monday, index) => `
+                <div class="schedule__week${index === 0 ? ' schedule__week--current' : ''}">
+                    <strong>${tHtml('calendar.schedule.week', { week: isoWeekNumber(localDayNumber(monday)) })}</strong>
+                    <span>${escapeHtml(formatDate(monday, { day: 'numeric', month: 'short' }))}</span>
+                </div>`,
+        )
+        .join('');
+}
+
 /**
  * A line at every day's start (every `majorEvery`-th one stronger: the week / day columns of the header) and a faint
  * one at each of `minorTicks` (ms).
@@ -114,13 +127,23 @@ function gridHtml(boundaries, majorEvery, minorTicks = []) {
  * A bar from `bar.start` to `bar.end` (ms); with `href` a link (opens its plan; `action` is its label in the card: a
  * hint on hover, a button once a tap has pinned the card, see tooltip.js), with `image` the hover card shows the
  * art (`imageFallback`: the one shown if that doesn't exist), greyed for an ended run (or where `mutedImage` says). A
- * bar cut by the view's edge fades there.
+ * bar cut by the view's edge fades there. `label` is a text inside the bar (clipped to it), `className` more classes.
+ * Without a `tooltip` (null) the bar is only decoration: no hover card, not focusable, hidden from screen readers.
  */
 function barHtml(
     bar,
     view,
     tooltip,
-    { href = null, action = null, image = null, imageFallback = null, color = null, mutedImage = bar.past } = {},
+    {
+        href = null,
+        action = null,
+        image = null,
+        imageFallback = null,
+        color = null,
+        mutedImage = bar.past,
+        label = null,
+        className = null,
+    } = {},
 ) {
     const start = Math.max(bar.start, view.from);
     const end = Math.min(bar.end, view.to);
@@ -132,12 +155,18 @@ function barHtml(
         bar.active ? 'schedule__bar--active' : '',
         bar.start < view.from ? 'schedule__bar--cut-start' : '',
         bar.end > view.to ? 'schedule__bar--cut-end' : '',
+        label ? 'schedule__bar--label' : '',
+        className,
     ].filter(Boolean);
     // A 1px inset on both ends (2px gap between bars that meet), none where the view cuts the bar.
     const insetStart = bar.start < view.from ? 0 : 1;
     const insetEnd = bar.end > view.to ? 0 : 1;
     const width = ((end - start) / (view.to - view.from)) * 100;
     const style = `left: calc(${percentOf(start, view)}% + ${insetStart}px); width: calc(${width}% - ${insetStart + insetEnd}px)${color ? `; --bar-color: ${color}` : ''}`;
+    const content = escapeHtml(label || '');
+    if (tooltip === null) {
+        return `<span class="${classes.join(' ')}" style="${style}" aria-hidden="true">${content}</span>`;
+    }
     const tag = href ? 'a' : 'span';
     const linkAttrs = href ? ` href="${escapeHtml(href)}"` : ' tabindex="0" role="img"';
     // An ended run's art greyed in its hover card, as its bar (`mutedImage`: greyed for other bars too).
@@ -145,7 +174,7 @@ function barHtml(
         ? ` data-tooltip-image="${escapeHtml(image)}"${imageFallback ? ` data-tooltip-image-fallback="${escapeHtml(imageFallback)}"` : ''}${mutedImage ? ' data-tooltip-image-muted' : ''}`
         : '';
     const actionAttr = href && action ? ` data-tooltip-action="${escapeHtml(action)}"` : '';
-    return `<${tag} class="${classes.join(' ')}" style="${style}"${linkAttrs} aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"${actionAttr}${imageAttr}></${tag}>`;
+    return `<${tag} class="${classes.join(' ')}" style="${style}"${linkAttrs} aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"${actionAttr}${imageAttr}>${content}</${tag}>`;
 }
 
 export {
@@ -159,6 +188,7 @@ export {
     chartAttrs,
     columnsStyle,
     dayHeadersHtml,
+    weekHeadersHtml,
     gridHtml,
     barHtml,
 };

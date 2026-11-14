@@ -8100,6 +8100,14 @@
             "calendar_group": "alliance",
             "image": "hunt_battle"
         },
+        "kingdom_war": {
+            "name": {
+                "en": "Kingdom War",
+                "de": ""
+            },
+            "category": "ingame_event",
+            "image": "kingdom_war"
+        },
         "mystic_cabinet": {
             "name": {
                 "en": "Mystic Cabinet",
@@ -8131,6 +8139,14 @@
             },
             "category": "special_event",
             "image": "recluse_merchant"
+        },
+        "royal_city_scramble": {
+            "name": {
+                "en": "Royal City Scramble",
+                "de": ""
+            },
+            "category": "ingame_event",
+            "image": "royal_city_scramble"
         },
         "shadow_blight": {
             "name": {
@@ -8395,6 +8411,41 @@
                 "enhance_raven",
                 "enhance_heroes"
             ]
+        }
+    },
+    "kingdom_war": {
+        "event_id": "kingdom_war",
+        "cycle_start": "2026-10-26",
+        "days": 6,
+        "weeks": [
+            {
+                "id": "week_1",
+                "name": {
+                    "en": "Week 1",
+                    "de": ""
+                }
+            },
+            {
+                "id": "week_2",
+                "name": {
+                    "en": "Week 2",
+                    "de": ""
+                }
+            },
+            {
+                "id": "finals",
+                "name": {
+                    "en": "Week 3: Finals",
+                    "de": ""
+                }
+            },
+            null
+        ],
+        "royal_city_scramble": {
+            "event_id": "royal_city_scramble",
+            "weekday": "saturday",
+            "start_hour": 12,
+            "hours": 4
         }
     },
     "spend_reward_conversions": [
