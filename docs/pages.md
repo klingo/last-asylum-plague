@@ -11,11 +11,11 @@ Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item 
 `events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
 **Settings**.
 
-**Settings** (`settings.html`) has five sections: **Language**, the app's language (saved in this browser); **Valuation**, the settings that shape every value (Count VIP points
-in the worth); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
+**Settings** (`settings.html`) has five sections: **Language**, the app's language (saved in this browser); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
 4-hour slot of its rotation) and, grouped under the Royal City Scramble's name, two for that event: one 1 hour before it starts and one when it starts
 (switching one on asks the browser for permission, and as there is no server to push from, a notification only comes
-while a tab of the app is open; while one is on, Today marks the bars it is for with a bell); **Model quality**, how well the fitted worths reproduce the
+while a tab of the app is open; while one is on, Today marks the bars it is for with a bell); **Valuation**, the
+settings that shape every value (Count VIP points in the worth); **Model quality**, how well the fitted worths reproduce the
 packs' deal %; and **Admin** (collapsed), which records when events, passes and tracks run: enter a GitHub token (a
 fine-grained personal access token of this repository with only the permission Actions: Read and write; it is checked
 against GitHub, kept in this browser's localStorage only and removed by "Log out"), then record the forecast runs that
