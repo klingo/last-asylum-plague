@@ -27,6 +27,7 @@ import {
     packPartRowHtml,
 } from '../ui/grid.js';
 import { formatDays, getLocale, localizedName, t, tHtml } from '../ui/i18n.js';
+import { packagePictureDay } from '../ui/images.js';
 import { formatThousands } from '../ui/format.js';
 import { ratioCellHtml, ratioScale } from '../ui/ratio-bar.js';
 import {
@@ -265,7 +266,7 @@ function renderOffers() {
         const row = gridRow(
             [
                 gridCell(
-                    `${packThumbHtml(family(offer))}${packageDisplayName(pkg, locale)}${requiresIconHtml(pkg.requires, data.packages, data.items, locale)}`,
+                    `${packThumbHtml(family(offer), packagePictureDay(pkg, weekday))}${packageDisplayName(pkg, locale)}${requiresIconHtml(pkg.requires, data.packages, data.items, locale)}`,
                     { className: `item-cell${higherTier ? ' offer-tier' : ''}` },
                 ),
                 gridNum(banknotesAmount(pkg.price)),

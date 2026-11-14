@@ -19,11 +19,19 @@ test("a weekday offer's thumbnail is its picture in assets/packages, marked for 
     );
 });
 
+test("a weekday offer's thumbnail for a day is that day's picture, the pack's as its fallback", () => {
+    const html = packThumbHtml('speedup_special_pack', 'saturday');
+    assert.match(html, /data-pack-thumb data-pack-fallback="[^"]*assets\/packages\/speedup_special_pack\.webp"/);
+    assert.match(html, /src="[^"]*assets\/packages\/speedup_special_pack_saturday\.webp"/);
+});
+
 /** A stand-in <img> under a stand-in root: `state` says how its picture went (loading, loaded, failed). */
 function fakeRoot(state) {
     const img = {
         complete: state !== 'loading',
         naturalWidth: state === 'loaded' ? 320 : 0,
+        dataset: {},
+        src: '',
         listeners: {},
         replacedBy: null,
         addEventListener(type, listener) {
@@ -74,4 +82,26 @@ test('a pack thumbnail still loading becomes the placeholder only if its picture
     const loaded = fakeRoot('loaded');
     hydratePackThumbs(loaded.root);
     assert.equal(loaded.img.replacedBy, null); // a picture that is there stays
+});
+
+test("a day's pack thumbnail whose picture is missing tries the pack's, and only then becomes the placeholder", () => {
+    const placeholder = { tag: 'placeholder' };
+    globalThis.document.createElement = () => ({
+        set innerHTML(html) {
+            this.html = html;
+        },
+        content: {
+            get firstElementChild() {
+                return placeholder;
+            },
+        },
+    });
+    const { img, root } = fakeRoot('loading');
+    img.dataset.packFallback = 'pack.webp';
+    hydratePackThumbs(root);
+    img.listeners.error();
+    assert.equal(img.src, 'pack.webp');
+    assert.equal(img.replacedBy, null);
+    img.listeners.error();
+    assert.equal(img.replacedBy, placeholder);
 });

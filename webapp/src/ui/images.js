@@ -4,7 +4,9 @@
  * placeholder icon, so images can be dropped in later without touching any rendering code.
  *
  * A package (a weekday offer) may have a picture of its own, assets/packages/<pack id>.webp (the family id of a tiered
- * pack): only its URL is built here, ui/event-banner.js shows it as a thumbnail and the Calendar as hover-card art.
+ * pack): only its URL is built here, ui/event-banner.js shows it as a thumbnail and the Calendar as hover-card art. An
+ * offer on several days whose picture differs between them has one per day, assets/packages/<pack id>_<weekday>.webp
+ * (the days without one use the pack's).
  */
 import { t, localizedName } from './i18n.js';
 import { BASE_URL } from './base-url.js';
@@ -76,8 +78,12 @@ function banknoteIconHtml(className = 'currency-icon') {
     return `<img src="${BANKNOTE_ICON_URL}" alt="${name}" title="${name}" class="${className}" />`;
 }
 
-/** URL of a package's own picture: "<pack id>.webp" below assets/packages. */
-const packageImageUrl = (packId) => `${PACKAGE_IMAGES_URL}${encodeURIComponent(packId)}.webp`;
+/** URL of a package's own picture: "<pack id>.webp" below assets/packages, with a weekday "<pack id>_<weekday>.webp". */
+const packageImageUrl = (packId, weekday = null) =>
+    `${PACKAGE_IMAGES_URL}${encodeURIComponent(weekday ? `${packId}_${weekday}` : packId)}.webp`;
+
+/** The weekday whose own picture an offer may have, or null: only an offer on several days can differ between them. */
+const packagePictureDay = (pkg, weekday) => (pkg.available_days?.length > 1 ? weekday : null);
 
 /**
  * Creates an <img> element for the given item id, pre-wired to fall back to the
@@ -103,4 +109,12 @@ function createItemImage(itemId, altText, className = 'item-icon') {
     return img;
 }
 
-export { setItemImageSrc, setItemImageAliases, rarityClass, createItemImage, packageImageUrl, banknoteIconHtml };
+export {
+    setItemImageSrc,
+    setItemImageAliases,
+    rarityClass,
+    createItemImage,
+    packageImageUrl,
+    packagePictureDay,
+    banknoteIconHtml,
+};

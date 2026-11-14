@@ -1,7 +1,8 @@
 /**
  * The Weekday Offers chart: today and the next 6 local days, with how long today's offers last. Each offer has its own
- * picture (`assets/packages/<pack id>.webp`) as a thumbnail before its name and as the art of its bars' hover cards,
- * greyed there for every bar that isn't on sale right now (as an ended event's).
+ * picture (`assets/packages/<pack id>.webp`) as a thumbnail before its name and as the art of its bars' hover cards
+ * (an offer on several days may have a picture per day, `<pack id>_<weekday>.webp`), greyed there for every bar that
+ * isn't on sale right now (as an ended event's).
  */
 import { formatDays, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { formatThousands } from '../../ui/format.js';
@@ -10,7 +11,7 @@ import { escapeHtml } from '../../ui/html.js';
 import { formatClock, formatDaySpan } from '../../ui/datetime.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import { hydratePackThumbs, packThumbHtml } from '../../ui/event-banner.js';
-import { packageImageUrl } from '../../ui/images.js';
+import { packageImageUrl, packagePictureDay } from '../../ui/images.js';
 import {
     barHtml,
     chartAttrs,
@@ -21,7 +22,7 @@ import {
     viewOf,
 } from '../../ui/timeline.js';
 import { packageFamilyId } from '../../core/pack-data.js';
-import { dayStartMs, gameDay, runMoments, weekdayRuns } from '../../core/schedule.js';
+import { WEEKDAYS, dayStartMs, gameDay, runMoments, weekdayIndex, weekdayRuns } from '../../core/schedule.js';
 import { ctx } from './state.js';
 import { ROTATION_DAYS } from './constants.js';
 
@@ -97,11 +98,19 @@ function renderRotation() {
                 ratio,
                 days: pkg.available_days,
                 packId: familyId,
-                imageUrl: packageImageUrl(familyId), // the hover card's art (left out where the pack has no picture)
                 bars: weekdayRuns(pkg.available_days, firstDay, lastDay, { merge: pkg.limit_type !== 'daily' }).map(
                     (run) => {
                         const { start, end } = runMoments(run);
-                        return { start, end, past: end <= nowMs };
+                        // The hover card's art: the first day's own picture if the offer has one, else the pack's (left
+                        // out where the pack has no picture).
+                        const day = packagePictureDay(pkg, WEEKDAYS[weekdayIndex(run.start)]);
+                        return {
+                            start,
+                            end,
+                            past: end <= nowMs,
+                            image: packageImageUrl(familyId, day),
+                            imageFallback: day ? packageImageUrl(familyId) : null,
+                        };
                     },
                 ),
             };
@@ -122,7 +131,7 @@ function renderRotation() {
             (row) => `
                 <div class="schedule__row schedule__row--rotation">
                     <div class="schedule__label" title="${escapeHtml(row.name)}">${packThumbHtml(row.packId)}${escapeHtml(row.name)}</div>
-                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, view, `${row.tooltip}\n${formatDaySpan(bar.start, bar.end)}`, { color: row.color, image: row.imageUrl, mutedImage: !(bar.start <= nowMs && nowMs < bar.end) })).join('')}</div>
+                    <div class="schedule__track">${row.bars.map((bar) => barHtml(bar, view, `${row.tooltip}\n${formatDaySpan(bar.start, bar.end)}`, { color: row.color, image: bar.image, imageFallback: bar.imageFallback, mutedImage: !(bar.start <= nowMs && nowMs < bar.end) })).join('')}</div>
                 </div>`,
         )
         .join('');

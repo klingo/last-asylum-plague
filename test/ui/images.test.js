@@ -1,7 +1,12 @@
 import './env.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createItemImage, packageImageUrl, setItemImageAliases } from '../../webapp/src/ui/images.js';
+import {
+    createItemImage,
+    packageImageUrl,
+    packagePictureDay,
+    setItemImageAliases,
+} from '../../webapp/src/ui/images.js';
 
 // The stand-in browser has no elements: a bare <img> that keeps its class names, like the real one's classList.
 globalThis.document.createElement = () => {
@@ -39,4 +44,14 @@ test('an item icon starts at its category folder, then the unsorted folder, then
 test("a package's own picture is assets/packages/<pack id>.webp, the id encoded", () => {
     assert.match(packageImageUrl('awakening_special_pack'), /assets\/packages\/awakening_special_pack\.webp$/);
     assert.match(packageImageUrl('odd id/with?chars'), /assets\/packages\/odd%20id%2Fwith%3Fchars\.webp$/);
+});
+
+test("a package's picture for a weekday is <pack id>_<weekday>.webp, tried only for an offer on several days", () => {
+    assert.match(
+        packageImageUrl('speedup_special_pack', 'saturday'),
+        /assets\/packages\/speedup_special_pack_saturday\.webp$/,
+    );
+    assert.equal(packagePictureDay({ available_days: ['friday', 'saturday'] }, 'saturday'), 'saturday');
+    assert.equal(packagePictureDay({ available_days: ['friday'] }, 'friday'), null);
+    assert.equal(packagePictureDay({}, 'friday'), null);
 });

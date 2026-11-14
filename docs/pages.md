@@ -36,7 +36,8 @@ deleted after 180 days without use; the button stays hidden until the build has 
 - **Today** (`index.html`) — what runs today (art, name, countdown, linking to its page) and what starts in the next 3
   days (recorded runs and proven forecasts), the weekly plan by when to buy it (daily packs, weekly and longer packs,
   weekday offers, each event's packs and how many different shop offers it buys, linking to its Event Shops tab) and
-  today's weekday offers (each with its own picture from `assets/packages/<pack id>.webp` as a thumbnail before its
+  today's weekday offers (each with its own picture from `assets/packages/<pack id>.webp`, or today's
+  `<pack id>_<weekday>.webp` where the offer looks different on its days, as a thumbnail before its
   name, a placeholder tile without one) with their ratio, what the plan buys and what each gives (Details). Running entries are
   ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
   plan buys from it.
@@ -55,7 +56,8 @@ deleted after 180 days without use; the button stays hidden until the build has 
   game's art, a hover card with how long is left, and a click opens its plan; on a phone a tap shows the card, with an
   "Open its plan" button), the Weekday Offers of the next 7 days
   (each with its own picture from `assets/packages/<pack id>.webp` as a thumbnail before its name, a placeholder tile
-  without one, as on Today; the picture is also the art of the bar's hover card, like an event's: its tile edge to edge,
+  without one, as on Today; the picture is also the art of the bar's hover card, like an event's (a bar shows its day's
+  `<pack id>_<weekday>.webp` if the offer has one for it, else the pack's): its tile edge to edge,
   what pops out of the tile popping out of the card, greyed for a bar that isn't on sale right now, as an ended event's;
   the card says the name, the ratio and the exact sale window in local time)
   and, for each event rotation (Survival Battle), a chart of the slot on now and the 24 hours after it: one row per

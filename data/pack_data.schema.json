@@ -577,7 +577,7 @@
         },
         "packageCategory": {
             "type": "string",
-            "description": "Where the package is bought in the game (the shop tab). Display only. `weekly_rotation` = the unnamed weekday offers (each may have its own picture, not a data field: webapp/public/assets/packages/<pack id>.webp, the id of its tier family; the Calendar and Today show it as a thumbnail, the Calendar also in the hover card), `unlock_exclusive` = hero unlock packs without a named place.",
+            "description": "Where the package is bought in the game (the shop tab). Display only. `weekly_rotation` = the unnamed weekday offers (each may have its own picture, not a data field: webapp/public/assets/packages/<pack id>.webp, the id of its tier family; an offer on several days may have one per day, <pack id>_<weekday>.webp, the pack's for a day without; the Calendar and Today show it as a thumbnail, the Calendar also in the hover card), `unlock_exclusive` = hero unlock packs without a named place.",
             "enum": [
                 "daily_offer",
                 "daily_must_buy",

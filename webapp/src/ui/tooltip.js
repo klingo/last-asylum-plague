@@ -248,10 +248,15 @@ function showTooltip(trigger, pinned = false) {
                 }
             }
         });
-        // A picture that doesn't exist (a weekday offer without its own yet) is left out: the text alone. (The popup is
-        // shared: only while this picture is still the one in it.)
+        // A picture that doesn't exist gives way to `data-tooltip-image-fallback` (a weekday offer's day without its own
+        // picture); one that doesn't exist at all (a weekday offer without its own yet) is left out: the text alone.
+        // (The popup is shared: only while this picture is still the one in it.)
+        let fellBack = false;
         image.addEventListener('error', () => {
-            if (image.isConnected) {
+            if (image.isConnected && !fellBack && trigger.dataset.tooltipImageFallback) {
+                fellBack = true;
+                image.src = trigger.dataset.tooltipImageFallback;
+            } else if (image.isConnected) {
                 image.remove();
                 el.classList.remove('app-tooltip--image');
                 if (!el.hidden) {

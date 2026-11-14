@@ -113,13 +113,14 @@ function gridHtml(boundaries, majorEvery, minorTicks = []) {
 /**
  * A bar from `bar.start` to `bar.end` (ms); with `href` a link (opens its plan; `action` is its label in the card: a
  * hint on hover, a button once a tap has pinned the card, see tooltip.js), with `image` the hover card shows the
- * art, greyed for an ended run (or where `mutedImage` says). A bar cut by the view's edge fades there.
+ * art (`imageFallback`: the one shown if that doesn't exist), greyed for an ended run (or where `mutedImage` says). A
+ * bar cut by the view's edge fades there.
  */
 function barHtml(
     bar,
     view,
     tooltip,
-    { href = null, action = null, image = null, color = null, mutedImage = bar.past } = {},
+    { href = null, action = null, image = null, imageFallback = null, color = null, mutedImage = bar.past } = {},
 ) {
     const start = Math.max(bar.start, view.from);
     const end = Math.min(bar.end, view.to);
@@ -141,7 +142,7 @@ function barHtml(
     const linkAttrs = href ? ` href="${escapeHtml(href)}"` : ' tabindex="0" role="img"';
     // An ended run's art greyed in its hover card, as its bar (`mutedImage`: greyed for other bars too).
     const imageAttr = image
-        ? ` data-tooltip-image="${escapeHtml(image)}"${mutedImage ? ' data-tooltip-image-muted' : ''}`
+        ? ` data-tooltip-image="${escapeHtml(image)}"${imageFallback ? ` data-tooltip-image-fallback="${escapeHtml(imageFallback)}"` : ''}${mutedImage ? ' data-tooltip-image-muted' : ''}`
         : '';
     const actionAttr = href && action ? ` data-tooltip-action="${escapeHtml(action)}"` : '';
     return `<${tag} class="${classes.join(' ')}" style="${style}"${linkAttrs} aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"${actionAttr}${imageAttr}></${tag}>`;

@@ -100,6 +100,11 @@ test('a bar is a link with a href, takes its state and colour, and escapes its t
     assert.match(html, /href="\?a=1&amp;b=2"/);
     assert.match(html, /data-tooltip="A &quot;quoted&quot; &lt;offer&gt;"/);
     assert.match(html, /data-tooltip-image-muted/);
+    assert.doesNotMatch(html, /data-tooltip-image-fallback/);
+    assert.match(
+        barHtml(bar, view, 'x', { image: 'day.webp', imageFallback: 'a&b.webp' }),
+        /data-tooltip-image="day\.webp" data-tooltip-image-fallback="a&amp;b\.webp"/,
+    );
     assert.match(html, /--bar-color: red/);
     assert.doesNotMatch(html, /data-tooltip-action/);
     assert.match(

@@ -113,7 +113,8 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   in the same file or a later-loaded one.
 - `webapp/public/assets/` holds the images: `items/<category>/` (images not sorted yet are found directly in `items/`),
   `events/`, `packages/` (a weekday offer's own picture, `<pack id>.webp`: its thumbnail before the name on Today and the
-  Calendar, a placeholder tile without it as with events, and the art of its bar's hover card on the Calendar),
+  Calendar, a placeholder tile without it as with events, and the art of its bar's hover card on the Calendar; an offer
+  on several days that looks different on one has `<pack id>_<weekday>.webp` for that day, e.g. `speedup_special_pack_saturday.webp`),
   `heroes/` (portraits; `heroes/skills/<skill id>.png`: the skills' icons, 144×144, one `tenacity.png` for the 8-star skill; `heroes/weapons/<hero id>.png`: a hero's exclusive weapon; `heroes/awakened/<image>.png`: the portrait of an awakenable hero from awakening level 40, same file name as its normal one; `heroes/frames/awakening_<level>.png`: the portrait frame of awakening level 1, 10, 20, 30 and 40, a square with a transparent middle drawn over the portrait), `lord/`, `gear/{stars,classes,factions,slots}/` (`slots/{sword,armor,gauntlets,boots}.png`: the silhouette of an uncrafted piece, 60×60) and `ui/` (the placeholder icon, the Banknote icon, `lock.png`: the padlock of the awakening milestones not reached yet).
 - `worker/` is the one backend: a Cloudflare Worker with a D1 database (`src/index.js`, `schema.sql`, `wrangler.toml`)
   that syncs the user's settings and progress between devices. It is deployed by hand, not by the Pages workflow (README,

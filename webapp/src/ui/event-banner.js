@@ -2,7 +2,7 @@
  * The game's art for events, spend reward tracks and seasonal passes (`image` in pack_data.json:
  * assets/events/<image>.webp, 720×360), and when they run: "Ends in 6d 5h", "Starts in 05:06:44" (a live countdown on
  * the banners; runs start and end at the game day's reset, 02:00 UTC, shown in the user's local time). Used by the Calendar (thumbnails, hover
- * cards; also a weekday offer's own picture, `assets/packages/<pack id>.webp`, as its thumbnail), Event Shops, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).
+ * cards; also a weekday offer's own picture, `assets/packages/<pack id>.webp` or its day's, as its thumbnail), Event Shops, Spend Rewards and Seasonal Passes (banners) and Today (the running and starting entries: their names, links and countdowns).
  */
 import { localizedName, t } from './i18n.js';
 import { escapeHtml } from './html.js';
@@ -30,25 +30,36 @@ function thumbHtml(image, attrs = '') {
 }
 
 /**
- * A weekday offer's own picture (assets/packages/<pack id>.webp) as that thumbnail. Whether the file exists isn't in
- * the data: `hydratePackThumbs` turns the ones that fail to load into the placeholder of an event without art.
+ * A weekday offer's own picture (assets/packages/<pack id>.webp, or with a `weekday` the one of that day,
+ * <pack id>_<weekday>.webp, the pack's if there is none) as that thumbnail. Whether the file exists isn't in the data:
+ * `hydratePackThumbs` turns the ones that fail to load into the placeholder of an event without art.
  */
-function packThumbHtml(packId) {
-    return thumbHtml(packageImageUrl(packId), ' data-pack-thumb');
+function packThumbHtml(packId, weekday = null) {
+    const own = weekday ? packageImageUrl(packId, weekday) : null;
+    const fallback = own ? ` data-pack-fallback="${escapeHtml(packageImageUrl(packId))}"` : '';
+    return thumbHtml(own || packageImageUrl(packId), ` data-pack-thumb${fallback}`);
 }
 
-/** Replaces the pack thumbnails under `root` whose picture doesn't exist (yet) by the placeholder. */
+/**
+ * Replaces the pack thumbnails under `root` whose picture doesn't exist (yet) by the placeholder; a day's picture that
+ * doesn't exist gives way to the pack's first.
+ */
 function hydratePackThumbs(root) {
     const missing = (img) => {
+        const fallback = img.dataset.packFallback;
+        if (fallback) {
+            delete img.dataset.packFallback; // the pack's own picture is the last one tried
+            img.src = fallback;
+            return;
+        }
         const holder = document.createElement('template');
         holder.innerHTML = thumbHtml(null);
         img.replaceWith(holder.content.firstElementChild);
     };
     root.querySelectorAll('img[data-pack-thumb]').forEach((img) => {
+        img.addEventListener('error', () => missing(img));
         if (img.complete && img.naturalWidth === 0) {
             missing(img); // it failed before this ran
-        } else {
-            img.addEventListener('error', () => missing(img), { once: true });
         }
     });
 }
