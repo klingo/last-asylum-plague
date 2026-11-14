@@ -1685,7 +1685,7 @@
             "drop_table": [
                 {
                     "contains": {
-                        "ssr_epigraph": 1,
+                        "ur_epigraph": 1,
                         "ur_epigraph_shard": 30
                     },
                     "probability": 0.15
