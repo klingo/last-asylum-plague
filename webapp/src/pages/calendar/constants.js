@@ -11,7 +11,10 @@ const ROTATION_DAYS = 7;
 // Event rotations: the slot on now and the hours after it.
 const EVENT_ROTATION_HOURS = 24;
 
+// Event rotations of day-long slots (the Alliance Duel) show today and the next 6 days (`ROTATION_DAYS`) instead.
+const EVENT_ROTATION_DAY_HOURS = 24;
+
 // The Kingdom War: the current local week and the 4 after it (a whole cycle and the restart), Monday to Sunday.
 const KINGDOM_WAR_WEEKS = 5;
 
-export { EVENT_ROTATION_HOURS, KINGDOM_WAR_WEEKS, ROTATION_DAYS, WEEKS };
+export { EVENT_ROTATION_DAY_HOURS, EVENT_ROTATION_HOURS, KINGDOM_WAR_WEEKS, ROTATION_DAYS, WEEKS };

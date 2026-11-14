@@ -113,15 +113,18 @@ function fillRows(el, rows) {
 
 /**
  * The tooltip's plain text (`data-tooltip`) as lines. A tab in a line splits it in two: the text before it left, the text
- * after it right-aligned on the same line ("Raven Pack\tRatio: 1.20"). Without a tab it is just text.
+ * after it right-aligned on the same line ("Raven Pack\tRatio: 1.20"). Without a tab it is just text. An empty line is a gap,
+ * and the lines after it are a list: a little smaller, each item with a dot (CSS). With `heading`
+ * (`data-tooltip-heading`) the first line is the name: bold.
  */
-function fillText(el, text) {
-    if (!text.includes('\t')) {
+function fillText(el, text, heading = false) {
+    if (!heading && !text.includes('\t') && !text.includes('\n\n')) {
         el.textContent = text;
         return;
     }
     el.textContent = '';
-    for (const line of text.split('\n')) {
+    let listed = false;
+    for (const [index, line] of text.split('\n').entries()) {
         const row = document.createElement('div');
         const [left, right] = line.split('\t');
         row.textContent = left;
@@ -130,6 +133,15 @@ function fillText(el, text) {
             const end = document.createElement('span');
             end.textContent = right;
             row.append(end);
+        }
+        if (heading && index === 0) {
+            row.classList.add('app-tooltip__name');
+        }
+        if (line === '') {
+            row.className = 'app-tooltip__gap';
+            listed = true;
+        } else if (listed) {
+            row.classList.add('app-tooltip__list');
         }
         el.append(row);
     }
@@ -208,7 +220,7 @@ function showTooltip(trigger, pinned = false) {
     if (rows) {
         fillRows(el, rows);
     } else {
-        fillText(el, trigger.dataset.tooltip || '');
+        fillText(el, trigger.dataset.tooltip || '', 'tooltipHeading' in trigger.dataset);
     }
     if (trigger.dataset.tooltipTitle) {
         const title = document.createElement('div');

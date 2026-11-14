@@ -139,12 +139,16 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   which starts at 02:00 UTC (`gameDay` in `core/schedule.js`). The setup bar's "Follow the calendar" switch (default on) sets the
   selected events and passes to today's on every page load (`ui/calendar-sync.js`, called in `startPage`); a manual
   event / pass change turns it off.
-- `event_rotations` holds gameplay events (`ingame_event`) that run through a fixed list of slots on a fixed clock (Survival Battle: 42
-  slots of 4 hours from Sunday's reset, the same week every week): `phases` (id, name, an optional `image`, a banner
+- `event_rotations` (in the order the Calendar and Today show them, the commit hook does not sort it) holds gameplay events (`ingame_event`) that run through a fixed list of slots on a fixed clock (Survival Battle: 42
+  slots of 4 hours from Sunday's reset, the same week every week; Alliance Duel: 7 slots of 24 hours from Monday's reset, a phase
+  a day, Sunday off): `phases` (id, name, an optional `image`, a banner
   in `assets/events/` that Today shows for the phase on now and the Calendar's chart as a thumbnail, else the event's own,
-  and optional `earn_points`: the game's rule as text, `item_id` for the item the rule is about) and `week`, the phase of every slot. The
+  and optional `earn_points`: the activity as the game words it (`text`, without the points), the `points` it gives, `item_id` for
+  the item it is about; the Calendar's hover card of a phase lists them in this order, so a phase lists its
+  Diamonds rule first) and `week`, the phase of every slot
+  (`null`: a slot without a phase, the Alliance Duel's Sunday). The
   sequence is as the game runs it, not a loop (a round of five, Territory > Heroes, then seven rounds of five), so
-  every slot is listed. `rotationSlots` (`core/schedule.js`) gives the phase on now and the next; the Today page shows
+  every slot is listed. `rotationSlots` (`core/schedule.js`) gives the phase on now (none in a gap) and the next; the Today page shows
   them. The event itself stays a plain `ingame_event` in `events`. Times are UTC; the game's server time is UTC−2 (its
   00:00 = our 02:00).
 - `kingdom_war` is the Kingdom War, a cycle that repeats forever: `cycle_start` (a Monday), `weeks` (a war week `{ id, name }`

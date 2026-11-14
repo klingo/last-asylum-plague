@@ -50,13 +50,17 @@ test('the schedule has its ids alphabetical and each id with its runs oldest fir
     );
 });
 
-test('orders that carry meaning stay: rotation phases and guide paths', () => {
+test('orders that carry meaning stay: rotations, their phases and guide paths', () => {
     const data = sortPackData({
-        event_rotations: { r: { phases: [{ id: 'z' }, { id: 'a' }], week: ['z', 'a'] } },
+        event_rotations: {
+            z: { phases: [{ id: 'z' }, { id: 'a' }], week: ['z', 'a'] },
+            a: { phases: [], week: [] },
+        },
         squad_guides: { g: { craft_path: [{ item: 'z' }, { item: 'a' }] } },
     });
+    assert.deepEqual(Object.keys(data.event_rotations), ['z', 'a']);
     assert.deepEqual(
-        data.event_rotations.r.phases.map((phase) => phase.id),
+        data.event_rotations.z.phases.map((phase) => phase.id),
         ['z', 'a'],
     );
     assert.deepEqual(

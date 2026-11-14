@@ -43,7 +43,8 @@ deleted after 180 days without use; the button stays hidden until the build has 
   ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
   plan buys from it.
   Survival Battle (`event_rotations` in `pack_data.json`: the 42 four-hour slots of its week, from Sunday's reset, the
-  same every week) shows the phase on now and the next one, with their local times and how to earn points in them.
+  same every week) and the Alliance Duel (a phase a day from Monday's reset, Sunday off) show the phase on now (none on
+  the Alliance Duel's Sunday) and the next one, with their local times and how to earn points in them.
   The Kingdom War (`kingdom_war`) adds the war week on now (not in the break) and the next one, and the Royal City
   Scramble while it runs, or from three days before the next one.
 
@@ -63,11 +64,14 @@ deleted after 180 days without use; the button stays hidden until the build has 
   `<pack id>_<weekday>.webp` if the offer has one for it, else the pack's): its tile edge to edge,
   what pops out of the tile popping out of the card, greyed for a bar that isn't on sale right now, as an ended event's;
   the card says the name, the ratio and the exact sale window in local time)
-  and, for each event rotation (Survival Battle), a chart of the slot on now and the 24 hours after it: one row per
+  and, for each event rotation (Survival Battle, Alliance Duel), a chart of the slot on now and the 24 hours after it
+  (the Alliance Duel, a phase a day: today and the next 6 days, the Sunday without a bar): one row per
   phase (with its art as a thumbnail, a placeholder tile without, and as the art of its bars' hover cards), a bar for
-  each 4-hour slot with its start time above, a line for now, local times in the hover card. Every chart is on
+  each slot with its start time above (4-hour slots), a line for now, local times in the hover card. The hover card has
+  the local times and, as a list below them, the activities that give points in the phase (without the points), each with a dot.
+  Every chart is on
   the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
-  part-way into a day column (the event rotation's first and last day column are cut to its window). Banners, Today and the Deal Ranking's skips show the same local moments.
+  part-way into a day column (a windowed event rotation's first and last day column are cut to its window). Banners, Today and the Deal Ranking's skips show the same local moments.
   Below them the **Kingdom War** box (`kingdom_war` in `pack_data.json`, `core/kingdom-war.js`): the current week and the
   4 after it, a row for each war week (Week 1, Week 2, Week 3: Finals: Monday's reset to the end of Saturday, its name
   on the bar; the break is the empty gap between Week 3 and the next Week 1) and one for the Royal City Scramble, a

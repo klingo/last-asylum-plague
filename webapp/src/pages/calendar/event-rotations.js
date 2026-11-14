@@ -1,10 +1,12 @@
 /**
- * The event rotations (Survival Battle): a chart of the slot on now and the 24 hours after it, a phase's own art (its
- * `image`; a placeholder tile without) as a small thumbnail before its name and as the art of its bars' hover cards.
+ * The event rotations (Survival Battle, Alliance Duel): a chart of the slot on now and the 24 hours after it (a
+ * rotation of day-long slots: today and the next 6 days), a phase's own art (its `image`; a placeholder tile without)
+ * as a small thumbnail before its name and as the art of its bars' hover cards, which also list the activities that
+ * give points in the phase.
  */
 import { localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
-import { formatClock, formatRunRange } from '../../ui/datetime.js';
+import { formatClock, formatDaySpan, formatRunRange } from '../../ui/datetime.js';
 import { eventImageUrl, thumbHtml } from '../../ui/event-banner.js';
 import { enableInfoTooltips } from '../../ui/tooltip.js';
 import {
@@ -13,24 +15,43 @@ import {
     columnsStyle,
     dayHeadersHtml,
     gridHtml,
+    localDayBoundaries,
     percentOf,
     viewOf,
     windowBoundaries,
 } from '../../ui/timeline.js';
 import { HOUR_MS, rotationSlots, rotationWindow } from '../../core/schedule.js';
 import { ctx } from './state.js';
-import { EVENT_ROTATION_HOURS } from './constants.js';
+import { EVENT_ROTATION_DAY_HOURS, EVENT_ROTATION_HOURS, ROTATION_DAYS } from './constants.js';
 
-/** One slot's hover card: the phase and its times in local time. */
-function slotTooltip(slot) {
-    return [localizedName(slot.phase.name), formatRunRange(slot.start, slot.end)].join('\n');
+/**
+ * The activities of a phase that give points, one line each for a hover card (the points themselves are left out: the
+ * activity needs the room). After an empty line, which sets the list off from the lines above it (see tooltip.js);
+ * none without rules.
+ */
+function earnLines(phase) {
+    const lines = (phase.earn_points || []).map((rule) => localizedName(rule.text));
+    return lines.length > 0 ? ['', ...lines] : [];
 }
 
 /**
- * Event rotations (Survival Battle): a chart each, in the user's local time: from the start of the slot on now (or
- * of the local day, if it began yesterday) to 24 hours after it ends, as local day columns cut to that window, one
- * row per phase with a bar for each of its slots (one can run over midnight, e.g. 23:00 to 03:00), the slots'
- * start times as hours above the rows with a faint line each, and a line for now.
+ * One slot's hover card: the phase, its times in local time (a day-long slot as the Weekday Offers show theirs) and
+ * the activities that give points in it.
+ */
+function slotTooltip(slot, daySlot) {
+    return [
+        localizedName(slot.phase.name),
+        (daySlot ? formatDaySpan : formatRunRange)(slot.start, slot.end),
+        ...earnLines(slot.phase),
+    ].join('\n');
+}
+
+/**
+ * Event rotations (Survival Battle, Alliance Duel): a chart each, in the user's local time. A rotation of day-long
+ * slots shows today and the next 6 days; any other goes from the start of the slot on now (or of the local day, if it
+ * began yesterday) to 24 hours after it ends, as local day columns cut to that window. One row per phase with a bar for
+ * each of its slots (one can run over midnight, e.g. 23:00 to 03:00), the slots' start times as hours above the rows
+ * with a faint line each, and a line for now.
  */
 function renderEventRotations() {
     const container = document.getElementById('event-rotations');
@@ -43,10 +64,12 @@ function renderEventRotations() {
     container.innerHTML = Object.values(ctx.packData.event_rotations || {})
         .map((rotation) => {
             const { current, next } = rotationSlots(rotation, nowMs);
-            const boundaries = windowBoundaries(
-                Math.max(current.start, midnight),
-                current.end + EVENT_ROTATION_HOURS * HOUR_MS,
-            );
+            // Between phases (the Alliance Duel's Sunday) the window of the other rotations starts at the next one.
+            const anchor = current ?? next;
+            const daysView = rotation.hours === EVENT_ROTATION_DAY_HOURS;
+            const boundaries = daysView
+                ? localDayBoundaries(nowMs, ROTATION_DAYS)
+                : windowBoundaries(Math.max(anchor.start, midnight), anchor.end + EVENT_ROTATION_HOURS * HOUR_MS);
             const view = viewOf(boundaries);
             const slots = rotationWindow(rotation, view.from, view.to);
             const rowsHtml = rotation.phases
@@ -63,7 +86,7 @@ function renderEventRotations() {
                                     active: slot.start <= nowMs && nowMs < slot.end,
                                 },
                                 view,
-                                slotTooltip(slot),
+                                slotTooltip(slot, daysView),
                                 { image },
                             ),
                         );
@@ -81,16 +104,21 @@ function renderEventRotations() {
             const hours = ticks.map(
                 (ms) => `<span class="schedule__hour" style="left: ${percentOf(ms, view)}%">${formatClock(ms)}</span>`,
             );
-            const nowLine = t('calendar.eventRotation.now', {
-                current: localizedName(current.phase.name),
-                time: formatClock(current.end),
-                next: localizedName(next.phase.name),
-            });
-            // The chart is drawn again when the phase on now ends (or its first day, or the game day, does).
+            const nowLine = current
+                ? t('calendar.eventRotation.now', {
+                      current: localizedName(current.phase.name),
+                      time: formatClock(current.end),
+                      next: localizedName(next.phase.name),
+                  })
+                : t('calendar.eventRotation.nowOff', {
+                      time: formatClock(next.start),
+                      next: localizedName(next.phase.name),
+                  });
+            // The chart is drawn again when the phase on now ends (between phases: when the next one starts).
             return `
-                <section class="card schedule schedule--event-rotation">
+                <section class="card schedule schedule--event-rotation${daysView ? ' schedule--event-rotation-days' : ''}">
                     <h2>${escapeHtml(localizedName(ctx.packData.events[rotation.event_id].name))}</h2>
-                    <p class="text-dim">${tHtml('calendar.eventRotation.lead')}</p>
+                    <p class="text-dim">${tHtml(daysView ? 'calendar.eventRotation.leadDays' : 'calendar.eventRotation.lead')}</p>
                     <div class="schedule__body">
                         <div class="schedule__legend">
                             <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(nowLine)}</span>
@@ -98,7 +126,7 @@ function renderEventRotations() {
                             <span><i class="schedule__swatch schedule__swatch--upcoming"></i>${tHtml('calendar.eventRotation.upcoming')}</span>
                         </div>
                         <div class="schedule__scroll">
-                            <div class="schedule__chart schedule__chart--days" ${chartAttrs(boundaries, 1, nowMs, current.end)}>
+                            <div class="schedule__chart schedule__chart--days" ${chartAttrs(boundaries, 1, nowMs, current ? current.end : next.start)}>
                                 <div class="schedule__row schedule__row--axis">
                                     <div class="schedule__label"></div>
                                     <div class="schedule__track schedule__weeks" style="${columnsStyle(boundaries, 1)}">${dayHeadersHtml(boundaries)}</div>

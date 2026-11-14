@@ -347,7 +347,9 @@
         },
         "eventRotation": {
             "lead": "The phase on now and the next 24 hours, in your local time. Hover a bar for its time.",
+            "leadDays": "Today and the next 6 days, in your local time. Hover a bar for its time.",
             "now": "Now · {current} until {time}, then {next}",
+            "nowOff": "Now · no phase until {time}, then {next}",
             "active": "On now",
             "upcoming": "Upcoming"
         },
@@ -647,6 +649,7 @@
         "soonEmpty": "Nothing is expected to start in the next 3 days.",
         "expected": "expected",
         "earnPoints": "How to earn points:",
+        "earnPoint": "{text}: +{points}",
         "notificationOn": "Notification on: you'll be told when the next round begins (while a tab of this app is open).",
         "offersHeading": "Today's weekday offers",
         "offersEmpty": "No weekday offers on sale today.",

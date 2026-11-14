@@ -99,6 +99,35 @@
     color: var(--text-dim);
 }
 
+/* The first line of a tooltip with `data-tooltip-heading` (every Calendar bar's): the name, bold (not what is split
+   off its end, a ratio). */
+.app-tooltip__name {
+    font-weight: 700;
+}
+
+.app-tooltip__name span {
+    font-weight: 400;
+}
+
+/* An empty line of a tooltip text is a gap, and the lines after it are a list (tooltip.js fillText), e.g. the Calendar's
+   activities that give points: a little smaller, each item with a dot (hanging, so a long item wraps under its text). */
+.app-tooltip__gap {
+    height: 6px;
+}
+
+.app-tooltip__list {
+    padding-left: 0.9em;
+    text-indent: -0.9em;
+    font-size: 0.74rem;
+}
+
+.app-tooltip__list::before {
+    content: '•';
+    display: inline-block;
+    width: 0.9em;
+    text-indent: 0;
+}
+
 /* Rows with an item icon each (info icon with `data-tooltip-rows`): as wide as the longest line, so none breaks. */
 .app-tooltip--rows {
     width: max-content;

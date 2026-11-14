@@ -596,8 +596,8 @@ async function verifyData() {
         }
     });
 
-    // 7c. Event rotations (Survival Battle): the event exists, the week list fills the week with known phases, the art and the items they
-    // name exist.
+    // 7c. Event rotations (Survival Battle, Alliance Duel): the event exists, the week list fills the week with known
+    // phases (a slot may have none, `null`, but not every one), the art and the items they name exist.
     checkCategory('Event Rotations', ({ reportError, reportWarning }) => {
         for (const [id, rotation] of Object.entries(data.event_rotations || {})) {
             if (!events[rotation.event_id]) {
@@ -622,8 +622,11 @@ async function verifyData() {
                 }
                 phaseIds.add(phase.id);
             }
+            if (!(rotation.week || []).some((phaseId) => phaseId !== null)) {
+                reportError('Rotation Phase', `Event rotation "${id}": no slot of the week has a phase.`);
+            }
             for (const [index, phaseId] of (rotation.week || []).entries()) {
-                if (!phaseIds.has(phaseId)) {
+                if (phaseId !== null && !phaseIds.has(phaseId)) {
                     reportError(
                         'Rotation Phase',
                         `Event rotation "${id}": slot ${index + 1} of the week names the unknown phase "${phaseId}".`,

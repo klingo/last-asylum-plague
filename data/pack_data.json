@@ -7980,6 +7980,13 @@
         }
     },
     "events": {
+        "alliance_duel": {
+            "name": {
+                "en": "Alliance Duel",
+                "de": ""
+            },
+            "category": "ingame_event"
+        },
         "blades_out": {
             "name": {
                 "en": "Blades Out",
@@ -8221,24 +8228,27 @@
                     "earn_points": [
                         {
                             "text": {
-                                "en": "Use 1m Construction Speedup: +10",
-                                "de": "Verwende 1-Min.-Baubeschleunigung: +10"
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
                             },
-                            "item_id": "construction_speedup"
-                        },
-                        {
-                            "text": {
-                                "en": "Increase 1 Building Might: +1",
-                                "de": "Erhöhe die Gebäude-Macht um 1: +1"
-                            },
-                            "item_id": "construction_speedup"
-                        },
-                        {
-                            "text": {
-                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
-                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
-                            },
+                            "points": 30,
                             "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup",
+                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                            },
+                            "points": 10,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Building Might",
+                                "de": "Erhöhe die Gebäude-Macht um 1"
+                            },
+                            "points": 1,
+                            "item_id": "construction_speedup"
                         }
                     ]
                 },
@@ -8252,24 +8262,27 @@
                     "earn_points": [
                         {
                             "text": {
-                                "en": "Use 1m Training Boost: +10",
-                                "de": "Benutze 1 Min. Trainingsboost: +10"
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
                             },
-                            "item_id": "training_speedup"
-                        },
-                        {
-                            "text": {
-                                "en": "Train 1 Lv.10 soldier: +31",
-                                "de": "Trainiere 1 Lv.10 Soldat: +31"
-                            },
-                            "item_id": "training_speedup"
-                        },
-                        {
-                            "text": {
-                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
-                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
-                            },
+                            "points": 30,
                             "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Training Boost",
+                                "de": "Benutze 1 Min. Trainingsboost"
+                            },
+                            "points": 10,
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Train 1 Lv.10 soldier",
+                                "de": "Trainiere 1 Lv.10 Soldat"
+                            },
+                            "points": 31,
+                            "item_id": "training_speedup"
                         }
                     ]
                 },
@@ -8283,24 +8296,27 @@
                     "earn_points": [
                         {
                             "text": {
-                                "en": "Use 1m Research Speedup: +10",
-                                "de": "Verwende 1-Min.-Forschung-Beschleunigung: +10"
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
                             },
-                            "item_id": "research_speedup"
-                        },
-                        {
-                            "text": {
-                                "en": "Increase 1 Tech Might: +1",
-                                "de": "Erhöhe Technologiemacht um 1: +1"
-                            },
-                            "item_id": "research_speedup"
-                        },
-                        {
-                            "text": {
-                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
-                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
-                            },
+                            "points": 30,
                             "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup",
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung"
+                            },
+                            "points": 10,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Tech Might",
+                                "de": "Erhöhe Technologiemacht um 1"
+                            },
+                            "points": 1,
+                            "item_id": "research_speedup"
                         }
                     ]
                 },
@@ -8314,24 +8330,27 @@
                     "earn_points": [
                         {
                             "text": {
-                                "en": "For every 10 Raven Fruits consumed: +1",
-                                "de": "Für jede 10 verbrauchten Rabenfrüchte, +1"
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
                             },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "For every 10 Raven Fruits consumed",
+                                "de": "Für jede 10 verbrauchten Rabenfrüchte"
+                            },
+                            "points": 1,
                             "item_id": "raven_fruit"
                         },
                         {
                             "text": {
-                                "en": "Consume 1 Stamina: +100",
-                                "de": "Verbrauche 1 Ausdauer, +100"
+                                "en": "Consume 1 Stamina",
+                                "de": "Verbrauche 1 Ausdauer"
                             },
+                            "points": 100,
                             "item_id": "stamina"
-                        },
-                        {
-                            "text": {
-                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
-                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
-                            },
-                            "item_id": "diamonds"
                         }
                     ]
                 },
@@ -8345,24 +8364,27 @@
                     "earn_points": [
                         {
                             "text": {
-                                "en": "Recruit heroes once: +400",
-                                "de": "Rekrutiere Helden einmal: +400"
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
                             },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Recruit heroes once",
+                                "de": "Rekrutiere Helden einmal"
+                            },
+                            "points": 400,
                             "item_id": "recruit_ticket"
                         },
                         {
                             "text": {
-                                "en": "For every 1950 Antitoxin consumed: +1",
-                                "de": "Für jeweils 1950 verbrauchtes Gegengift: +1"
+                                "en": "For every 1950 Antitoxin consumed",
+                                "de": "Für jeweils 1950 verbrauchtes Gegengift"
                             },
+                            "points": 1,
                             "item_id": "antitoxin"
-                        },
-                        {
-                            "text": {
-                                "en": "Buy a pack containing Diamonds [1 Diamond]: +30",
-                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant], +30"
-                            },
-                            "item_id": "diamonds"
                         }
                     ]
                 }
@@ -8411,6 +8433,504 @@
                 "enhance_raven",
                 "enhance_heroes"
             ]
+        },
+        "alliance_duel": {
+            "event_id": "alliance_duel",
+            "week_starts": "monday",
+            "hours": 24,
+            "phases": [
+                {
+                    "id": "raven",
+                    "name": {
+                        "en": "Raven",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase1",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Get 1 UR Epigraph Shard for each Epigraph Chest opened",
+                                "de": ""
+                            },
+                            "points": 2812.5,
+                            "item_id": "ur_epigraph_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 660 Antitoxin",
+                                "de": ""
+                            },
+                            "points": 2.5,
+                            "item_id": "antitoxin"
+                        },
+                        {
+                            "text": {
+                                "en": "Complete Falcon Quest once",
+                                "de": ""
+                            },
+                            "points": 30000
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Raven Essence",
+                                "de": ""
+                            },
+                            "points": 6250,
+                            "item_id": "raven_essence"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Stamina",
+                                "de": "Verbrauche 1 Ausdauer"
+                            },
+                            "points": 375,
+                            "item_id": "stamina"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Raven Fruit",
+                                "de": ""
+                            },
+                            "points": 7.5,
+                            "item_id": "raven_fruit"
+                        },
+                        {
+                            "text": {
+                                "en": "Gather 100 Grain",
+                                "de": ""
+                            },
+                            "points": 12.5,
+                            "item_id": "grain"
+                        },
+                        {
+                            "text": {
+                                "en": "Gather 100 Timber",
+                                "de": ""
+                            },
+                            "points": 12.5,
+                            "item_id": "timber"
+                        },
+                        {
+                            "text": {
+                                "en": "Gather 60 Herbs",
+                                "de": ""
+                            },
+                            "points": 12.5,
+                            "item_id": "herbs"
+                        }
+                    ]
+                },
+                {
+                    "id": "construction",
+                    "name": {
+                        "en": "Construction",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase2",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Excl. Wpn. Shard",
+                                "de": ""
+                            },
+                            "points": 25000,
+                            "item_id": "exclusive_weapon_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup",
+                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Building Might",
+                                "de": "Erhöhe die Gebäude-Macht um 1"
+                            },
+                            "points": 30,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Execute 1 UR Covert Operation",
+                                "de": ""
+                            },
+                            "points": 225000,
+                            "item_id": "covert_order"
+                        },
+                        {
+                            "text": {
+                                "en": "Dispatch a UR Caravan",
+                                "de": ""
+                            },
+                            "points": 300000,
+                            "item_id": "trade_agreement"
+                        },
+                        {
+                            "text": {
+                                "en": "Recruit survivor once",
+                                "de": ""
+                            },
+                            "points": 4500,
+                            "item_id": "survivor_recruit_ticket"
+                        }
+                    ]
+                },
+                {
+                    "id": "research",
+                    "name": {
+                        "en": "Research",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase3",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.1 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 2750,
+                            "item_id": "lv1_raven_gear_chest"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.2 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 8250
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.3 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 25000,
+                            "item_id": "lv3_raven_gear_chest"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.4 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 75000
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.5 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 225000,
+                            "item_id": "lv5_raven_gear_chest"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.6 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 675000
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.7 Raven Gear Chest opened",
+                                "de": ""
+                            },
+                            "points": 2025000
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup",
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Tech Might",
+                                "de": "Erhöhe Technologiemacht um 1"
+                            },
+                            "points": 30,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Study Scroll",
+                                "de": ""
+                            },
+                            "points": 750,
+                            "item_id": "study_scroll"
+                        },
+                        {
+                            "text": {
+                                "en": "Complete Falcon Quest once",
+                                "de": ""
+                            },
+                            "points": 30000
+                        }
+                    ]
+                },
+                {
+                    "id": "heroes",
+                    "name": {
+                        "en": "Heroes",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase4",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 Hero Awaken Shard or Awaken Omni Shard",
+                                "de": ""
+                            },
+                            "points": 25000,
+                            "item_id": "hero_awaken_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Recruit heroes once",
+                                "de": "Rekrutiere Helden einmal"
+                            },
+                            "points": 4500,
+                            "item_id": "recruit_ticket"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 660 Antitoxin",
+                                "de": ""
+                            },
+                            "points": 2.5,
+                            "item_id": "antitoxin"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 UR Hero Shard",
+                                "de": ""
+                            },
+                            "points": 25000,
+                            "item_id": "ur_hero_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 SSR Hero Shard",
+                                "de": ""
+                            },
+                            "points": 8750,
+                            "item_id": "ssr_hero_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Consume 1 SR Hero Shard",
+                                "de": ""
+                            },
+                            "points": 2500,
+                            "item_id": "sr_hero_shard"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1 Skill Badge",
+                                "de": ""
+                            },
+                            "points": 25,
+                            "item_id": "skill_badge"
+                        }
+                    ]
+                },
+                {
+                    "id": "war_preparation",
+                    "name": {
+                        "en": "War Preparation",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase5",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Train 1 Lv.10 soldier",
+                                "de": "Trainiere 1 Lv.10 Soldat"
+                            },
+                            "points": 330,
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Training Boost",
+                                "de": "Benutze 1 Min. Trainingsboost"
+                            },
+                            "points": 150,
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Building Might",
+                                "de": "Erhöhe die Gebäude-Macht um 1"
+                            },
+                            "points": 30,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Increase 1 Tech Might",
+                                "de": "Erhöhe Technologiemacht um 1"
+                            },
+                            "points": 30,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup",
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup",
+                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Complete Falcon Quest once",
+                                "de": ""
+                            },
+                            "points": 30000
+                        }
+                    ]
+                },
+                {
+                    "id": "raid_the_enemy",
+                    "name": {
+                        "en": "Raid the Enemy",
+                        "de": ""
+                    },
+                    "image": "alliance_duel_phase6",
+                    "earn_points": [
+                        {
+                            "text": {
+                                "en": "Buy a pack containing Diamonds [1 Diamond]",
+                                "de": "Kaufe ein Paket mit Diamanten [1 Diamant]"
+                            },
+                            "points": 30,
+                            "item_id": "diamonds"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Construction Speedup",
+                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "construction_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Research Speedup",
+                                "de": "Verwende 1-Min.-Forschung-Beschleunigung"
+                            },
+                            "points": 150,
+                            "item_id": "research_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Training Boost",
+                                "de": "Benutze 1 Min. Trainingsboost"
+                            },
+                            "points": 150,
+                            "item_id": "training_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.10 soldier defeated (specific match)",
+                                "de": ""
+                            },
+                            "points": 165
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.10 soldier defeated",
+                                "de": ""
+                            },
+                            "points": 33
+                        },
+                        {
+                            "text": {
+                                "en": "For each Lv.10 soldier lost",
+                                "de": ""
+                            },
+                            "points": 27.5
+                        },
+                        {
+                            "text": {
+                                "en": "Use 1m Healing Speedup",
+                                "de": ""
+                            },
+                            "points": 150,
+                            "item_id": "healing_speedup"
+                        },
+                        {
+                            "text": {
+                                "en": "Execute 1 UR Covert Operation",
+                                "de": ""
+                            },
+                            "points": 225000,
+                            "item_id": "covert_order"
+                        },
+                        {
+                            "text": {
+                                "en": "Dispatch a UR Caravan",
+                                "de": ""
+                            },
+                            "points": 300000,
+                            "item_id": "trade_agreement"
+                        }
+                    ]
+                }
+            ],
+            "week": ["raven", "construction", "research", "heroes", "war_preparation", "raid_the_enemy", null]
         }
     },
     "kingdom_war": {

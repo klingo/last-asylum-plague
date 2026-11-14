@@ -9,8 +9,9 @@
  * - where an id's runs stand (`runStatus`) and the exact moments a run starts and ends (`runMoments`, `dayStartMs`);
  * - weekday offers (packs on sale on certain weekdays): where one stands in the game week (`weekdayOfferTiming`)
  *   and the runs of days it is on sale (`weekdayRuns`);
- * - event rotations (`event_rotations`: gameplay events running through a fixed list of slots on a fixed clock):
- *   the phase on now and the next (`rotationSlots`), every slot of a window (`rotationWindow`);
+ * - event rotations (`event_rotations`: gameplay events running through a fixed list of slots on a fixed clock, a
+ *   slot may have no phase): the phase on now and the next (`rotationSlots`), every slot of a window
+ *   (`rotationWindow`) and the week a moment falls in (`rotationWeek`);
  * - the calendar helpers `dayDate`, `weekdayIndex` and `isoWeekNumber`.
  * Pure module: no clock of its own, callers pass `today` / `nowMs`.
  */
@@ -415,48 +416,65 @@ function rotationWeekStart(rotation, ms) {
     return dayStartMs(weekStartDay);
 }
 
-/** Slot `k` of the week that started at `weekStartMs`: `{ slot, phaseId, phase, start, end }` (ms). */
+/** The week of `rotation` that `ms` falls in: `{ start, end }` (ms). */
+function rotationWeek(rotation, ms) {
+    const start = rotationWeekStart(rotation, ms);
+    return { start, end: start + WEEK_MS };
+}
+
+/** Slot `k` of the week that started at `weekStartMs`: `{ slot, phaseId, phase, start, end }` (ms; no phase: null). */
 function rotationSlot(rotation, weekStartMs, k) {
     const phaseId = rotation.week[k];
     const start = weekStartMs + k * rotation.hours * HOUR_MS;
-    const phase = rotation.phases.find((candidate) => candidate.id === phaseId);
+    const phase = rotation.phases.find((candidate) => candidate.id === phaseId) ?? null;
     return { slot: k, phaseId, phase, start, end: start + rotation.hours * HOUR_MS };
 }
 
 /**
  * Where an event rotation (`event_rotations` in pack_data.json: a list of slots of `hours` each, `week`, naming the
- * phase of every slot from the start of the week) stands at `nowMs`: `{ current, next }`, each
- * `{ slot, phaseId, phase, start, end }` (ms). The week starts at the daily reset (02:00 UTC) of `week_starts` and the
- * same week repeats, so the slot after the week's last one is slot 0 of the next week. The list is the sequence as the
- * game runs it, not a loop (Survival Battle: a round of five, Territory > Heroes, then seven rounds of five).
+ * phase of every slot from the start of the week, or `null` for a slot without one) stands at `nowMs`:
+ * `{ current, next }`, each `{ slot, phaseId, phase, start, end }` (ms). `current` is null in a slot without a phase
+ * (the Alliance Duel's Sunday), `next` is the next slot that has one. The week starts at the daily reset (02:00 UTC)
+ * of `week_starts` and the same week repeats, so the slot after the week's last one is slot 0 of the next week. The
+ * list is the sequence as the game runs it, not a loop (Survival Battle: a round of five, Territory > Heroes, then
+ * seven rounds of five).
  */
 function rotationSlots(rotation, nowMs) {
     const weekStart = rotationWeekStart(rotation, nowMs);
     const k = Math.floor((nowMs - weekStart) / (rotation.hours * HOUR_MS));
-    return {
-        current: rotationSlot(rotation, weekStart, k),
-        next:
-            k + 1 < rotation.week.length
-                ? rotationSlot(rotation, weekStart, k + 1)
-                : rotationSlot(rotation, weekStart + WEEK_MS, 0),
-    };
+    const current = rotationSlot(rotation, weekStart, k);
+    // The week has a phase somewhere (verify-data), so this ends within one week.
+    let next = k;
+    let nextWeekStart = weekStart;
+    do {
+        next += 1;
+        if (next === rotation.week.length) {
+            next = 0;
+            nextWeekStart += WEEK_MS;
+        }
+    } while (rotation.week[next] === null);
+    return { current: current.phase ? current : null, next: rotationSlot(rotation, nextWeekStart, next) };
 }
 
 /**
- * The rotation's current slot if it started within the last `graceMs` of `nowMs` (a round has just begun), else null.
+ * The rotation's current slot if it started within the last `graceMs` of `nowMs` (a round has just begun), else null
+ * (also in a slot without a phase).
  */
 function freshSlot(rotation, nowMs, graceMs) {
     const { current } = rotationSlots(rotation, nowMs);
-    return nowMs - current.start <= graceMs ? current : null;
+    return current && nowMs - current.start <= graceMs ? current : null;
 }
 
-/** Every slot of the rotation that overlaps [fromMs, toMs), in order (a slot cut by the window is included whole). */
+/**
+ * Every slot with a phase of the rotation that overlaps [fromMs, toMs), in order (a slot cut by the window is
+ * included whole).
+ */
 function rotationWindow(rotation, fromMs, toMs) {
     const slots = [];
     for (let weekStart = rotationWeekStart(rotation, fromMs); weekStart < toMs; weekStart += WEEK_MS) {
         for (let k = 0; k < rotation.week.length; k += 1) {
             const slot = rotationSlot(rotation, weekStart, k);
-            if (slot.end > fromMs && slot.start < toMs) {
+            if (slot.phase && slot.end > fromMs && slot.start < toMs) {
                 slots.push(slot);
             }
         }
@@ -496,4 +514,5 @@ export {
     rotationSlots,
     freshSlot,
     rotationWindow,
+    rotationWeek,
 };

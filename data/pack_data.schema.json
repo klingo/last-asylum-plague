@@ -58,7 +58,7 @@
         },
         "event_rotations": {
             "type": "object",
-            "description": "In-game events that cycle through phases on a fixed clock (Survival Battle): which phase is on now and which comes next (core/schedule.js `rotationSlots`, shown on the Today page). Keyed by the event's id.",
+            "description": "In-game events that cycle through phases on a fixed clock (Survival Battle, Alliance Duel): which phase is on now and which comes next (core/schedule.js `rotationSlots`, shown on the Today page), and a chart of them on the Calendar (its hover cards list how to earn points). Keyed by the event's id; the Calendar and Today show them in this order (not sorted).",
             "propertyNames": {
                 "$ref": "#/definitions/eventId"
             },
@@ -747,7 +747,8 @@
                 "survival_battle",
                 "elixir_scramble",
                 "royal_city_scramble",
-                "kingdom_war"
+                "kingdom_war",
+                "alliance_duel"
             ]
         },
         "event": {
@@ -805,9 +806,16 @@
                 "week": {
                     "type": "array",
                     "minItems": 1,
-                    "description": "The phase (its `id`) of every slot of the week, starting with the first slot at the start of the week. Not a plain loop: the sequence is as the game runs it, so list every slot.",
+                    "description": "The phase (its `id`) of every slot of the week, starting with the first slot at the start of the week, or `null` for a slot without a phase (the Alliance Duel's Sunday). Not a plain loop: the sequence is as the game runs it, so list every slot.",
                     "items": {
-                        "$ref": "#/definitions/id"
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/id"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     }
                 }
             }
@@ -904,7 +912,7 @@
                 "earn_points": {
                     "type": "array",
                     "minItems": 1,
-                    "description": "How to earn points in this phase.",
+                    "description": "How to earn points in this phase. The Calendar's hover card lists them in this order, so put the Diamonds rule first.",
                     "items": {
                         "$ref": "#/definitions/earnPoint"
                     }
@@ -913,12 +921,17 @@
         },
         "earnPoint": {
             "type": "object",
-            "description": "One way to earn points, in the game's words; `item_id` names the item the rule is about (the one consumed, or the one a bought pack contains), if there is one.",
-            "required": ["text"],
+            "description": "One way to earn points: the activity in the game's words (`text`, without the points) and the `points` it gives; `item_id` names the item the rule is about (the one consumed, or the one a bought pack contains), if there is one.",
+            "required": ["text", "points"],
             "additionalProperties": false,
             "properties": {
                 "text": {
                     "$ref": "#/definitions/localizedString"
+                },
+                "points": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "The points one such activity gives (per unit the text names)."
                 },
                 "item_id": {
                     "$ref": "#/definitions/id"

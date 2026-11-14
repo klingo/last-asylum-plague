@@ -174,7 +174,7 @@ function barHtml(
         ? ` data-tooltip-image="${escapeHtml(image)}"${imageFallback ? ` data-tooltip-image-fallback="${escapeHtml(imageFallback)}"` : ''}${mutedImage ? ' data-tooltip-image-muted' : ''}`
         : '';
     const actionAttr = href && action ? ` data-tooltip-action="${escapeHtml(action)}"` : '';
-    return `<${tag} class="${classes.join(' ')}" style="${style}"${linkAttrs} aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}"${actionAttr}${imageAttr}>${content}</${tag}>`;
+    return `<${tag} class="${classes.join(' ')}" style="${style}"${linkAttrs} aria-label="${escapeHtml(tooltip)}" data-tooltip="${escapeHtml(tooltip)}" data-tooltip-heading${actionAttr}${imageAttr}>${content}</${tag}>`;
 }
 
 export {

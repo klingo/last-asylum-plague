@@ -347,7 +347,9 @@
         },
         "eventRotation": {
             "lead": "Die aktuelle Phase und die nächsten 24 Stunden, in deiner Ortszeit. Fahre über einen Balken für seine Zeit.",
+            "leadDays": "Heute und die nächsten 6 Tage, in deiner Ortszeit. Fahre über einen Balken für seine Zeit.",
             "now": "Jetzt · {current} bis {time}, danach {next}",
+            "nowOff": "Jetzt · keine Phase bis {time}, danach {next}",
             "active": "Läuft jetzt",
             "upcoming": "Bevorstehend"
         },
@@ -647,6 +649,7 @@
         "soonEmpty": "In den nächsten 3 Tagen wird nichts erwartet.",
         "expected": "erwartet",
         "earnPoints": "So sammelst du Punkte:",
+        "earnPoint": "{text}: +{points}",
         "notificationOn": "Benachrichtigung an: Du wirst informiert, wenn die nächste Runde beginnt (solange ein Tab dieser App geöffnet ist).",
         "offersHeading": "Heutige Wochentags-Angebote",
         "offersEmpty": "Heute sind keine Wochentags-Angebote im Verkauf.",

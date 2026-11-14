@@ -14,6 +14,7 @@ import {
     freshSlot,
     recordableIds,
     rotationSlots,
+    rotationWeek,
     rotationWindow,
     runContains,
     runMoments,
@@ -601,4 +602,77 @@ test('a round has just begun while its slot started within the grace time', () =
 test('the first slot of the next week is a new round too', () => {
     const weekEnd = rotationStart + 7 * 24 * HOUR;
     assert.equal(freshSlot(rotation, weekEnd + 60000, 3 * 60000).slot, 0);
+});
+
+// The Alliance Duel's shape: a phase per day from Monday's reset, Sunday without one (`null`).
+const duelPhases = [
+    {
+        id: 'raven',
+        name: { en: 'Raven' },
+        earn_points: [
+            { text: { en: 'Buy Diamonds' }, points: 30, item_id: 'diamonds' },
+            { text: { en: 'Use Speedup' }, points: 150 },
+        ],
+    },
+    {
+        id: 'construction',
+        name: { en: 'Construction' },
+        earn_points: [
+            { text: { en: 'Buy Diamonds' }, points: 30, item_id: 'diamonds' },
+            { text: { en: 'Build' }, points: 27.5 },
+        ],
+    },
+    { id: 'research', name: { en: 'Research' } },
+];
+const duel = {
+    week_starts: 'monday',
+    hours: 24,
+    phases: duelPhases,
+    week: ['raven', 'construction', 'research', 'raven', 'construction', 'research', null],
+};
+// Monday 2026-11-02, 02:00 UTC: the start of the week.
+const duelStart = Date.UTC(2026, 10, 2, 2);
+const duelDay = (days, hours = 0) => duelStart + days * 24 * HOUR + hours * HOUR;
+
+test('rotation without a phase: no current slot, the next is the following phase', () => {
+    // Sunday: nothing runs, Monday's phase is next.
+    const { current, next } = rotationSlots(duel, duelDay(6, 5));
+    assert.equal(current, null);
+    assert.equal(next.phaseId, 'raven');
+    assert.equal(next.slot, 0);
+    assert.equal(next.start, duelDay(7));
+    // Saturday's phase runs until the Sunday reset, and the phase after the gap is next.
+    const saturday = rotationSlots(duel, duelDay(5, 5));
+    assert.equal(saturday.current.phaseId, 'research');
+    assert.equal(saturday.next.start, duelDay(7));
+});
+
+test('rotation without a phase: a gap in the middle of the week is skipped', () => {
+    const gapped = { ...duel, week: ['raven', null, null, 'research', 'raven', 'raven', 'raven'] };
+    const { current, next } = rotationSlots(gapped, duelDay(0, 5));
+    assert.equal(current.phaseId, 'raven');
+    assert.equal(next.slot, 3);
+    assert.equal(next.start, duelDay(3));
+    assert.equal(rotationSlots(gapped, duelDay(1, 5)).current, null);
+});
+
+test('rotation window: slots without a phase are left out', () => {
+    const slots = rotationWindow(duel, duelDay(0), duelDay(7));
+    assert.deepEqual(
+        slots.map((slot) => slot.slot),
+        [0, 1, 2, 3, 4, 5],
+    );
+    assert.deepEqual(rotationWindow(duel, duelDay(6, 1), duelDay(6, 20)), []);
+});
+
+test('a round has just begun: not in a slot without a phase', () => {
+    assert.equal(freshSlot(duel, duelDay(6, 1), 60000 * 3), null);
+    assert.equal(freshSlot(duel, duelDay(0, 0.01), 60000 * 3).phaseId, 'raven');
+});
+
+test('rotationWeek: the week a moment falls in, from the reset of its first weekday', () => {
+    const week = { start: duelStart, end: duelDay(7) };
+    assert.deepEqual(rotationWeek(duel, duelDay(3, 4)), week);
+    assert.deepEqual(rotationWeek(duel, duelDay(6, 20)), week, 'Sunday still belongs to the week');
+    assert.deepEqual(rotationWeek(duel, duelDay(7)), { start: duelDay(7), end: duelDay(14) });
 });

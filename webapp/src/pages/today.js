@@ -1,7 +1,7 @@
 /**
  * Today (the home page, `index.html`): what runs today (art, name, countdown, linking to its page) and what starts in
- * the next few days (recorded runs and proven forecasts), the phase on now of each event rotation (Survival Battle),
- * the Kingdom War's week on now and its Royal City Scramble,
+ * the next few days (recorded runs and proven forecasts), the phase on now of each event rotation (Survival Battle,
+ * Alliance Duel), the Kingdom War's week on now and its Royal City Scramble,
  * the weekly plan by when to buy it (daily packs, weekly and longer packs, each event's packs and shop offers) and
  * today's weekday offers with their ratio.
  */
@@ -75,7 +75,7 @@ const offerExpanded = new Set();
  * An entry of a list. `start` / `end` are moments (ms).
  * - A run from the schedule (whole game days): the event's, pass's or track's name, its own short line beside it,
  *   when it starts and ends in local time (and "expected" for a forecast), a link if it has a page.
- * - A phase of an event rotation (Survival Battle): the phase's name as the title, the event's name beside it, the
+ * - A phase of an event rotation (Survival Battle, Alliance Duel): the phase's name as the title, the event's name beside it, the
  *   slot's times in local time, and (as an info icon) how to earn points in it.
  * - A war week or the Royal City Scramble of the Kingdom War: its name as the title, the war's name beside it, its
  *   times in local time.
@@ -206,7 +206,10 @@ function entryHtml(entry) {
         (entry.earnPoints || []).length > 0
             ? [
                   { text: t('today.earnPoints') },
-                  ...entry.earnPoints.map(({ text, item_id: item }) => ({ text: localizedName(text), item })),
+                  ...entry.earnPoints.map(({ text, points, item_id: item }) => ({
+                      text: t('today.earnPoint', { text: localizedName(text), points: formatThousands(points) }),
+                      item,
+                  })),
               ]
             : null;
     const until = running ? entry.end : entry.start;
@@ -247,7 +250,7 @@ function updateProgress() {
 
 /**
  * What runs today (ending first) and what starts in the next days: recorded runs and proven forecasts, plus the phase
- * an event rotation (Survival Battle) is in and the one that follows it, and the Kingdom War's entries.
+ * an event rotation (Survival Battle, Alliance Duel) is in, if any, and the one that follows it, and the Kingdom War's entries.
  */
 function renderSchedule() {
     const today = gameDay(new Date()).day;
@@ -258,7 +261,9 @@ function renderSchedule() {
     const now = Date.now();
     for (const rotation of Object.values(data.event_rotations || {})) {
         const { current, next } = rotationSlots(rotation, now);
-        running.push(rotationEntry(rotation, current, 'running'));
+        if (current) {
+            running.push(rotationEntry(rotation, current, 'running'));
+        }
         soon.push(rotationEntry(rotation, next, 'upcoming'));
     }
     if (data.kingdom_war) {

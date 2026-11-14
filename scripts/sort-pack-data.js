@@ -15,19 +15,13 @@ function sortByNumericKey(object) {
 
 /**
  * Sorts the sections of the pack data in place (and returns it): ids alphabetical, numeric keys by number, each
- * id's schedule runs oldest first. Orders that are the data's meaning (event rotation phases, guide paths) stay.
+ * id's schedule runs oldest first. Orders that are the data's meaning (the event rotations, their phases, guide
+ * paths) stay.
  */
 function sortPackData(data) {
-    // (An event rotation's phases keep their order: the order is the cycle.)
-    for (const sectionName of [
-        'items',
-        'packages',
-        'exchange_shops',
-        'mines',
-        'events',
-        'event_rotations',
-        'spend_reward_tracks',
-    ]) {
+    // (The event rotations keep their order, the order of the Calendar's charts, and so do their phases: the order is
+    // the cycle.)
+    for (const sectionName of ['items', 'packages', 'exchange_shops', 'mines', 'events', 'spend_reward_tracks']) {
         if (isObject(data[sectionName])) {
             data[sectionName] = sortByKey(data[sectionName]);
         }

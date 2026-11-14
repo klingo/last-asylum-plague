@@ -329,7 +329,8 @@ a.schedule__bar {
     }
 
     /* A day column (70px) is wide enough for its weekday, "Donnerstag" (64px) the widest in either language. */
-    #rotation .schedule__chart--days {
+    #rotation .schedule__chart--days,
+    .schedule--event-rotation-days .schedule__chart--days {
         min-width: 650px;
     }
 }
