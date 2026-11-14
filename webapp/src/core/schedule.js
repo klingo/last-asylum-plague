@@ -6,6 +6,7 @@
  *   the runs of a proven pattern up to today count as runs;
  * - what can be recorded: the ids (`recordableIds`), the forecast runs on today that aren't recorded yet
  *   (`unrecordedToday`) and the usual length of an id's runs (`usualRunDays`);
+ * - the entries the Today page lists, by id (`todayEntries`);
  * - where an id's runs stand (`runStatus`) and the exact moments a run starts and ends (`runMoments`, `dayStartMs`);
  * - weekday offers (packs on sale on certain weekdays): where one stands in the game week (`weekdayOfferTiming`)
  *   and the runs of days it is on sale (`weekdayRuns`);
@@ -112,6 +113,26 @@ function scheduleRuns(data, today) {
         result.set(id, { kind, runs: days });
     }
     return result;
+}
+
+/**
+ * Every entry the Today page can list, `[{ id, kind }]` (kinds as in `scheduleRuns`): each id with a schedule, plus the
+ * events of the event rotations and the Kingdom War's two (the war and its Royal City Scramble), which have no
+ * recorded runs. An entry's id is what the user hides it by (`hiddenTodayEntries`).
+ */
+function todayEntries(data) {
+    const entries = new Map([...scheduleRuns(data)].map(([id, { kind }]) => [id, kind]));
+    const war = data.kingdom_war;
+    const gameplayIds = [
+        ...Object.values(data.event_rotations || {}).map((rotation) => rotation.event_id),
+        ...(war ? [war.event_id, war.royal_city_scramble.event_id] : []),
+    ];
+    for (const id of gameplayIds) {
+        if (!entries.has(id)) {
+            entries.set(id, 'ingame');
+        }
+    }
+    return [...entries].map(([id, kind]) => ({ id, kind }));
 }
 
 /** The ids that can be recorded, by kind: `{ events, seasonal_passes, spend_reward_tracks }` (Sets; passes by family). */
@@ -504,6 +525,7 @@ export {
     listRuns,
     scheduleBars,
     scheduleRuns,
+    todayEntries,
     forecastRuns,
     weekdayRuns,
     weekdayOfferTiming,

@@ -65,7 +65,7 @@ function loadSettings() {
                 ]),
         );
     }
-    for (const key of ['activeEvents', 'seasonalPasses']) {
+    for (const key of ['activeEvents', 'seasonalPasses', 'hiddenTodayEntries']) {
         if (Array.isArray(stored[key])) {
             settings[key] = stored[key].filter((id) => typeof id === 'string');
         }
@@ -98,13 +98,24 @@ function updateSettings(patch) {
     current = { ...getSettings(), ...patch };
     saveSettings(current);
     for (const listener of listeners) {
-        listener(current);
+        listener(current, patch);
     }
 }
 
-/** Calls `listener(settings)` after every change. */
+/** Hides (or shows again) the entry `id` on the Today page (`hiddenTodayEntries`). */
+function setTodayEntryHidden(id, hidden) {
+    const ids = new Set(getSettings().hiddenTodayEntries);
+    if (hidden) {
+        ids.add(id);
+    } else {
+        ids.delete(id);
+    }
+    updateSettings({ hiddenTodayEntries: [...ids] });
+}
+
+/** Calls `listener(settings, patch)` after every change (`patch`: what was changed). */
 function onSettingsChange(listener) {
     listeners.add(listener);
 }
 
-export { loadSettings, getSettings, updateSettings, onSettingsChange };
+export { loadSettings, getSettings, updateSettings, setTodayEntryHidden, onSettingsChange };

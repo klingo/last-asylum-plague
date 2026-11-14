@@ -5,7 +5,7 @@
  * of the slot on now and the 24 hours after it (today and the next 6 days for day-long slots): one row per phase, a bar per slot with the
  * activities that give points in its hover card, and the Kingdom War (its weeks, the break and the Royal City
  * Scramble, `core/kingdom-war.js`) over 5 weeks. Every chart is on the user's local days (`ui/timeline.js`); the
- * game's day starts at 02:00 UTC, where its runs' bars begin and end.
+ * game's day starts at 02:00 UTC, where its runs' bars begin and end. Every card collapses (`ui/collapsible.js`).
  */
 import { startPage } from '../../ui/page.js';
 import '../../styles/pages/calendar.css';
@@ -13,6 +13,7 @@ import { buildValuation } from '../../ui/valuation.js';
 import { withLoading } from '../../ui/loading.js';
 import { getSettings } from '../../ui/settings.js';
 import { shareOf } from '../../ui/timeline.js';
+import { wireCollapsible } from '../../ui/collapsible.js';
 import { gameDay } from '../../core/schedule.js';
 import { ctx } from './state.js';
 import { nowText, renderRotation } from './rotation.js';
@@ -25,6 +26,7 @@ function render() {
     renderRotation();
     renderEventRotations();
     renderKingdomWar();
+    wireCollapsible(document);
 }
 
 /**

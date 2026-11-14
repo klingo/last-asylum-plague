@@ -117,7 +117,8 @@ function renderEventRotations() {
             // The chart is drawn again when the phase on now ends (between phases: when the next one starts).
             return `
                 <section class="card schedule schedule--event-rotation${daysView ? ' schedule--event-rotation-days' : ''}">
-                    <h2>${escapeHtml(localizedName(ctx.packData.events[rotation.event_id].name))}</h2>
+                    <details data-section="${escapeHtml(rotation.event_id)}" open>
+                    <summary class="card-toggle"><h2>${escapeHtml(localizedName(ctx.packData.events[rotation.event_id].name))}</h2></summary>
                     <p class="text-dim">${tHtml(daysView ? 'calendar.eventRotation.leadDays' : 'calendar.eventRotation.lead')}</p>
                     <div class="schedule__body">
                         <div class="schedule__legend">
@@ -139,6 +140,7 @@ function renderEventRotations() {
                             </div>
                         </div>
                     </div>
+                    </details>
                 </section>`;
         })
         .join('');

@@ -85,6 +85,131 @@
     width: 200px;
 }
 
+/* A card the jump links (and links from other pages) scroll to stays clear of the bar they stick in. */
+main > section[id] {
+    scroll-margin-top: 60px;
+}
+
+/* Settings: the jump links to the cards, a bar that stays in view (under the header where that stays too). */
+.settings-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 0 0 12px;
+    padding: 12px 0 10px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+@media (min-width: 1001px) {
+    /* It starts where it sticks, right under the header (the page's top padding pulled up), so it doesn't move first. */
+    .settings-nav {
+        top: var(--header-height);
+        margin-top: -24px;
+    }
+
+    main > section[id] {
+        scroll-margin-top: calc(var(--header-height) + 60px);
+    }
+}
+
+/* Settings > Display: a tab per kind of entry, a tile (art, name, switch) for each entry. */
+.display-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.display-tab,
+.display-tab:hover {
+    margin-bottom: -1px;
+    padding: 8px 14px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: var(--text-dim);
+    font-weight: 400;
+}
+
+.display-tab:hover {
+    color: var(--text);
+}
+
+.display-tab[aria-selected='true'] {
+    border-bottom-color: var(--accent);
+    color: var(--text);
+    font-weight: 600;
+}
+
+.display-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.display-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.display-tile__art {
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.display-tile__art--none {
+    background: var(--panel);
+}
+
+.display-tile__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.display-tile__name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Hidden on Today: the art and the name fade. */
+.display-tile:has(input:not(:checked)) :is(.display-tile__art, .display-tile__name) {
+    opacity: 0.35;
+    filter: grayscale(1);
+}
+
+/* Settings > Valuation: the model quality behind a summary (diagnostics, not a setting). */
+.settings-quality {
+    margin-top: 16px;
+}
+
+.settings-quality summary {
+    width: fit-content;
+    color: var(--accent);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.settings-quality[open] > summary {
+    margin-bottom: 10px;
+}
+
 /* Settings: the packs the fit is furthest off. */
 .fit-worst {
     font-size: 0.85rem;

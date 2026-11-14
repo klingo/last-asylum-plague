@@ -8,7 +8,8 @@
                 "en": "Alliance Duel",
                 "de": ""
             },
-            "category": "ingame_event"
+            "category": "ingame_event",
+            "image": "alliance_duel"
         },
         "blades_out": {
             "name": {
@@ -207,7 +208,8 @@
                 "en": "Survival Battle",
                 "de": "Überlebenskampf"
             },
-            "category": "ingame_event"
+            "category": "ingame_event",
+            "image": "survival_battle"
         },
         "thief_hunt": {
             "name": {

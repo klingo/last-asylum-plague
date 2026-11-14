@@ -9,6 +9,7 @@
 import '../styles/base.css';
 import '../styles/components/nav.css';
 import '../styles/components/switch.css';
+import '../styles/components/card-toggle.css';
 import '../styles/components/item-picker.css';
 import '../styles/components/table.css';
 import '../styles/components/tooltip.css';

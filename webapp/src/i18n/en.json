@@ -181,6 +181,12 @@
             "description": "The language of the app, saved in this browser.",
             "label": "Language"
         },
+        "display": {
+            "heading": "Display",
+            "description": "What the pages show, saved in this browser.",
+            "todayHeading": "Today",
+            "todayDescription": "Switch off the events, passes and tracks you don't want on the Today page. They stay on the Calendar and in your plan."
+        },
         "quality": {
             "heading": "Model quality",
             "median": "Median pack error",
@@ -647,6 +653,12 @@
         "runningEmpty": "Nothing is recorded as running today.",
         "soonHeading": "Starting soon",
         "soonEmpty": "Nothing is expected to start in the next 3 days.",
+        "allHidden": "Everything here is hidden.",
+        "hidden": "{count} hidden. Show them again with Customize or under {link}.",
+        "edit": "Customize",
+        "editDone": "Done",
+        "editHint": "Switch off what you don't want to see here. Hidden entries stay on the Calendar and in your plan.",
+        "showEntry": "Show {name} on Today",
         "expected": "expected",
         "earnPoints": "How to earn points:",
         "earnPoint": "{text}: +{points}",

@@ -3,6 +3,8 @@
  * (buildValuation) at start and after every settings change, with the loading overlay around it. The page
  * supplies the rest: `render(valuation)` draws it (the settings are `getSettings()`).
  *
+ * A settings change values the data again, unless it only touches display settings (`DISPLAY_ONLY_SETTINGS`).
+ *
  * Options: `fields` (the bar's fields, default all), `overrides()` (extra planner options for a what-if valuation),
  * `prepare()` (runs before each valuation, with the current settings), `render(valuation)` (may be async; the overlay
  * stays up until it is done).
@@ -11,6 +13,7 @@
  * own: it doesn't happen on mount).
  */
 import { getSettings, onSettingsChange } from './settings.js';
+import { DISPLAY_ONLY_SETTINGS } from '../core/settings-model.js';
 import { mountValuationPanel } from './valuation-panel.js';
 import { buildValuation } from './valuation.js';
 import { withLoading } from './loading.js';
@@ -27,7 +30,11 @@ function mountValuationPage(data, { fields, overrides = () => ({}), prepare = nu
         });
     }
 
-    onSettingsChange(() => recompute());
+    onSettingsChange((_, patch) => {
+        if (Object.keys(patch).some((key) => !DISPLAY_ONLY_SETTINGS.includes(key))) {
+            recompute();
+        }
+    });
     return { panel, recompute };
 }
 

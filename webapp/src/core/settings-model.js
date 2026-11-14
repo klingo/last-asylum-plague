@@ -27,6 +27,9 @@ const DEFAULT_NONE_ITEMS = [
     'direct_relocate',
 ];
 
+// Settings the valuation doesn't read (they only change what a page shows): a change needs no new plan.
+const DISPLAY_ONLY_SETTINGS = ['hiddenTodayEntries'];
+
 const DEFAULT_SETTINGS = {
     budget: 20000, // Banknotes per week
     // VIP points count in the deal % fit (false: worth 0, the rest of a pack carries its price) (Settings).
@@ -38,6 +41,8 @@ const DEFAULT_SETTINGS = {
     // The same for the Royal City Scramble: one an hour before it starts and one when it starts (Settings).
     notifyScrambleSoon: false,
     notifyScrambleStart: false,
+    // Ids of the events, passes and tracks Today leaves out of its lists (display only: the plan and the Calendar keep them).
+    hiddenTodayEntries: [],
     extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week spent first on that event's packs, counts on every page (Events page)
     skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Deal Ranking's "Skip", core/skips.js)
@@ -90,6 +95,7 @@ function planOptions(settings, { today, basePoints }, overrides = {}) {
 export {
     DEFAULT_NONE_ITEMS,
     DEFAULT_SETTINGS,
+    DISPLAY_ONLY_SETTINGS,
     MINE_SAFETY_LEVELS,
     PRIORITY_LEVELS,
     planOptions,

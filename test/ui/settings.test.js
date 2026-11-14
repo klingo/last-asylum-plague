@@ -3,7 +3,13 @@ import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { gameDay } from '../../webapp/src/core/schedule.js';
 import { DEFAULT_SETTINGS } from '../../webapp/src/core/settings-model.js';
-import { getSettings, loadSettings, onSettingsChange, updateSettings } from '../../webapp/src/ui/settings.js';
+import {
+    getSettings,
+    loadSettings,
+    onSettingsChange,
+    setTodayEntryHidden,
+    updateSettings,
+} from '../../webapp/src/ui/settings.js';
 import { STORAGE_KEYS } from '../../webapp/src/ui/storage.js';
 
 const save = (stored) => storage.set(STORAGE_KEYS.settings, JSON.stringify(stored));
@@ -60,9 +66,9 @@ test('skips that are over are dropped', () => {
 
 test('a change is saved and told to the listeners', () => {
     const told = [];
-    onSettingsChange((settings) => told.push(settings.budget));
+    onSettingsChange((settings, patch) => told.push([settings.budget, patch]));
     updateSettings({ budget: 1234 });
-    assert.deepEqual(told, [1234]);
+    assert.deepEqual(told, [[1234, { budget: 1234 }]], 'the listener gets the settings and what changed');
     assert.equal(getSettings().budget, 1234);
     assert.equal(JSON.parse(storage.get(STORAGE_KEYS.settings)).budget, 1234);
 });
@@ -75,4 +81,18 @@ test('the notifications are off unless saved on', () => {
         save({ [key]: 'yes' });
         assert.equal(loadSettings()[key], false, 'only a boolean counts');
     }
+});
+
+test('hidden Today entries: ids only, shown again by removing them', () => {
+    save({ hiddenTodayEntries: ['quiz_of_wisdom', 7, 'canyon_conquest'] });
+    assert.deepEqual(loadSettings().hiddenTodayEntries, ['quiz_of_wisdom', 'canyon_conquest']);
+    assert.deepEqual(DEFAULT_SETTINGS.hiddenTodayEntries, []);
+    storage.clear();
+    setTodayEntryHidden('a', true);
+    setTodayEntryHidden('b', true);
+    setTodayEntryHidden('a', true);
+    assert.deepEqual(getSettings().hiddenTodayEntries, ['a', 'b'], 'hiding twice keeps one');
+    setTodayEntryHidden('a', false);
+    assert.deepEqual(getSettings().hiddenTodayEntries, ['b']);
+    assert.deepEqual(JSON.parse(storage.get(STORAGE_KEYS.settings)).hiddenTodayEntries, ['b']);
 });

@@ -1,0 +1,33 @@
+/* A card that collapses (ui/collapsible.js): its heading is the summary of a <details>, a chevron at the right. */
+.card-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.card-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.card-toggle::after {
+    content: '▾';
+    color: var(--text-dim);
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+details:not([open]) > .card-toggle::after {
+    content: '▸';
+}
+
+.card .card-toggle h2 {
+    margin: 0;
+}
+
+/* Open: the gap below the heading a card's h2 has by default. */
+details[open] > .card-toggle {
+    margin-bottom: 0.83em;
+}

@@ -21,6 +21,7 @@ import {
     runStatus,
     scheduleBars,
     scheduleRuns,
+    todayEntries,
     unrecordedToday,
     usualRunDays,
     weekStart,
@@ -64,6 +65,23 @@ test('schedule: runs per id and their kind', () => {
     const { start, end } = runs.get('bazaar').runs[0];
     assert.equal(end - start, 6);
     assert.equal(weekdayIndex(start), 0, '2026-10-12 is a Monday');
+});
+
+test('schedule: the entries Today lists are the schedule ids and the gameplay events without runs', () => {
+    const entries = todayEntries({
+        events: { bazaar: {}, raid: { category: 'ingame_event' } },
+        schedule: { bazaar: [], raid: [] },
+        event_rotations: { survival: { event_id: 'survival_battle' }, duel: { event_id: 'raid' } },
+        kingdom_war: { event_id: 'kingdom_war', royal_city_scramble: { event_id: 'scramble' } },
+    });
+    assert.deepEqual(entries, [
+        { id: 'bazaar', kind: 'event' },
+        { id: 'raid', kind: 'ingame' },
+        { id: 'survival_battle', kind: 'ingame' },
+        { id: 'kingdom_war', kind: 'ingame' },
+        { id: 'scramble', kind: 'ingame' },
+    ]);
+    assert.deepEqual(todayEntries({ schedule: {} }), [], 'no rotations and no war: only the schedule');
 });
 
 test('schedule: forecast repeats the median gap and length', () => {

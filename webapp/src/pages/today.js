@@ -1,15 +1,17 @@
 /**
  * Today (the home page, `index.html`): what runs today (art, name, countdown, linking to its page) and what starts in
  * the next few days (recorded runs and proven forecasts), the phase on now of each event rotation (Survival Battle,
- * Alliance Duel), the Kingdom War's week on now and its Royal City Scramble,
+ * Alliance Duel), the Kingdom War's week on now and its Royal City Scramble (an entry can be hidden by its id, with
+ * Edit or in Settings: `hiddenTodayEntries`, display only),
  * the weekly plan by when to buy it (daily packs, weekly and longer packs, each event's packs and shop offers) and
  * today's weekday offers with their ratio.
  */
 import { startPage } from '../ui/page.js';
 import '../styles/pages/today.css';
 import { mountValuationPage } from '../ui/valuation-page.js';
-import { getSettings } from '../ui/settings.js';
-import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, tileHtml } from '../ui/html.js';
+import { getSettings, setTodayEntryHidden } from '../ui/settings.js';
+import { BASE_URL } from '../ui/base-url.js';
+import { banknotesAmount, buyBadge, escapeAttr, escapeHtml, hydrateItemIcons, tileHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { eventPlanHref, pageHref } from '../ui/url.js';
 import { bellIconHtml, infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
@@ -58,6 +60,9 @@ const SOON_DAYS = 3;
 const scheduleCard = document.getElementById('schedule-card');
 const runningList = document.getElementById('running-list');
 const soonList = document.getElementById('soon-list');
+const editButton = document.getElementById('schedule-edit');
+const editHint = document.getElementById('schedule-edit-hint');
+const hiddenLine = document.getElementById('schedule-hidden');
 const offersWrap = document.getElementById('offers-wrap');
 const offersEmpty = document.getElementById('offers-empty');
 const offersTable = document.getElementById('offers-table');
@@ -70,6 +75,8 @@ let valuation = null;
 let renderedDay = null;
 // The offers' open Details blocks (kept across re-renders).
 const offerExpanded = new Set();
+// Edit mode of the schedule card: every entry is listed (a hidden one dimmed) with a switch to hide or show it.
+let editing = false;
 
 /**
  * An entry of a list. `start` / `end` are moments (ms).
@@ -197,9 +204,11 @@ function entryHtml(entry) {
     const art = url
         ? `<img class="today-entry__art" src="${url}" alt="" loading="lazy" decoding="async" />`
         : '<span class="today-entry__art today-entry__art--none" aria-hidden="true"></span>';
-    const tag = entry.href ? 'a' : 'div';
-    const link = entry.href ? ` href="${escapeHtml(entry.href)}"` : '';
-    const classes = `today-entry today-entry--${entry.state}${entry.forecast ? ' today-entry--forecast' : ''}`;
+    // Editing: no link (the switch is the one control), and a switch that is on while the entry is shown.
+    const linked = entry.href && !editing;
+    const tag = linked ? 'a' : 'div';
+    const link = linked ? ` href="${escapeHtml(entry.href)}"` : '';
+    const classes = `today-entry today-entry--${entry.state}${entry.forecast ? ' today-entry--forecast' : ''}${editing ? ' today-entry--editing' : ''}${entry.hidden ? ' today-entry--hidden' : ''}`;
     // How to earn points in the phase: an info icon beside the title, its tooltip a heading and the rules, one per
     // line, each with the item's icon.
     const earnRows =
@@ -229,7 +238,22 @@ function entryHtml(entry) {
             </div>
             <span class="today-entry__kind">${tHtml(SCHEDULE_KIND_LABELS[entry.kind])}</span>
             <span class="today-entry__time event-banner__countdown" data-until="${until}" data-state="${entry.state}">${escapeHtml(countdownText(entry.state, until))}</span>
+            ${editing ? `<input type="checkbox" class="switch today-entry__show" role="switch" data-entry-id="${escapeAttr(entry.id)}" aria-label="${escapeAttr(t('today.showEntry', { name: entry.title }))}"${entry.hidden ? '' : ' checked'} />` : ''}
         </${tag}>`;
+}
+
+/**
+ * The Edit button (its label), the hint shown while editing and, otherwise, the line saying how many entries are hidden
+ * with where to show them again.
+ */
+function renderEditControls(hiddenCount) {
+    editButton.textContent = t(editing ? 'today.editDone' : 'today.edit');
+    editHint.hidden = !editing;
+    hiddenLine.hidden = editing || hiddenCount === 0;
+    hiddenLine.innerHTML = tHtml('today.hidden', {
+        count: formatThousands(hiddenCount),
+        link: `<a href="${BASE_URL}settings.html#display">${tHtml('nav.settings')}</a>`,
+    });
 }
 
 /** Sets each entry's fill (0 to 1) from the moments it runs between; called on render and once a minute. */
@@ -275,8 +299,19 @@ function renderSchedule() {
     // The one ending first on top (the kind only breaks ties).
     running.sort((a, b) => a.end - b.end || order(a, b));
     soon.sort((a, b) => a.start - b.start || order(a, b));
-    runningList.innerHTML = running.map(entryHtml).join('') || `<p class="text-dim">${tHtml('today.runningEmpty')}</p>`;
-    soonList.innerHTML = soon.map(entryHtml).join('') || `<p class="text-dim">${tHtml('today.soonEmpty')}</p>`;
+    // The user's hidden entries are left out (editing: shown dimmed, to switch them on again).
+    const hiddenIds = new Set(getSettings().hiddenTodayEntries);
+    const listHtml = (entries, emptyKey) => {
+        const shown = editing ? entries : entries.filter(({ id }) => !hiddenIds.has(id));
+        const empty = entries.length > 0 ? 'today.allHidden' : emptyKey;
+        return (
+            shown.map((entry) => entryHtml({ ...entry, hidden: hiddenIds.has(entry.id) })).join('') ||
+            `<p class="text-dim">${tHtml(empty)}</p>`
+        );
+    };
+    runningList.innerHTML = listHtml(running, 'today.runningEmpty');
+    soonList.innerHTML = listHtml(soon, 'today.soonEmpty');
+    renderEditControls(new Set([...running, ...soon].filter(({ id }) => hiddenIds.has(id)).map(({ id }) => id)).size);
     enableInfoTooltips(scheduleCard);
     updateProgress();
     // The countdowns tick; once one runs out (a run ended or started) the lists show the new state.
@@ -468,6 +503,21 @@ function render() {
     renderOffers();
     renderPlan();
 }
+
+editButton.addEventListener('click', () => {
+    editing = !editing;
+    renderSchedule();
+});
+
+// An entry's switch (editing): on = shown. Hiding is display only, it leaves the plan and the Calendar alone.
+scheduleCard.addEventListener('change', (event) => {
+    const input = event.target.closest('.today-entry__show');
+    if (!input) {
+        return;
+    }
+    setTodayEntryHidden(input.dataset.entryId, !input.checked);
+    renderSchedule();
+});
 
 startPage('today', {
     async init(loaded) {

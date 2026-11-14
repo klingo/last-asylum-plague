@@ -11,11 +11,11 @@ Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item 
 `events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
 **Settings**.
 
-**Settings** (`settings.html`) has five sections: **Language**, the app's language (saved in this browser); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
+**Settings** (`settings.html`) has links to its cards at the top and these cards: **Language**, the app's language (saved in this browser); **Display**, which entries the Today page lists (one switch per event, pass, track, event rotation and the Kingdom War, grouped as the Calendar groups them; off hides it on Today, nothing else, and the choice is synced like the other settings); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
 4-hour slot of its rotation) and, grouped under the Royal City Scramble's name, two for that event: one 1 hour before it starts and one when it starts
 (switching one on asks the browser for permission, and as there is no server to push from, a notification only comes
 while a tab of the app is open; while one is on, Today marks the bars it is for with a bell); **Valuation**, the
-settings that shape every value (Count VIP points in the worth); **Model quality**, how well the fitted worths reproduce the
+settings that shape every value (Count VIP points in the worth), with the **Model quality** behind a summary, how well the fitted worths reproduce the
 packs' deal %; and **Admin** (collapsed), which records when events, passes and tracks run: enter a GitHub token (a
 fine-grained personal access token of this repository with only the permission Actions: Read and write; it is checked
 against GitHub, kept in this browser's localStorage only and removed by "Log out"), then record the forecast runs that
@@ -41,7 +41,10 @@ deleted after 180 days without use; the button stays hidden until the build has 
   `<pack id>_<weekday>.webp` where the offer looks different on its days, as a thumbnail before its
   name, a placeholder tile without one) with their ratio, what the plan buys and what each gives (Details). Running entries are
   ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
-  plan buys from it.
+  plan buys from it. Entries can be hidden (display only: the plan, Follow the calendar, the notifications and the
+  Calendar keep them): "Customize" lists every entry with a switch to hide or show it (hidden ones dimmed), a line under the
+  lists says how many are hidden and links to Settings > Display, which lists every entry, running or not, as a tile with its art
+  under a tab per kind ("Shop events (6/9)" once some are hidden).
   Survival Battle (`event_rotations` in `events.json`: the 42 four-hour slots of its week, from Sunday's reset, the
   same every week) and the Alliance Duel (a phase a day from Monday's reset, Sunday off) show the phase on now (none on
   the Alliance Duel's Sunday) and the next one, with their local times and how to earn points in them.
@@ -78,6 +81,7 @@ deleted after 180 days without use; the button stays hidden until the build has 
   faint bar on every Saturday (the break week too) with the 4 hours as a thin bar on top (to scale, so the day is easy to see and the hours are where they fall).
   The faint bar has the hover card (the scramble's local hours, 12:00–16:00 server time). A line says which week is on
   now and when it ends (or when the next one starts), and when the scramble is on or next.
+  Every card collapses (its heading is the button; kept per device in this browser, not synced).
 - **Event Shops** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs
   to buy, the coins they give, which shop offers to buy with them (in unlock order, incl. Encounters and bonus tiers; an Encounter counts its random reward, the free one every day and

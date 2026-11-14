@@ -1,6 +1,7 @@
 /**
- * Settings (the cogwheel in the header): the language, the notifications, the settings that shape every value (Count
- * VIP points in the worth) and the model quality: how well the fitted worths reproduce the packs' deal % (`fitItemPoints` diagnostics, the packs
+ * Settings (the cogwheel in the header): the language, the display (which entries Today lists: display.js), the
+ * notifications, the settings that shape every value (Count VIP points in the worth) with the model quality behind a
+ * summary: how well the fitted worths reproduce the packs' deal % (`fitItemPoints` diagnostics, the packs
  * furthest off, and how well each pack is predicted from the others: `fitHoldOut`, computed in the background),
  * and the collapsed Admin section that records runs through GitHub (admin.js).
  */
@@ -18,6 +19,7 @@ import { enableInfoTooltips } from '../../ui/tooltip.js';
 import { LOCALES, getLocale, localizedName, setLocale, t } from '../../ui/i18n.js';
 import { notificationsSupported, requestNotificationPermission } from '../../ui/notifications.js';
 import { initAdmin, renderAdmin } from './admin.js';
+import { initDisplay, renderDisplay } from './display.js';
 
 let data = null;
 const WORST_COUNT = 3;
@@ -230,11 +232,13 @@ startPage('settings', {
         wireSetting('count-vip-points', 'vipPointsInWorth');
         wireNotifications();
         wireLanguage();
+        initDisplay(packData);
         renderQuality();
         initAdmin(packData);
     },
     onLocaleChange() {
         renderQuality();
+        renderDisplay();
         renderNotifyHeadings();
         renderNotifyNote();
         renderAdmin();

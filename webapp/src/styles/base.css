@@ -19,6 +19,8 @@
     --faction-ranger: oklch(56% 0.14 247);
     --faction-warlock: oklch(71% 0.16 158);
     --radius: 8px;
+    /* The header on wide screens, where it stays on top: what a sticky bar under it sticks below. */
+    --header-height: 66px;
     --series-a: #3987e5;
     --series-b: #d95926;
 }

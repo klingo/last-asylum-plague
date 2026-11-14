@@ -181,6 +181,12 @@
             "description": "Die Sprache der App, in diesem Browser gespeichert.",
             "label": "Sprache"
         },
+        "display": {
+            "heading": "Anzeige",
+            "description": "Was die Seiten anzeigen, in diesem Browser gespeichert.",
+            "todayHeading": "Heute",
+            "todayDescription": "Schalte die Events, Pässe und Ausgabenbelohnungen aus, die du auf der Seite „Heute“ nicht sehen willst. Sie bleiben im Kalender und in deinem Plan."
+        },
         "quality": {
             "heading": "Modellqualität",
             "median": "Mittlerer Paketfehler (Median)",
@@ -647,6 +653,12 @@
         "runningEmpty": "Heute ist nichts als laufend eingetragen.",
         "soonHeading": "Startet bald",
         "soonEmpty": "In den nächsten 3 Tagen wird nichts erwartet.",
+        "allHidden": "Alles hier ist ausgeblendet.",
+        "hidden": "{count} ausgeblendet. Mit „Anpassen“ oder unter {link} wieder einblenden.",
+        "edit": "Anpassen",
+        "editDone": "Fertig",
+        "editHint": "Schalte aus, was du hier nicht sehen willst. Ausgeblendete Einträge bleiben im Kalender und in deinem Plan.",
+        "showEntry": "{name} auf Heute anzeigen",
         "expected": "erwartet",
         "earnPoints": "So sammelst du Punkte:",
         "earnPoint": "{text}: +{points}",

@@ -151,7 +151,8 @@ function renderKingdomWar() {
 
     container.innerHTML = `
         <section class="card schedule schedule--kingdom-war">
-            <h2>${escapeHtml(warName)}</h2>
+            <details data-section="${escapeHtml(war.event_id)}" open>
+            <summary class="card-toggle"><h2>${escapeHtml(warName)}</h2></summary>
             <p class="text-dim">${tHtml('calendar.kingdomWar.lead', { scramble: escapeHtml(scrambleName) })}</p>
             <div class="schedule__body">
                 <div class="schedule__legend">
@@ -171,6 +172,7 @@ function renderKingdomWar() {
                     </div>
                 </div>
             </div>
+            </details>
         </section>`;
     enableInfoTooltips(container);
 }

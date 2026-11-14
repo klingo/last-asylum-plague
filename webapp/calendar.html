@@ -9,16 +9,21 @@
     <body>
         <header class="app-header"></header>
         <main>
+            <!-- Each card collapses (ui/collapsible.js): its heading is the summary of a details. -->
             <section class="card schedule" id="schedule" hidden>
-                <h2 data-i18n="calendar.schedule.heading"></h2>
-                <p class="text-dim" data-i18n="calendar.schedule.lead"></p>
-                <div class="schedule__body"></div>
+                <details data-section="schedule" open>
+                    <summary class="card-toggle"><h2 data-i18n="calendar.schedule.heading"></h2></summary>
+                    <p class="text-dim" data-i18n="calendar.schedule.lead"></p>
+                    <div class="schedule__body"></div>
+                </details>
             </section>
 
             <section class="card schedule schedule--rotation" id="rotation" hidden>
-                <h2 data-i18n="calendar.rotation.heading"></h2>
-                <p class="text-dim" data-i18n="calendar.rotation.lead"></p>
-                <div class="schedule__body"></div>
+                <details data-section="rotation" open>
+                    <summary class="card-toggle"><h2 data-i18n="calendar.rotation.heading"></h2></summary>
+                    <p class="text-dim" data-i18n="calendar.rotation.lead"></p>
+                    <div class="schedule__body"></div>
+                </details>
             </section>
 
             <!-- Event rotations (Survival Battle, Alliance Duel): one chart each, drawn by calendar.js. -->
