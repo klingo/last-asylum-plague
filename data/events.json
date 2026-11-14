@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "last_updated": "2026-11-14"
+        "last_updated": "2026-11-15"
     },
     "events": {
         "alliance_duel": {
@@ -92,7 +92,7 @@
         "elixir_scramble": {
             "name": {
                 "en": "Elixir Scramble",
-                "de": "Elixir-Gerangle"
+                "de": "Elixir-Gerangel"
             },
             "category": "ingame_event",
             "calendar_group": "alliance",
@@ -101,7 +101,7 @@
         "full_moon_night": {
             "name": {
                 "en": "Full Moon Night",
-                "de": ""
+                "de": "Vollmondnacht"
             },
             "category": "special_event"
         },
@@ -134,7 +134,7 @@
         "kingdom_war": {
             "name": {
                 "en": "Kingdom War",
-                "de": ""
+                "de": "Königreichskrieg"
             },
             "category": "ingame_event",
             "image": "kingdom_war"
@@ -966,22 +966,22 @@
             {
                 "id": "week_1",
                 "name": {
-                    "en": "Week 1",
-                    "de": ""
+                    "en": "Week 1: Quarterfinals",
+                    "de": "Woche 1: Viertelfinale"
                 }
             },
             {
                 "id": "week_2",
                 "name": {
-                    "en": "Week 2",
-                    "de": ""
+                    "en": "Week 2: Semifinals",
+                    "de": "Woche 2: Halbfinale"
                 }
             },
             {
                 "id": "finals",
                 "name": {
                     "en": "Week 3: Finals",
-                    "de": ""
+                    "de": "Woche 3: Finale"
                 }
             },
             null

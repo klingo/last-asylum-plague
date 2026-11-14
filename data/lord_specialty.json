@@ -8,7 +8,7 @@
             },
             "description": {
                 "en": "Tech drives all progress. Handymen earn respect through exceptional talent, becoming indispensable pillars of their towns. They accelerate resource acquisition efficiency while providing enhancements to allies.",
-                "de": "Alle Entwicklung beruht auf technologischem Fortschritt. Handwerker verdienen sich durch aussergewöhnliches Talent Respekt und werden zu unverzichtbaren Säulen ihrer Städte."
+                "de": "Tech treibt allen Fortschritt voran. Handwerker verdienen sich durch außergewöhnliches Talent Respekt und werden zu unverzichtbaren Säulen ihrer Städte. Sie beschleunigen die Effizienz der Ressourcenbeschaffung und bieten Verbesserungen für Verbündete."
             },
             "talents": [
                 {
@@ -23,8 +23,8 @@
                     "cooldown_hours": 23.5,
                     "max_level": 5,
                     "description": {
-                        "en": "Upon use, instantly gain {value}h of Grain/Timber/Herb production from your territory.",
-                        "de": "Bei Verwendung erhältst du sofort {value} Std. Getride/Holz/Kraut-Produktion aus deinem Gebiet."
+                        "en": "Upon use, instantly gain {value}h of Grain/Timber/Herb production from your territory. CD: 23.5h",
+                        "de": "Bei Verwendung erhältst du sofort {value}Std. Getreide/Holz/Kraut-Produktion aus deinem Gebiet. AZ: 23,5 Std."
                     },
                     "values": [3, 6, 10, 16, 24]
                 },
@@ -85,7 +85,7 @@
                     "kind": "passive",
                     "max_level": 5,
                     "description": {
-                        "en": "Free Building Time +{value} min",
+                        "en": "Free Building Time +{value} (min)",
                         "de": "Kostenlose Bauzeit +{value} (Min.)"
                     },
                     "values": [40, 82, 130, 180, 240]
@@ -101,7 +101,7 @@
                     "kind": "passive",
                     "max_level": 5,
                     "description": {
-                        "en": "Free Research Time +{value} min",
+                        "en": "Free Research Time +{value} (min)",
                         "de": "Kostenlose Forschungszeit +{value} (Min.)"
                     },
                     "values": [40, 82, 130, 180, 240]
@@ -118,8 +118,8 @@
                     "cooldown_hours": 47.5,
                     "max_level": 5,
                     "description": {
-                        "en": "Instantly reduce all build queue time by {value} min.",
-                        "de": "Reduziert sofort alle Bau-Wartezeiten um {value} (Min.)"
+                        "en": "Instantly reduce all build queue time by {value}m. CD: 47.5h",
+                        "de": "Reduziert sofort alle Bau-Wartezeiten um {value} Min. AZ: 47,5 Std."
                     },
                     "values": [90, 195, 315, 450, 600]
                 },
@@ -135,8 +135,8 @@
                     "cooldown_hours": 47.5,
                     "max_level": 5,
                     "description": {
-                        "en": "Instantly reduce all research queue time by {value} min.",
-                        "de": "Reduziert sofort alle Forschungswartezeiten um {value} Min."
+                        "en": "Instantly reduce all research queue time by {value}m. CD: 47.5h",
+                        "de": "Reduziert sofort alle Forschungswartezeiten um {value} Min. AZ: 47,5 Std."
                     },
                     "values": [180, 390, 630, 900, 1200]
                 },
@@ -308,7 +308,7 @@
                     "id": "raven_supply",
                     "name": {
                         "en": "Raven Supply",
-                        "de": ""
+                        "de": "Raben-Vorrat"
                     },
                     "icon": "raven_supply.png",
                     "unlock_level": 45,
@@ -317,14 +317,14 @@
                     "max_level": 5,
                     "description": {
                         "en": "Obtain a Raven Reward based on your level.",
-                        "de": ""
+                        "de": "Erhalte eine Rabe-Belohnung basierend auf deinem Level."
                     }
                 },
                 {
                     "id": "solid_defense",
                     "name": {
                         "en": "Solid Defense",
-                        "de": ""
+                        "de": "Solide Verteidigung"
                     },
                     "icon": "solid_defense.png",
                     "unlock_level": 45,
@@ -340,7 +340,7 @@
                     "id": "random_visitor",
                     "name": {
                         "en": "Random Visitor",
-                        "de": ""
+                        "de": "Zufälliger Besucher"
                     },
                     "icon": "random_visitor.png",
                     "unlock_level": 50,
@@ -356,7 +356,7 @@
                     "id": "hidden_peril",
                     "name": {
                         "en": "Hidden Peril",
-                        "de": ""
+                        "de": "Verborgene Gefahr"
                     },
                     "icon": "hdden_peril.png",
                     "unlock_level": 50,
@@ -378,7 +378,7 @@
             },
             "description": {
                 "en": "Before absolute power, all other voices fade into insignificance. A formidable commander will sweep aside all obstacles and conquer all directions. Commanders strengthen troop combat effectiveness while employing tactics to amplify damage dealt to enemies.",
-                "de": "Vor absoluter Macht verstummen alle anderen Stimmen. Furchteinflössende Kommandanten fegen alle Hindernisse weg und erobern alle Richtungen."
+                "de": "Vor absoluter Macht verblassen alle anderen Stimmen zur Bedeutungslosigkeit. Ein furchtbarer Kommandant wird alle Hindernisse beiseite fegen und in alle Richtungen erobern. Kommandanten stärken die Kampfeffektivität der Truppen und setzen Taktiken ein, um den Schaden gegen Feinde zu verstärken."
             },
             "talents": [
                 {
@@ -393,7 +393,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "During relocation, troops outside the territory return immediately. Limited to first {value}x daily",
-                        "de": "Während der Verlegung kehren Truppen ausserhalb des Gebiets sofort zurück. Begrenzt auf die ersten {value}x täglich"
+                        "de": "Während der Verlegung kehren Truppen außerhalb des Gebiets sofort zurück. Begrenzt auf die ersten {value}x täglich"
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -409,8 +409,8 @@
                     "cooldown_hours": 23.5,
                     "max_level": 5,
                     "description": {
-                        "en": "Instantly gain x{value} max-level soldiers (cannot exceed Barracks Cap).",
-                        "de": "Erhalte sofort x{value} Soldaten des höchsten Levels (kann die Kasernengrenze nicht überschreiten)."
+                        "en": "Instantly gain x{value} max-level soldiers (cannot exceed Barracks Cap). CD: 23.5h",
+                        "de": "Erhalte sofort x{value} Soldaten des höchsten Levels (kann die Kasernengrenze nicht überschreiten). AZ: 23,5 Std."
                     },
                     "values": [40, 82, 135, 190, 250]
                 },
@@ -474,8 +474,8 @@
                     "cooldown_hours": 71.5,
                     "max_level": 5,
                     "description": {
-                        "en": "Heal up to {value} soldiers in the Infirmary.",
-                        "de": "Heilt bis zu {value} Soldaten im Krankenhaus."
+                        "en": "Heal up to {value} soldiers in the Infirmary; CD: 71.5h",
+                        "de": "Heilt bis zu {value} Soldaten im Krankenhaus; AZ: 71,5 Std."
                     },
                     "values": [750, 1640, 2600, 3750, 5000]
                 },
@@ -603,8 +603,8 @@
                     "cooldown_hours": 47.5,
                     "max_level": 1,
                     "description": {
-                        "en": "Enter Disguise Mode: Hide personal information and won't appear in enemy battle reports, lasts 30m.",
-                        "de": "Tarnmodus aktivieren: Persönliche Informationen verbergen und nicht in feindlichen Kampfberichten erscheinen, dauert 30 Min."
+                        "en": "Enter Disguise Mode: Hide personal information and won't appear in enemy battle reports, lasts 30m. CD: 47.5h",
+                        "de": "Tarnmodus aktivieren: Persönliche Informationen verbergen und nicht in feindlichen Kampfberichten erscheinen, dauert 30 Min. AZ: 47,5 Std."
                     }
                 },
                 {
@@ -674,7 +674,7 @@
                     "id": "hold_the_line",
                     "name": {
                         "en": "Hold the Line",
-                        "de": ""
+                        "de": "Stellung halten"
                     },
                     "icon": "hold_the_line.png",
                     "unlock_level": 45,
@@ -690,7 +690,7 @@
                     "id": "rally_guardian",
                     "name": {
                         "en": "Rally Guardian",
-                        "de": ""
+                        "de": "Versammlung an Wächter"
                     },
                     "icon": "rally_guardian.png",
                     "unlock_level": 45,
@@ -706,7 +706,7 @@
                     "id": "territory_raid",
                     "name": {
                         "en": "Territory Raid",
-                        "de": ""
+                        "de": "Gebietsüberfall"
                     },
                     "icon": "territory_raid.png",
                     "unlock_level": 50,

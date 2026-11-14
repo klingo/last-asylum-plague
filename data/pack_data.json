@@ -2,13 +2,13 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-14"
+        "last_updated": "2026-11-15"
     },
     "items": {
         "alliance_coins": {
             "name": {
-                "en": "Alliance Coins",
-                "de": "Allianz-Münzen"
+                "en": "Alliance Coin",
+                "de": "Allianz-Münze"
             },
             "category": "resource",
             "rarity": "sr"
@@ -102,7 +102,7 @@
         "battlebreaker_loot": {
             "name": {
                 "en": "Battlebreaker Loot",
-                "de": ""
+                "de": "Schlachtbrecher Beute"
             },
             "category": "chest",
             "rarity": "mr",
@@ -131,7 +131,7 @@
         "berserker_loot": {
             "name": {
                 "en": "Berserker Loot",
-                "de": ""
+                "de": "Berserker Beute"
             },
             "category": "chest",
             "rarity": "mr",
@@ -341,7 +341,7 @@
         "diamond_golden_egg": {
             "name": {
                 "en": "Diamond Golden Egg",
-                "de": "Diamant-Gold-Ei"
+                "de": "Diamant Gold-Ei"
             },
             "category": "consumable",
             "rarity": "ur",
@@ -351,8 +351,8 @@
         },
         "diamonds": {
             "name": {
-                "en": "Diamonds",
-                "de": "Diamanten"
+                "en": "Diamond",
+                "de": "Diamant"
             },
             "category": "resource",
             "rarity": null
@@ -472,7 +472,7 @@
         "gear_choice_supply": {
             "name": {
                 "en": "Gear Choice Supply",
-                "de": ""
+                "de": "Ausrüstung-Wahlvorrat"
             },
             "category": "chest",
             "rarity": "ur",
@@ -635,8 +635,8 @@
         },
         "herbs": {
             "name": {
-                "en": "Herbs",
-                "de": "Kräuter"
+                "en": "Herb",
+                "de": "Kraut"
             },
             "category": "resource",
             "rarity": null
@@ -661,7 +661,7 @@
         "holy_sword_loot": {
             "name": {
                 "en": "Holy Sword Loot",
-                "de": ""
+                "de": "Heiliges Schwert Beute"
             },
             "category": "chest",
             "rarity": "mr",
@@ -690,7 +690,7 @@
         "iron_guard_loot": {
             "name": {
                 "en": "Iron Guard Loot",
-                "de": ""
+                "de": "Eiserne Garde-Beute"
             },
             "category": "chest",
             "rarity": "mr",
@@ -735,7 +735,7 @@
             },
             "description": {
                 "en": "A rare coin! Use it in the Exchange Shop during the Thief Hunt event for abundant rewards.",
-                "de": "Eine seltene Münze! Benutze sie während des Diebesjag-Events im Tausch-Shop für reichliche Belohnungen."
+                "de": "Eine seltene Münze! Benutze sie während des Diebesjagd-Events im Tausch-Shop für reichliche Belohnungen."
             },
             "category": "event_item",
             "rarity": "ur"
@@ -875,7 +875,7 @@
         "lv1_raven_gear_chest": {
             "name": {
                 "en": "Lv.1 Raven Gear Chest",
-                "de": "Lv.1 Raben-Ausrüstungs Truhe"
+                "de": "Lv.1 Raben-Ausrüstung Truhe"
             },
             "category": "chest",
             "rarity": null,
@@ -1178,7 +1178,7 @@
         "lv3_raven_gear_chest": {
             "name": {
                 "en": "Lv.3 Raven Gear Chest",
-                "de": "Lv.3 Raben-Ausrüstungs Truhe"
+                "de": "Lv.3 Raben-Ausrüstung Truhe"
             },
             "category": "chest",
             "rarity": "sr",
@@ -1489,7 +1489,7 @@
         "lv5_raven_gear_chest": {
             "name": {
                 "en": "Lv.5 Raven Gear Chest",
-                "de": "Lv.5 Raben-Ausrüstungs Truhe"
+                "de": "Lv.5 Raben-Ausrüstung Truhe"
             },
             "category": "chest",
             "rarity": "ur",
@@ -1731,7 +1731,7 @@
         "moon_coin": {
             "name": {
                 "en": "Moon Coin",
-                "de": ""
+                "de": "Mondmünze"
             },
             "category": "event_item",
             "rarity": "ur"
@@ -1780,7 +1780,7 @@
         "mythic_era_reward": {
             "name": {
                 "en": "Mythic Era Reward",
-                "de": ""
+                "de": "Mythische Zeitalter-Belohnung"
             },
             "category": "chest",
             "rarity": "ur",
@@ -6812,7 +6812,7 @@
         "starry_bazaar": {
             "name": {
                 "en": "Starry Bazaar",
-                "de": ""
+                "de": "Sternenbasar"
             },
             "event_id": "full_moon_night",
             "currency_item_id": "star_moon_sigil",
@@ -7190,8 +7190,8 @@
         },
         "surprise_encounter_shop": {
             "name": {
-                "en": "Surprise Encounter Shop",
-                "de": "Überraschende Begegnung Shop"
+                "en": "Surprise Encounter",
+                "de": "Überraschende Begegnung"
             },
             "event_id": "surprise_encounter",
             "currency_item_id": "surprise_emblem",

@@ -123,8 +123,8 @@
                         "de": ""
                     },
                     "description": {
-                        "en": "When Skybreaker Slash triggers a Crit, Marlena gains 1 stack of [Battle Will], with a stack cap equal to 2X the number of Warrior heroes on the team. Each stack of [Battle Will] grants Marlena 1% DMG Bonus and 1% DMG↓",
-                        "de": ""
+                        "en": "When Skybreaker Slash triggers a Crit, Marlena gains 1 stack of [Battle Will], with a stack cap equal to 2X the number of Warrior Heroes on the team. Each stack of [Battle Will] grants Marlena 1% DMG Bonus and 1% DMG↓",
+                        "de": "Wenn Himmelsbrecher-Schnitt einen Krit auslöst, erhält Marlena 1 Stapel [Kampfwille], mit einer Stapelgrenze gleich dem 2-fachen der Anzahl an Krieger-Helden im Team. Jeder Stapel [Kampfwille] gewährt Marlena 1% SCH-Bonus und 1% SCH↓"
                     }
                 },
                 {
@@ -136,7 +136,7 @@
                     },
                     "description": {
                         "en": "Crimson Bloom deals damage to all enemies; if Marlena's [Battle Will] exceeds 5 stacks, inflict [Dread] on all enemies (reduces their damage by 5%)",
-                        "de": ""
+                        "de": "Purpurblüte verursacht Schaden an allen Feinden; wenn Marlenas [Kampfwille] 5 Stapel übersteigt, füge allen Feinden [Furcht] zu (reduziert ihren Schaden um 5%)"
                     }
                 },
                 {
@@ -144,11 +144,11 @@
                     "id": "war_gods_will",
                     "name": {
                         "en": "Blade Tempest",
-                        "de": ""
+                        "de": "Klingensturm"
                     },
                     "description": {
-                        "en": "At battle start, Marlena attacks the 3 enemies with the highest HP, dealing 2500% ATK Energy Dmg. On hit, Marlena gains 3 stacks of [Battle Will]",
-                        "de": ""
+                        "en": "At battle start, Marlena attacks the 3 enemies with the highest HP, dealing 2500% ATK Energy Dmg. on hit, Marlena gains 3 stacks of [Battle Will]",
+                        "de": "Zu Kampfbeginn greift Marlena die 3 Feinde mit den höchsten LP an und verursacht 2500% ANG Energie-Schaden. Bei Treffer erhält Marlena 3 Stapel [Kampfwille]"
                     }
                 },
                 {
@@ -172,7 +172,7 @@
                     },
                     "description": {
                         "en": "Unleash 5 additional sword winds with damage reduced to 60% of original.",
-                        "de": ""
+                        "de": "Entfesselt 5 zusätzliche Schwertwinde mit um 60% des ursprünglichen Schadens reduziertem Schaden."
                     }
                 }
             ],
@@ -615,7 +615,7 @@
                     },
                     "description": {
                         "en": "Each Moon Blade cast grants Cynthia 1 stack of [Moonlight], capped at 4x the number of Ranger Heroes in your team. Each stack grants Cynthia 1% Energy Dmg Bonus",
-                        "de": ""
+                        "de": "Jeder gewirkte Mondklinge-Zauber gewährt Cynthia 1 Stapel [Mondlicht], begrenzt auf das 4-fache der Anzahl von Ranger-Helden in deinem Team. Jeder Stapel gewährt Cynthia 1% Energie-Schaden-Bonus"
                     }
                 },
                 {
@@ -627,7 +627,7 @@
                     },
                     "description": {
                         "en": "Lunar Hunt deals 20% additional damage and grants Cynthia 2 stacks of [Moonlight].",
-                        "de": ""
+                        "de": "Mondjagd verursacht 20% zusätzlichen Schaden und gewährt Cynthia 2 Stapel [Mondlicht]."
                     }
                 },
                 {
@@ -639,7 +639,7 @@
                     },
                     "description": {
                         "en": "Consume up to 10 stacks of [Moonlight]. Moonfall Dance deals 1 additional attack at 60% ATK * number of [Moonlight] stacks consumed as Energy Dmg to the target",
-                        "de": ""
+                        "de": "Verbraucht bis zu 10 Stapel [Mondlicht]. Mondfalltanz führt 1 zusätzlichen Angriff mit 60% ANG * Anzahl der verbrauchten [Mondlicht]-Stapel als Energie-Schaden gegen das Ziel aus"
                     }
                 },
                 {
@@ -659,11 +659,11 @@
                     "id": "moons_blessing",
                     "name": {
                         "en": "Lunar Blessing",
-                        "de": ""
+                        "de": "Mondsegen"
                     },
                     "description": {
                         "en": "When Cynthia lands a Crit on an enemy target, damage increases by an additional 20%",
-                        "de": ""
+                        "de": "Wenn Cynthia einen Krit gegen ein feindliches Ziel landet, erhöht sich der Schaden um zusätzliche 20%"
                     }
                 }
             ],
@@ -1327,11 +1327,11 @@
                     "skill": "passive",
                     "name": {
                         "en": "Sweet Troublemaker",
-                        "de": ""
+                        "de": "Süßer Unruhestifter"
                     },
                     "description": {
                         "en": "When normal attack triggers [Burn], apply 1 additional [Burn] to a random enemy hero. [Scorch] duration increased to 30s, and max stack increased by allied Warlock Hero count +3",
-                        "de": ""
+                        "de": "Wenn ein normaler Angriff [Verbrennung] auslöst, wird 1 zusätzliche [Verbrennung] auf einen zufälligen feindlichen Helden angewendet. [Versengen]-Dauer auf 30s erhöht und maximale Stapelanzahl um Anzahl verbündeter Hexenmeister-Helden +3 erhöht"
                     }
                 }
             ],
