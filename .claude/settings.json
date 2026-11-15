@@ -7,14 +7,16 @@
     "permissions": {
         "allow": ["Bash(npm run *)"],
         "ask": ["Bash(git push *)"],
-        "deny": ["Bash(rm -rf *)", "Bash(git reset --hard*)", "Bash(git push --force*)", "Bash(git clean -f*)"]
+        "deny": ["Bash(rm -rf *)", "Bash(git reset --hard*)", "Bash(git push --force*)", "Bash(git clean -f*)"],
+        "additionalDirectories": ["../last-asylum-plague-tools"]
     },
     "worktree": {
         "bgIsolation": "none"
     },
     "env": {
         "DISABLE_TELEMETRY": "1",
-        "DISABLE_ERROR_REPORTING": "1"
+        "DISABLE_ERROR_REPORTING": "1",
+        "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD": "1"
     },
     "feedbackSurveyRate": 0,
     "cleanupPeriodDays": 365,
