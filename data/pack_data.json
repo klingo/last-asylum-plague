@@ -2880,7 +2880,8 @@
             "category": "chest",
             "rarity": "ur",
             "contains": {
-                "ur_epigraph": 1
+                "ur_epigraph": 1,
+                "ur_epigraph_shard": 100
             }
         },
         "ur_epigraph_choice_chest": {
