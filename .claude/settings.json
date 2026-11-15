@@ -6,7 +6,16 @@
     "maxEffortLevel": "max",
     "permissions": {
         "allow": ["Bash(npm run *)"],
-        "ask": ["Bash(git push *)"],
+        "ask": [
+            "Bash(git push *)",
+            "Bash(git commit*)",
+            "Bash(git add*)",
+            "Bash(git stash*)",
+            "Bash(git checkout -b*)",
+            "Bash(git switch -c*)",
+            "Bash(git branch *)",
+            "Bash(gh pr create*)"
+        ],
         "deny": ["Bash(rm -rf *)", "Bash(git reset --hard*)", "Bash(git push --force*)", "Bash(git clean -f*)"],
         "additionalDirectories": ["../last-asylum-plague-tools"]
     },
