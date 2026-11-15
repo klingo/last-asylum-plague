@@ -87,12 +87,16 @@
                     </div>
                 </div>
 
-                <!-- What is stored and who can read it. -->
+                <!-- What is stored in this browser and on the sync server, and who can read it. -->
                 <details>
                     <summary data-i18n="sync.aboutHeading"></summary>
+                    <div class="table-wrap">
+                        <table class="sync-data" id="sync-data"></table>
+                    </div>
+                    <p class="sync-legend text-dim" id="sync-data-legend"></p>
                     <ul class="sync-about">
-                        <li data-i18n="sync.aboutStored"></li>
                         <li data-i18n="sync.aboutAccess"></li>
+                        <li data-i18n="sync.aboutIp"></li>
                         <li data-i18n="sync.aboutExpiry"></li>
                     </ul>
                 </details>

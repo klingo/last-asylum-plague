@@ -250,9 +250,78 @@
         "heading": "Sync",
         "description": "Use the same settings and progress on all your devices. No account needed.",
         "aboutHeading": "What is synced?",
-        "aboutStored": "Your settings and progress: priorities, weekly spend, gear, skills and lord specialty. Not the language.",
-        "aboutAccess": "No account: anyone with your sync key can see and change this data. Nothing personal is stored.",
+        "aboutAccess": "No account, name or email: anyone with your sync key can see and change the synced data.",
+        "aboutIp": "While you use sync, the server also counts your IP address for up to a day, only to limit the guessing of codes.",
         "aboutExpiry": "Data that isn't synced for 180 days is deleted.",
+        "data": {
+            "colName": "Data",
+            "colBrowser": "This browser",
+            "colServer": "Sync server",
+            "mark": {
+                "on": "Stored",
+                "waiting": "Stored once sync is on",
+                "never": "Never stored"
+            },
+            "server": {
+                "hash": "Hash only",
+                "pairing": "10 minutes",
+                "ip": "Up to a day"
+            },
+            "rows": {
+                "settings": {
+                    "name": "Settings",
+                    "text": "Weekly spend, item priorities, selected events and passes, locked offers, skipped packs, extra Banknotes and currency, mine progress, notification switches, hidden Today entries."
+                },
+                "gearProgress": {
+                    "name": "Gear progress",
+                    "text": "The steps done on the Gear Upgrade Path, per guide and faction."
+                },
+                "skillProgress": {
+                    "name": "Skill progress",
+                    "text": "The steps done on the Skill Upgrade Path, per faction."
+                },
+                "heroStars": {
+                    "name": "Hero stars",
+                    "text": "The stars, weapon stars and awakening level of each hero (My Heroes), and the faction shown."
+                },
+                "lordSetup": {
+                    "name": "Lord setup",
+                    "text": "The level, extra points, lord and builds of the Lord Specialty."
+                },
+                "locale": {
+                    "name": "Language",
+                    "text": "English or German."
+                },
+                "setupOpen": {
+                    "name": "Weekly setup panel",
+                    "text": "Whether the panel at the top of the pages (weekly spend, events and passes) is open or closed: the Edit button."
+                },
+                "collapsedSections": {
+                    "name": "Collapsed Calendar cards",
+                    "text": "Which cards of the Calendar page you collapsed."
+                },
+                "notified": {
+                    "name": "Shown notifications",
+                    "text": "When each kind of browser notification was last shown, so tabs and reloads don't repeat it."
+                },
+                "githubToken": {
+                    "name": "Admin token",
+                    "text": "The GitHub token of Settings > Admin, which starts the workflow that records event runs. Stored only if you entered one."
+                },
+                "sync": {
+                    "name": "Sync key",
+                    "text": "The key that opens your synced data. Stored here only while sync is on; the server keeps only its hash."
+                },
+                "pairing": {
+                    "name": "Pairing code",
+                    "text": "The code of \"Connect another device\" and the sync key it hands over, until it is used or expires."
+                },
+                "ip": {
+                    "name": "IP address",
+                    "text": "Counted in the limits that stop code guessing."
+                }
+            }
+        },
         "stateOff": "Sync is off",
         "stateOffText": "Your data is stored only in this browser.",
         "stateOn": "Sync is on",

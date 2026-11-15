@@ -28,7 +28,9 @@ to `master` and starts the deployment, so the change shows up on the site after 
 lord progress; the language stays per device). "Connect another device" turns sync on and shows a six-digit code with a
 QR code (valid 10 minutes, one use) that the other device types (phone to desktop) or scans (desktop to phone); after a
 confirmation that device's own data is replaced by the synced one. The sync key behind it is only a backup (copy it or
-its link, make a new one, turn sync off here, or delete the data from the server). A change is sent two seconds after it
+its link, make a new one, turn sync off here, or delete the data from the server). "What is synced?" is a table of every
+entry this browser stores and what of it reaches the server (a tick for stored, a grey tick for stored once sync is on, a
+red cross for never), including what only the server keeps: the key's hash, the pairing code and the IP counters. A change is sent two seconds after it
 is made; a page start (unless the device synced within the last minute; a reload by hand always does) and coming back to the tab take what other devices changed (a change made offline wins over an
 older one elsewhere). The data lives on a small Cloudflare Worker (`worker/`), keyed by the SHA-256 of the key and
 deleted after 180 days without use; the button stays hidden until the build has that server (`SYNC_URL` in

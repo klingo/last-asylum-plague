@@ -3,13 +3,19 @@
  * device" turns sync on if needed and shows a six-digit code with a QR code of the link that holds it, valid for 10
  * minutes and one use: the other device types the code (phone to desktop) or scans the QR code (desktop to phone).
  * Connecting replaces the device's data with the synced one, so it always asks first. The key itself is only a backup
- * (copy it, or open its link on a device).
+ * (copy it, or open its link on a device). "What is synced?" lists every entry the browser stores (`STORAGE_KEYS`) and
+ * what the server keeps (the synced entries, the key's hash, the pairing code, the IP counters), with a mark per place.
  */
 import { startPage } from '../ui/page.js';
 import '../styles/pages/sync.css';
-import { formatPairingCode, formatSyncKey, parsePairingCode, parseSyncKey } from '../core/sync.js';
+import { SYNCED_ENTRIES, formatPairingCode, formatSyncKey, parsePairingCode, parseSyncKey } from '../core/sync.js';
+import { BASE_URL } from '../ui/base-url.js';
 import { formatMoment } from '../ui/datetime.js';
-import { t } from '../ui/i18n.js';
+import { escapeAttr } from '../ui/html.js';
+import { t, tHtml } from '../ui/i18n.js';
+import { infoIconHtml } from '../ui/info-icon.js';
+import { STORAGE_KEYS } from '../ui/storage.js';
+import { enableInfoTooltips } from '../ui/tooltip.js';
 import {
     connectWithCode,
     connectWithKey,
@@ -29,6 +35,16 @@ const TICK_MS = 1000;
 const PAIRING_SLACK_MS = 5000;
 // The calls that end in a status line instead of a message.
 const PROBLEMS = ['network', 'rateLimited', 'notFound', 'error'];
+// The marks of the data table: the icon, and whether it is shown muted (stored once sync is on).
+const MARKS = {
+    on: { icon: 'tick', muted: false },
+    waiting: { icon: 'tick', muted: true },
+    never: { icon: 'cross', muted: false },
+};
+// What the server keeps besides the synced entries, with no counterpart in this browser: the table's last rows.
+const SERVER_ONLY = ['pairing', 'ip'];
+// What the server keeps of an entry that isn't synced as it is (`sync.data.server.<name>`).
+const SERVER_TEXT = { sync: 'hash', pairing: 'pairing', ip: 'ip' };
 
 // The question waiting for a yes: `{ kind: 'code' | 'key' | 'rotate' | 'delete', value }`, or null.
 let pending = null;
@@ -63,6 +79,54 @@ function renderState(status) {
     badge.className = `sync-badge sync-badge--${status.on ? 'on' : 'off'}`;
     badge.textContent = t(status.on ? 'sync.stateOn' : 'sync.stateOff');
     byId('sync-state-text').textContent = t(status.on ? 'sync.stateOnText' : 'sync.stateOffText');
+}
+
+/** A tick or cross; `plain` (the legend) leaves out its alt text and tooltip, the label is beside it. */
+function markHtml(kind, plain = false) {
+    const { icon, muted } = MARKS[kind];
+    const label = escapeAttr(t(`sync.data.mark.${kind}`));
+    const text = plain ? 'alt=""' : `alt="${label}" title="${label}"`;
+    return `<img class="sync-mark${muted ? ' sync-mark--muted' : ''}" src="${BASE_URL}assets/ui/${icon}.png" ${text} />`;
+}
+
+/** What the sync server keeps of an entry: a mark (synced entries), a text, or nothing. */
+function serverCellHtml(name, status) {
+    if (name in SERVER_TEXT) {
+        return `<span class="${status.on ? '' : 'sync-mark--muted'}">${tHtml(`sync.data.server.${SERVER_TEXT[name]}`)}</span>`;
+    }
+    return markHtml(SYNCED_ENTRIES.includes(name) ? (status.on ? 'on' : 'waiting') : 'never');
+}
+
+/** Every entry this browser stores and what of it reaches the sync server, as a table (and the legend of its marks). */
+function renderData(status) {
+    const names = [
+        ...SYNCED_ENTRIES,
+        ...Object.keys(STORAGE_KEYS).filter((name) => !SYNCED_ENTRIES.includes(name)),
+        ...SERVER_ONLY,
+    ];
+    const rows = names.map((name) => {
+        const row = `sync.data.rows.${name}`;
+        // The sync key is only on this device while sync is on; the server-only rows never are.
+        const stored = name === 'sync' ? (status.on ? 'on' : 'waiting') : SERVER_ONLY.includes(name) ? 'never' : 'on';
+        const browser = markHtml(stored);
+        return `<tr>
+            <td>${tHtml(`${row}.name`)}${infoIconHtml(t(`${row}.text`))}</td>
+            <td class="sync-data__mark">${browser}</td>
+            <td class="sync-data__mark">${serverCellHtml(name, status)}</td>
+        </tr>`;
+    });
+    byId('sync-data').innerHTML = `<thead><tr>
+        <th>${tHtml('sync.data.colName')}</th>
+        <th class="sync-data__mark">${tHtml('sync.data.colBrowser')}</th>
+        <th class="sync-data__mark">${tHtml('sync.data.colServer')}</th>
+    </tr></thead><tbody>${rows.join('')}</tbody>`;
+    enableInfoTooltips(byId('sync-data'));
+    byId('sync-data-legend').innerHTML = Object.keys(MARKS)
+        .map(
+            (kind) =>
+                `<span class="sync-legend__item">${markHtml(kind, true)} ${tHtml(`sync.data.mark.${kind}`)}</span>`,
+        )
+        .join('');
 }
 
 function renderStatus(status) {
@@ -119,6 +183,7 @@ function renderPairing() {
 function render() {
     const status = syncStatus();
     renderState(status);
+    renderData(status);
     renderStatus(status);
     renderConfirm();
     renderResult();

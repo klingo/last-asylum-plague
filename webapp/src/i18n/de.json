@@ -250,9 +250,78 @@
         "heading": "Synchronisierung",
         "description": "Nutze dieselben Einstellungen und denselben Fortschritt auf allen deinen Geräten. Kein Konto nötig.",
         "aboutHeading": "Was wird synchronisiert?",
-        "aboutStored": "Deine Einstellungen und dein Fortschritt: Prioritäten, Wochenbudget, Ausrüstung, Skills und Lord-Spezialisierung. Nicht die Sprache.",
-        "aboutAccess": "Kein Konto: Wer deinen Sync-Schlüssel hat, kann diese Daten sehen und ändern. Es werden keine persönlichen Daten gespeichert.",
+        "aboutAccess": "Kein Konto, kein Name, keine E-Mail: Wer deinen Sync-Schlüssel hat, kann die synchronisierten Daten sehen und ändern.",
+        "aboutIp": "Während du die Synchronisierung nutzt, zählt der Server außerdem bis zu einen Tag lang deine IP-Adresse, nur um das Erraten von Codes zu begrenzen.",
         "aboutExpiry": "Daten, die 180 Tage lang nicht synchronisiert werden, werden gelöscht.",
+        "data": {
+            "colName": "Daten",
+            "colBrowser": "Dieser Browser",
+            "colServer": "Sync-Server",
+            "mark": {
+                "on": "Gespeichert",
+                "waiting": "Gespeichert, sobald die Synchronisierung an ist",
+                "never": "Nie gespeichert"
+            },
+            "server": {
+                "hash": "Nur Hash",
+                "pairing": "10 Minuten",
+                "ip": "Bis zu einem Tag"
+            },
+            "rows": {
+                "settings": {
+                    "name": "Einstellungen",
+                    "text": "Wochenbudget, Item-Prioritäten, gewählte Events und Pässe, gesperrte Angebote, übersprungene Pakete, zusätzliche Banknoten und Währung, Minenfortschritt, Benachrichtigungsschalter, ausgeblendete Heute-Einträge."
+                },
+                "gearProgress": {
+                    "name": "Ausrüstungsfortschritt",
+                    "text": "Die erledigten Schritte des Ausrüstungs-Upgrade-Pfads, pro Anleitung und Fraktion."
+                },
+                "skillProgress": {
+                    "name": "Skill-Fortschritt",
+                    "text": "Die erledigten Schritte des Skill-Upgrade-Pfads, pro Fraktion."
+                },
+                "heroStars": {
+                    "name": "Heldensterne",
+                    "text": "Die Sterne, Waffensterne und das Erweckungslevel jedes Helden (Meine Helden) und die angezeigte Fraktion."
+                },
+                "lordSetup": {
+                    "name": "Lord-Setup",
+                    "text": "Die Stufe, zusätzliche Punkte, der Lord und die Builds der Lord-Spezialisierung."
+                },
+                "locale": {
+                    "name": "Sprache",
+                    "text": "Englisch oder Deutsch."
+                },
+                "setupOpen": {
+                    "name": "Wochen-Setup-Panel",
+                    "text": "Ob das Panel oben auf den Seiten (Wochenbudget, Events und Pässe) offen oder zu ist: die Schaltfläche „Bearbeiten“."
+                },
+                "collapsedSections": {
+                    "name": "Eingeklappte Kalender-Karten",
+                    "text": "Welche Karten der Kalender-Seite du eingeklappt hast."
+                },
+                "notified": {
+                    "name": "Angezeigte Benachrichtigungen",
+                    "text": "Wann jede Art von Browser-Benachrichtigung zuletzt angezeigt wurde, damit Tabs und Neuladen sie nicht wiederholen."
+                },
+                "githubToken": {
+                    "name": "Admin-Token",
+                    "text": "Der GitHub-Token aus Einstellungen > Admin, der den Workflow startet, der Event-Läufe einträgt. Nur gespeichert, wenn du einen eingegeben hast."
+                },
+                "sync": {
+                    "name": "Sync-Schlüssel",
+                    "text": "Der Schlüssel, der deine synchronisierten Daten öffnet. Nur hier gespeichert, solange die Synchronisierung an ist; der Server speichert nur seinen Hash."
+                },
+                "pairing": {
+                    "name": "Kopplungscode",
+                    "text": "Der Code von „Weiteres Gerät verbinden“ und der Sync-Schlüssel, den er übergibt, bis er benutzt wird oder abläuft."
+                },
+                "ip": {
+                    "name": "IP-Adresse",
+                    "text": "Wird in den Limits gezählt, die das Erraten von Codes verhindern."
+                }
+            }
+        },
         "stateOff": "Synchronisierung ist aus",
         "stateOffText": "Deine Daten sind nur in diesem Browser gespeichert.",
         "stateOn": "Synchronisierung ist an",

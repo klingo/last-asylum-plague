@@ -13,13 +13,57 @@
 }
 
 .sync-about {
-    margin: 8px 0 0;
+    margin: 16px 0 0;
     padding-left: 20px;
 }
 
 .sync-card summary {
     cursor: pointer;
     font-weight: 600;
+}
+
+/* "What is synced?": a compact table as wide as its content (an entry's description is the tooltip of its info icon). */
+.sync-data {
+    width: auto;
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+.sync-data th,
+.sync-data td {
+    padding: 3px 10px;
+}
+
+.sync-data th.sync-data__mark,
+.sync-data td.sync-data__mark {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* The tick and the cross; muted for what is stored only once sync is on (also the server's texts while it is off). */
+.sync-mark {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.sync-mark--muted {
+    filter: grayscale(1);
+    opacity: 0.45;
+}
+
+.sync-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+    margin: 6px 0 0;
+    font-size: 0.8rem;
+}
+
+.sync-legend__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 /* Whether anything is stored on the sync server: a badge (off in yellow, on in green) and a sentence. */
