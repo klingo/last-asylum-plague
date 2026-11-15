@@ -82,6 +82,17 @@
     --bar-color: var(--gold);
 }
 
+/* A slot where the same action counts for the other rotation too (Survival Battle on a day of the Alliance Duel's
+   matching phase): a blue ring outside the bar with a dark gap (blue stands out from both the green and the gold of
+   the bar, which keeps its on now / upcoming colour). The 4px fit the bar's margin in its row and the 4px the masks of
+   a cut bar leave. */
+.schedule__swatch--paired,
+.schedule__bar.schedule__bar--paired {
+    box-shadow:
+        0 0 0 2px var(--panel),
+        0 0 0 4px var(--accent);
+}
+
 /* The local hour of every slot boundary, small, above the phases (the lines are in the grid). */
 .schedule__row--hours {
     min-height: 16px;

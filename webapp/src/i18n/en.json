@@ -426,7 +426,9 @@
             "now": "Now · {current} until {time}, then {next}",
             "nowOff": "Now · no phase until {time}, then {next}",
             "active": "On now",
-            "upcoming": "Upcoming"
+            "upcoming": "Upcoming",
+            "paired": "Counts for {event} too",
+            "pairedWith": "Counts for {event} too: {phase}"
         },
         "kingdomWar": {
             "lead": "War weeks run from Monday to the end of Saturday, followed by a break week. {scramble} is every Saturday.",

@@ -235,6 +235,22 @@
                     "items": {
                         "$ref": "#/definitions/earnPoint"
                     }
+                },
+                "pairs_with": {
+                    "type": "object",
+                    "description": "A phase of another rotation in which the same action also counts for this one (Survival Battle's Build Territory and the Alliance Duel's Territory Development). The Calendar rings the slots of this phase that run while that phase is on. The other rotation's slots must be a multiple of this one's length, so a slot lies within one of them.",
+                    "required": ["rotation", "phase"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "rotation": {
+                            "$ref": "pack_data.schema.json#/definitions/id",
+                            "description": "The other rotation's key in `event_rotations`."
+                        },
+                        "phase": {
+                            "$ref": "pack_data.schema.json#/definitions/id",
+                            "description": "The `id` of the phase in that rotation."
+                        }
+                    }
                 }
             }
         },

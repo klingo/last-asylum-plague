@@ -2,7 +2,9 @@
  * The event rotations (Survival Battle, Alliance Duel): a chart of the slot on now and the 24 hours after it (a
  * rotation of day-long slots: today and the next 6 days), a phase's own art (its `image`; a placeholder tile without)
  * as a small thumbnail before its name and as the art of its bars' hover cards, which also list the activities that
- * give points in the phase.
+ * give points in the phase. A slot that runs while the phase of the other rotation it pairs with is on (the same
+ * action counts for both: Survival Battle's Build Territory on the Alliance Duel's Territory Development day) has a
+ * ring around its bar and the other event's name in it ("+ Alliance Duel"), and says so in its hover card.
  */
 import { localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
@@ -20,7 +22,7 @@ import {
     viewOf,
     windowBoundaries,
 } from '../../ui/timeline.js';
-import { HOUR_MS, rotationSlots, rotationWindow } from '../../core/schedule.js';
+import { HOUR_MS, pairedSlot, rotationSlots, rotationWindow } from '../../core/schedule.js';
 import { ctx } from './state.js';
 import { EVENT_ROTATION_DAY_HOURS, EVENT_ROTATION_HOURS, ROTATION_DAYS } from './constants.js';
 
@@ -34,14 +36,28 @@ function earnLines(phase) {
     return lines.length > 0 ? ['', ...lines] : [];
 }
 
+/** The name of the event of the rotation with the key `rotationId` (a rotation's key is its event's id). */
+function rotationEventName(rotationId) {
+    return localizedName(ctx.packData.events[rotationId].name);
+}
+
 /**
- * One slot's hover card: the phase, its times in local time (a day-long slot as the Weekday Offers show theirs) and
- * the activities that give points in it.
+ * One slot's hover card: the phase, its times in local time (a day-long slot as the Weekday Offers show theirs), the
+ * phase of the other rotation the same action counts for too (`paired`, if any) and the activities that give points
+ * in it.
  */
-function slotTooltip(slot, daySlot) {
+function slotTooltip(slot, daySlot, paired) {
     return [
         localizedName(slot.phase.name),
         (daySlot ? formatDaySpan : formatRunRange)(slot.start, slot.end),
+        ...(paired
+            ? [
+                  t('calendar.eventRotation.pairedWith', {
+                      event: rotationEventName(slot.phase.pairs_with.rotation),
+                      phase: localizedName(paired.phase.name),
+                  }),
+              ]
+            : []),
         ...earnLines(slot.phase),
     ].join('\n');
 }
@@ -51,7 +67,7 @@ function slotTooltip(slot, daySlot) {
  * slots shows today and the next 6 days; any other goes from the start of the slot on now (or of the local day, if it
  * began yesterday) to 24 hours after it ends, as local day columns cut to that window. One row per phase with a bar for
  * each of its slots (one can run over midnight, e.g. 23:00 to 03:00), the slots' start times as hours above the rows
- * with a faint line each, and a line for now.
+ * with a faint line each, and a line for now. The legend also explains the ring of a paired slot.
  */
 function renderEventRotations() {
     const container = document.getElementById('event-rotations');
@@ -78,18 +94,25 @@ function renderEventRotations() {
                     const image = eventImageUrl(phase.image); // null without one
                     const bars = slots
                         .filter((slot) => slot.phaseId === phase.id)
-                        .map((slot) =>
-                            barHtml(
+                        .map((slot) => {
+                            const paired = pairedSlot(ctx.packData.event_rotations, slot);
+                            return barHtml(
                                 {
                                     start: slot.start,
                                     end: slot.end,
                                     active: slot.start <= nowMs && nowMs < slot.end,
                                 },
                                 view,
-                                slotTooltip(slot, daysView),
-                                { image },
-                            ),
-                        );
+                                slotTooltip(slot, daysView, paired),
+                                paired
+                                    ? {
+                                          image,
+                                          className: 'schedule__bar--paired',
+                                          label: `+ ${rotationEventName(slot.phase.pairs_with.rotation)}`,
+                                      }
+                                    : { image },
+                            );
+                        });
                     return `
                         <div class="schedule__row schedule__row--ingame">
                             <div class="schedule__label" title="${escapeHtml(name)}">${thumbHtml(image)}${escapeHtml(name)}</div>
@@ -114,6 +137,14 @@ function renderEventRotations() {
                       time: formatClock(next.start),
                       next: localizedName(next.phase.name),
                   });
+            // One legend entry for each other rotation some phase pairs with (ringed bars).
+            const pairedLegend = [...new Set(rotation.phases.map((phase) => phase.pairs_with?.rotation))]
+                .filter(Boolean)
+                .map(
+                    (rotationId) =>
+                        `<span><i class="schedule__swatch schedule__swatch--paired"></i>${tHtml('calendar.eventRotation.paired', { event: escapeHtml(rotationEventName(rotationId)) })}</span>`,
+                )
+                .join('');
             // The chart is drawn again when the phase on now ends (between phases: when the next one starts).
             return `
                 <section class="card schedule schedule--event-rotation${daysView ? ' schedule--event-rotation-days' : ''}">
@@ -125,6 +156,7 @@ function renderEventRotations() {
                             <span><i class="schedule__swatch schedule__swatch--today"></i>${escapeHtml(nowLine)}</span>
                             <span><i class="schedule__swatch schedule__swatch--active"></i>${tHtml('calendar.eventRotation.active')}</span>
                             <span><i class="schedule__swatch schedule__swatch--upcoming"></i>${tHtml('calendar.eventRotation.upcoming')}</span>
+                            ${pairedLegend}
                         </div>
                         <div class="schedule__scroll">
                             <div class="schedule__chart schedule__chart--days" ${chartAttrs(boundaries, 1, nowMs, current ? current.end : next.start)}>

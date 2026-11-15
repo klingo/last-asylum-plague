@@ -12,7 +12,8 @@
  *   and the runs of days it is on sale (`weekdayRuns`);
  * - event rotations (`event_rotations`: gameplay events running through a fixed list of slots on a fixed clock, a
  *   slot may have no phase): the phase on now and the next (`rotationSlots`), every slot of a window
- *   (`rotationWindow`) and the week a moment falls in (`rotationWeek`);
+ *   (`rotationWindow`), the week a moment falls in (`rotationWeek`) and the slot of another rotation where the same
+ *   action counts too (`pairedSlot`);
  * - the calendar helpers `dayDate`, `weekdayIndex` and `isoWeekNumber`.
  * Pure module: no clock of its own, callers pass `today` / `nowMs`.
  */
@@ -478,6 +479,20 @@ function rotationSlots(rotation, nowMs) {
 }
 
 /**
+ * The slot of another rotation that `slot` pairs with (its phase's `pairs_with`: the same action counts for both), or
+ * null if the phase has none or the paired phase isn't on while `slot` runs (a slot lies within one slot of the other
+ * rotation, verify-data).
+ */
+function pairedSlot(rotations, slot) {
+    const pair = slot.phase.pairs_with;
+    if (!pair) {
+        return null;
+    }
+    const { current } = rotationSlots(rotations[pair.rotation], slot.start);
+    return current?.phaseId === pair.phase ? current : null;
+}
+
+/**
  * The rotation's current slot if it started within the last `graceMs` of `nowMs` (a round has just begun), else null
  * (also in a slot without a phase).
  */
@@ -537,4 +552,5 @@ export {
     freshSlot,
     rotationWindow,
     rotationWeek,
+    pairedSlot,
 };

@@ -258,6 +258,10 @@
                         "de": "Gebietsbau"
                     },
                     "image": "survival_battle_build_territory",
+                    "pairs_with": {
+                        "rotation": "alliance_duel",
+                        "phase": "construction"
+                    },
                     "earn_points": [
                         {
                             "text": {
@@ -292,6 +296,10 @@
                         "de": "Soldatentraining"
                     },
                     "image": "survival_battle_train_soldiers",
+                    "pairs_with": {
+                        "rotation": "alliance_duel",
+                        "phase": "war_preparation"
+                    },
                     "earn_points": [
                         {
                             "text": {
@@ -326,6 +334,10 @@
                         "de": "Technologieforschung"
                     },
                     "image": "survival_battle_technology_research",
+                    "pairs_with": {
+                        "rotation": "alliance_duel",
+                        "phase": "research"
+                    },
                     "earn_points": [
                         {
                             "text": {
@@ -360,6 +372,10 @@
                         "de": "Rabenverbesserung"
                     },
                     "image": "survival_battle_enhance_raven",
+                    "pairs_with": {
+                        "rotation": "alliance_duel",
+                        "phase": "raven"
+                    },
                     "earn_points": [
                         {
                             "text": {
@@ -394,6 +410,10 @@
                         "de": "Heldenverbesserung"
                     },
                     "image": "survival_battle_enhance_heroes",
+                    "pairs_with": {
+                        "rotation": "alliance_duel",
+                        "phase": "heroes"
+                    },
                     "earn_points": [
                         {
                             "text": {

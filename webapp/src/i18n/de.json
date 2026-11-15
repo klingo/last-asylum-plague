@@ -426,7 +426,9 @@
             "now": "Jetzt · {current} bis {time}, danach {next}",
             "nowOff": "Jetzt · keine Phase bis {time}, danach {next}",
             "active": "Läuft jetzt",
-            "upcoming": "Bevorstehend"
+            "upcoming": "Bevorstehend",
+            "paired": "Zählt auch für {event}",
+            "pairedWith": "Zählt auch für {event}: {phase}"
         },
         "kingdomWar": {
             "lead": "Kriegswochen laufen von Montag bis zum Ende des Samstags, danach folgt eine Pausenwoche. {scramble} findet jeden Samstag statt.",

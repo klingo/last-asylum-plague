@@ -614,7 +614,8 @@ async function verifyData() {
     });
 
     // 7c. Event rotations (Survival Battle, Alliance Duel): the event exists, the week list fills the week with known
-    // phases (a slot may have none, `null`, but not every one), the art and the items they name exist.
+    // phases (a slot may have none, `null`, but not every one), the art and the items they name exist, a phase's
+    // `pairs_with` names a phase of another rotation whose slots are a multiple of its own length.
     checkCategory('Event Rotations', ({ reportError, reportWarning }) => {
         for (const [id, rotation] of Object.entries(data.event_rotations || {})) {
             if (!events[rotation.event_id]) {
@@ -662,6 +663,26 @@ async function verifyData() {
                         'Rotation Image',
                         `Event rotation "${id}", phase "${phase.name.en}" has no image "${phase.image}" (webapp/public/assets/events/${phase.image}.webp).`,
                     );
+                }
+                const pair = phase.pairs_with;
+                if (pair) {
+                    const other = pair.rotation !== id ? data.event_rotations[pair.rotation] : null;
+                    if (!other) {
+                        reportError(
+                            'Rotation Pair',
+                            `Event rotation "${id}", phase "${phase.name.en}" pairs with "${pair.rotation}", which is not another rotation.`,
+                        );
+                    } else if (!(other.phases || []).some((candidate) => candidate.id === pair.phase)) {
+                        reportError(
+                            'Rotation Pair',
+                            `Event rotation "${id}", phase "${phase.name.en}" pairs with the unknown phase "${pair.phase}" of "${pair.rotation}".`,
+                        );
+                    } else if (other.hours % rotation.hours !== 0) {
+                        reportError(
+                            'Rotation Pair',
+                            `Event rotation "${id}", phase "${phase.name.en}": the ${other.hours}-hour slots of "${pair.rotation}" are not a multiple of its ${rotation.hours} hours.`,
+                        );
+                    }
                 }
                 for (const earn of phase.earn_points || []) {
                     if (!earn.item_id) {

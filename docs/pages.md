@@ -74,6 +74,10 @@ deleted after 180 days without use; the button stays hidden until the build has 
   phase (with its art as a thumbnail, a placeholder tile without, and as the art of its bars' hover cards), a bar for
   each slot with its start time above (4-hour slots), a line for now, local times in the hover card. The hover card has
   the local times and, as a list below them, the activities that give points in the phase (without the points), each with a dot.
+  A Survival Battle slot that runs while the phase of the Alliance Duel it pairs with (`pairs_with`: Enhance Raven with Enhance Raven on Monday, Build Territory with Territory
+  Development on Tuesday, Technology Research with Tech Research on Wednesday, Enhance Heroes with Enhance Heroes on Thursday, Train
+  Soldiers with War Preparation on Friday) is on has a ring around its bar, as the legend says, "+ Alliance Duel" in it, and its hover card names that phase:
+  the same action counts for both events.
   Every chart is on
   the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
   part-way into a day column (a windowed event rotation's first and last day column are cut to its window). Banners, Today and the Deal Ranking's skips show the same local moments.

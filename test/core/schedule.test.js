@@ -10,6 +10,7 @@ import {
     isoWeekNumber,
     listRuns,
     nextRun,
+    pairedSlot,
     planningRun,
     freshSlot,
     recordableIds,
@@ -607,6 +608,30 @@ test('rotation window: a slot the window cuts is included whole', () => {
     );
     assert.equal(slots[0].start, rotationStart);
     assert.equal(slots[2].end, slotAt(12));
+});
+
+test('rotation: a slot pairs with the other rotation only while the paired phase is on', () => {
+    // Territory pairs with the daily rotation's X (Tuesday); Monday is Y.
+    const survival = {
+        ...rotation,
+        phases: phases.map((phase) =>
+            phase.id === 'T' ? { ...phase, pairs_with: { rotation: 'daily', phase: 'X' } } : phase,
+        ),
+    };
+    const daily = {
+        week_starts: 'monday',
+        hours: 24,
+        phases: ['X', 'Y'].map((id) => ({ id, name: { en: id } })),
+        week: ['Y', 'X', 'Y', 'Y', 'Y', 'Y', null],
+    };
+    const rotations = { survival, daily };
+    const slotOf = (k) => rotationWindow(survival, slotAt(k * 4), slotAt(k * 4 + 1))[0];
+    // The week starts on Sunday: slot 7 (28 h in) is Territory on Monday, slot 12 (48 h in) Territory on Tuesday.
+    assert.equal(slotOf(7).phaseId, 'T');
+    assert.equal(pairedSlot(rotations, slotOf(7)), null, 'Monday: the daily phase is Y');
+    assert.equal(slotOf(12).phaseId, 'T');
+    assert.equal(pairedSlot(rotations, slotOf(12)).phaseId, 'X', 'Tuesday: the daily phase is X');
+    assert.equal(pairedSlot(rotations, slotOf(13)), null, 'Soldiers pair with nothing');
 });
 
 test('a round has just begun while its slot started within the grace time', () => {

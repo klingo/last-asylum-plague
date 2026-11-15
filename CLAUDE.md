@@ -149,7 +149,8 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   in `assets/events/` that Today shows for the phase on now and the Calendar's chart as a thumbnail, else the event's own,
   and optional `earn_points`: the activity as the game words it (`text`, without the points), the `points` it gives, `item_id` for
   the item it is about; the Calendar's hover card of a phase lists them in this order, so a phase lists its
-  Diamonds rule first) and `week`, the phase of every slot
+  Diamonds rule first; an optional `pairs_with` `{ rotation, phase }` names a phase of another rotation where the same action counts for both,
+  `pairedSlot` in `core/schedule.js` finds the slots where both are on, and the Calendar rings those) and `week`, the phase of every slot
   (`null`: a slot without a phase, the Alliance Duel's Sunday). The
   sequence is as the game runs it, not a loop (a round of five, Territory > Heroes, then seven rounds of five), so
   every slot is listed. `rotationSlots` (`core/schedule.js`) gives the phase on now (none in a gap) and the next; the Today page shows
