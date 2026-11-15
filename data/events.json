@@ -98,6 +98,14 @@
             "calendar_group": "alliance",
             "image": "elixir_scramble"
         },
+        "expedition_battle": {
+            "name": {
+                "en": "Expedition Battle",
+                "de": "Expeditionskampf"
+            },
+            "category": "ingame_event",
+            "image": "expedition_battle"
+        },
         "full_moon_night": {
             "name": {
                 "en": "Full Moon Night",
@@ -1192,6 +1200,12 @@
             {
                 "start": "2026-11-09",
                 "end": "2026-11-15"
+            }
+        ],
+        "expedition_battle": [
+            {
+                "start": "2026-11-15",
+                "end": "2026-11-16"
             }
         ],
         "falcon_tower_pass": [
