@@ -1082,6 +1082,8 @@
         "daysLabel": "Within days",
         "resultHeading": "Comparison",
         "worth": "Worth",
+        "breakdown": "Made up of",
+        "priorityFactor": "Your priority ×{factor}",
         "cost": "Cheapest cost to get",
         "extras": "Extras you also get",
         "net": "Net cost (cost − extras)",

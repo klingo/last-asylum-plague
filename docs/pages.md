@@ -114,7 +114,8 @@ deleted after 180 days without use; the button stays hidden until the build has 
   Items you can't obtain, only see (the gear sets' MR pieces), aren't listed.
 - **Best Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
   packages you can only buy one of (`exclusive_group`, e.g. calendar packs), ranked by worth.
-- **Compare Items** (`compare.html`) — two items with amounts: the worth of each, and the cheapest guaranteed way to get
+- **Compare Items** (`compare.html`) — two items with amounts: the worth of each and the items it is made of (expected
+  contents, the best choice, ...) with their worth, and the cheapest guaranteed way to get
   it within N days (crafting, choices and shops included, with a shop's free coins; weekly limits reset on Monday).
 - **Spend Rewards** (`spend-rewards.html`) — the track's banner and when it runs, and per tier of a spend track, what
   the extra Banknotes buy (the best packs

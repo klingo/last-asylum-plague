@@ -1082,6 +1082,8 @@
         "daysLabel": "Innerhalb von Tagen",
         "resultHeading": "Vergleich",
         "worth": "Wert",
+        "breakdown": "Zusammensetzung",
+        "priorityFactor": "Deine Priorität ×{factor}",
         "cost": "Günstigste Kosten",
         "extras": "Extras, die du zusätzlich bekommst",
         "net": "Nettokosten (Kosten − Extras)",

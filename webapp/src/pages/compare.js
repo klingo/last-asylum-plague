@@ -1,7 +1,8 @@
 /**
- * Compare Items: two items with amounts (`?a=&an=&b=&bn=&days=`): the worth of each, and the cheapest guaranteed way to
- * get each within N days (`solveNeeds` in core/acquire.js: crafting, choices and shops included; weekly limits reset
- * on Monday). Unlike the other pages it does not use the weekly plan for what to buy.
+ * Compare Items: two items with amounts (`?a=&an=&b=&bn=&days=`): the worth of each and the items it is made of (its
+ * expected contents, the best choice, ...) with their worth, and the cheapest guaranteed way to get each within N days
+ * (`solveNeeds` in core/acquire.js: crafting, choices and shops included; weekly limits reset on Monday). Unlike the
+ * other pages it does not use the weekly plan for what to buy.
  */
 import { startPage } from '../ui/page.js';
 import '../styles/pages/compare.css';
@@ -10,6 +11,7 @@ import { mountValuationPage } from '../ui/valuation-page.js';
 import { getSettings } from '../ui/settings.js';
 import { withLoading } from '../ui/loading.js';
 import { solveNeeds } from '../core/acquire.js';
+import { breakdownParts } from '../ui/grid.js';
 import {
     packageDisplayName,
     itemDisplayName,
@@ -18,7 +20,7 @@ import {
     conversionLabel,
 } from '../ui/labels.js';
 import { createItemPicker } from '../ui/item-picker.js';
-import { banknotesAmount } from '../ui/html.js';
+import { banknotesAmount, hydrateItemIcons } from '../ui/html.js';
 import { formatThousands, formatSignificant, formatPercent } from '../ui/format.js';
 import { t, tHtml, getLocale } from '../ui/i18n.js';
 
@@ -59,7 +61,42 @@ function evaluate(side) {
         seasonalPasses: settings.seasonalPasses,
         worthOf: (id) => valuation.worth(id) ?? 0,
     });
-    return { itemId, amount, worth: Number.isFinite(unitWorth) ? unitWorth * amount : NaN, plan };
+    // What the item is made of, for `amount` of it (a random chest lists an id once per drop).
+    const { parts: unitParts = [], weight } = valuation.plan.values.get(itemId) ?? {};
+    const parts = new Map();
+    for (const part of unitParts) {
+        parts.set(part.id, (parts.get(part.id) || 0) + part.qty * amount);
+    }
+    return {
+        itemId,
+        amount,
+        worth: Number.isFinite(unitWorth) ? unitWorth * amount : NaN,
+        parts: [...parts].map(([id, qty]) => ({ id, qty })),
+        weight,
+        plan,
+    };
+}
+
+/**
+ * The items a side's worth is made of, each with its worth, as a grid whose worths line up with the total above:
+ * side a ends with them, side b starts with them (the table is mirrored). A priority other than Normal on the item
+ * itself multiplies the sum, so it gets a line of its own.
+ */
+function breakdownHtml(r, side) {
+    if (!r?.parts.length) {
+        return '';
+    }
+    const cells = breakdownParts(r.parts, data, valuation).map((part) => {
+        const name = `<span class="compare-breakdown__name item-cell">${part.item}</span>`;
+        const worth = `<span class="compare-breakdown__worth">${part.unknown ? part.incomplete : part.worth}</span>`;
+        return side === 'a' ? name + worth : worth + name;
+    });
+    if (r.weight !== undefined) {
+        cells.push(
+            `<span class="compare-breakdown__note">${tHtml('compare.priorityFactor', { factor: formatSignificant(r.weight) })}</span>`,
+        );
+    }
+    return `<div class="compare-breakdown compare-breakdown--${side}">${cells.join('')}</div>`;
 }
 
 function stepsHtml(plan, locale) {
@@ -137,6 +174,15 @@ function render(results) {
                 (r, v) => worthHtml(v),
                 (x, y) => x > y,
             )}
+            ${
+                a?.parts.length || b?.parts.length
+                    ? `<tr>
+                <td class="compare-table__a">${breakdownHtml(a, 'a')}</td>
+                <th scope="row" class="compare-table__label">${tHtml('compare.breakdown')}</th>
+                <td class="compare-table__b">${breakdownHtml(b, 'b')}</td>
+            </tr>`
+                    : ''
+            }
             ${row(
                 t('compare.cost'),
                 (r) => (r.plan.reachable ? r.plan.totalCost : NaN),
@@ -156,6 +202,7 @@ function render(results) {
                 <td class="compare-table__b">${b ? stepsHtml(b.plan, locale) : ''}</td>
             </tr>
         </tbody>`;
+    hydrateItemIcons(compareTable);
     const parts = [];
     if (a && b && a.worth > 0 && b.worth > 0) {
         const [more, less] = a.worth >= b.worth ? [a, b] : [b, a];

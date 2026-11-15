@@ -102,6 +102,32 @@
     list-style-position: inside;
     padding-left: 0;
 }
+
+/* The items a side is made of: names and worths in two columns, the worths on the edge of the total's cell. */
+.compare-breakdown {
+    display: grid;
+    align-items: center;
+    gap: 4px 12px;
+    font-size: 0.9rem;
+}
+
+.compare-breakdown--a {
+    grid-template-columns: 1fr auto;
+}
+
+.compare-breakdown--b {
+    grid-template-columns: auto 1fr;
+}
+
+.compare-breakdown--a .compare-breakdown__name {
+    justify-content: flex-end;
+}
+
+.compare-breakdown__note {
+    grid-column: 1 / -1;
+    color: var(--text-dim);
+}
+
 @media (max-width: 640px) {
     /* Compare's result table: the label on a line of its own, the two sides side by side under it. */
     .compare-table,
