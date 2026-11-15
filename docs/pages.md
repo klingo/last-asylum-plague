@@ -78,7 +78,7 @@ deleted after 180 days without use; the button stays hidden until the build has 
   the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
   part-way into a day column (a windowed event rotation's first and last day column are cut to its window). Banners, Today and the Deal Ranking's skips show the same local moments.
   Below them the **Kingdom War** box (`kingdom_war` in `events.json`, `core/kingdom-war.js`): the current week and the
-  4 after it, a row for each war week (Week 1, Week 2, Week 3: Finals: Monday's reset to the end of Saturday, its name
+  3 after it, a row for each war week (Week 1, Week 2, Week 3: Finals: Monday's reset to the end of Saturday, its name
   on the bar; the break is the empty gap between Week 3 and the next Week 1) and one for the Royal City Scramble, a
   faint bar on every Saturday (the break week too) with the 4 hours as a thin bar on top (to scale, so the day is easy to see and the hours are where they fall).
   The faint bar has the hover card (the scramble's local hours, 12:00–16:00 server time). A line says which week is on

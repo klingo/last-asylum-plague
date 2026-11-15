@@ -4,7 +4,7 @@
  * their `available_days`, coloured by their ratio), for each event rotation (Survival Battle, Alliance Duel) a chart
  * of the slot on now and the 24 hours after it (today and the next 6 days for day-long slots): one row per phase, a bar per slot with the
  * activities that give points in its hover card, and the Kingdom War (its weeks, the break and the Royal City
- * Scramble, `core/kingdom-war.js`) over 5 weeks. Every chart is on the user's local days (`ui/timeline.js`); the
+ * Scramble, `core/kingdom-war.js`) over 4 weeks. Every chart is on the user's local days (`ui/timeline.js`); the
  * game's day starts at 02:00 UTC, where its runs' bars begin and end. Every card collapses (`ui/collapsible.js`).
  */
 import { startPage } from '../../ui/page.js';

@@ -253,6 +253,11 @@ a.schedule__bar {
     background: color-mix(in srgb, var(--bar-color) 30%, transparent);
 }
 
+/* An ended scramble keeps both: its day faint grey, its hours the solid grey of the other ended bars. */
+.schedule__bar.schedule__bar--day.schedule__bar--past {
+    background: color-mix(in srgb, #4b5263 40%, transparent);
+}
+
 /* Decoration only: the hover card is the day bar's, the pointer goes through to it. */
 .schedule__bar--hours {
     min-width: 4px;

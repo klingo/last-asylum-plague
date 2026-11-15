@@ -1,7 +1,7 @@
 /**
  * The Kingdom War box (`kingdom_war` in events.json, `core/kingdom-war.js`): which war week is on now, and the Royal
- * City Scramble of every Saturday. A chart over the current local week and the 4 after it (a whole cycle and the
- * restart): a row per war week (the break is the gap between Week 3 and the next Week 1) and one for the scramble. A
+ * City Scramble of every Saturday. A chart over the current local week and the 3 after it: a row per war week (the
+ * break is the gap between Week 3 and the next Week 1) and one for the scramble. A
  * war week's bar starts and ends at the game's daily reset in local time; the scramble, 4 hours next to 6-day weeks,
  * is a faint bar for its day (it has the hover card) with its exact hours as a thin bar on top.
  */
