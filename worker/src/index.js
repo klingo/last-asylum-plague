@@ -51,10 +51,14 @@ async function sha256(text) {
     return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-/** A six-digit code. */
+/** A six-digit code, every one equally likely: numbers from the uneven top of the 32-bit range are redrawn. */
 function randomCode() {
-    const [number] = crypto.getRandomValues(new Uint32Array(1));
-    return String(number % 1_000_000).padStart(6, '0');
+    const limit = 2 ** 32 - (2 ** 32 % 1_000_000);
+    const draw = new Uint32Array(1);
+    do {
+        crypto.getRandomValues(draw);
+    } while (draw[0] >= limit);
+    return String(draw[0] % 1_000_000).padStart(6, '0');
 }
 
 /** Whether a page of `origin` may call this server. */
