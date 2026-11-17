@@ -1,17 +1,17 @@
 /**
  * Today (the home page, `index.html`): what runs today (art, name, countdown, linking to its page) and what starts in
  * the next few days (recorded runs and proven forecasts), the phase on now of each event rotation (Survival Battle,
- * Alliance Duel), the Kingdom War's week on now, its Royal City Scramble and Origin of the Curse's phase (an entry can be hidden by its id, with
- * Edit or in Settings: `hiddenTodayEntries`, display only),
- * the weekly plan by when to buy it (daily packs, weekly and longer packs, each event's packs and shop offers) and
- * today's weekday offers with their ratio.
+ * Alliance Duel) with the one after it, the Kingdom War's week on now, its Royal City Scramble and Origin of the Curse's
+ * phase. The level switch (`todayLevel`: essentials, standard, all; `inTodayLevel` in core/schedule.js; display only)
+ * says how much of that is listed, "standard" for someone new.
+ * The page goes on with the weekly plan by when to buy it (daily packs, weekly and longer packs, each event's packs and
+ * shop offers) and today's weekday offers with their ratio.
  */
 import { startPage } from '../ui/page.js';
 import '../styles/pages/today.css';
 import { mountValuationPage } from '../ui/valuation-page.js';
-import { getSettings, setTodayEntryHidden } from '../ui/settings.js';
-import { BASE_URL } from '../ui/base-url.js';
-import { banknotesAmount, buyBadge, escapeAttr, escapeHtml, hydrateItemIcons, tileHtml } from '../ui/html.js';
+import { getSettings, setTodayLevel, updateSettings } from '../ui/settings.js';
+import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, segmentedHtml, tileHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { eventPlanHref, pageHref } from '../ui/url.js';
 import { bellIconHtml, infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
@@ -47,7 +47,17 @@ import { formatRunRange } from '../ui/datetime.js';
 import { isOnSale } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { groupPlanByWhen } from '../core/plan-view.js';
-import { DAY_MS, WEEKDAYS, gameDay, listRuns, rotationSlots, runMoments, weekdayIndex } from '../core/schedule.js';
+import {
+    DAY_MS,
+    TODAY_LEVELS,
+    WEEKDAYS,
+    gameDay,
+    inTodayLevel,
+    listRuns,
+    rotationSlots,
+    runMoments,
+    weekdayIndex,
+} from '../core/schedule.js';
 import { curseStatus, scrambleStatus, warStatus } from '../core/kingdom-war.js';
 
 // An upcoming entry's fill grows over the last hours before it starts (the same for all, whatever it is).
@@ -60,11 +70,11 @@ const SOON_DAYS = 3;
 const PLANNED_KINDS = ['event', 'holiday', 'pass'];
 
 const scheduleCard = document.getElementById('schedule-card');
+const levelSwitch = document.getElementById('level-switch');
+const levelHint = document.getElementById('level-hint');
+const levelHintClose = document.getElementById('level-hint-close');
 const runningList = document.getElementById('running-list');
 const soonList = document.getElementById('soon-list');
-const editButton = document.getElementById('schedule-edit');
-const editHint = document.getElementById('schedule-edit-hint');
-const hiddenLine = document.getElementById('schedule-hidden');
 const offersWrap = document.getElementById('offers-wrap');
 const offersEmpty = document.getElementById('offers-empty');
 const offersTable = document.getElementById('offers-table');
@@ -77,15 +87,13 @@ let valuation = null;
 let renderedDay = null;
 // The offers' open Details blocks (kept across re-renders).
 const offerExpanded = new Set();
-// Edit mode of the schedule card: every entry is listed (a hidden one dimmed) with a switch to hide or show it.
-let editing = false;
 
 /**
  * An entry of a list. `start` / `end` are moments (ms).
  * - A run from the schedule (whole game days): the event's, pass's or track's name, its own short line beside it,
  *   when it starts and ends in local time (and "expected" for a forecast), a link if it has a page.
  * - A phase of an event rotation (Survival Battle, Alliance Duel): the phase's name as the title, the event's name beside it, the
- *   slot's times in local time, and (as an info icon) how to earn points in it.
+ *   slot's times in local time, the phase after it with a countdown (`next`) and (as an info icon) how to earn points in it.
  * - A war week or the Royal City Scramble of the Kingdom War: its name as the title, the war's name beside it, its
  *   times in local time. A phase of Origin of the Curse the same, with the event's name beside it.
  */
@@ -108,7 +116,8 @@ function runEntry(id, kind, run, state, forecast = false) {
     };
 }
 
-function rotationEntry(rotation, slot, state) {
+/** `following`: the slot after a running one, shown on its entry as what comes next (none for an upcoming entry). */
+function rotationEntry(rotation, slot, state, following = null) {
     const event = data.events[rotation.event_id];
     return {
         id: rotation.event_id,
@@ -121,6 +130,7 @@ function rotationEntry(rotation, slot, state) {
         href: null,
         dates: formatRunRange(slot.start, slot.end),
         earnPoints: slot.phase.earn_points || [],
+        next: following && { name: localizedName(following.phase.name), start: following.start },
         notify: notifiesRotation(rotation),
         start: slot.start,
         end: slot.end,
@@ -223,11 +233,9 @@ function entryHtml(entry) {
     const art = url
         ? `<img class="today-entry__art" src="${url}" alt="" loading="lazy" decoding="async" />`
         : '<span class="today-entry__art today-entry__art--none" aria-hidden="true"></span>';
-    // Editing: no link (the switch is the one control), and a switch that is on while the entry is shown.
-    const linked = entry.href && !editing;
-    const tag = linked ? 'a' : 'div';
-    const link = linked ? ` href="${escapeHtml(entry.href)}"` : '';
-    const classes = `today-entry today-entry--${entry.state}${entry.forecast ? ' today-entry--forecast' : ''}${editing ? ' today-entry--editing' : ''}${entry.hidden ? ' today-entry--hidden' : ''}`;
+    const tag = entry.href ? 'a' : 'div';
+    const link = entry.href ? ` href="${escapeHtml(entry.href)}"` : '';
+    const classes = `today-entry today-entry--${entry.state}${entry.forecast ? ' today-entry--forecast' : ''}`;
     // How to earn points in the phase: an info icon beside the title, its tooltip a heading and the rules, one per
     // line, each with the item's icon.
     const earnRows =
@@ -242,6 +250,9 @@ function entryHtml(entry) {
             : null;
     const until = running ? entry.end : entry.start;
     const planShare = running ? planShareHtml(entry) : '';
+    const nextCountdown = entry.next
+        ? `<span class="event-banner__countdown" data-until="${entry.next.start}" data-state="upcoming">${escapeHtml(countdownText('upcoming', entry.next.start))}</span>`
+        : '';
     return `
         <${tag} class="${classes}" data-from="${from}" data-to="${to}"${link}>
             ${art}
@@ -253,26 +264,11 @@ function entryHtml(entry) {
                     ${earnRows ? infoIconHtml(earnRows.map((row) => row.text).join('\n'), earnRows) : ''}
                     ${entry.notify ? bellIconHtml(t('today.notificationOn')) : ''}
                 </span>
-                <span class="today-entry__dates">${escapeHtml(entry.dates)}</span>
+                <span class="today-entry__dates">${escapeHtml(entry.dates)}${entry.next ? ` · ${tHtml('today.nextPhase', { name: escapeHtml(entry.next.name), countdown: nextCountdown })}` : ''}</span>
             </div>
             <span class="today-entry__kind">${tHtml(SCHEDULE_KIND_LABELS[entry.kind])}</span>
             <span class="today-entry__time event-banner__countdown" data-until="${until}" data-state="${entry.state}">${escapeHtml(countdownText(entry.state, until))}</span>
-            ${editing ? `<input type="checkbox" class="switch today-entry__show" role="switch" data-entry-id="${escapeAttr(entry.id)}" aria-label="${escapeAttr(t('today.showEntry', { name: entry.title }))}"${entry.hidden ? '' : ' checked'} />` : ''}
         </${tag}>`;
-}
-
-/**
- * The Edit button (its label), the hint shown while editing and, otherwise, the line saying how many entries are hidden
- * with where to show them again.
- */
-function renderEditControls(hiddenCount) {
-    editButton.textContent = t(editing ? 'today.editDone' : 'today.edit');
-    editHint.hidden = !editing;
-    hiddenLine.hidden = editing || hiddenCount === 0;
-    hiddenLine.innerHTML = tHtml('today.hidden', {
-        count: formatThousands(hiddenCount),
-        link: `<a href="${BASE_URL}settings.html#display">${tHtml('nav.settings')}</a>`,
-    });
 }
 
 /** Sets each entry's fill (0 to 1) from the moments it runs between; called on render and once a minute. */
@@ -292,8 +288,31 @@ function updateProgress() {
 }
 
 /**
+ * The level switch (essentials, standard, all) with how many entries each level lists, and the one-time hint about it
+ * until it is closed or a level chosen. Keeps the keyboard focus on the switch across the redraw.
+ */
+function renderLevelSwitch(counts) {
+    const settings = getSettings();
+    const hadFocus = levelSwitch.contains(document.activeElement);
+    levelSwitch.innerHTML = segmentedHtml({
+        name: 'today-level',
+        ariaLabel: t('today.levelLabel'),
+        options: TODAY_LEVELS.map((level) => ({
+            value: level,
+            label: `${tHtml(`today.level.${level}`)} (${formatThousands(counts[level])})`,
+        })),
+        current: settings.todayLevel,
+    });
+    if (hadFocus) {
+        levelSwitch.querySelector('input:checked').focus();
+    }
+    levelHint.hidden = settings.todayLevelHintClosed;
+}
+
+/**
  * What runs today (ending first) and what starts in the next days: recorded runs and proven forecasts, plus the phase
- * an event rotation (Survival Battle, Alliance Duel) is in, if any, and the one that follows it, and the Kingdom War's entries.
+ * an event rotation (Survival Battle, Alliance Duel) is in, if any, with the one that follows it (a rotation between
+ * two phases has that one as an entry of its own), and the Kingdom War's entries; as far as the chosen level goes.
  */
 function renderSchedule() {
     const today = gameDay(new Date()).day;
@@ -305,9 +324,10 @@ function renderSchedule() {
     for (const rotation of Object.values(data.event_rotations || {})) {
         const { current, next } = rotationSlots(rotation, now);
         if (current) {
-            running.push(rotationEntry(rotation, current, 'running'));
+            running.push(rotationEntry(rotation, current, 'running', next));
+        } else {
+            soon.push(rotationEntry(rotation, next, 'upcoming'));
         }
-        soon.push(rotationEntry(rotation, next, 'upcoming'));
     }
     if (data.kingdom_war) {
         const war = kingdomWarEntries(data.kingdom_war, now, today);
@@ -318,19 +338,19 @@ function renderSchedule() {
     // The one ending first on top (the kind only breaks ties).
     running.sort((a, b) => a.end - b.end || order(a, b));
     soon.sort((a, b) => a.start - b.start || order(a, b));
-    // The user's hidden entries are left out (editing: shown dimmed, to switch them on again).
-    const hiddenIds = new Set(getSettings().hiddenTodayEntries);
+    // Only what the chosen level lists.
+    const { todayLevel } = getSettings();
     const listHtml = (entries, emptyKey) => {
-        const shown = editing ? entries : entries.filter(({ id }) => !hiddenIds.has(id));
-        const empty = entries.length > 0 ? 'today.allHidden' : emptyKey;
+        const shown = entries.filter(({ kind }) => inTodayLevel(kind, todayLevel));
         return (
-            shown.map((entry) => entryHtml({ ...entry, hidden: hiddenIds.has(entry.id) })).join('') ||
-            `<p class="text-dim">${tHtml(empty)}</p>`
+            shown.map(entryHtml).join('') ||
+            `<p class="text-dim">${tHtml(entries.length === 0 ? emptyKey : 'today.levelEmpty')}</p>`
         );
     };
     runningList.innerHTML = listHtml(running, 'today.runningEmpty');
     soonList.innerHTML = listHtml(soon, 'today.soonEmpty');
-    renderEditControls(new Set([...running, ...soon].filter(({ id }) => hiddenIds.has(id)).map(({ id }) => id)).size);
+    const countAt = (level) => [...running, ...soon].filter(({ kind }) => inTodayLevel(kind, level)).length;
+    renderLevelSwitch(Object.fromEntries(TODAY_LEVELS.map((level) => [level, countAt(level)])));
     enableInfoTooltips(scheduleCard);
     updateProgress();
     // The countdowns tick; once one runs out (a run ended or started) the lists show the new state.
@@ -523,18 +543,13 @@ function render() {
     renderPlan();
 }
 
-editButton.addEventListener('click', () => {
-    editing = !editing;
+levelSwitch.addEventListener('change', (event) => {
+    setTodayLevel(event.target.value);
     renderSchedule();
 });
 
-// An entry's switch (editing): on = shown. Hiding is display only, it leaves the plan and the Calendar alone.
-scheduleCard.addEventListener('change', (event) => {
-    const input = event.target.closest('.today-entry__show');
-    if (!input) {
-        return;
-    }
-    setTodayEntryHidden(input.dataset.entryId, !input.checked);
+levelHintClose.addEventListener('click', () => {
+    updateSettings({ todayLevelHintClosed: true });
     renderSchedule();
 });
 

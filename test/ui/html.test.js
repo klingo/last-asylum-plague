@@ -8,6 +8,7 @@ import {
     escapeAttr,
     escapeHtml,
     itemIconSlot,
+    segmentedHtml,
     statHtml,
     tileHtml,
 } from '../../webapp/src/ui/html.js';
@@ -38,6 +39,24 @@ test('badges, tiles and key figures', () => {
         '<div class="mine-stat"><div class="mine-stat__label">Chance</div><div class="mine-stat__value text-good" id="chance">5 %</div></div>',
     );
     assert.doesNotMatch(statHtml('a', 'b'), / id=/);
+});
+
+test('a segmented choice is a radio group with the current value checked', () => {
+    const html = segmentedHtml({
+        name: 'level',
+        ariaLabel: 'Show "more"',
+        options: [
+            { value: 'a', label: 'Few' },
+            { value: 'b', label: 'More (<b>3</b>)' },
+        ],
+        current: 'b',
+        attrs: 'data-level="x"',
+    });
+    assert.match(html, /^<div class="segmented" role="radiogroup" aria-label="Show &quot;more&quot;">/);
+    assert.equal((html.match(/<input /g) || []).length, 2);
+    assert.match(html, /name="level" value="a" data-level="x" \/>/, 'the other option is not checked');
+    assert.match(html, /name="level" value="b" data-level="x" checked \/>/);
+    assert.match(html, /<span>More \(<b>3<\/b>\)<\/span>/, 'the label is markup');
 });
 
 test('an item icon placeholder carries the escaped id', () => {

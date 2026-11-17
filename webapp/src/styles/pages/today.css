@@ -17,16 +17,18 @@
     margin: 8px 0 20px;
 }
 
-/* The schedule card's first heading with the small "Customize" link (which hides entries) at its right. */
-.today-card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+/* The level switch under the schedule card's first heading and its one-time hint, closed with a small link. */
+#level-switch {
+    margin: 10px 0 4px;
 }
 
-.today-edit,
-.today-edit:hover {
+.today-level-hint {
+    margin: 6px 0 0;
+    font-size: 0.85rem;
+}
+
+.today-level-hint__close,
+.today-level-hint__close:hover {
     padding: 0;
     background: none;
     border: none;
@@ -35,14 +37,8 @@
     font-weight: 400;
 }
 
-.today-edit:hover {
+.today-level-hint__close:hover {
     text-decoration: underline;
-}
-
-/* How many entries are hidden, under the lists. */
-.today-hidden {
-    margin: 0;
-    font-size: 0.85rem;
 }
 
 /* The faint fill up to --progress (set from the script): how far a running entry is (green), how close an upcoming one
@@ -69,11 +65,6 @@
 
 .today-entry--forecast {
     --fill: color-mix(in srgb, var(--accent) 6%, transparent);
-}
-
-/* Editing: an entry that is hidden is dimmed, its switch (on = shown) at the far right. */
-.today-entry--hidden {
-    opacity: 0.5;
 }
 
 a.today-entry:hover {
@@ -184,17 +175,6 @@ a.today-entry:hover {
 
     .today-entry__text {
         grid-area: text;
-    }
-
-    .today-entry--editing {
-        grid-template-columns: auto minmax(0, 1fr) auto;
-        grid-template-areas:
-            'art text show'
-            'art time show';
-    }
-
-    .today-entry__show {
-        grid-area: show;
     }
 
     .today-entry__kind {

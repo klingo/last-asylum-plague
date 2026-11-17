@@ -28,7 +28,7 @@ const DEFAULT_NONE_ITEMS = [
 ];
 
 // Settings the valuation doesn't read (they only change what a page shows): a change needs no new plan.
-const DISPLAY_ONLY_SETTINGS = ['hiddenTodayEntries'];
+const DISPLAY_ONLY_SETTINGS = ['todayLevel', 'todayLevelHintClosed'];
 
 const DEFAULT_SETTINGS = {
     budget: 20000, // Banknotes per week
@@ -41,8 +41,10 @@ const DEFAULT_SETTINGS = {
     // The same for the Royal City Scramble: one an hour before it starts and one when it starts (Settings).
     notifyScrambleSoon: false,
     notifyScrambleStart: false,
-    // Ids of the events, passes and tracks Today leaves out of its lists (display only: the plan and the Calendar keep them).
-    hiddenTodayEntries: [],
+    // How much Today lists (`TODAY_LEVELS` in core/schedule.js; display only). Settings saved before there was a choice load as "all".
+    todayLevel: 'standard',
+    // The one-time hint about that choice is closed: by closing it, or by choosing a level.
+    todayLevelHintClosed: false,
     extraCurrency: {}, // currencyId -> units per week from outside the packs: set per shop without event (Events page), counts on every page
     extraEventBanknotes: {}, // eventId -> extra Banknotes per week spent first on that event's packs, counts on every page (Events page)
     skippedPackages: {}, // packageId -> the first game day its skip no longer applies (Deal Ranking's "Skip", core/skips.js)

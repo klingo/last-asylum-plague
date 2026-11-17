@@ -234,6 +234,7 @@
                 "de": "Diebesjagd"
             },
             "category": "special_event",
+            "calendar_group": "alliance",
             "image": "thief_hunt"
         },
         "wandering_phantom": {

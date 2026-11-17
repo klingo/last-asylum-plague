@@ -78,38 +78,6 @@
     }
 }
 
-/* Item Priorities: Don't care / Low / Normal / High as a segmented control. */
-.priority-group {
-    display: inline-flex;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-}
-
-.priority-option {
-    display: flex;
-    align-items: center;
-    padding: 4px 10px;
-    cursor: pointer;
-    color: var(--text-dim);
-    font-size: 0.85rem;
-    border-right: 1px solid var(--border);
-}
-
-.priority-option:last-child {
-    border-right: none;
-}
-
-.priority-option input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.priority-option--active {
-    background: var(--accent);
-    color: var(--bg);
-}
 @media (max-width: 640px) {
     #items-table tr.table-group {
         display: block;
@@ -120,16 +88,5 @@
     #items-table tr.table-group th {
         display: block;
         padding: 18px 16px 6px;
-    }
-
-    .priority-group {
-        display: flex;
-        width: 100%;
-    }
-
-    .priority-option {
-        flex: 1;
-        justify-content: center;
-        min-height: 40px;
     }
 }

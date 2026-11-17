@@ -6,7 +6,7 @@
  * every `onSettingsChange` listener (the setup panel, the page's recalculation). Their defaults and what the model
  * reads from them are in core/settings-model.js.
  */
-import { gameDay } from '../core/schedule.js';
+import { TODAY_LEVELS, gameDay } from '../core/schedule.js';
 import { STORAGE_KEYS, readJson, writeJson } from './storage.js';
 import { DEFAULT_SETTINGS, MINE_SAFETY_LEVELS, PRIORITY_LEVELS } from '../core/settings-model.js';
 
@@ -22,7 +22,14 @@ function loadSettings() {
     if (typeof stored.followsCalendar === 'boolean') {
         settings.followsCalendar = stored.followsCalendar;
     }
-    for (const key of ['notifySurvivalBattle', 'notifyScrambleSoon', 'notifyScrambleStart']) {
+    // Someone who saved settings before the choice existed keeps seeing everything, without the hint.
+    if (TODAY_LEVELS.includes(stored.todayLevel)) {
+        settings.todayLevel = stored.todayLevel;
+    } else if (Object.keys(stored).length > 0) {
+        settings.todayLevel = 'all';
+        settings.todayLevelHintClosed = true;
+    }
+    for (const key of ['notifySurvivalBattle', 'notifyScrambleSoon', 'notifyScrambleStart', 'todayLevelHintClosed']) {
         if (typeof stored[key] === 'boolean') {
             settings[key] = stored[key];
         }
@@ -65,7 +72,7 @@ function loadSettings() {
                 ]),
         );
     }
-    for (const key of ['activeEvents', 'seasonalPasses', 'hiddenTodayEntries']) {
+    for (const key of ['activeEvents', 'seasonalPasses']) {
         if (Array.isArray(stored[key])) {
             settings[key] = stored[key].filter((id) => typeof id === 'string');
         }
@@ -102,15 +109,9 @@ function updateSettings(patch) {
     }
 }
 
-/** Hides (or shows again) the entry `id` on the Today page (`hiddenTodayEntries`). */
-function setTodayEntryHidden(id, hidden) {
-    const ids = new Set(getSettings().hiddenTodayEntries);
-    if (hidden) {
-        ids.add(id);
-    } else {
-        ids.delete(id);
-    }
-    updateSettings({ hiddenTodayEntries: [...ids] });
+/** Chooses how much the Today page lists (`todayLevel`); having chosen, the one-time hint about it is done. */
+function setTodayLevel(level) {
+    updateSettings({ todayLevel: level, todayLevelHintClosed: true });
 }
 
 /** Calls `listener(settings, patch)` after every change (`patch`: what was changed). */
@@ -118,4 +119,4 @@ function onSettingsChange(listener) {
     listeners.add(listener);
 }
 
-export { loadSettings, getSettings, updateSettings, setTodayEntryHidden, onSettingsChange };
+export { loadSettings, getSettings, updateSettings, setTodayLevel, onSettingsChange };

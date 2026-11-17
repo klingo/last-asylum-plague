@@ -7,7 +7,7 @@ import {
     getSettings,
     loadSettings,
     onSettingsChange,
-    setTodayEntryHidden,
+    setTodayLevel,
     updateSettings,
 } from '../../webapp/src/ui/settings.js';
 import { STORAGE_KEYS } from '../../webapp/src/ui/storage.js';
@@ -83,16 +83,36 @@ test('the notifications are off unless saved on', () => {
     }
 });
 
-test('hidden Today entries: ids only, shown again by removing them', () => {
-    save({ hiddenTodayEntries: ['quiz_of_wisdom', 7, 'canyon_conquest'] });
-    assert.deepEqual(loadSettings().hiddenTodayEntries, ['quiz_of_wisdom', 'canyon_conquest']);
-    assert.deepEqual(DEFAULT_SETTINGS.hiddenTodayEntries, []);
-    storage.clear();
-    setTodayEntryHidden('a', true);
-    setTodayEntryHidden('b', true);
-    setTodayEntryHidden('a', true);
-    assert.deepEqual(getSettings().hiddenTodayEntries, ['a', 'b'], 'hiding twice keeps one');
-    setTodayEntryHidden('a', false);
-    assert.deepEqual(getSettings().hiddenTodayEntries, ['b']);
-    assert.deepEqual(JSON.parse(storage.get(STORAGE_KEYS.settings)).hiddenTodayEntries, ['b']);
+test('Today level: a new visitor starts at standard, earlier settings keep everything', () => {
+    assert.equal(DEFAULT_SETTINGS.todayLevel, 'standard');
+    assert.equal(DEFAULT_SETTINGS.todayLevelHintClosed, false);
+    save({ budget: 5000 });
+    assert.equal(loadSettings().todayLevel, 'all', 'saved before there was a choice');
+    assert.equal(loadSettings().todayLevelHintClosed, true, 'and no hint for them');
+    save({ todayLevel: 'standard' });
+    assert.equal(loadSettings().todayLevel, 'standard');
+    assert.equal(loadSettings().todayLevelHintClosed, false, 'chosen but the hint not closed: still shown');
+    save({ todayLevel: 'essentials', todayLevelHintClosed: true });
+    assert.deepEqual(
+        [loadSettings().todayLevel, loadSettings().todayLevelHintClosed],
+        ['essentials', true],
+        'a saved level and a closed hint are kept',
+    );
+    save({ todayLevel: 'bogus', todayLevelHintClosed: 'yes' });
+    assert.equal(loadSettings().todayLevel, 'all', 'a level that does not exist counts as none chosen');
+    assert.equal(loadSettings().todayLevelHintClosed, true, 'only a boolean counts');
+});
+
+test('choosing a Today level saves it and closes the hint', () => {
+    setTodayLevel('standard');
+    assert.equal(getSettings().todayLevel, 'standard');
+    assert.equal(getSettings().todayLevelHintClosed, true);
+    const saved = JSON.parse(storage.get(STORAGE_KEYS.settings));
+    assert.deepEqual([saved.todayLevel, saved.todayLevelHintClosed], ['standard', true]);
+});
+
+test('the hidden Today entries of earlier versions are no longer read', () => {
+    save({ hiddenTodayEntries: ['quiz_of_wisdom'], budget: 5000 });
+    assert.equal('hiddenTodayEntries' in loadSettings(), false);
+    assert.equal(loadSettings().budget, 5000);
 });

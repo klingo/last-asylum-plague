@@ -6,7 +6,7 @@
  *   the runs of a proven pattern up to today count as runs;
  * - what can be recorded: the ids (`recordableIds`), the forecast runs on today that aren't recorded yet
  *   (`unrecordedToday`) and the usual length of an id's runs (`usualRunDays`);
- * - the entries the Today page lists, by id (`todayEntries`);
+ * - how much of the entries the Today page lists (`TODAY_LEVELS`, and which kind of entry shows from which: `inTodayLevel`);
  * - where an id's runs stand (`runStatus`) and the exact moments a run starts and ends (`runMoments`, `dayStartMs`);
  * - weekday offers (packs on sale on certain weekdays): where one stands in the game week (`weekdayOfferTiming`)
  *   and the runs of days it is on sale (`weekdayRuns`);
@@ -28,6 +28,22 @@ const WEEK_MS = DAYS_PER_WEEK * DAY_MS;
 // A proven pattern is only trusted this long after its last recorded run (8 weeks, or two rounds of a slower cycle);
 // then it is a rough guess again.
 const STALE_DAYS = 8 * DAYS_PER_WEEK;
+// What the Today page lists, from the calm view to all of it: each level shows its own entries and those of the levels
+// before it.
+const TODAY_LEVELS = ['essentials', 'standard', 'all'];
+// The level each kind of entry shows from: where the Banknotes go (shop and holiday events, passes, spend reward
+// tracks), then what is played with an alliance (alliance events, the Kingdom War), then the other gameplay events
+// and the event rotations' phases.
+const TODAY_LEVEL_OF_KIND = {
+    event: 'essentials',
+    holiday: 'essentials',
+    pass: 'essentials',
+    track: 'essentials',
+    alliance: 'standard',
+    kingdom_war: 'standard',
+    ingame: 'all',
+    rotation: 'all',
+};
 // Monday first: weekly limits reset on Monday, so a weekday's index is its offset into the week.
 const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -116,33 +132,6 @@ function scheduleRuns(data, today) {
     return result;
 }
 
-/**
- * Every entry the Today page can list, `[{ id, kind }]` (kinds as in `scheduleRuns`): each id with a schedule, plus the
- * events of the event rotations (kind 'rotation') and the Kingdom War's (the war, its Royal City Scramble and Origin of
- * the Curse: kind 'kingdom_war'), which have no recorded runs. An entry's id is what the user hides it by
- * (`hiddenTodayEntries`).
- */
-function todayEntries(data) {
-    const entries = new Map([...scheduleRuns(data)].map(([id, { kind }]) => [id, kind]));
-    const war = data.kingdom_war;
-    const gameplay = [
-        ...Object.values(data.event_rotations || {}).map((rotation) => [rotation.event_id, 'rotation']),
-        ...(war
-            ? [
-                  war.event_id,
-                  war.royal_city_scramble.event_id,
-                  ...(war.origin_of_the_curse ? [war.origin_of_the_curse.event_id] : []),
-              ].map((id) => [id, 'kingdom_war'])
-            : []),
-    ];
-    for (const [id, kind] of gameplay) {
-        if (!entries.has(id)) {
-            entries.set(id, kind);
-        }
-    }
-    return [...entries].map(([id, kind]) => ({ id, kind }));
-}
-
 /** The ids that can be recorded, by kind: `{ events, seasonal_passes, spend_reward_tracks }` (Sets; passes by family). */
 function recordableIds(data) {
     return {
@@ -177,6 +166,11 @@ function usualRunDays(data, id) {
     const runs = data.schedule?.[id] || [];
     const lengths = runs.map((run) => dayNumber(run.end) - dayNumber(run.start) + 1);
     return lengths.length === 0 ? null : Math.round(median(lengths));
+}
+
+/** Whether an entry of this schedule kind (`scheduleRuns`; the rotations and the Kingdom War too) is listed at `level`. */
+function inTodayLevel(kind, level) {
+    return TODAY_LEVELS.indexOf(TODAY_LEVEL_OF_KIND[kind]) <= TODAY_LEVELS.indexOf(level);
 }
 
 /**
@@ -529,6 +523,7 @@ export {
     DAYS_PER_WEEK,
     DAY_MS,
     HOUR_MS,
+    TODAY_LEVELS,
     WEEKDAYS,
     dayDate,
     dayNumber,
@@ -543,11 +538,11 @@ export {
     recordableIds,
     unrecordedToday,
     usualRunDays,
+    inTodayLevel,
     calendarSelection,
     listRuns,
     scheduleBars,
     scheduleRuns,
-    todayEntries,
     forecastRuns,
     weekdayRuns,
     weekdayOfferTiming,

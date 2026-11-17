@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+    TODAY_LEVELS,
     calendarSelection,
     dayNumber,
     dayStartMs,
@@ -13,6 +14,7 @@ import {
     pairedSlot,
     planningRun,
     freshSlot,
+    inTodayLevel,
     recordableIds,
     rotationSlots,
     rotationWeek,
@@ -22,7 +24,6 @@ import {
     runStatus,
     scheduleBars,
     scheduleRuns,
-    todayEntries,
     unrecordedToday,
     usualRunDays,
     weekStart,
@@ -69,28 +70,6 @@ test('schedule: runs per id and their kind', () => {
     const { start, end } = runs.get('bazaar').runs[0];
     assert.equal(end - start, 6);
     assert.equal(weekdayIndex(start), 0, '2026-10-12 is a Monday');
-});
-
-test('schedule: the entries Today lists are the schedule ids and the gameplay events without runs', () => {
-    const entries = todayEntries({
-        events: { bazaar: {}, raid: { category: 'ingame_event' } },
-        schedule: { bazaar: [], raid: [] },
-        event_rotations: { survival: { event_id: 'survival_battle' }, duel: { event_id: 'raid' } },
-        kingdom_war: {
-            event_id: 'kingdom_war',
-            royal_city_scramble: { event_id: 'scramble' },
-            origin_of_the_curse: { event_id: 'curse' },
-        },
-    });
-    assert.deepEqual(entries, [
-        { id: 'bazaar', kind: 'event' },
-        { id: 'raid', kind: 'ingame' },
-        { id: 'survival_battle', kind: 'rotation' },
-        { id: 'kingdom_war', kind: 'kingdom_war' },
-        { id: 'scramble', kind: 'kingdom_war' },
-        { id: 'curse', kind: 'kingdom_war' },
-    ]);
-    assert.deepEqual(todayEntries({ schedule: {} }), [], 'no rotations and no war: only the schedule');
 });
 
 test('schedule: forecast repeats the median gap and length', () => {
@@ -376,6 +355,20 @@ test('the usual run length is the median of the recorded runs, null without any'
     assert.equal(usualRunDays(dataWith(weekly(2)), 'weekly_event'), 3);
     assert.equal(usualRunDays(dataWith([]), 'weekly_event'), null);
     assert.equal(usualRunDays(dataWith(runs), 'unknown'), null);
+});
+
+test('Today levels: where the Banknotes go from essentials, alliance play from standard, the rest from all', () => {
+    assert.deepEqual(TODAY_LEVELS, ['essentials', 'standard', 'all']);
+    const kinds = ['event', 'holiday', 'pass', 'track', 'alliance', 'kingdom_war', 'ingame', 'rotation'];
+    // Each level lists its own kinds and those of the levels before it.
+    assert.deepEqual(
+        TODAY_LEVELS.map((level) => kinds.filter((kind) => inTodayLevel(kind, level))),
+        [
+            ['event', 'holiday', 'pass', 'track'],
+            ['event', 'holiday', 'pass', 'track', 'alliance', 'kingdom_war'],
+            kinds,
+        ],
+    );
 });
 
 // --- views (Calendar, Today)

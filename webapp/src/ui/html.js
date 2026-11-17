@@ -1,5 +1,6 @@
 /**
- * Small markup helpers shared by the pages: escaping, Banknote amounts, tiles, badges, progress bars and item icons.
+ * Small markup helpers shared by the pages: escaping, Banknote amounts, tiles, badges, segmented choices, progress bars
+ * and item icons.
  *
  * Item icons are rendered as placeholders (`itemIconSlot`) inside a page's markup and swapped for the real
  * <img> once the markup is in the DOM (`hydrateItemIcons`), which wires up the image fallbacks (images.js).
@@ -38,6 +39,24 @@ function buyBadge(text) {
     return `<span class="buy-badge">${text}</span>`;
 }
 
+/**
+ * A choice of a few options as one bar of radio buttons: `options` are `{ value, label }` (`label` is markup), `current`
+ * the checked value, `name` the radio group's name, `ariaLabel` the group's label (markup-safe text), `attrs` more
+ * attributes for every radio (e.g. `data-priority="gem"`, what the page's change listener finds them by).
+ */
+function segmentedHtml({ name, ariaLabel, options, current, attrs = '' }) {
+    const radios = options
+        .map(
+            ({ value, label }) => `
+            <label class="segmented__option">
+                <input type="radio" name="${escapeAttr(name)}" value="${escapeAttr(value)}"${attrs ? ` ${attrs}` : ''}${value === current ? ' checked' : ''} />
+                <span>${label}</span>
+            </label>`,
+        )
+        .join('');
+    return `<div class="segmented" role="radiogroup" aria-label="${escapeAttr(ariaLabel)}">${radios}</div>`;
+}
+
 /** A plan tile: a label above its body (`wide`: spans two columns). */
 function tileHtml(label, body, wide = false) {
     return `<div class="plan-tile${wide ? ' plan-tile--wide' : ''}"><div class="plan-tile__label">${label}</div><div class="plan-tile__body">${body}</div></div>`;
@@ -73,6 +92,7 @@ export {
     banknotesHtml,
     banknotesAmount,
     buyBadge,
+    segmentedHtml,
     tileHtml,
     statHtml,
     progressBarHtml,

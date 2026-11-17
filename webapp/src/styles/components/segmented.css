@@ -1,0 +1,52 @@
+/* A choice of a few options as one bar of radio buttons (`segmentedHtml`, ui/html.js): the checked one is filled.
+   Phones: full width, the options share it. */
+.segmented {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.segmented__option {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-right: 1px solid var(--border);
+}
+
+.segmented__option:last-child {
+    border-right: none;
+}
+
+.segmented__option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.segmented__option:has(input:checked) {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.segmented__option:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+@media (max-width: 640px) {
+    .segmented {
+        display: flex;
+        width: 100%;
+    }
+
+    .segmented__option {
+        flex: 1;
+        justify-content: center;
+        min-height: 40px;
+        text-align: center;
+    }
+}

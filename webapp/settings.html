@@ -9,10 +9,9 @@
     <body>
         <header class="app-header"></header>
         <main>
-            <!-- Jump links to the cards below (also the targets of links from other pages, e.g. #display). -->
+            <!-- Jump links to the cards below. -->
             <nav class="settings-nav">
                 <a href="#language" data-i18n="settings.language.heading"></a>
-                <a href="#display" data-i18n="settings.display.heading"></a>
                 <a href="#notifications" data-i18n="settings.notifications.heading"></a>
                 <a href="#valuation" data-i18n="settings.heading"></a>
             </nav>
@@ -25,16 +24,6 @@
                     <label for="lang-select" data-i18n="settings.language.label"></label>
                     <select id="lang-select"></select>
                 </div>
-            </section>
-
-            <!-- What the pages show: which entries Today lists (saved in the browser, like the weekly spend). -->
-            <section class="card settings-display" id="display">
-                <h2 data-i18n="settings.display.heading"></h2>
-                <p class="page-lead" data-i18n="settings.display.description"></p>
-                <h3 class="setting-group__title" data-i18n="settings.display.todayHeading"></h3>
-                <p class="text-dim" data-i18n="settings.display.todayDescription"></p>
-                <div class="display-tabs" id="display-tabs" role="tablist"></div>
-                <div class="display-grid" id="display-panel" role="tabpanel"></div>
             </section>
 
             <!-- Browser notifications (only while a tab of the app is open). -->

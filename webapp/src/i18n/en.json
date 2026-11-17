@@ -181,12 +181,6 @@
             "description": "The language of the app, saved in this browser.",
             "label": "Language"
         },
-        "display": {
-            "heading": "Display",
-            "description": "What the pages show, saved in this browser.",
-            "todayHeading": "Today",
-            "todayDescription": "Switch off the events, passes and tracks you don't want on the Today page. They stay on the Calendar and in your plan."
-        },
         "quality": {
             "heading": "Model quality",
             "median": "Median pack error",
@@ -729,13 +723,17 @@
         "runningEmpty": "Nothing is recorded as running today.",
         "soonHeading": "Starting soon",
         "soonEmpty": "Nothing is expected to start in the next 3 days.",
-        "allHidden": "Everything here is hidden.",
-        "hidden": "{count} hidden. Show them again with Customize or under {link}.",
-        "edit": "Customize",
-        "editDone": "Done",
-        "editHint": "Switch off what you don't want to see here. Hidden entries stay on the Calendar and in your plan.",
-        "showEntry": "Show {name} on Today",
+        "levelLabel": "Show on Today",
+        "level": {
+            "essentials": "Essentials",
+            "standard": "Standard",
+            "all": "Everything"
+        },
+        "levelHint": "New here? Today starts with your shop events, passes, spend rewards and alliance events. Show less or more with the switch above.",
+        "levelHintClose": "Got it",
+        "levelEmpty": "Nothing here at this level. Show more with the switch above.",
         "expected": "expected",
+        "nextPhase": "Next: {name} · {countdown}",
         "earnPoints": "How to earn points:",
         "earnPoint": "{text}: +{points}",
         "notificationOn": "Notification on: you'll be told when the next round begins (while a tab of this app is open).",
@@ -756,7 +754,7 @@
         "planNote": "Prices are what the plan spends per week; monthly and two-week packs count at their weekly share of the price.",
         "openPlan": "Open the Event Shops",
         "how": {
-            "schedule": "What the Calendar records as running today, ending first, and what starts in the next 3 days. A countdown turns yellow in the last 24 hours, and a running event or pass shows what your plan buys from it. A faded entry is expected from its usual rhythm but not recorded yet. Each one links to its page.",
+            "schedule": "What the Calendar records as running today, ending first, and what starts in the next 3 days. The switch chooses how much is listed: Essentials has the shop events, passes and spend reward tracks, Standard adds the alliance events and the Kingdom War, Everything the other gameplay events and the phases of Survival Battle and Alliance Duel, each with the phase after it. A countdown turns yellow in the last 24 hours, and a running event or pass shows what your plan buys from it. A faded entry is expected from its usual rhythm but not recorded yet. Each one links to its page.",
             "plan": "What the best plan for your weekly Banknote spend buys this week, by when to buy it, with your item priorities, locked offers and skipped packs: the same plan as on every page. Weekday offers not on sale today are dimmed, and faded once their days are over this week.",
             "offers": "The weekday offers on sale today, best worth for the price first, with how many your plan buys and what each gives."
         }

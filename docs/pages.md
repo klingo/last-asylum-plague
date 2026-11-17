@@ -11,7 +11,7 @@ Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item 
 `events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
 **Settings**.
 
-**Settings** (`settings.html`) has links to its cards at the top and these cards: **Language**, the app's language (saved in this browser); **Display**, which entries the Today page lists (one switch per event, pass, track, event rotation and Kingdom War event (the war, its scramble and Origin of the Curse), grouped as the Calendar groups them, with a tab of their own for the event rotations and the Kingdom War; off hides it on Today, nothing else, and the choice is synced like the other settings); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
+**Settings** (`settings.html`) has links to its cards at the top and these cards: **Language**, the app's language (saved in this browser); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
 4-hour slot of its rotation) and, grouped under the Royal City Scramble's name, two for that event: one 1 hour before it starts and one when it starts
 (switching one on asks the browser for permission, and as there is no server to push from, a notification only comes
 while a tab of the app is open; while one is on, Today marks the bars it is for with a bell); **Valuation**, the
@@ -43,13 +43,18 @@ deleted after 180 days without use; the button stays hidden until the build has 
   `<pack id>_<weekday>.webp` where the offer looks different on its days, as a thumbnail before its
   name, a placeholder tile without one) with their ratio, what the plan buys and what each gives (Details). Running entries are
   ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
-  plan buys from it. Entries can be hidden (display only: the plan, Follow the calendar, the notifications and the
-  Calendar keep them): "Customize" lists every entry with a switch to hide or show it (hidden ones dimmed), a line under the
-  lists says how many are hidden and links to Settings > Display, which lists every entry, running or not, as a tile with its art
-  under a tab per kind ("Shop events (6/9)" once some are hidden).
+  plan buys from it. A level switch above the lists says how much is listed (`todayLevel`, synced like the other
+  settings, display only: the plan, Follow the calendar, the notifications and the Calendar don't change; with how many
+  entries each level lists right now). A level is by kind of entry (`inTodayLevel` in `core/schedule.js`): **Essentials**
+  (shop events, holiday events, passes, spend reward tracks: where the Banknotes go), **Standard** (+ the alliance events,
+  the events with `calendar_group: "alliance"`, and the Kingdom War) and **Everything** (+ the other gameplay events and
+  the event rotations' phases). Someone new starts at Standard with a one-time hint (closed by "Got it" or by choosing a
+  level); settings saved before the switch existed load as Everything.
   Survival Battle (`event_rotations` in `events.json`: the 42 four-hour slots of its week, from Sunday's reset, the
   same every week) and the Alliance Duel (a phase a day from Monday's reset, Sunday off) show the phase on now (none on
-  the Alliance Duel's Sunday) and the next one, with their local times and how to earn points in them.
+  the Alliance Duel's Sunday) with its local times and how to earn points in it, and the one after it as a line "Next:
+  … · Starts in …" on the same entry (in the Alliance Duel's Sunday gap the next phase is an entry of its own under
+  "Starting soon").
   The Kingdom War (`kingdom_war`) adds the war week on now (not in the break) and the next one, the Royal City
   Scramble while it runs, or from three days before the next one, and the phase on now of Origin of the Curse (the
   break week's event) and the next phase from three days before it starts.

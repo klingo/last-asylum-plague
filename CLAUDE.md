@@ -108,7 +108,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   `sync.js` (the cross-device sync client; an entry that should sync goes into `SYNCED_ENTRIES` in `core/sync.js`, which the
   worker shares),
   `i18n.js`, `format.js`, `datetime.js`, `html.js`, `hero-parts.js` (the hero faction switch, squad order and heads of the hero pages), `labels.js`, `url.js`, `grid.js`, `github.js` (the token and the call that starts the record-run workflow, for Settings > Admin) and the other builders of markup.
-- `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (shared pieces: hero faction switch and heads, step card / step list / progress bar of the guide pages; loaded on every page by
+- `webapp/src/styles/` holds the CSS: `base.css` (tokens, reset, layout, forms), `components/*.css` (shared pieces: hero faction switch and heads, step card / step list / progress bar of the guide pages, the segmented choice of `segmentedHtml`; loaded on every page by
   `ui/page.js`, in that order) and `pages/<page>.css` (the page script imports its own, after the shared ones). A rule keeps
   its place inside its file; a rule that overrides another of the same specificity (a phone `@media` over the base rule) lives
   in the same file or a later-loaded one.

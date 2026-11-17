@@ -181,12 +181,6 @@
             "description": "Die Sprache der App, in diesem Browser gespeichert.",
             "label": "Sprache"
         },
-        "display": {
-            "heading": "Anzeige",
-            "description": "Was die Seiten anzeigen, in diesem Browser gespeichert.",
-            "todayHeading": "Heute",
-            "todayDescription": "Schalte die Events, Pässe und Ausgabenbelohnungen aus, die du auf der Seite „Heute“ nicht sehen willst. Sie bleiben im Kalender und in deinem Plan."
-        },
         "quality": {
             "heading": "Modellqualität",
             "median": "Mittlerer Paketfehler (Median)",
@@ -729,13 +723,17 @@
         "runningEmpty": "Heute ist nichts als laufend eingetragen.",
         "soonHeading": "Startet bald",
         "soonEmpty": "In den nächsten 3 Tagen wird nichts erwartet.",
-        "allHidden": "Alles hier ist ausgeblendet.",
-        "hidden": "{count} ausgeblendet. Mit „Anpassen“ oder unter {link} wieder einblenden.",
-        "edit": "Anpassen",
-        "editDone": "Fertig",
-        "editHint": "Schalte aus, was du hier nicht sehen willst. Ausgeblendete Einträge bleiben im Kalender und in deinem Plan.",
-        "showEntry": "{name} auf Heute anzeigen",
+        "levelLabel": "Auf Heute anzeigen",
+        "level": {
+            "essentials": "Das Wichtigste",
+            "standard": "Standard",
+            "all": "Alles"
+        },
+        "levelHint": "Neu hier? Heute beginnt mit deinen Shop-Events, Pässen, Ausgabenbelohnungen und Allianz-Events. Mit dem Schalter oben zeigst du weniger oder mehr an.",
+        "levelHintClose": "Verstanden",
+        "levelEmpty": "Auf dieser Stufe gibt es hier nichts. Mit dem Schalter oben zeigst du mehr an.",
         "expected": "erwartet",
+        "nextPhase": "Danach: {name} · {countdown}",
         "earnPoints": "So sammelst du Punkte:",
         "earnPoint": "{text}: +{points}",
         "notificationOn": "Benachrichtigung an: Du wirst informiert, wenn die nächste Runde beginnt (solange ein Tab dieser App geöffnet ist).",
@@ -756,7 +754,7 @@
         "planNote": "Die Preise sind das, was der Plan pro Woche ausgibt; Monats- und Zwei-Wochen-Pakete zählen mit ihrem Wochenanteil am Preis.",
         "openPlan": "Event-Shops öffnen",
         "how": {
-            "schedule": "Was laut Kalender heute läuft (zuerst, was zuerst endet) und was in den nächsten 3 Tagen startet. Ein Countdown wird in den letzten 24 Stunden gelb, und bei einem laufenden Event oder Pass steht, was dein Plan davon kauft. Ein blasser Eintrag wird nach dem üblichen Rhythmus erwartet, ist aber noch nicht eingetragen. Jeder Eintrag verlinkt auf seine Seite.",
+            "schedule": "Was laut Kalender heute läuft (zuerst, was zuerst endet) und was in den nächsten 3 Tagen startet. Der Schalter wählt, wie viel aufgelistet wird: „Das Wichtigste“ zeigt die Shop-Events, Pässe und Ausgabenbelohnungen, „Standard“ ergänzt die Allianz-Events und den Königreichskrieg, „Alles“ die übrigen Gameplay-Events und die Phasen der Event-Rotationen, jeweils mit der folgenden Phase. Ein Countdown wird in den letzten 24 Stunden gelb, und bei einem laufenden Event oder Pass steht, was dein Plan davon kauft. Ein blasser Eintrag wird nach dem üblichen Rhythmus erwartet, ist aber noch nicht eingetragen. Jeder Eintrag verlinkt auf seine Seite.",
             "plan": "Was der beste Plan für deine wöchentlichen Banknoten-Ausgaben diese Woche kauft, nach dem Zeitpunkt des Kaufs, mit deinen Gegenstandsprioritäten, gesperrten Angeboten und übersprungenen Paketen: derselbe Plan wie auf jeder Seite. Wochentags-Angebote, die heute nicht im Angebot sind, sind gedimmt, und verblasst, sobald ihre Tage diese Woche vorbei sind.",
             "offers": "Die Wochentags-Angebote, die heute im Angebot sind, nach dem besten Wert für den Preis zuerst, mit der Anzahl, die dein Plan kauft, und was jedes gibt."
         }

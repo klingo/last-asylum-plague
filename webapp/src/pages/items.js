@@ -19,7 +19,7 @@ import { itemDisplayName } from '../ui/labels.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { infoIconHtml } from '../ui/info-icon.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
-import { banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
+import { banknotesHtml, escapeAttr, itemIconSlot, hydrateItemIcons, segmentedHtml } from '../ui/html.js';
 import { formatSignificant, formatThousands } from '../ui/format.js';
 import { t, getLocale, localizedName, enumLabel, tHtml } from '../ui/i18n.js';
 
@@ -124,15 +124,13 @@ function renderFileButtons() {
 }
 
 function priorityHtml(id) {
-    const current = priorityOf(id);
-    const options = PRIORITY_LEVELS.map(
-        (level) => `
-            <label class="priority-option ${level === current ? 'priority-option--active' : ''}">
-                <input type="radio" name="priority-${id}" value="${level}" data-priority="${id}" ${level === current ? 'checked' : ''} />
-                <span>${tHtml(`items.priority.${level}`)}</span>
-            </label>`,
-    ).join('');
-    return `<div class="priority-group" role="radiogroup" aria-label="${tHtml('items.table.priority')}">${options}</div>`;
+    return segmentedHtml({
+        name: `priority-${id}`,
+        ariaLabel: t('items.table.priority'),
+        options: PRIORITY_LEVELS.map((level) => ({ value: level, label: tHtml(`items.priority.${level}`) })),
+        current: priorityOf(id),
+        attrs: `data-priority="${escapeAttr(id)}"`,
+    });
 }
 
 /** Display name of a package family (the unit the sensitivity check leaves out). */
