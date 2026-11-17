@@ -56,6 +56,8 @@ const SOON_FILL_MS = 4 * 3600000;
 const ENDING_MS = 24 * 3600000;
 // What starts within this many days is listed under "Starting soon".
 const SOON_DAYS = 3;
+// The kinds of entry whose packs the plan can buy: shop events (also the holiday ones) and passes.
+const PLANNED_KINDS = ['event', 'holiday', 'pass'];
 
 const scheduleCard = document.getElementById('schedule-card');
 const runningList = document.getElementById('running-list');
@@ -196,11 +198,11 @@ function kingdomWarEntries(war, now, today) {
  * tracks, in-game events and phases).
  */
 function planShareHtml(entry) {
-    if (!valuation || (entry.kind !== 'event' && entry.kind !== 'pass')) {
+    if (!valuation || !PLANNED_KINDS.includes(entry.kind)) {
         return '';
     }
     const mine = valuation.plan.purchases.filter(({ id, pkg }) =>
-        entry.kind === 'event' ? pkg.event_id === entry.id : packageFamilyId(id, pkg) === entry.id,
+        entry.kind === 'pass' ? packageFamilyId(id, pkg) === entry.id : pkg.event_id === entry.id,
     );
     if (mine.length === 0) {
         return '';

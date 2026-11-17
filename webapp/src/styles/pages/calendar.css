@@ -27,6 +27,10 @@
     --bar-color: var(--series-a);
 }
 
+.schedule__row--holiday {
+    --bar-color: var(--bad);
+}
+
 /* The Kingdom War: the Royal City Scramble and Origin of the Curse have their own colours. */
 .schedule__row--scramble {
     --bar-color: var(--series-a);

@@ -183,9 +183,14 @@ main > section[id] {
     gap: 10px;
 }
 
+/* Room for two lines of text, so the tiles are as high with a short name as with a long one. */
 .display-tile__name {
+    display: flex;
+    align-items: center;
+    min-height: 2.5em;
     font-size: 0.9rem;
     font-weight: 600;
+    line-height: 1.25;
 }
 
 /* Hidden on Today: the art and the name fade. */

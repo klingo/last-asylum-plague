@@ -92,6 +92,7 @@ const SCHEDULE_KIND_LABELS = {
     event: 'calendar.schedule.groupEvents',
     ingame: 'calendar.schedule.groupIngame',
     alliance: 'calendar.schedule.groupAlliance',
+    holiday: 'calendar.schedule.groupHoliday',
     pass: 'calendar.schedule.groupPasses',
     track: 'calendar.schedule.groupTracks',
     rotation: 'calendar.schedule.groupRotations',

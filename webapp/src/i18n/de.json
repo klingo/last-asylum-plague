@@ -398,6 +398,7 @@
             "groupEvents": "Shop-Events",
             "groupIngame": "Gameplay-Events",
             "groupAlliance": "Allianz-Events",
+            "groupHoliday": "Feiertags-Events",
             "groupPasses": "Saisonpässe",
             "groupTracks": "Ausgabenbelohnungen",
             "groupRotations": "Event-Rotationen",

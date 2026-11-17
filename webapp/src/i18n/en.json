@@ -398,6 +398,7 @@
             "groupEvents": "Shop events",
             "groupIngame": "Gameplay events",
             "groupAlliance": "Alliance events",
+            "groupHoliday": "Holiday events",
             "groupPasses": "Seasonal passes",
             "groupTracks": "Spend rewards",
             "groupRotations": "Event rotations",

@@ -1,5 +1,6 @@
 /**
- * The Event Schedule: one row per event, pass and track over the next weeks, with their forecasts.
+ * The Event Schedule: one row per event, pass and track over the next weeks, with their forecasts, in a group for each
+ * kind (the holiday events on top).
  */
 import { enumLabel, localizedName, t, tHtml } from '../../ui/i18n.js';
 import { escapeHtml } from '../../ui/html.js';
@@ -98,7 +99,9 @@ function renderSchedule() {
         return;
     }
 
-    const groups = Object.entries(SCHEDULE_KIND_LABELS)
+    // The holiday events (if any) first, then the kinds in their usual order.
+    const kinds = Object.entries(SCHEDULE_KIND_LABELS);
+    const groups = [...kinds.filter(([kind]) => kind === 'holiday'), ...kinds.filter(([kind]) => kind !== 'holiday')]
         .map(([kind, labelKey]) => {
             const groupRows = rows
                 .filter((row) => row.kind === kind)

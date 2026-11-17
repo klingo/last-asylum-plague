@@ -128,6 +128,7 @@
                 "de": "Halloween-Ball"
             },
             "category": "special_event",
+            "calendar_group": "holiday",
             "image": "halloween_bazaar"
         },
         "hunt_battle": {
