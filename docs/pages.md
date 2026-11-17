@@ -11,10 +11,7 @@ Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item 
 `events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
 **Settings**.
 
-**Settings** (`settings.html`) has links to its cards at the top and these cards: **Language**, the app's language (saved in this browser); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
-4-hour slot of its rotation) and, grouped under the Royal City Scramble's name, two for that event: one 1 hour before it starts and one when it starts
-(switching one on asks the browser for permission, and as there is no server to push from, a notification only comes
-while a tab of the app is open; while one is on, Today marks the bars it is for with a bell); **Valuation**, the
+**Settings** (`settings.html`) has links to its cards at the top and these cards: **Language**, the app's language (saved in this browser); **Valuation**, the
 settings that shape every value (Count VIP points in the worth), with the **Model quality** behind a summary, how well the fitted worths reproduce the
 packs' deal %; and **Admin** (collapsed), which records when events, passes and tracks run: enter a GitHub token (a
 fine-grained personal access token of this repository with only the permission Actions: Read and write; it is checked
@@ -44,7 +41,7 @@ deleted after 180 days without use; the button stays hidden until the build has 
   name, a placeholder tile without one) with their ratio, what the plan buys and what each gives (Details). Running entries are
   ordered by when they end; the countdown turns yellow in the last 24 hours, and a running event or pass shows what the
   plan buys from it. A level switch above the lists says how much is listed (`todayLevel`, synced like the other
-  settings, display only: the plan, Follow the calendar, the notifications and the Calendar don't change; with how many
+  settings, display only: the plan, Follow the calendar and the Calendar don't change; with how many
   entries each level lists right now). A level is by kind of entry (`inTodayLevel` in `core/schedule.js`): **Essentials**
   (shop events, holiday events, passes, spend reward tracks: where the Banknotes go), **Standard** (+ the alliance events,
   the events with `calendar_group: "alliance"`, and the Kingdom War) and **Everything** (+ the other gameplay events and

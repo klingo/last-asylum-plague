@@ -14,13 +14,20 @@ const STORAGE_KEYS = {
     skillProgress: 'lapkc_skill_progress', // the Skill Upgrade Path's progress (steps done), per faction
     heroStars: 'lapkc_hero_stars', // My Heroes: the stars of each hero and its weapon and its awakening level, and the faction shown
     lordSetup: 'lapkc_lord_setup', // the Lord Specialty's level, extra points, lord and builds
-    notified: 'lapkc_notified', // the last notification shown per kind, so tabs and reloads don't repeat it
     githubToken: 'lapkc_github_token', // the personal access token of Settings > Admin (ui/github.js)
     sync: 'lapkc_sync', // the sync key and what this device last synced (ui/sync.js); never synced itself
 };
 
-// What earlier versions of the app saved (prefix `lasps_`): nothing reads it any more, so it is removed.
-const LEGACY_KEYS = ['lasps_locale', 'lasps_valuation', 'lasps_setup_open', 'lasps_gear_progress', 'lasps_lord_setup'];
+// What earlier versions of the app saved (prefix `lasps_`, and the notifications' `lapkc_notified`): nothing reads it
+// any more, so it is removed.
+const LEGACY_KEYS = [
+    'lasps_locale',
+    'lasps_valuation',
+    'lasps_setup_open',
+    'lasps_gear_progress',
+    'lasps_lord_setup',
+    'lapkc_notified',
+];
 
 /** The text saved under `key`, or null (nothing saved or no storage). */
 function readText(key) {

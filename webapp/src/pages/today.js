@@ -14,8 +14,7 @@ import { getSettings, setTodayLevel, updateSettings } from '../ui/settings.js';
 import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons, segmentedHtml, tileHtml } from '../ui/html.js';
 import { enableInfoTooltips } from '../ui/tooltip.js';
 import { eventPlanHref, pageHref } from '../ui/url.js';
-import { bellIconHtml, infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
-import { notifiesRotation, notifiesScramble } from '../ui/notifications.js';
+import { infoIconHtml, requiresIconHtml } from '../ui/info-icon.js';
 import { SCHEDULE_KIND_LABELS, SCHEDULE_KINDS, packageDisplayName } from '../ui/labels.js';
 import {
     gridCell,
@@ -131,7 +130,6 @@ function rotationEntry(rotation, slot, state, following = null) {
         dates: formatRunRange(slot.start, slot.end),
         earnPoints: slot.phase.earn_points || [],
         next: following && { name: localizedName(following.phase.name), start: following.start },
-        notify: notifiesRotation(rotation),
         start: slot.start,
         end: slot.end,
     };
@@ -153,7 +151,6 @@ function warEntry(war, eventId, name, start, end, state, description = localized
         image: event.image,
         href: null,
         dates: formatRunRange(start, end),
-        notify: eventId === war.royal_city_scramble.event_id && notifiesScramble(),
         start,
         end,
     };
@@ -261,9 +258,7 @@ function entryHtml(entry) {
                     <span class="today-entry__name">${escapeHtml(entry.title)}</span>
                     ${entry.description ? `<span class="today-entry__description">${escapeHtml(entry.description)}</span>` : ''}
                     ${planShare ? `<span class="today-entry__description">${planShare}</span>` : ''}
-                    ${earnRows ? infoIconHtml(earnRows.map((row) => row.text).join('\n'), earnRows) : ''}
-                    ${entry.notify ? bellIconHtml(t('today.notificationOn')) : ''}
-                </span>
+                    ${earnRows ? infoIconHtml(earnRows.map((row) => row.text).join('\n'), earnRows) : ''}                </span>
                 <span class="today-entry__dates">${escapeHtml(entry.dates)}${entry.next ? ` · ${tHtml('today.nextPhase', { name: escapeHtml(entry.next.name), countdown: nextCountdown })}` : ''}</span>
             </div>
             <span class="today-entry__kind">${tHtml(SCHEDULE_KIND_LABELS[entry.kind])}</span>

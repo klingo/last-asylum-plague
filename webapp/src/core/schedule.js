@@ -494,15 +494,6 @@ function pairedSlot(rotations, slot) {
 }
 
 /**
- * The rotation's current slot if it started within the last `graceMs` of `nowMs` (a round has just begun), else null
- * (also in a slot without a phase).
- */
-function freshSlot(rotation, nowMs, graceMs) {
-    const { current } = rotationSlots(rotation, nowMs);
-    return current && nowMs - current.start <= graceMs ? current : null;
-}
-
-/**
  * Every slot with a phase of the rotation that overlaps [fromMs, toMs), in order (a slot cut by the window is
  * included whole).
  */
@@ -551,7 +542,6 @@ export {
     planningRun,
     runMoments,
     rotationSlots,
-    freshSlot,
     rotationWindow,
     rotationWeek,
     pairedSlot,

@@ -77,6 +77,7 @@ test("every key is the app's own: one prefix, no two the same", () => {
 test('keys of earlier versions are removed, the current ones stay', () => {
     storage.set('lasps_valuation', '{}');
     storage.set('lasps_locale', 'de');
+    storage.set('lapkc_notified', '{}');
     storage.set(STORAGE_KEYS.settings, '{}');
     storage.set('somebody_elses_key', 'x');
     removeLegacyKeys();

@@ -13,7 +13,6 @@ import {
     nextRun,
     pairedSlot,
     planningRun,
-    freshSlot,
     inTodayLevel,
     recordableIds,
     rotationSlots,
@@ -635,17 +634,9 @@ test('rotation: a slot pairs with the other rotation only while the paired phase
     assert.equal(pairedSlot(rotations, slotOf(13)), null, 'Soldiers pair with nothing');
 });
 
-test('a round has just begun while its slot started within the grace time', () => {
-    const grace = 3 * 60000;
-    assert.equal(freshSlot(rotation, slotAt(4), grace).phaseId, 'S', 'the moment it starts');
-    assert.equal(freshSlot(rotation, slotAt(4) + grace, grace).slot, 1, 'up to the grace time');
-    assert.equal(freshSlot(rotation, slotAt(4) + grace + 1, grace), null, 'later: not new any more');
-    assert.equal(freshSlot(rotation, slotAt(4) - 1, grace), null, 'just before the next slot: the old one is not new');
-});
-
-test('the first slot of the next week is a new round too', () => {
+test('the first slot of the next week follows the last one of the week', () => {
     const weekEnd = rotationStart + 7 * 24 * HOUR;
-    assert.equal(freshSlot(rotation, weekEnd + 60000, 3 * 60000).slot, 0);
+    assert.equal(rotationSlots(rotation, weekEnd + 60000).current.slot, 0);
 });
 
 // The Alliance Duel's shape: a phase per day from Monday's reset, Sunday without one (`null`).
@@ -707,11 +698,6 @@ test('rotation window: slots without a phase are left out', () => {
         [0, 1, 2, 3, 4, 5],
     );
     assert.deepEqual(rotationWindow(duel, duelDay(6, 1), duelDay(6, 20)), []);
-});
-
-test('a round has just begun: not in a slot without a phase', () => {
-    assert.equal(freshSlot(duel, duelDay(6, 1), 60000 * 3), null);
-    assert.equal(freshSlot(duel, duelDay(0, 0.01), 60000 * 3).phaseId, 'raven');
 });
 
 test('rotationWeek: the week a moment falls in, from the reset of its first weekday', () => {

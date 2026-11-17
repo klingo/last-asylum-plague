@@ -36,11 +36,6 @@ const DEFAULT_SETTINGS = {
     vipPointsInWorth: false,
     // Events and passes follow the calendar on every page load (setup bar switch; a change by hand turns it off).
     followsCalendar: true,
-    // A browser notification when a new round of Survival Battle begins, while a tab of the app is open (Settings).
-    notifySurvivalBattle: false,
-    // The same for the Royal City Scramble: one an hour before it starts and one when it starts (Settings).
-    notifyScrambleSoon: false,
-    notifyScrambleStart: false,
     // How much Today lists (`TODAY_LEVELS` in core/schedule.js; display only). Settings saved before there was a choice load as "all".
     todayLevel: 'standard',
     // The one-time hint about that choice is closed: by closing it, or by choosing a level.

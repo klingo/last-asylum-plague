@@ -194,22 +194,6 @@
             "ofTotal": "{count} von {total}",
             "worstHeading": "Am weitesten daneben"
         },
-        "notifications": {
-            "heading": "Benachrichtigungen",
-            "description": "Browser-Benachrichtigungen, solange ein Tab dieser App geöffnet ist. Sind alle Tabs geschlossen, wird nichts angezeigt, und jeder Browser fragt, ob Benachrichtigungen erlaubt sind.",
-            "survivalBattleOn": "An: eine Benachrichtigung, wenn eine neue Runde des Überlebenskampfs beginnt (alle 4 Stunden).",
-            "survivalBattleBody": "Die neue Runde des Überlebenskampfs hat begonnen! Erfülle die Aufgaben, um deine Stärke zu steigern!",
-            "scrambleSoon": "1 Stunde vorher",
-            "scrambleSoonOn": "An: eine Benachrichtigung 1 Stunde vor dem Beginn (jeden Samstag).",
-            "scrambleSoonBody": "{name} beginnt in 1 Stunde.",
-            "atStart": "Zum Beginn",
-            "scrambleStartOn": "An: eine Benachrichtigung, wenn es beginnt (jeden Samstag).",
-            "scrambleStartBody": "{name} hat begonnen!",
-            "off": "Aus (Standard): keine Benachrichtigung.",
-            "denied": "Benachrichtigungen sind für diese Seite nicht erlaubt. Erlaube sie, wenn der Browser fragt (oder in dessen Website-Einstellungen), und schalte dies dann wieder ein.",
-            "unsupported": "Dieser Browser kann keine Benachrichtigungen anzeigen.",
-            "revoked": "Diese Einstellung ist an, aber Benachrichtigungen sind für diese Seite im Browser blockiert, daher wird nichts angezeigt."
-        },
         "admin": {
             "heading": "Admin",
             "tokenLabel": "Personal Access Token",
@@ -264,7 +248,7 @@
             "rows": {
                 "settings": {
                     "name": "Einstellungen",
-                    "text": "Wochenbudget, Item-Prioritäten, gewählte Events und Pässe, gesperrte Angebote, übersprungene Pakete, zusätzliche Banknoten und Währung, Minenfortschritt, Benachrichtigungsschalter, ausgeblendete Heute-Einträge."
+                    "text": "Wochenbudget, Item-Prioritäten, gewählte Events und Pässe, gesperrte Angebote, übersprungene Pakete, zusätzliche Banknoten und Währung, Minenfortschritt, die Stufe der Seite „Heute“."
                 },
                 "gearProgress": {
                     "name": "Ausrüstungsfortschritt",
@@ -293,10 +277,6 @@
                 "collapsedSections": {
                     "name": "Eingeklappte Kalender-Karten",
                     "text": "Welche Karten der Kalender-Seite du eingeklappt hast."
-                },
-                "notified": {
-                    "name": "Angezeigte Benachrichtigungen",
-                    "text": "Wann jede Art von Browser-Benachrichtigung zuletzt angezeigt wurde, damit Tabs und Neuladen sie nicht wiederholen."
                 },
                 "githubToken": {
                     "name": "Admin-Token",
@@ -736,7 +716,6 @@
         "nextPhase": "Danach: {name} · {countdown}",
         "earnPoints": "So sammelst du Punkte:",
         "earnPoint": "{text}: +{points}",
-        "notificationOn": "Benachrichtigung an: Du wirst informiert, wenn die nächste Runde beginnt (solange ein Tab dieser App geöffnet ist).",
         "offersHeading": "Heutige Wochentags-Angebote",
         "offersEmpty": "Heute sind keine Wochentags-Angebote im Verkauf.",
         "planHeading": "Dein Plan diese Woche",

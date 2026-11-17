@@ -29,10 +29,8 @@ function loadSettings() {
         settings.todayLevel = 'all';
         settings.todayLevelHintClosed = true;
     }
-    for (const key of ['notifySurvivalBattle', 'notifyScrambleSoon', 'notifyScrambleStart', 'todayLevelHintClosed']) {
-        if (typeof stored[key] === 'boolean') {
-            settings[key] = stored[key];
-        }
+    if (typeof stored.todayLevelHintClosed === 'boolean') {
+        settings.todayLevelHintClosed = stored.todayLevelHintClosed;
     }
     if (stored.extraCurrency && typeof stored.extraCurrency === 'object') {
         settings.extraCurrency = Object.fromEntries(
