@@ -141,7 +141,7 @@
         },
         "kingdomWar": {
             "type": "object",
-            "description": "The Kingdom War: a cycle of war weeks and a break that repeats forever (core/kingdom-war.js, shown in the Calendar's Kingdom War box and on the Today page), and the Royal City Scramble that runs every Saturday of it. A war week runs from its Monday's daily reset through its first `days` game days (until the end of Saturday); the Sundays around it are off.",
+            "description": "The Kingdom War: a cycle of war weeks and a break that repeats forever (core/kingdom-war.js, shown in the Calendar's Kingdom War box and on the Today page), the Royal City Scramble that runs every Saturday of it, and Origin of the Curse, which runs in its break weeks. A war week runs from its Monday's daily reset through its first `days` game days (until the end of Saturday); the Sundays around it are off.",
             "required": ["event_id", "cycle_start", "days", "weeks", "royal_city_scramble"],
             "additionalProperties": false,
             "properties": {
@@ -195,6 +195,65 @@
                             "type": "integer",
                             "minimum": 1,
                             "maximum": 24
+                        }
+                    }
+                },
+                "origin_of_the_curse": {
+                    "type": "object",
+                    "description": "Origin of the Curse: runs once in every break week of the cycle (a `null` in `weeks`) through a timeline of phases, from the first entry to the end of the break week (Sunday's end). Each entry's phase lasts until the next entry; a `phase` of `null` ends the event early. Times are server time (= time after the game day's reset).",
+                    "required": ["event_id", "phases", "timeline"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "event_id": {
+                            "$ref": "pack_data.schema.json#/definitions/eventId"
+                        },
+                        "phases": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "object",
+                                "required": ["id", "name"],
+                                "additionalProperties": false,
+                                "properties": {
+                                    "id": {
+                                        "$ref": "pack_data.schema.json#/definitions/id"
+                                    },
+                                    "name": {
+                                        "$ref": "pack_data.schema.json#/definitions/localizedString"
+                                    }
+                                }
+                            }
+                        },
+                        "timeline": {
+                            "type": "array",
+                            "minItems": 1,
+                            "description": "Where each phase starts, in order of time, within the break week. A phase may come up more than once.",
+                            "items": {
+                                "type": "object",
+                                "required": ["phase", "weekday", "time"],
+                                "additionalProperties": false,
+                                "properties": {
+                                    "phase": {
+                                        "anyOf": [
+                                            {
+                                                "$ref": "pack_data.schema.json#/definitions/id"
+                                            },
+                                            {
+                                                "type": "null"
+                                            }
+                                        ],
+                                        "description": "The phase's id (one of `phases`), or null: the event is over."
+                                    },
+                                    "weekday": {
+                                        "$ref": "pack_data.schema.json#/definitions/weekday"
+                                    },
+                                    "time": {
+                                        "type": "string",
+                                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                                        "description": "HH:MM after the game day's reset (= server time)."
+                                    }
+                                }
+                            }
                         }
                     }
                 }

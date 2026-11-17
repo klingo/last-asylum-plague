@@ -1,6 +1,7 @@
 /**
- * Settings > Display: which entries the Today page lists. A tab per kind of entry (as the Calendar groups them) with a
- * tile for each event, pass, track, event rotation and the Kingdom War (`todayEntries`): its art, its name and a
+ * Settings > Display: which entries the Today page lists. A tab per kind of entry (as the Calendar groups them: its
+ * schedule groups, the event rotations and the Kingdom War) with a tile for each event, pass, track, event rotation and
+ * Kingdom War event (`todayEntries`): its art, its name and a
  * switch; off hides the entry on Today (`hiddenTodayEntries`; display only, the plan and the Calendar keep it). A tab
  * says how many of its entries are shown once some are hidden.
  */

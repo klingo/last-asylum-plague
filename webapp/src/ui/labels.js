@@ -85,13 +85,17 @@ function conversionLabel(conversion, items, locale) {
     return t(`conversion.${conversion.kind}`, { item: name });
 }
 
-// The kinds of the schedule (core/schedule.js `scheduleRuns`) in the order the Calendar and Today list them, with their labels.
+// The kinds of the schedule (core/schedule.js `scheduleRuns`, `todayEntries`) in the order the Calendar and Today list
+// them, with their labels. The last two have no recorded runs and a box of their own on the Calendar (the event rotations
+// and the Kingdom War), so only Today and its Display settings know them.
 const SCHEDULE_KIND_LABELS = {
     event: 'calendar.schedule.groupEvents',
     ingame: 'calendar.schedule.groupIngame',
     alliance: 'calendar.schedule.groupAlliance',
     pass: 'calendar.schedule.groupPasses',
     track: 'calendar.schedule.groupTracks',
+    rotation: 'calendar.schedule.groupRotations',
+    kingdom_war: 'calendar.schedule.groupKingdomWar',
 };
 const SCHEDULE_KINDS = Object.keys(SCHEDULE_KIND_LABELS);
 

@@ -1,7 +1,7 @@
 /**
  * Today (the home page, `index.html`): what runs today (art, name, countdown, linking to its page) and what starts in
  * the next few days (recorded runs and proven forecasts), the phase on now of each event rotation (Survival Battle,
- * Alliance Duel), the Kingdom War's week on now and its Royal City Scramble (an entry can be hidden by its id, with
+ * Alliance Duel), the Kingdom War's week on now, its Royal City Scramble and Origin of the Curse's phase (an entry can be hidden by its id, with
  * Edit or in Settings: `hiddenTodayEntries`, display only),
  * the weekly plan by when to buy it (daily packs, weekly and longer packs, each event's packs and shop offers) and
  * today's weekday offers with their ratio.
@@ -48,7 +48,7 @@ import { isOnSale } from '../core/catalog.js';
 import { packageFamilyId } from '../core/pack-data.js';
 import { groupPlanByWhen } from '../core/plan-view.js';
 import { DAY_MS, WEEKDAYS, gameDay, listRuns, rotationSlots, runMoments, weekdayIndex } from '../core/schedule.js';
-import { scrambleStatus, warStatus } from '../core/kingdom-war.js';
+import { curseStatus, scrambleStatus, warStatus } from '../core/kingdom-war.js';
 
 // An upcoming entry's fill grows over the last hours before it starts (the same for all, whatever it is).
 const SOON_FILL_MS = 4 * 3600000;
@@ -85,7 +85,7 @@ let editing = false;
  * - A phase of an event rotation (Survival Battle, Alliance Duel): the phase's name as the title, the event's name beside it, the
  *   slot's times in local time, and (as an info icon) how to earn points in it.
  * - A war week or the Royal City Scramble of the Kingdom War: its name as the title, the war's name beside it, its
- *   times in local time.
+ *   times in local time. A phase of Origin of the Curse the same, with the event's name beside it.
  */
 function runEntry(id, kind, run, state, forecast = false) {
     const moments = runMoments(run);
@@ -110,7 +110,7 @@ function rotationEntry(rotation, slot, state) {
     const event = data.events[rotation.event_id];
     return {
         id: rotation.event_id,
-        kind: 'ingame',
+        kind: 'rotation',
         state,
         forecast: false,
         title: localizedName(slot.phase.name),
@@ -125,16 +125,19 @@ function rotationEntry(rotation, slot, state) {
     };
 }
 
-/** An entry of the Kingdom War (`kingdom_war`): `name` is its title (a war week's, or the scramble's event), `start` / `end` ms. */
-function warEntry(war, eventId, name, start, end, state) {
+/**
+ * An entry of the Kingdom War (`kingdom_war`): `name` is its title (a war week's, the scramble's event or a phase of
+ * Origin of the Curse), `start` / `end` ms, `description` the war's name unless given.
+ */
+function warEntry(war, eventId, name, start, end, state, description = localizedName(data.events[war.event_id].name)) {
     const event = data.events[eventId];
     return {
         id: eventId,
-        kind: 'ingame',
+        kind: 'kingdom_war',
         state,
         forecast: false,
         title: name,
-        description: localizedName(data.events[war.event_id].name),
+        description,
         image: event.image,
         href: null,
         dates: formatRunRange(start, end),
@@ -146,7 +149,8 @@ function warEntry(war, eventId, name, start, end, state) {
 
 /**
  * The Kingdom War's entries: the war week on now (none in the break or on a day off), the next war week and the
- * Royal City Scramble, on now or, once it is near (`SOON_DAYS`), the next one.
+ * Royal City Scramble, on now or, once it is near (`SOON_DAYS`), the next one, and the same for Origin of the Curse's
+ * phases.
  */
 function kingdomWarEntries(war, now, today) {
     const running = [];
@@ -170,6 +174,19 @@ function kingdomWarEntries(war, now, today) {
     }
     if (scramble.next && scramble.next.start - now <= SOON_DAYS * DAY_MS) {
         soon.push(warEntry(war, scrambleId, scrambleName, scramble.next.start, scramble.next.end, 'upcoming'));
+    }
+    if (war.origin_of_the_curse) {
+        const curseId = war.origin_of_the_curse.event_id;
+        const curseName = localizedName(data.events[curseId].name);
+        const curse = curseStatus(war, now);
+        const phaseEntry = (segment, state) =>
+            warEntry(war, curseId, localizedName(segment.phase.name), segment.start, segment.end, state, curseName);
+        if (curse.current) {
+            running.push(phaseEntry(curse.current, 'running'));
+        }
+        if (curse.next && curse.next.start - now <= SOON_DAYS * DAY_MS) {
+            soon.push(phaseEntry(curse.next, 'upcoming'));
+        }
     }
     return { running, soon };
 }

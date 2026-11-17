@@ -73,14 +73,19 @@ test('schedule: the entries Today lists are the schedule ids and the gameplay ev
         events: { bazaar: {}, raid: { category: 'ingame_event' } },
         schedule: { bazaar: [], raid: [] },
         event_rotations: { survival: { event_id: 'survival_battle' }, duel: { event_id: 'raid' } },
-        kingdom_war: { event_id: 'kingdom_war', royal_city_scramble: { event_id: 'scramble' } },
+        kingdom_war: {
+            event_id: 'kingdom_war',
+            royal_city_scramble: { event_id: 'scramble' },
+            origin_of_the_curse: { event_id: 'curse' },
+        },
     });
     assert.deepEqual(entries, [
         { id: 'bazaar', kind: 'event' },
         { id: 'raid', kind: 'ingame' },
-        { id: 'survival_battle', kind: 'ingame' },
-        { id: 'kingdom_war', kind: 'ingame' },
-        { id: 'scramble', kind: 'ingame' },
+        { id: 'survival_battle', kind: 'rotation' },
+        { id: 'kingdom_war', kind: 'kingdom_war' },
+        { id: 'scramble', kind: 'kingdom_war' },
+        { id: 'curse', kind: 'kingdom_war' },
     ]);
     assert.deepEqual(todayEntries({ schedule: {} }), [], 'no rotations and no war: only the schedule');
 });

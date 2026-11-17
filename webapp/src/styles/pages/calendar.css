@@ -27,9 +27,13 @@
     --bar-color: var(--series-a);
 }
 
-/* The Kingdom War: the Royal City Scramble has its own colour. */
+/* The Kingdom War: the Royal City Scramble and Origin of the Curse have their own colours. */
 .schedule__row--scramble {
     --bar-color: var(--series-a);
+}
+
+.schedule__row--curse {
+    --bar-color: var(--series-b);
 }
 
 .schedule__row--pass {
@@ -258,13 +262,13 @@ a.schedule__bar {
     color: var(--bg);
 }
 
-/* The Royal City Scramble in the Kingdom War's overview: the whole day it is on as a faint bar, its exact hours as a
-   thin one on top (4 hours are narrower than a pixel there, so it keeps a minimum width). */
+/* The Royal City Scramble and Origin of the Curse in the Kingdom War's overview: the whole day (or run) it is on as a
+   faint bar, its exact hours as a thin one on top (4 hours are narrower than a pixel there, so it keeps a minimum width). */
 .schedule__bar--day {
     background: color-mix(in srgb, var(--bar-color) 30%, transparent);
 }
 
-/* An ended scramble keeps both: its day faint grey, its hours the solid grey of the other ended bars. */
+/* An ended one keeps both: its day faint grey, its hours the solid grey of the other ended bars. */
 .schedule__bar.schedule__bar--day.schedule__bar--past {
     background: color-mix(in srgb, #4b5263 40%, transparent);
 }

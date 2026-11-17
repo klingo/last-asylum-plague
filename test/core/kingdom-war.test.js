@@ -1,7 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { dayNumber, dayStartMs } from '../../webapp/src/core/schedule.js';
-import { scrambleSlots, scrambleStatus, warPeriods, warStatus } from '../../webapp/src/core/kingdom-war.js';
+import {
+    curseRuns,
+    curseStatus,
+    scrambleSlots,
+    scrambleStatus,
+    warPeriods,
+    warStatus,
+} from '../../webapp/src/core/kingdom-war.js';
 
 // The cycle as the game runs it: three war weeks (Monday to the end of Saturday) and a break week, from Monday 2026-10-26.
 const war = {
@@ -14,6 +21,22 @@ const war = {
         null,
     ],
     royal_city_scramble: { weekday: 'saturday', start_hour: 12, hours: 4 },
+    origin_of_the_curse: {
+        phases: [
+            { id: 'preview', name: { en: 'Preview' } },
+            { id: 'preparation', name: { en: 'Preparation' } },
+            { id: 'contest', name: { en: 'Contest' } },
+            { id: 'results', name: { en: 'Results' } },
+        ],
+        timeline: [
+            { phase: 'preview', weekday: 'tuesday', time: '00:00' },
+            { phase: 'preparation', weekday: 'saturday', time: '00:00' },
+            { phase: 'contest', weekday: 'saturday', time: '00:40' },
+            { phase: 'preparation', weekday: 'saturday', time: '01:10' },
+            { phase: 'contest', weekday: 'saturday', time: '13:00' },
+            { phase: 'results', weekday: 'saturday', time: '13:30' },
+        ],
+    },
 };
 const day = dayNumber;
 const HOUR = 3600000;
@@ -83,4 +106,79 @@ test('scramble: a slot the window cuts is included, and the status says what is 
     const after = scrambleStatus(war, Date.UTC(2026, 10, 14, 18));
     assert.equal(after.current, null);
     assert.equal(after.next.start, Date.UTC(2026, 10, 21, 14));
+});
+
+// The reset is 02:00 UTC = 00:00 server time, so Saturday 00:40 server time is 02:40 UTC.
+const MINUTE = 60000;
+const contestStart = Date.UTC(2026, 10, 21, 2, 40);
+
+test('curse: one run in the break week, from Tuesday to the end of Sunday, cut into the timeline phases', () => {
+    const runs = curseRuns(war, Date.UTC(2026, 10, 9), Date.UTC(2026, 11, 7));
+    assert.equal(runs.length, 1, 'the next break week is the one of Dec 14, outside the window');
+    const [run] = runs;
+    assert.equal(run.start, dayStartMs(day('2026-11-17')), 'Tuesday 00:00 server time');
+    assert.equal(run.end, dayStartMs(day('2026-11-23')), "Monday's reset: the end of Sunday");
+    assert.deepEqual(
+        run.segments.map(({ phase, start, end }) => [phase.id, start - contestStart, end - contestStart]),
+        [
+            ['preview', -(4 * 24 * 60 + 40) * MINUTE, -40 * MINUTE],
+            ['preparation', -40 * MINUTE, 0],
+            ['contest', 0, 30 * MINUTE],
+            ['preparation', 30 * MINUTE, 12 * 60 * MINUTE + 20 * MINUTE],
+            ['contest', 12 * 60 * MINUTE + 20 * MINUTE, 12 * 60 * MINUTE + 50 * MINUTE],
+            ['results', 12 * 60 * MINUTE + 50 * MINUTE, run.end - contestStart],
+        ],
+    );
+});
+
+test('curse runs: only those overlapping the window, and the next cycle has its own', () => {
+    assert.equal(curseRuns(war, Date.UTC(2026, 10, 24), Date.UTC(2026, 11, 13)).length, 0, 'war weeks only');
+    const later = curseRuns(war, Date.UTC(2026, 10, 9), Date.UTC(2026, 11, 20));
+    assert.deepEqual(
+        later.map((run) => run.start),
+        [dayStartMs(day('2026-11-17')), dayStartMs(day('2026-12-15'))],
+    );
+    // A window that only touches the Sunday still gets the run.
+    assert.equal(curseRuns(war, Date.UTC(2026, 10, 22, 12), Date.UTC(2026, 10, 22, 13)).length, 1);
+});
+
+test('curse runs: a null entry ends the event early', () => {
+    const early = {
+        ...war,
+        origin_of_the_curse: {
+            ...war.origin_of_the_curse,
+            timeline: [...war.origin_of_the_curse.timeline, { phase: null, weekday: 'sunday', time: '12:00' }],
+        },
+    };
+    const [run] = curseRuns(early, Date.UTC(2026, 10, 16), Date.UTC(2026, 10, 24));
+    assert.equal(run.segments.length, 6);
+    assert.equal(run.end, dayStartMs(day('2026-11-22')) + 12 * HOUR);
+    assert.equal(run.segments[5].end, run.end, 'Results end where the null entry starts');
+});
+
+test('curse status: the phase on now and the next one, also across the weeks of war', () => {
+    const preview = curseStatus(war, Date.UTC(2026, 10, 17, 12));
+    assert.equal(preview.current.phase.id, 'preview');
+    assert.equal(preview.next.phase.id, 'preparation');
+    assert.equal(preview.next.start, dayStartMs(day('2026-11-21')));
+
+    const contest = curseStatus(war, contestStart + 10 * MINUTE);
+    assert.equal(contest.current.phase.id, 'contest');
+    assert.equal(contest.next.phase.id, 'preparation');
+    assert.equal(
+        curseStatus(war, contestStart + 30 * MINUTE).current.phase.id,
+        'preparation',
+        'over the moment it ends',
+    );
+
+    // Monday of the break week, before the run: nothing on, the run's first phase is next.
+    const before = curseStatus(war, Date.UTC(2026, 10, 16, 12));
+    assert.equal(before.current, null);
+    assert.equal(before.next.phase.id, 'preview');
+    // A war week: the next run is the break week of the next cycle.
+    const during = curseStatus(war, Date.UTC(2026, 10, 24, 12));
+    assert.equal(during.current, null);
+    assert.equal(during.next.start, dayStartMs(day('2026-12-15')));
+    // The moment the run ends nothing is on.
+    assert.equal(curseStatus(war, dayStartMs(day('2026-11-23'))).current, null);
 });

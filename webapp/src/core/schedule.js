@@ -118,19 +118,26 @@ function scheduleRuns(data, today) {
 
 /**
  * Every entry the Today page can list, `[{ id, kind }]` (kinds as in `scheduleRuns`): each id with a schedule, plus the
- * events of the event rotations and the Kingdom War's two (the war and its Royal City Scramble), which have no
- * recorded runs. An entry's id is what the user hides it by (`hiddenTodayEntries`).
+ * events of the event rotations (kind 'rotation') and the Kingdom War's (the war, its Royal City Scramble and Origin of
+ * the Curse: kind 'kingdom_war'), which have no recorded runs. An entry's id is what the user hides it by
+ * (`hiddenTodayEntries`).
  */
 function todayEntries(data) {
     const entries = new Map([...scheduleRuns(data)].map(([id, { kind }]) => [id, kind]));
     const war = data.kingdom_war;
-    const gameplayIds = [
-        ...Object.values(data.event_rotations || {}).map((rotation) => rotation.event_id),
-        ...(war ? [war.event_id, war.royal_city_scramble.event_id] : []),
+    const gameplay = [
+        ...Object.values(data.event_rotations || {}).map((rotation) => [rotation.event_id, 'rotation']),
+        ...(war
+            ? [
+                  war.event_id,
+                  war.royal_city_scramble.event_id,
+                  ...(war.origin_of_the_curse ? [war.origin_of_the_curse.event_id] : []),
+              ].map((id) => [id, 'kingdom_war'])
+            : []),
     ];
-    for (const id of gameplayIds) {
+    for (const [id, kind] of gameplay) {
         if (!entries.has(id)) {
-            entries.set(id, 'ingame');
+            entries.set(id, kind);
         }
     }
     return [...entries].map(([id, kind]) => ({ id, kind }));

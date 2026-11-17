@@ -400,6 +400,8 @@
             "groupAlliance": "Alliance events",
             "groupPasses": "Seasonal passes",
             "groupTracks": "Spend rewards",
+            "groupRotations": "Event rotations",
+            "groupKingdomWar": "Kingdom War",
             "oneDay": "1 day",
             "days": "{count} days",
             "forecastBasis": "Forecast: every {interval} days",
@@ -436,7 +438,9 @@
             "nowBreak": "Now · break, {next} starts {time}",
             "nowOff": "Now · off day, {next} starts {time}",
             "scrambleNow": "{name} on now, until {time}",
-            "scrambleNext": "Next {name}: {range}"
+            "scrambleNext": "Next {name}: {range}",
+            "curseNow": "{name}: {phase} on now, until {time}",
+            "curseNext": "{name}: {phase} next, {time}"
         },
         "status": {
             "endsIn": "Ends in {time}",

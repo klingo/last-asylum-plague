@@ -11,7 +11,7 @@ Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item 
 `events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
 **Settings**.
 
-**Settings** (`settings.html`) has links to its cards at the top and these cards: **Language**, the app's language (saved in this browser); **Display**, which entries the Today page lists (one switch per event, pass, track, event rotation and the Kingdom War, grouped as the Calendar groups them; off hides it on Today, nothing else, and the choice is synced like the other settings); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
+**Settings** (`settings.html`) has links to its cards at the top and these cards: **Language**, the app's language (saved in this browser); **Display**, which entries the Today page lists (one switch per event, pass, track, event rotation and Kingdom War event (the war, its scramble and Origin of the Curse), grouped as the Calendar groups them, with a tab of their own for the event rotations and the Kingdom War; off hides it on Today, nothing else, and the choice is synced like the other settings); **Notifications**, a switch for a browser notification when a new round of Survival Battle begins (every
 4-hour slot of its rotation) and, grouped under the Royal City Scramble's name, two for that event: one 1 hour before it starts and one when it starts
 (switching one on asks the browser for permission, and as there is no server to push from, a notification only comes
 while a tab of the app is open; while one is on, Today marks the bars it is for with a bell); **Valuation**, the
@@ -50,8 +50,9 @@ deleted after 180 days without use; the button stays hidden until the build has 
   Survival Battle (`event_rotations` in `events.json`: the 42 four-hour slots of its week, from Sunday's reset, the
   same every week) and the Alliance Duel (a phase a day from Monday's reset, Sunday off) show the phase on now (none on
   the Alliance Duel's Sunday) and the next one, with their local times and how to earn points in them.
-  The Kingdom War (`kingdom_war`) adds the war week on now (not in the break) and the next one, and the Royal City
-  Scramble while it runs, or from three days before the next one.
+  The Kingdom War (`kingdom_war`) adds the war week on now (not in the break) and the next one, the Royal City
+  Scramble while it runs, or from three days before the next one, and the phase on now of Origin of the Curse (the
+  break week's event) and the next phase from three days before it starts.
 
 - **Deal Ranking** (`rankings.html`) — every package and pass on sale this week ranked by worth ÷ price, with what to buy
   ("Buy / week": how many the best plan for your exact weekly spend buys out of what's on sale; "in Weekly Pass" /
@@ -82,11 +83,13 @@ deleted after 180 days without use; the button stays hidden until the build has 
   the user's local days: a bar starts and ends at the game's daily reset (02:00 UTC) in local time, so it can begin
   part-way into a day column (a windowed event rotation's first and last day column are cut to its window). Banners, Today and the Deal Ranking's skips show the same local moments.
   Below them the **Kingdom War** box (`kingdom_war` in `events.json`, `core/kingdom-war.js`): the current week and the
-  3 after it, a row for each war week (Week 1, Week 2, Week 3: Finals: Monday's reset to the end of Saturday, its name
-  on the bar; the break is the empty gap between Week 3 and the next Week 1) and one for the Royal City Scramble, a
-  faint bar on every Saturday (the break week too) with the 4 hours as a thin bar on top (to scale, so the day is easy to see and the hours are where they fall).
-  The faint bar has the hover card (the scramble's local hours, 12:00–16:00 server time). A line says which week is on
-  now and when it ends (or when the next one starts), and when the scramble is on or next.
+  3 after it, with a row for the war weeks (Week 1, Week 2, Week 3: Finals: Monday's reset to the end of Saturday, its
+  name on the bar; the break is the empty gap between Week 3 and the next Week 1), one for the Royal City Scramble, a
+  faint bar on every Saturday (the break week too) with the 4 hours as a thin bar on top (to scale, so the day is easy to see and the hours are where they fall),
+  and one for Origin of the Curse (a faint bar for its run in the break week, Tuesday's reset to the end of Sunday, the
+  Saturday's two Contest Phases as thin bars on top). The faint bars have the hover card (the scramble's local hours,
+  12:00–16:00 server time; the run's days and each contest's local start time). A line says which week is on now and when it
+  ends (or when the next one starts), one when the scramble is on or next, and one which phase of Origin of the Curse is on or next.
   Every card collapses (its heading is the button; kept per device in this browser, not synced).
 - **Event Shops** (`events.html`) — one tab per ticked event (and the VIP Shop), with the event's banner and when it runs;
   its part of the same weekly plan: which event packs

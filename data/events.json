@@ -154,6 +154,14 @@
             },
             "category": "season_event"
         },
+        "origin_of_the_curse": {
+            "name": {
+                "en": "Origin of the Curse",
+                "de": ""
+            },
+            "category": "ingame_event",
+            "image": "origin_of_the_curse"
+        },
         "pandemic_experience": {
             "name": {
                 "en": "Pandemic Experience",
@@ -1019,6 +1027,71 @@
             "weekday": "saturday",
             "start_hour": 12,
             "hours": 4
+        },
+        "origin_of_the_curse": {
+            "event_id": "origin_of_the_curse",
+            "phases": [
+                {
+                    "id": "preview",
+                    "name": {
+                        "en": "Preview Phase",
+                        "de": ""
+                    }
+                },
+                {
+                    "id": "preparation",
+                    "name": {
+                        "en": "Preparation Phase",
+                        "de": ""
+                    }
+                },
+                {
+                    "id": "contest",
+                    "name": {
+                        "en": "Contest Phase",
+                        "de": ""
+                    }
+                },
+                {
+                    "id": "results",
+                    "name": {
+                        "en": "Results Phase",
+                        "de": ""
+                    }
+                }
+            ],
+            "timeline": [
+                {
+                    "phase": "preview",
+                    "weekday": "tuesday",
+                    "time": "00:00"
+                },
+                {
+                    "phase": "preparation",
+                    "weekday": "saturday",
+                    "time": "00:00"
+                },
+                {
+                    "phase": "contest",
+                    "weekday": "saturday",
+                    "time": "00:40"
+                },
+                {
+                    "phase": "preparation",
+                    "weekday": "saturday",
+                    "time": "01:10"
+                },
+                {
+                    "phase": "contest",
+                    "weekday": "saturday",
+                    "time": "13:00"
+                },
+                {
+                    "phase": "results",
+                    "weekday": "saturday",
+                    "time": "13:30"
+                }
+            ]
         }
     },
     "schedule": {

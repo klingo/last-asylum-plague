@@ -400,6 +400,8 @@
             "groupAlliance": "Allianz-Events",
             "groupPasses": "Saisonpässe",
             "groupTracks": "Ausgabenbelohnungen",
+            "groupRotations": "Event-Rotationen",
+            "groupKingdomWar": "Königreichskrieg",
             "oneDay": "1 Tag",
             "days": "{count} Tage",
             "forecastBasis": "Prognose: alle {interval} Tage",
@@ -436,7 +438,9 @@
             "nowBreak": "Jetzt · Pause, {next} beginnt {time}",
             "nowOff": "Jetzt · spielfrei, {next} beginnt {time}",
             "scrambleNow": "{name} läuft, bis {time}",
-            "scrambleNext": "Nächstes Event {name}: {range}"
+            "scrambleNext": "Nächstes Event {name}: {range}",
+            "curseNow": "{name}: {phase} läuft, bis {time}",
+            "curseNext": "{name}: als Nächstes {phase}, {time}"
         },
         "status": {
             "endsIn": "Endet in {time}",

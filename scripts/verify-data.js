@@ -7,7 +7,7 @@ import { resolveItemValues, bundleValue } from '../webapp/src/core/item-values.j
 import { currencyFlows } from '../webapp/src/core/planner.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
 import { calendarSections, normalizePackData } from '../webapp/src/core/pack-data.js';
-import { dayNumber, weekdayIndex } from '../webapp/src/core/schedule.js';
+import { WEEKDAYS, dayNumber, weekdayIndex } from '../webapp/src/core/schedule.js';
 import { AWAKENING_FRAMES, MAX_WEAPON_STARS } from '../webapp/src/core/hero-stars.js';
 import { awakeningSkills, weaponBonuses } from '../webapp/src/core/skill-path.js';
 import { missingCodeLabels } from './lib/code-labels.js';
@@ -700,8 +700,9 @@ async function verifyData() {
         }
     });
 
-    // 7d. The Kingdom War: both events exist, the cycle starts on a Monday, the week ids are unique and there is a war
-    // week, and the scramble fits in its day.
+    // 7d. The Kingdom War: its events exist, the cycle starts on a Monday, the week ids are unique and there is a war
+    // week, the scramble fits in its day, and Origin of the Curse has a break week to run in, unique phase ids and a
+    // timeline in time order (known phases, starting with one).
     checkCategory('Kingdom War', ({ reportError }) => {
         const war = data.kingdom_war;
         if (!war) {
@@ -728,6 +729,38 @@ async function verifyData() {
                 'Kingdom War Scramble',
                 `The scramble (from hour ${startHour}, ${hours} hours) runs past the end of its game day.`,
             );
+        }
+        const curse = war.origin_of_the_curse;
+        if (!curse) {
+            return;
+        }
+        if (!events[curse.event_id]) {
+            reportError('Kingdom War Event', `Origin of the Curse names the unknown event "${curse.event_id}".`);
+        }
+        if (!war.weeks.includes(null)) {
+            reportError('Kingdom War Curse', 'Origin of the Curse runs in the break weeks, but the cycle has none.');
+        }
+        const phaseIds = curse.phases.map((phase) => phase.id);
+        if (new Set(phaseIds).size !== phaseIds.length) {
+            reportError('Kingdom War Curse', 'Two phases of Origin of the Curse have the same id.');
+        }
+        let previous = -1;
+        curse.timeline.forEach(({ phase, weekday, time }, index) => {
+            if (phase !== null && !phaseIds.includes(phase)) {
+                reportError('Kingdom War Curse', `The timeline names the unknown phase "${phase}".`);
+            }
+            const [hours, minutes] = time.split(':').map(Number);
+            const minuteOfWeek = (WEEKDAYS.indexOf(weekday) * 24 + hours) * 60 + minutes;
+            if (minuteOfWeek <= previous) {
+                reportError(
+                    'Kingdom War Curse',
+                    `Timeline entry ${index + 1} (${weekday} ${time}) is not after the one before.`,
+                );
+            }
+            previous = minuteOfWeek;
+        });
+        if (curse.timeline[0].phase === null) {
+            reportError('Kingdom War Curse', 'The timeline starts with no phase.');
         }
     });
 
