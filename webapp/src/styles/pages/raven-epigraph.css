@@ -1,0 +1,357 @@
+/* Raven Epigraph: the board of the plan shown (the triangle picture with four epigraphs on it, each in its frame), its
+   promote panel, then what the player has and the answer. */
+
+/* "How it works". */
+.epigraph-help > section + section {
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+/* The three plans side by side, close together and in the middle (one under the other on a narrow screen), each a faction,
+   its board and its copies needed. */
+.epigraph-plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 324px));
+    gap: 24px 100px;
+    justify-content: center;
+}
+
+/* The faction above a board: its badge and name, in its colour. */
+.epigraph-plan__faction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 0 20px;
+    color: var(--faction-color);
+    font-size: 1.3rem;
+}
+
+.epigraph-plan__faction .hero-badge {
+    width: 30px;
+    height: 30px;
+}
+
+/* The places of the epigraphs are those of the game's Epigraph Plan, measured in the width of the middle one: the top one
+   1.4 above it, the two below 1.3 to each side and 0.8 down. The board is as high as that takes (a little under its
+   width), the numbers are shares of its width (left) and height (top), their centre. The triangle is a square picture drawn at
+   65 % of the width around the middle one, so its circle is a little wider than the epigraph in it, as in the game; its
+   three tips show between the epigraphs. */
+.epigraph-board {
+    position: relative;
+    width: min(100%, 324px);
+    aspect-ratio: 1 / 0.945;
+    margin: 0 auto;
+}
+
+.epigraph-board__triangle {
+    position: absolute;
+    left: 17.5%;
+    top: 25.9%;
+    width: 65%;
+    height: auto;
+}
+
+.epigraph-tile {
+    position: absolute;
+    width: 32%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: none;
+    transform: translate(-50%, -50%);
+}
+
+.epigraph-tile:hover {
+    background: none;
+    filter: brightness(1.15);
+}
+
+.epigraph-tile:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.epigraph-tile--top {
+    left: 50%;
+    top: 16.8%;
+}
+
+.epigraph-tile--center {
+    left: 50%;
+    top: 60.3%;
+    width: 40%;
+}
+
+.epigraph-tile--left {
+    left: 12%;
+    top: 85.8%;
+}
+
+.epigraph-tile--right {
+    left: 88%;
+    top: 85.8%;
+}
+
+/* The copies the epigraph still needs, in the corner. */
+.epigraph-tile__need {
+    position: absolute;
+    right: 4%;
+    top: 4%;
+    z-index: 1;
+    min-width: 1.5em;
+    padding: 1px 6px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* An epigraph's picture: the socket's frame, its art in the opening of the border of its rarity (the border is 86 % of the picture,
+   so only the socket's notches show around it, as in the game), the slot's badge in the corner and the diamonds along the bottom edge.
+   They scale with the picture's width. */
+.epigraph-art {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    container-type: inline-size;
+}
+
+.epigraph-art > img {
+    position: absolute;
+}
+
+.epigraph-art__frame {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.epigraph-art__rarity {
+    left: 7%;
+    top: 7%;
+    width: 86%;
+    height: 86%;
+}
+
+/* The art fills the opening of the rarity border (its 14 px ring leaves 75 % of its box open) and runs a little under the ring. */
+.epigraph-art__img {
+    left: 16%;
+    top: 16%;
+    width: 68%;
+    height: 68%;
+    border-radius: 2cqw;
+}
+
+.epigraph-art__badge {
+    left: 11cqw;
+    top: 11cqw;
+    width: 24cqw;
+    height: auto;
+}
+
+.epigraph-gems {
+    position: absolute;
+    left: 50%;
+    bottom: 16cqw;
+    display: flex;
+    align-items: center;
+    gap: 0.5cqw;
+    transform: translateX(-50%);
+}
+
+.epigraph-gems .epigraph-gem {
+    width: 12cqw;
+    height: 12cqw;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.6));
+}
+
+.epigraph-gems .epigraph-gem--max {
+    width: 15cqw;
+    height: 15cqw;
+}
+
+.epigraph-plan__missing {
+    margin: 12px 0 0;
+    color: var(--text-dim);
+    text-align: center;
+}
+
+/* Epigraph Promote: a card over the dimmed page. */
+.epigraph-dialog {
+    width: min(94vw, 400px);
+    max-width: none;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+    color: var(--text);
+}
+
+.epigraph-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.epigraph-dialog__window {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.epigraph-dialog__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.epigraph-dialog__head h3 {
+    margin: 0;
+}
+
+/* The epigraph before and after the next promotion. */
+.epigraph-dialog__tiles {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.epigraph-dialog__tiles .epigraph-art {
+    flex: none;
+    width: 108px;
+}
+
+.epigraph-arrow {
+    color: var(--text-dim);
+    font-size: 1.6rem;
+}
+
+.epigraph-dialog__name {
+    font-weight: 600;
+    text-align: center;
+}
+
+.epigraph-dialog__progress {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.epigraph-dialog__steps {
+    display: flex;
+    gap: 6px;
+}
+
+.epigraph-dialog__steps button,
+.epigraph-dialog__close {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+/* The six levels as diamonds on a line, filled up to the level. */
+.epigraph-bar {
+    --fill: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 30px;
+    padding: 0 12px;
+}
+
+.epigraph-bar::before,
+.epigraph-bar::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    height: 4px;
+    border-radius: 2px;
+    transform: translateY(-50%);
+}
+
+.epigraph-bar::before {
+    right: 12px;
+    background: var(--border);
+}
+
+.epigraph-bar::after {
+    width: calc((100% - 24px) * var(--fill));
+    background: var(--accent);
+}
+
+.epigraph-bar__mark {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+.epigraph-bar__mark:hover {
+    background: none;
+    filter: brightness(1.2);
+}
+
+.epigraph-bar__mark:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.epigraph-bar__mark img {
+    width: 26px;
+    height: 26px;
+}
+
+.epigraph-dialog__copies {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.epigraph-dialog__input {
+    width: 5.5em;
+    text-align: right;
+}
+
+.epigraph-stock__fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.epigraph-stock__field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
+}
+
+.epigraph-stock__field span {
+    flex: 1;
+    min-width: 0;
+}
+
+.epigraph-stock__field input {
+    width: 110px;
+    text-align: right;
+}
+
+.epigraph-note {
+    margin: 10px 0 0;
+}

@@ -14,6 +14,7 @@
         "heroes": "Meine Helden",
         "gear": "Ausrüstungs-Upgradepfad",
         "skills": "Skill-Upgradepfad",
+        "ravenEpigraph": "Raben-Epigraph",
         "lordSpecialty": "Lord-Spezialisierung",
         "sync": "Sync",
         "syncState": {
@@ -45,6 +46,7 @@
             "heroes": "Lege die Sterne jedes deiner Helden fest. Der Skill-Upgradepfad nutzt sie, um zu zeigen, welche Skill-Boni freigeschaltet sind.",
             "gear": "Die UR-Ausrüstung eines Trupps: in welcher Reihenfolge du sie herstellst und ihre Level und Sterne erhöhst, Schritt für Schritt.",
             "skills": "In welcher Reihenfolge du die Helden-Skills eines Trupps verbesserst: welcher Skill als Nächstes dran ist, Held für Held, Schritt für Schritt.",
+            "ravenEpigraph": "Lege Stufe und Kopien der Epigraphen deines Raben fest und sieh, wie viele Epigraph-Truhen nötig sind, um alle auf die höchste Stufe zu bringen.",
             "lordSpecialty": "Plane die Spezialisierungsfähigkeiten von Handyman oder Legion Commander, sieh, welche Stufe und wie viele Punkte ein Build braucht, und teile ihn als Link."
         }
     },
@@ -159,6 +161,7 @@
         "heroes": "Meine Helden - Klingo's Companion",
         "gear": "Ausrüstungs-Upgradepfad - Klingo's Companion",
         "skills": "Skill-Upgradepfad - Klingo's Companion",
+        "ravenEpigraph": "Raben-Epigraph - Klingo's Companion",
         "lordSpecialty": "Lord-Spezialisierung - Klingo's Companion",
         "settings": "Einstellungen - Klingo's Companion",
         "sync": "Synchronisierung - Klingo's Companion",
@@ -265,6 +268,10 @@
                 "lordSetup": {
                     "name": "Lord-Setup",
                     "text": "Die Stufe, zusätzliche Punkte, der Lord und die Builds der Lord-Spezialisierung."
+                },
+                "epigraphs": {
+                    "name": "Epigraphen",
+                    "text": "Die Stufe und die Kopien jedes Epigraphs sowie die vorhandenen Wahltruhen und Splitter (Raben-Epigraph)."
                 },
                 "locale": {
                     "name": "Sprache",
@@ -951,6 +958,48 @@
             "energy": "Energieschaden",
             "physical": "Physischer Schaden"
         }
+    },
+    "ravenEpigraph": {
+        "heading": "Raben-Epigraph",
+        "description": "Lege fest, wo die UR-Epigraphen deines Raben stehen, und sieh, wie viele Epigraph-Truhen nötig sind, um alle 12 auf die höchste Stufe zu bringen.",
+        "help": {
+            "aboutTitle": "Was diese Seite macht",
+            "aboutText": "Der Rabe hat drei Epigraph-Pläne, einen für die Krieger, einen für die Ranger und einen für die Hexenmeister, jeweils mit denselben vier Epigraphen. Die drei Spielfelder stehen nebeneinander. Gib die Beförderungsstufe und die Kopien jedes Epigraphs ein, dazu die UR Epigraph Wahltruhen und UR Epigraph-Splitter, die du hast. Die Seite sagt dir, wie viele Truhen du noch öffnen musst, um alle 12 Epigraphen auf die höchste Stufe zu bringen.",
+            "promoteTitle": "Einen Epigraph befördern",
+            "promoteText": "Tippe auf einen Epigraph, um sein Beförderungsfenster zu öffnen, wie im Spiel. Stelle seine Stufe mit den Rauten der Fortschrittsleiste oder den Tasten − und + ein (ein Tipp auf die aktuelle Stufe setzt sie einen Schritt zurück) und gib die Kopien ein, die du besitzt. Jede Beförderung braucht mehr Kopien als die vorige: {steps}, zusammen {total}. Die kleine Zahl an einem Epigraph ist das, was er noch braucht.",
+            "chestsTitle": "Die Truhen",
+            "chestsText": "Eine UR Epigraph Truhe gibt einen zufälligen UR-Epigraph (jeder der 12 mit gleicher Chance) und {urShards} UR Epigraph-Splitter. Eine SSR Epigraph Truhe gibt in {ssrChance} der Fälle einen und {ssrShards} Splitter. Eine Kopie eines Epigraphs auf der höchsten Stufe oder ohne weiteren Bedarf ist verschwendet. {craftShards} Splitter stellen einen Epigraph deiner Wahl her, und eine UR Epigraph Wahltruhe gibt einen (und {choiceShards} Splitter).",
+            "answerTitle": "Die Antwort",
+            "answerText": "Deine Wahltruhen und Splitter werden bis zum Schluss aufgehoben, um die Lücken zu füllen, die die zufälligen Kopien lassen. Die Seite öffnet die Truhen viele Male nacheinander: Erwartet ist die durchschnittliche Zahl der Truhen, Sicher die Zahl, innerhalb derer neun von zehn Durchläufen bleiben. Die beiden Zeilen sind getrennte Antworten, keine Mischung.",
+            "savedTitle": "Deine Daten",
+            "savedText": "Im Browser gespeichert, sobald du etwas änderst."
+        },
+        "planMissing": "Noch benötigte Kopien in diesem Plan: {count}",
+        "planDone": "Dieser Plan ist auf der höchsten Stufe",
+        "tileLabel": "{name}: Stufe {level} von {max}",
+        "tileNeed": "Noch benötigte Kopien: {count}",
+        "promote": {
+            "title": "Epigraph befördern",
+            "close": "Schließen",
+            "progress": "Beförderungsfortschritt: {level}/{max}",
+            "lower": "Stufe senken",
+            "raise": "Stufe erhöhen",
+            "setLevel": "Stufe {level}",
+            "copies": "Kopien",
+            "maxed": "Höchste Stufe erreicht",
+            "needed": "Noch benötigte Kopien bis Stufe {max}: {count}",
+            "done": "Nichts mehr nötig"
+        },
+        "stockTitle": "Was du hast",
+        "resultTitle": "Benötigte Truhen",
+        "missing": "Noch benötigte Kopien",
+        "covered": "Von deinen Truhen und Splittern gedeckt",
+        "chests": "Truhe",
+        "expected": "Erwartet",
+        "safe": "Sicher (9 von 10)",
+        "resultNote": "Jede Zeile zählt nur diese Truhenart. Deine Wahltruhen und Splitter werden zuletzt eingesetzt, um den Rest zu füllen.",
+        "allMaxed": "Jeder Epigraph ist auf der höchsten Stufe.",
+        "stockCovers": "Deine Wahltruhen und Splitter decken bereits alles ab."
     },
     "lord": {
         "heading": "Lord-Spezialisierung",

@@ -7,7 +7,7 @@ The top nav starts with **Today** (the home page) and **Calendar**, then groups 
 `webapp/src/ui/nav.js`; each page's short description is the `title` of its link: shown on hover, read out by
 screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
 Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
-**Heroes** (My Heroes, Gear Upgrade Path, Skill Upgrade Path) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
+**Heroes** (My Heroes, Gear Upgrade Path, Skill Upgrade Path, Raven Epigraph) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
 **Settings**.
 
@@ -170,6 +170,18 @@ deleted after 180 days without use; the button stays hidden until the build has 
   skill cap shown in the details (Lv 31 at awakening 3 up to Lv 40 at 40); the steps stay as they are. Data: `data/hero_skills.json`
   (own schema; `verify-data` checks the heroes, paths, icons and star bonuses), heroes' faction, class and portrait from `heroes` in
   `pack_data.json`.
+- **Raven Epigraph** (`raven-epigraph.html`) — how many chests it takes to max the Raven's 12 UR epigraphs (4 epigraphs in each of the
+  three plans, Warriors, Rangers and Warlocks). The three plans stand side by side, each laid out as the game's Epigraph Plan under its faction: the four epigraphs
+  (Frenzied Flock on top, Guard of Nature in the middle, Protective Charm and Reversal Power below) on the triangle picture, each in its
+  frame (set in the socket frame, with the border of its rarity over it) with its slot's badge, its promotion level as diamonds (the red gem at level 6)
+  and the copies it still needs in the corner. A click on an epigraph opens
+  its promote panel, as in the game: the level (bar, − / +), and the copies on hand against what the next promotion takes (1, 2, 3, 5, 7, 10:
+  28 in all). Below, the UR Epigraph Choice Chests and UR Epigraph Shards on hand, and the answer: how many UR Epigraph Chests, and
+  separately how many SSR Epigraph Chests, it takes until the 12 epigraphs are maxed, as the average and a safe count nine runs in ten stay
+  within. A simulation opens the chests one by one (a random copy is any of the 12 with the same chance and is wasted where nothing more is
+  needed; every chest also gives shards); the choice chests and shards (800 craft an epigraph of choice) are used last, to fill the gaps
+  (`core/epigraph-plan.js`, what the chests give is read from `pack_data.json`). Saved in the browser and synced (`epigraphs`). The pictures
+  are in `assets/raven/epigraphs/`: `<faction>/<epigraph>_iv.png`, `badges/`, `board/` (frame, triangle), `rarity/<rarity>.png` and `gems/`.
 - **Lord Specialty** (`lord-specialty.html`) — a planner for the specialty skills of the two lords (Handyman, Legion
   Commander), drawn like the game's tree: Lv.1 at the bottom, a specialty skill left and right of every unlock level,
   hexagons for active ones, squares for passive ones. Left click adds a point, right click removes one, hovering shows

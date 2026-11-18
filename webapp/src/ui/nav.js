@@ -102,6 +102,12 @@ const NAV_GROUPS = [
             { page: 'heroes', href: 'heroes.html', label: 'nav.heroes', description: 'nav.descriptions.heroes' },
             { page: 'gear', href: 'gear.html', label: 'nav.gear', description: 'nav.descriptions.gear' },
             { page: 'skills', href: 'skills.html', label: 'nav.skills', description: 'nav.descriptions.skills' },
+            {
+                page: 'raven-epigraph',
+                href: 'raven-epigraph.html',
+                label: 'nav.ravenEpigraph',
+                description: 'nav.descriptions.ravenEpigraph',
+            },
         ],
     },
     {

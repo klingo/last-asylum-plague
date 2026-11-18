@@ -14,6 +14,7 @@ const STORAGE_KEYS = {
     skillProgress: 'lapkc_skill_progress', // the Skill Upgrade Path's progress (steps done), per faction
     heroStars: 'lapkc_hero_stars', // My Heroes: the stars of each hero and its weapon and its awakening level, and the faction shown
     lordSetup: 'lapkc_lord_setup', // the Lord Specialty's level, extra points, lord and builds
+    epigraphs: 'lapkc_epigraphs', // Raven Epigraph: the level and copies of each epigraph, and the choice chests and shards
     githubToken: 'lapkc_github_token', // the personal access token of Settings > Admin (ui/github.js)
     sync: 'lapkc_sync', // the sync key and what this device last synced (ui/sync.js); never synced itself
 };

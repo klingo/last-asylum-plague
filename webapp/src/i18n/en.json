@@ -14,6 +14,7 @@
         "heroes": "My Heroes",
         "gear": "Gear Upgrade Path",
         "skills": "Skill Upgrade Path",
+        "ravenEpigraph": "Raven Epigraph",
         "lordSpecialty": "Lord Specialty",
         "sync": "Sync",
         "syncState": {
@@ -45,6 +46,7 @@
             "heroes": "Set the stars of each of your heroes. The Skill Upgrade Path uses them to show which skill bonuses are unlocked.",
             "gear": "A squad's UR gear: in which order to craft it and to raise its levels and stars, step by step.",
             "skills": "In which order to level up a squad's hero skills: which skill is next, hero by hero, step by step.",
+            "ravenEpigraph": "Set the level and copies of your Raven's epigraphs and see how many Epigraph Chests it takes to bring them all to the highest level.",
             "lordSpecialty": "Plan the Handyman's or Legion Commander's specialty skills, see the level and points a build requires, and share it as a link."
         }
     },
@@ -159,6 +161,7 @@
         "heroes": "My Heroes - Klingo's Companion",
         "gear": "Gear Upgrade Path - Klingo's Companion",
         "skills": "Skill Upgrade Path - Klingo's Companion",
+        "ravenEpigraph": "Raven Epigraph - Klingo's Companion",
         "lordSpecialty": "Lord Specialty - Klingo's Companion",
         "settings": "Settings - Klingo's Companion",
         "sync": "Sync - Klingo's Companion",
@@ -265,6 +268,10 @@
                 "lordSetup": {
                     "name": "Lord setup",
                     "text": "The level, extra points, lord and builds of the Lord Specialty."
+                },
+                "epigraphs": {
+                    "name": "Epigraphs",
+                    "text": "The level and copies of each epigraph, and the choice chests and shards on hand (Raven Epigraph)."
                 },
                 "locale": {
                     "name": "Language",
@@ -951,6 +958,48 @@
             "energy": "Energy DMG",
             "physical": "Physical DMG"
         }
+    },
+    "ravenEpigraph": {
+        "heading": "Raven Epigraph",
+        "description": "Set where your Raven's UR epigraphs stand and see how many Epigraph Chests it takes to bring all 12 of them to the highest level.",
+        "help": {
+            "aboutTitle": "What this page does",
+            "aboutText": "The Raven has three epigraph plans, one for the Warriors, one for the Rangers and one for the Warlocks, each with the same four epigraphs. The three boards stand side by side. Enter the promotion level and the copies of every epigraph, and the UR Epigraph Choice Chests and UR Epigraph Shards you have. The page tells you how many chests you still have to open to bring all 12 epigraphs to the highest level.",
+            "promoteTitle": "Promoting an epigraph",
+            "promoteText": "Tap an epigraph to open its promote panel, as in the game. Set its level with the diamonds of the progress bar or the − and + buttons (a tap on the level it is at takes it back one step), and enter the copies you hold. Each promotion takes more copies than the one before: {steps}, {total} in all. The small number on an epigraph is what it still needs.",
+            "chestsTitle": "The chests",
+            "chestsText": "A UR Epigraph Chest gives a random UR epigraph (any of the 12 with the same chance) and {urShards} UR Epigraph Shards. A SSR Epigraph Chest gives one {ssrChance} of the time, and {ssrShards} shards. A copy of an epigraph that is at the highest level, or needs no more copies, is wasted. {craftShards} shards craft an epigraph of your choice, and a UR Epigraph Choice Chest gives one (and {choiceShards} shards).",
+            "answerTitle": "The answer",
+            "answerText": "Your choice chests and shards are kept for the end, to fill the gaps the random copies leave. The page opens the chests one by one many times over: Expected is the average number of chests it took, Safe the number that nine runs in ten stay within. The two lines are separate answers, not a mix.",
+            "savedTitle": "Your data",
+            "savedText": "Saved in this browser as soon as you change something."
+        },
+        "planMissing": "Copies still needed in this plan: {count}",
+        "planDone": "This plan is at the highest level",
+        "tileLabel": "{name}: level {level} of {max}",
+        "tileNeed": "Copies still needed: {count}",
+        "promote": {
+            "title": "Epigraph Promote",
+            "close": "Close",
+            "progress": "Promote Progress: {level}/{max}",
+            "lower": "Lower the level",
+            "raise": "Raise the level",
+            "setLevel": "Level {level}",
+            "copies": "Copies",
+            "maxed": "Highest level reached",
+            "needed": "Copies still needed up to level {max}: {count}",
+            "done": "Nothing more needed"
+        },
+        "stockTitle": "What you have",
+        "resultTitle": "Chests needed",
+        "missing": "Copies still needed",
+        "covered": "Filled by your chests and shards",
+        "chests": "Chest",
+        "expected": "Expected",
+        "safe": "Safe (9 in 10)",
+        "resultNote": "Each line counts only that kind of chest. Your choice chests and shards are used last, to fill what is left.",
+        "allMaxed": "Every epigraph is at the highest level.",
+        "stockCovers": "Your choice chests and shards already cover all of it."
     },
     "lord": {
         "heading": "Lord Specialty",

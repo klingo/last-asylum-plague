@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/assets/ui/favicon.svg" />
+        <title data-i18n="docTitle.ravenEpigraph"></title>
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="ravenEpigraph.heading"></h2>
+                <p class="page-lead" data-i18n="ravenEpigraph.description"></p>
+                <details class="page-details">
+                    <summary data-i18n="common.howItWorks"></summary>
+                    <div id="epigraph-help" class="epigraph-help"></div>
+                </details>
+            </section>
+
+            <section class="card">
+                <div id="epigraph-plan" class="epigraph-plans"></div>
+            </section>
+
+            <section class="card">
+                <div id="epigraph-stock" class="epigraph-stock"></div>
+                <div id="epigraph-stats"></div>
+            </section>
+
+            <dialog id="epigraph-dialog" class="epigraph-dialog" aria-labelledby="epigraph-dialog-title"></dialog>
+        </main>
+        <footer class="app-footer"><span>Klingo's Companion</span></footer>
+        <script type="module" src="/src/pages/raven-epigraph.js"></script>
+    </body>
+</html>
