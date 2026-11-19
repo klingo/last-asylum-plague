@@ -7,19 +7,176 @@
         "warlock": 300
     },
     "epigraphs": {
+        "frenzied_flock": {
+            "warrior": {
+                "description": {
+                    "en": "After Raven casts a skill, all Warrior allies gain {attack}%+{boost_attack}% ATK for 3s, and Raven's skill targets +{target}",
+                    "de": "Nachdem Rabe eine Fähigkeit einsetzt, erhalten alle Krieger-Verbündeten {attack}%+{boost_attack}% ANG für 3 Sek., Rabes Fähigkeitsziele +{target}"
+                },
+                "values": {
+                    "attack": [2.5, 5, 5, 7.5, 10, 10, 12],
+                    "target": [1, 1, 2, 2, 2, 3, 3]
+                },
+                "bonus_values": {
+                    "boost_attack": [0, 2.4, 4.8, 7.2, 9.6, 12]
+                }
+            },
+            "ranger": {
+                "description": {
+                    "en": "After Raven casts a skill, all Ranger allies gain {attack}%+{boost_attack}% ATK for 3s, and Raven's skill targets +{target}",
+                    "de": "Nachdem Rabe eine Fähigkeit einsetzt, erhalten alle Ranger-Verbündeten {attack}%+{boost_attack}% ANG für 3 Sek., Rabes Fähigkeitsziele +{target}."
+                },
+                "values": {
+                    "attack": [2.5, 5, 5, 7.5, 10, 10, 12],
+                    "target": [1, 1, 2, 2, 2, 3, 3]
+                },
+                "bonus_values": {
+                    "boost_attack": [0, 2.4, 4.8, 7.2, 9.6, 12]
+                }
+            },
+            "warlock": {
+                "description": {
+                    "en": "After Raven casts a skill, all Warlock allies gain {attack}%+{boost_attack}% ATK for 3s, and Raven's skill targets +{target}",
+                    "de": "Nachdem Rabe eine Fähigkeit einsetzt, erhalten alle Hexenmeister-Verbündeten {attack}%+{boost_attack}% ANG für 3 Sek., Rabes Fähigkeitsziele +{target}."
+                },
+                "values": {
+                    "attack": [2.5, 5, 5, 7.5, 10, 10, 12],
+                    "target": [1, 1, 2, 2, 2, 3, 3]
+                },
+                "bonus_values": {
+                    "boost_attack": [0, 2.4, 4.8, 7.2, 9.6, 12]
+                }
+            }
+        },
         "guard_of_nature": {
             "warrior": {
                 "description": {
-                    "en": "At battle start, Warrior allies gain a {shield}+{bonus_shield}-HP shield, which absorbs 50% damage for 15s. After shield ends, ally damage taken reduced by {reduction}%+{bonus_reduction}% until battle ends.",
-                    "de": ""
+                    "en": "At battle start, Warrior allies gain a {shield}+{boost_shield}-HP shield, which absorbs 50% damage for 15s. After shield ends, ally damage taken reduced by {reduction}%+{boost_reduction}% until battle ends",
+                    "de": "Zu Kampfbeginn erhalten Krieger-Verbündete einen {shield}+{boost_shield}-LP-Schild, der 15s lang 50% des Schadens absorbiert. Nach Ende des Schildes wird der erlittene Schaden von Verbündeten um {reduction}%+{boost_reduction}% reduziert, bis der Kampf endet"
                 },
                 "values": {
                     "shield": [800000, 1600000, 1600000, 2400000, 3200000, 3200000, 4000000],
                     "reduction": [5, 5, 10, 10, 10, 15, 15]
                 },
                 "bonus_values": {
-                    "bonus_shield": [0, 250000, 500000, 750000, 1000000, 1250000],
-                    "bonus_reduction": [0, 1, 2, 3, 4, 5]
+                    "boost_shield": [0, 250000, 500000, 750000, 1000000, 1250000],
+                    "boost_reduction": [0, 1, 2, 3, 4, 5]
+                }
+            },
+            "ranger": {
+                "description": {
+                    "en": "At battle start, Ranger allies gain a {shield}+{boost_shield}-HP shield, which absorbs 50% damage for 15s. After shield ends, ally damage taken reduced by {reduction}%+{boost_reduction}% until battle ends",
+                    "de": "Zu Kampfbeginn erhalten Ranger-Verbündete einen {shield}+{boost_shield}-LP-Schild, der 15s lang 50% des Schadens absorbiert. Nach Ende des Schildes wird der erlittene Schaden von Verbündeten um {reduction}%+{boost_reduction}% reduziert, bis der Kampf endet"
+                },
+                "values": {
+                    "shield": [800000, 1600000, 1600000, 2400000, 3200000, 3200000, 4000000],
+                    "reduction": [5, 5, 10, 10, 10, 15, 15]
+                },
+                "bonus_values": {
+                    "boost_shield": [0, 250000, 500000, 750000, 1000000, 1250000],
+                    "boost_reduction": [0, 1, 2, 3, 4, 5]
+                }
+            },
+            "warlock": {
+                "description": {
+                    "en": "At battle start, Warlock allies gain a {shield}+{boost_shield}-HP shield, which absorbs 50% damage for 15s. After shield ends, ally damage taken reduced by {reduction}%+{boost_reduction}% until battle ends",
+                    "de": "Zu Kampfbeginn erhalten Hexenmeister-Verbündete einen {shield}+{boost_shield}-LP-Schild, der 15s lang 50% des Schadens absorbiert. Nach Ende des Schildes wird der erlittene Schaden der Verbündeten um {reduction}%+{boost_reduction}% reduziert, bis der Kampf endet"
+                },
+                "values": {
+                    "shield": [800000, 1600000, 1600000, 2400000, 3200000, 3200000, 4000000],
+                    "reduction": [5, 5, 10, 10, 10, 15, 15]
+                },
+                "bonus_values": {
+                    "boost_shield": [0, 250000, 500000, 750000, 1000000, 1250000],
+                    "boost_reduction": [0, 1, 2, 3, 4, 5]
+                }
+            }
+        },
+        "protective_charm": {
+            "warrior": {
+                "description": {
+                    "en": "At the start of battle, all Warrior allies gain DEF +{def}%+{boost_def}% until the battle ends, and the 2 allies with the highest max HP gain an additional DEF +{bonus_def}%+{boost_bonus_def}%until the battle ends.",
+                    "de": "Zu Kampfbeginn erhalten alle Krieger-Verbündeten VER +{def}%+{boost_def}% bis Kampfende, und die 2 Verbündeten mit den höchsten max. LP erhalten zusätzlich VER +{bonus_def}%+{boost_bonus_def}% bis Kampfende."
+                },
+                "values": {
+                    "def": [9, 13.5, 13.5, 18, 22.5, 22.5, 27],
+                    "bonus_def": [13.5, 13.5, 27, 27, 27, 40.5, 40.5]
+                },
+                "bonus_values": {
+                    "boost_def": [0, 2.4, 4.8, 7.2, 9.6, 12],
+                    "boost_bonus_def": [0, 4, 8, 12, 16, 20]
+                }
+            },
+            "ranger": {
+                "description": {
+                    "en": "At the start of battle, all Ranger allies gain DEF +{def}%+{boost_def}% until the battle ends, and the 2 allies with the highest max HP gain an additional DEF +{bonus_def}%+{boost_bonus_def}% until the battle ends.",
+                    "de": "Zu Kampfbeginn erhalten alle Ranger-Verbündeten VER +{def}%+{boost_def}% bis Kampfende, und die 2 Verbündeten mit den höchsten max. LP erhalten zusätzlich VER +{bonus_def}%+{boost_bonus_def}% bis Kampfende."
+                },
+                "values": {
+                    "def": [9, 13.5, 13.5, 18, 22.5, 22.5, 27],
+                    "bonus_def": [13.5, 13.5, 27, 27, 27, 40.5, 40.5]
+                },
+                "bonus_values": {
+                    "boost_def": [0, 2.4, 4.8, 7.2, 9.6, 12],
+                    "boost_bonus_def": [0, 4, 8, 12, 16, 20]
+                }
+            },
+            "warlock": {
+                "description": {
+                    "en": "At the start of battle, all Warlock allies gain DEF +{def}%+{boost_def}% until the battle ends, and the 2 allies with the highest max HP gain an additional DEF +{bonus_def}%+{boost_bonus_def}% until the battle ends.",
+                    "de": "Zu Kampfbeginn erhalten alle Hexenmeister-Verbündeten VER +{def}%+{boost_def}% bis zum Kampfende, und die 2 Verbündeten mit den höchsten max. LP erhalten zusätzlich VER +{bonus_def}%+{boost_bonus_def}% bis zum Kampfende."
+                },
+                "values": {
+                    "def": [9, 13.5, 13.5, 18, 22.5, 22.5, 27],
+                    "bonus_def": [13.5, 13.5, 27, 27, 27, 40.5, 40.5]
+                },
+                "bonus_values": {
+                    "boost_def": [0, 2.4, 4.8, 7.2, 9.6, 12],
+                    "boost_bonus_def": [0, 4, 8, 12, 16, 20]
+                }
+            }
+        },
+        "reversal_power": {
+            "warrior": {
+                "description": {
+                    "en": "After Raven casts a skill, the 3 Warrior allies with the highest ATK deal {damage}%+{boost_damage}% more damage for 3s, and all enemies deal {ultimate}%+{boost_ultimate}% less [Ultimate Skill] damage for 3s.",
+                    "de": "Nachdem Rabe eine Fähigkeit einsetzt, verursachen die 3 Krieger-Verbündeten mit dem höchsten ANG 3 Sek. lang {damage}%+{boost_damage}% mehr Schaden, und alle Feinde verursachen 3 Sek. lang {ultimate}%+{boost_ultimate}% weniger [Ultimative Fähigkeit]-Schaden."
+                },
+                "values": {
+                    "damage": [3, 6, 6, 9, 12, 12, 15],
+                    "ultimate": [5, 5, 9, 9, 9, 13, 13]
+                },
+                "bonus_values": {
+                    "boost_damage": [0, 1.3, 2.6, 3.9, 5.2, 6.5],
+                    "boost_ultimate": [0, 1.2, 2.4, 3.6, 4.8, 6]
+                }
+            },
+            "ranger": {
+                "description": {
+                    "en": "After Raven casts a skill, the 3 Ranger allies with the highest ATK deal {damage}%+{boost_damage}% more damage for 3s, and all enemies deal {ultimate}%+{boost_ultimate}% less [Ultimate Skill] damage for 3s.",
+                    "de": "Nachdem Rabe eine Fähigkeit einsetzt, verursachen die 3 Ranger-Verbündeten mit dem höchsten ANG 3 Sek. lang {damage}%+{boost_damage}% mehr Schaden, und alle Feinde verursachen 3 Sek. lang {ultimate}%+{boost_ultimate}% weniger [Ultimative Fähigkeit]-Schaden."
+                },
+                "values": {
+                    "damage": [3, 6, 6, 9, 12, 12, 15],
+                    "ultimate": [5, 5, 9, 9, 9, 13, 13]
+                },
+                "bonus_values": {
+                    "boost_damage": [0, 1.3, 2.6, 3.9, 5.2, 6.5],
+                    "boost_ultimate": [0, 1.2, 2.4, 3.6, 4.8, 6]
+                }
+            },
+            "warlock": {
+                "description": {
+                    "en": "After Raven casts a skill, the 3 Warlock allies with the highest ATK deal {damage}%+{boost_damage}% more damage for 3s, and all enemies deal {ultimate}%+{boost_ultimate}% less [Ultimate Skill] damage for 3s.",
+                    "de": "Nachdem Rabe eine Fähigkeit einsetzt, verursachen die 3 Hexenmeister-Verbündeten mit dem höchsten ANG 3 Sek. lang {damage}%+{boost_damage}% mehr Schaden, und alle Feinde verursachen 3 Sek. lang {ultimate}%+{boost_ultimate}% weniger [Ultimative Fähigkeit]-Schaden."
+                },
+                "values": {
+                    "damage": [3, 6, 6, 9, 12, 12, 15],
+                    "ultimate": [5, 5, 9, 9, 9, 13, 13]
+                },
+                "bonus_values": {
+                    "boost_damage": [0, 1.3, 2.6, 3.9, 5.2, 6.5],
+                    "boost_ultimate": [0, 1.2, 2.4, 3.6, 4.8, 6]
                 }
             }
         }

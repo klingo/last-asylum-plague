@@ -322,8 +322,9 @@ function renderDetail({ scroll = false } = {}) {
 
 /**
  * An epigraph's text (`describeEpigraph`) as markup: a number in green as on the Skill Upgrade Path, and the bonus behind
- * it in orange after a plain plus ("3.2M+500K"). A bonus of 0 (no Raven Evolve boost yet) is left out with its plus, one
- * that isn't known is "?", and a number that isn't known is one "?" without its bonus.
+ * it in orange after a plain plus ("3.2M+500K"); a sign before a number ("targets +2") is plain text too. A percentage
+ * shows one decimal as the game writes it ("15.0%+2%"), its bonus as it is. A bonus of 0 (no Raven Evolve boost yet) is
+ * left out with its plus, one that isn't known is "?", and a number that isn't known is one "?" without its bonus.
  */
 function effectHtml(parts) {
     return parts
@@ -333,9 +334,10 @@ function effectHtml(parts) {
             }
             const { sign, now, unit, bonus } = part;
             if (now === null) {
-                return '<span class="epigraph-value">?</span>';
+                return `${sign}<span class="epigraph-value">?</span>`;
             }
-            const value = `<span class="epigraph-value">${sign}${formatCompact(now)}${unit}</span>`;
+            const shown = unit === '%' ? formatThousands(now, 1) : formatCompact(now);
+            const value = `${sign}<span class="epigraph-value">${shown}${unit}</span>`;
             if (!bonus || bonus.now === 0) {
                 return value;
             }

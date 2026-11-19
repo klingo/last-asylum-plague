@@ -196,7 +196,8 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   by `verify-data`, not part of `pack_data.json`; the epigraphs' names, pictures and rarity stay the items `<epigraph>_iv_<faction>`). Per
   epigraph and plan (`epigraphs.<epigraph>.<faction>`) it holds a `description` with `{placeholders}` like a skill's: `values` by promotion
   level (index = level 0 to 6) and `bonus_values` by Raven Evolve boost (index = boost 0 to 5, the boost is how many of
-  `evolve_boost_levels` the player's Raven Evolve level has reached), `null` where a number isn't known yet. An epigraph or plan without an entry shows
+  `evolve_boost_levels` the player's Raven Evolve level has reached), `null` where a number isn't known yet. A `%` right after a `{placeholder}` makes it a percentage (the number shows one decimal, as the game does: `15.0%+2%`).
+  An epigraph or plan without an entry shows
   no text. `description.de` is taken from the game, blank until then, never translated by me (`i18n:missing` lists it). `core/epigraph-effect.js`
   fills the text; the player's Raven Evolve level is `evolveLevel` in the synced `epigraphs` entry (the highest while not saved), and it unlocks the
   plans (`plan_unlock_levels`: Warriors 10, Rangers 150, Warlocks 300): a locked plan is greyed out and not counted in the chest estimate.
