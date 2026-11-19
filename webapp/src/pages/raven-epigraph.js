@@ -29,7 +29,7 @@ import {
 } from '../ui/html.js';
 import { formatCompact, formatPercent, formatThousands } from '../ui/format.js';
 import { BASE_URL } from '../ui/base-url.js';
-import { factionIcon, lockImage } from '../ui/hero-parts.js';
+import { factionHtml, factionIcon, lockImage } from '../ui/hero-parts.js';
 import ravenData from '../../../data/raven_epigraphs.json';
 import { clampLevel } from '../core/hero-stars.js';
 import {
@@ -440,36 +440,92 @@ function renderStats() {
     hydrateItemIcons(stats, 'item-icon', itemName);
 }
 
+/**
+ * "How it works", in the order you use the page: what it does, your epigraphs (sample tiles as the boards draw them, what a
+ * click and the card do), what the text on a card means (a sample sentence with its colours), the Raven Evolve level (what
+ * it unlocks, from the data), the chests (what each gives, from the data), the answer and your data.
+ */
 function renderHelp() {
-    const section = (titleKey, textKey, vars) =>
-        `<section><h3>${tHtml(titleKey)}</h3><p>${tHtml(textKey, vars)}</p></section>`;
     const { chests, choiceShards, craftShards } = drops;
+    const section = (titleKey, body) => `<section><h3>${tHtml(titleKey)}</h3>${body}</section>`;
+    const p = (key, vars) => `<p>${tHtml(key, vars)}</p>`;
+    const list = (items) => `<ul class="page-details__list">${items.map((item) => `<li>${item}</li>`).join('')}</ul>`;
+    const table = (heads, rows) =>
+        `<table class="page-details__table"><thead><tr>${heads.map((head) => `<th>${tHtml(head)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+    // A sample epigraph at a level, drawn as on the boards (with the copies it still needs from nothing).
+    const sample = (level, key) => {
+        const need = copiesNeeded(level, 0);
+        const pill = need ? `<span class="epigraph-tile__need">${formatThousands(need)}</span>` : '';
+        return `<figure class="epigraph-help__sample"><span class="epigraph-help__tile">${artHtml('guard_of_nature', 'warrior', level)}${pill}</span><figcaption>${tHtml(key, { count: formatThousands(need) })}</figcaption></figure>`;
+    };
+    const value = (text) => `<span class="epigraph-value">${text}</span>`;
+    const bonus = (text) => `<span class="epigraph-bonus">${text}</span>`;
+    // What each Raven Evolve level reaches: the plans it unlocks (as chips) and the boosts, in the order of the levels.
+    const unlocks = new Map();
+    const unlock = (level, html) => unlocks.set(level, [...(unlocks.get(level) ?? []), html]);
+    EPIGRAPH_FACTIONS.forEach((faction) =>
+        unlock(ravenData.plan_unlock_levels[faction], factionHtml(faction, false, true)),
+    );
+    ravenData.evolve_boost_levels.forEach((level, i) =>
+        unlock(level, tHtml('ravenEpigraph.evolve.boost', { boost: i + 1 })),
+    );
+    const evolveRows = [...unlocks]
+        .sort(([x], [y]) => x - y)
+        .map(([level, items]) => `<tr><td>${level}</td><td>${items.join(' ')}</td></tr>`);
+    // What each chest gives: the chance of a UR epigraph and the shards.
+    const chestRows = [
+        ...Object.entries(CHESTS).map(([kind, itemId]) => [
+            itemId,
+            formatPercent(chests[kind].urChance, 0),
+            chests[kind].shards,
+        ]),
+        [CHOICE_CHEST, tHtml('ravenEpigraph.help.chooseOne'), choiceShards],
+    ].map(
+        ([itemId, copy, shards]) =>
+            `<tr><td><span class="item-cell">${itemIconSlot(itemId)}${escapeHtml(itemName(itemId))}</span></td><td>${copy}</td><td>${formatThousands(shards)}</td></tr>`,
+    );
     help.innerHTML = [
-        section('ravenEpigraph.help.aboutTitle', 'ravenEpigraph.help.aboutText'),
-        section('ravenEpigraph.help.promoteTitle', 'ravenEpigraph.help.promoteText', {
-            steps: PROMOTE_COPIES.join(', '),
-            total: PROMOTE_COPIES.reduce((sum, step) => sum + step, 0),
-        }),
-        section('ravenEpigraph.help.effectTitle', 'ravenEpigraph.help.effectText', {
-            levels: ravenData.evolve_boost_levels.join(', '),
-        }),
-        section('ravenEpigraph.help.unlockTitle', 'ravenEpigraph.help.unlockText', {
-            plans: EPIGRAPH_FACTIONS.map(
-                (faction) => `${enumLabel('gear.faction', faction)} ${ravenData.plan_unlock_levels[faction]}`,
-            ).join(', '),
-        }),
-        section('ravenEpigraph.help.chestsTitle', 'ravenEpigraph.help.chestsText', {
-            urShards: formatThousands(chests.ur.shards),
-            ssrChance: formatPercent(chests.ssr.urChance, 0),
-            ssrShards: formatThousands(chests.ssr.shards),
-            srChance: formatPercent(chests.sr.urChance, 0),
-            srShards: formatThousands(chests.sr.shards),
-            craftShards: formatThousands(craftShards),
-            choiceShards: formatThousands(choiceShards),
-        }),
-        section('ravenEpigraph.help.answerTitle', 'ravenEpigraph.help.answerText'),
-        section('ravenEpigraph.help.savedTitle', 'ravenEpigraph.help.savedText'),
+        section('ravenEpigraph.help.aboutTitle', p('ravenEpigraph.help.aboutText')),
+        section(
+            'ravenEpigraph.help.epigraphsTitle',
+            `<div class="epigraph-help__samples">${sample(0, 'ravenEpigraph.help.sampleNew')}${sample(3, 'ravenEpigraph.help.sampleMid')}${sample(MAX_LEVEL, 'ravenEpigraph.help.sampleMax')}</div>${list(
+                [
+                    tHtml('ravenEpigraph.help.clickText'),
+                    tHtml('ravenEpigraph.help.cardText', {
+                        steps: PROMOTE_COPIES.join(', '),
+                        total: PROMOTE_COPIES.reduce((sum, step) => sum + step, 0),
+                    }),
+                ],
+            )}`,
+        ),
+        section(
+            'ravenEpigraph.help.textTitle',
+            `${p('ravenEpigraph.help.textText')}<p class="epigraph-help__sentence">${tHtml('ravenEpigraph.help.textSample', { value: value('10.0%'), bonus: bonus('4.8%'), target: value('2') })}</p>${list(
+                [
+                    `${value('10.0%')} ${tHtml('ravenEpigraph.help.textValue')}`,
+                    `${bonus('4.8%')} ${tHtml('ravenEpigraph.help.textBonus')}`,
+                ],
+            )}`,
+        ),
+        section(
+            'ravenEpigraph.help.evolveTitle',
+            `${p('ravenEpigraph.help.evolveText')}${table(['ravenEpigraph.help.evolveLevel', 'ravenEpigraph.help.evolveUnlocks'], evolveRows)}`,
+        ),
+        section(
+            'ravenEpigraph.help.chestsTitle',
+            `${p('ravenEpigraph.help.chestsText', { craftShards: formatThousands(craftShards) })}${table(['ravenEpigraph.help.chest', 'ravenEpigraph.help.chestUr', 'ravenEpigraph.help.chestShards'], chestRows)}`,
+        ),
+        section(
+            'ravenEpigraph.help.answerTitle',
+            list([
+                `<strong>${tHtml('ravenEpigraph.expected')}</strong>: ${tHtml('ravenEpigraph.help.answerExpected')}`,
+                `<strong>${tHtml('ravenEpigraph.safe')}</strong>: ${tHtml('ravenEpigraph.help.answerSafe')}`,
+                tHtml('ravenEpigraph.help.answerLast'),
+            ]),
+        ),
+        section('ravenEpigraph.help.savedTitle', p('ravenEpigraph.help.savedText')),
     ].join('');
+    hydrateItemIcons(help, 'item-icon', itemName);
 }
 
 function render() {
