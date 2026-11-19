@@ -11,6 +11,7 @@ const PACK_DATA_PATH = path.join(ROOT, 'data', 'pack_data.json');
 const EVENTS_PATH = path.join(ROOT, 'data', 'events.json');
 const LORD_DATA_PATH = path.join(ROOT, 'data', 'lord_specialty.json');
 const HERO_SKILLS_PATH = path.join(ROOT, 'data', 'hero_skills.json');
+const RAVEN_EPIGRAPHS_PATH = path.join(ROOT, 'data', 'raven_epigraphs.json');
 const I18N_DIR = path.join(ROOT, 'webapp', 'src', 'i18n');
 
 /** The JSON in `file`. */
@@ -47,6 +48,7 @@ export {
     EVENTS_PATH,
     LORD_DATA_PATH,
     HERO_SKILLS_PATH,
+    RAVEN_EPIGRAPHS_PATH,
     I18N_DIR,
     readJson,
     writeJson,

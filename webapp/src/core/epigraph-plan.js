@@ -7,20 +7,21 @@
  *   copies (1, 2, 3, 5, 7, 10: 28 in all). The copies on hand count towards what the remaining levels cost
  *   (`copiesNeeded`); a copy of an epigraph that is maxed, or beyond what it still needs, is wasted.
  * - Copies come from chests. A UR Epigraph Chest gives a random UR epigraph (any of the 12 with the same chance), a SSR
- *   Epigraph Chest does so 15 % of the time; both also give UR Epigraph Shards, and 800 shards craft an epigraph of
- *   choice. A UR Epigraph Choice Chest gives one of choice. `chestDrops` reads all of that from the data.
+ *   Epigraph Chest does so 15 % of the time and a SR Epigraph Chest 2 % of the time; all of them also give UR Epigraph
+ *   Shards (fewer from the lower ones), and 800 shards craft an epigraph of choice. A UR Epigraph Choice Chest gives one of choice. `chestDrops` reads all of that from the data.
  * - The chests and shards on hand are used last, to fill the gaps the random drops leave (`gapsCovered`). `chestEstimate`
  *   says how many chests of one kind it takes before they do: a simulation (`simulateChests`) opens them one by one, the
  *   answer is the mean over many runs and the count that 9 runs in 10 stay within. Its random numbers are seeded, so the
  *   answer is the same on every look.
- * - The saved state is `{ epigraphs: { <item id>: { level, copies } }, choiceChests, shards }`; what isn't saved is 0.
+ * - The saved state is `{ epigraphs: { <item id>: { level, copies } }, choiceChests, shards, evolveLevel }`; what isn't saved is 0
+ *   (`evolveLevel`, the Raven Evolve level of the epigraph texts: core/epigraph-effect.js).
  *
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
 import { clampLevel } from './hero-stars.js';
 
 const EPIGRAPHS = ['frenzied_flock', 'protective_charm', 'reversal_power', 'guard_of_nature'];
-// In this order on the plan switch (plan I, II, III).
+// In this order on the page (Warriors, Rangers, Warlocks).
 const EPIGRAPH_FACTIONS = ['warrior', 'ranger', 'warlock'];
 // The copies the promotion from level n to n+1 takes.
 const PROMOTE_COPIES = [1, 2, 3, 5, 7, 10];
@@ -30,7 +31,7 @@ const UR_EPIGRAPH = 'ur_epigraph';
 const SHARD = 'ur_epigraph_shard';
 const CHOICE_CHEST = 'ur_epigraph_choice_chest';
 // The chests that are bought, by the kind the page asks about.
-const CHESTS = { ur: 'ur_epigraph_chest', ssr: 'ssr_epigraph_chest' };
+const CHESTS = { ur: 'ur_epigraph_chest', ssr: 'ssr_epigraph_chest', sr: 'sr_epigraph_chest' };
 
 // A count the player enters can't be more than this (it only keeps the numbers whole).
 const MAX_COUNT = 1e9;
@@ -67,12 +68,20 @@ function epigraphLevel(saved, itemId) {
 /** The UR Epigraph Choice Chests and UR Epigraph Shards on hand (`field`: 'choiceChests' or 'shards'). */
 const stockOf = (saved, field) => clampCount(saved?.[field]);
 
-/** The copies each of the 12 epigraphs still needs (`EPIGRAPH_ITEM_IDS` order). */
-function epigraphGaps(saved) {
-    return EPIGRAPH_ITEM_IDS.map((itemId) => {
-        const { level, copies } = epigraphLevel(saved, itemId);
-        return copiesNeeded(level, copies);
-    });
+/**
+ * The copies each of the 12 epigraphs still needs (`EPIGRAPH_ITEM_IDS` order); `plans` are the plans that count (the
+ * unlocked ones), the epigraphs of the others need nothing.
+ */
+function epigraphGaps(saved, plans = EPIGRAPH_FACTIONS) {
+    return EPIGRAPH_FACTIONS.flatMap((faction) =>
+        EPIGRAPHS.map((epigraph) => {
+            if (!plans.includes(faction)) {
+                return 0;
+            }
+            const { level, copies } = epigraphLevel(saved, epigraphItemId(epigraph, faction));
+            return copiesNeeded(level, copies);
+        }),
+    );
 }
 
 /**
@@ -131,11 +140,27 @@ function seededRandom(seed) {
 }
 
 /**
- * How many chests of one `kind` ('ur' or 'ssr', `CHESTS`) it takes until what is on hand fills the gaps: `gaps` the
- * copies each epigraph still needs, `stock` the `{ choiceChests, shards }` on hand. Every run opens chests one by one (each
- * adds its shards, and with its chance a copy of one of the epigraphs, which counts only where one is still needed) and
- * stops when `gapsCovered`. Gives `{ expected, safe }`, the mean over `runs` runs and the count that `SAFE_SHARE` of them
- * stay within, both rounded up (0 when the stock already covers it), or null for a chest that gives nothing.
+ * How many chests of a kind it takes until the shards alone fill `missing` copies, with `shards` on hand and `chestShards`
+ * from each chest (0 when they already do, Infinity for a chest without shards).
+ */
+function chestsForShards(missing, shards, chestShards, stock, drops) {
+    const chosen = Math.min(stock.choiceChests, missing);
+    const rest = missing - chosen;
+    if (rest === 0) {
+        return 0;
+    }
+    const need = rest * drops.craftShards - chosen * drops.choiceShards - shards;
+    return need <= 0 ? 0 : Math.ceil(need / chestShards);
+}
+
+/**
+ * How many chests of one `kind` (`CHESTS`) it takes until what is on hand fills the gaps: `gaps` the copies each epigraph
+ * still needs, `stock` the `{ choiceChests, shards }` on hand. A run opens chests (each adds its shards, and with its chance a
+ * copy of one of the epigraphs, which counts only where one is still needed) until `gapsCovered`. It doesn't open them one by
+ * one: the chests up to the next copy are drawn at once (a geometric number), and it stops when the shards alone would fill
+ * the gaps before that copy comes, so a run takes about as many steps as it has copies, not chests. Gives
+ * `{ expected, safe }`, the mean over `runs` runs and the count that `SAFE_SHARE` of them stay within, both rounded up (0
+ * when the stock already covers it), or null for a chest that gives nothing.
  */
 function simulateChests(gaps, kind, stock, drops, { runs = RUNS, seed = 1 } = {}) {
     const chest = drops.chests[kind];
@@ -153,15 +178,24 @@ function simulateChests(gaps, kind, stock, drops, { runs = RUNS, seed = 1 } = {}
         let missing = total;
         let shards = stock.shards;
         let count = 0;
-        while (!gapsCovered(missing, stock.choiceChests, shards, drops)) {
-            count++;
-            shards += chest.shards;
-            if (random() < chest.urChance) {
-                const index = Math.floor(random() * left.length);
-                if (left[index] > 0) {
-                    left[index]--;
-                    missing--;
-                }
+        for (;;) {
+            const toFill = chestsForShards(missing, shards, chest.shards, stock, drops);
+            const toCopy =
+                chest.urChance >= 1
+                    ? 1
+                    : chest.urChance > 0
+                      ? Math.max(1, Math.ceil(Math.log(1 - random()) / Math.log(1 - chest.urChance)))
+                      : Infinity;
+            if (toFill <= toCopy) {
+                count += toFill;
+                break;
+            }
+            count += toCopy;
+            shards += toCopy * chest.shards;
+            const index = Math.floor(random() * left.length);
+            if (left[index] > 0) {
+                left[index]--;
+                missing--;
             }
         }
         opened.push(count);
@@ -172,12 +206,14 @@ function simulateChests(gaps, kind, stock, drops, { runs = RUNS, seed = 1 } = {}
 }
 
 /**
- * The page's answer for a saved state: the copies still `missing` over all 12 epigraphs, how many of them the choice
- * chests and shards on hand fill (`covered`), and per kind of chest (`ur`, `ssr`) what `simulateChests` says it takes.
+ * The page's answer for a saved state: the copies still `missing` over the epigraphs of the `plans` that count (all three
+ * unless given: the unlocked ones; a random copy that lands on a locked plan's epigraph is wasted), how many of them the
+ * choice chests and shards on hand fill (`covered`), and per kind of chest (`ur`, `ssr`, `sr`) what `simulateChests` says
+ * it takes. `options` are those of `simulateChests`.
  */
-function chestEstimate(data, saved, options) {
+function chestEstimate(data, saved, { plans, ...options } = {}) {
     const drops = chestDrops(data);
-    const gaps = epigraphGaps(saved);
+    const gaps = epigraphGaps(saved, plans);
     const stock = { choiceChests: stockOf(saved, 'choiceChests'), shards: stockOf(saved, 'shards') };
     const missing = gaps.reduce((sum, gap) => sum + gap, 0);
     return {

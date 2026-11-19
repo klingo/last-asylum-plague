@@ -1,5 +1,5 @@
-/* Raven Epigraph: the board of the plan shown (the triangle picture with four epigraphs on it, each in its frame), its
-   promote panel, then what the player has and the answer. */
+/* Raven Epigraph: the boards of the three plans (the triangle picture with four epigraphs on it, each in its frame), the
+   selected epigraph's card, then what the player has and the answer. */
 
 /* "How it works". */
 .epigraph-help > section + section {
@@ -7,10 +7,39 @@
     border-top: 1px solid var(--border);
 }
 
+/* The Raven Evolve level above the plans, and the boost it gives. */
+.epigraph-evolve {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 14px;
+    margin-bottom: 12px;
+}
+
+.epigraph-evolve__field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.epigraph-evolve__field input {
+    width: 6em;
+    text-align: right;
+}
+
+/* The line above the plans that says what a click on an epigraph does. */
+.epigraph-hint {
+    margin: 0 0 20px;
+    color: var(--text-dim);
+    text-align: center;
+}
+
 /* The three plans side by side, close together and in the middle (one under the other on a narrow screen), each a faction,
    its board and its copies needed. */
 .epigraph-plans {
     display: grid;
+    align-items: start;
     grid-template-columns: repeat(auto-fit, minmax(240px, 324px));
     gap: 24px 100px;
     justify-content: center;
@@ -72,6 +101,13 @@
     outline-offset: 2px;
 }
 
+/* The selected epigraph: a grey frame around its border, as on the Skill Upgrade Path. */
+.epigraph-tile.is-selected .epigraph-art__rarity {
+    outline: 2px solid var(--text-dim);
+    outline-offset: -3px;
+    border-radius: 8px;
+}
+
 .epigraph-tile--top {
     left: 50%;
     top: 16.8%;
@@ -91,6 +127,22 @@
 .epigraph-tile--right {
     left: 88%;
     top: 85.8%;
+}
+
+/* A plan the Raven Evolve level hasn't unlocked yet: grey, with a padlock in the middle, and nothing to click. */
+.epigraph-board.is-locked .epigraph-board__triangle,
+.epigraph-board.is-locked .epigraph-tile {
+    opacity: 0.35;
+    filter: grayscale(1);
+    cursor: default;
+}
+
+.epigraph-board__lock {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 14%;
+    transform: translate(-50%, -50%);
 }
 
 /* The copies the epigraph still needs, in the corner. */
@@ -182,147 +234,106 @@
     text-align: center;
 }
 
-/* Epigraph Promote: a card over the dimmed page. */
-.epigraph-dialog {
-    width: min(94vw, 400px);
-    max-width: none;
-    padding: 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--panel);
-    color: var(--text);
+/* The card of the selected epigraph, like the details on the Skill Upgrade Path, opens in the slot under its plan's board: the
+   slot grows from nothing (a row that goes from 0fr to 1fr) and is hidden while closed, so its controls can't be reached. */
+.epigraph-slot {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition:
+        grid-template-rows 0.2s ease,
+        visibility 0s 0.2s;
 }
 
-.epigraph-dialog::backdrop {
-    background: rgba(0, 0, 0, 0.6);
+.epigraph-slot.is-open {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition-delay: 0s;
 }
 
-.epigraph-dialog__window {
+@media (prefers-reduced-motion: reduce) {
+    .epigraph-slot {
+        transition: none;
+    }
+}
+
+.epigraph-slot__clip {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.epigraph-detail {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: 92vh;
-    overflow-y: auto;
-    padding: 16px;
+    margin-top: 12px;
+    scroll-margin-block: 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-alt);
 }
 
-.epigraph-dialog__head {
+.epigraph-detail__top {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 12px;
 }
 
-.epigraph-dialog__head h3 {
-    margin: 0;
-}
-
-/* The epigraph before and after the next promotion. */
-.epigraph-dialog__tiles {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-}
-
-.epigraph-dialog__tiles .epigraph-art {
+.epigraph-detail__art {
     flex: none;
-    width: 108px;
+    width: 88px;
 }
 
-.epigraph-arrow {
+.epigraph-detail__top h3 {
+    min-width: 0;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* The epigraph's text: the numbers in green like a skill's. */
+.epigraph-detail__text {
+    margin: 0;
+    font-size: 0.88rem;
+}
+
+.epigraph-value {
+    color: var(--good);
+}
+
+/* The bonus of the Raven Evolve level: the orange of the Skill Upgrade Path's physical damage. */
+.epigraph-bonus {
+    color: #f59e42;
+}
+
+.epigraph-detail__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+}
+
+.epigraph-detail__row[hidden] {
+    display: none;
+}
+
+.epigraph-detail__label {
+    width: 4.5rem;
     color: var(--text-dim);
-    font-size: 1.6rem;
+    font-size: 0.85rem;
 }
 
-.epigraph-dialog__name {
-    font-weight: 600;
-    text-align: center;
-}
-
-.epigraph-dialog__progress {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.epigraph-dialog__steps {
-    display: flex;
-    gap: 6px;
-}
-
-.epigraph-dialog__steps button,
-.epigraph-dialog__close {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-}
-
-/* The six levels as diamonds on a line, filled up to the level. */
-.epigraph-bar {
-    --fill: 0;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 30px;
-    padding: 0 12px;
-}
-
-.epigraph-bar::before,
-.epigraph-bar::after {
-    content: '';
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    height: 4px;
-    border-radius: 2px;
-    transform: translateY(-50%);
-}
-
-.epigraph-bar::before {
-    right: 12px;
-    background: var(--border);
-}
-
-.epigraph-bar::after {
-    width: calc((100% - 24px) * var(--fill));
-    background: var(--accent);
-}
-
-.epigraph-bar__mark {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    padding: 0;
-    border: 0;
-    background: none;
-}
-
-.epigraph-bar__mark:hover {
-    background: none;
-    filter: brightness(1.2);
-}
-
-.epigraph-bar__mark:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
-
-.epigraph-bar__mark img {
-    width: 26px;
-    height: 26px;
-}
-
-.epigraph-dialog__copies {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-}
-
-.epigraph-dialog__input {
+.epigraph-detail__row input {
     width: 5.5em;
     text-align: right;
+}
+
+.epigraph-detail__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
 }
 
 .epigraph-stock__fields {

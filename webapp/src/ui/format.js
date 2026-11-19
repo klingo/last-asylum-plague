@@ -59,9 +59,18 @@ function formatAmount(value) {
     return Number.isInteger(value) ? formatThousands(value) : formatSignificant(value);
 }
 
+/** A big amount short, as the game does: 3200000 -> "3.2M", 500000 -> "500K"; below 100'000 as it is. */
+function formatCompact(value) {
+    const abs = Math.abs(value);
+    if (abs >= 1e6) {
+        return `${formatThousands(value / 1e6, 1)}M`;
+    }
+    return abs >= 1e5 ? `${formatThousands(Math.round(value / 1e3))}K` : formatThousands(value);
+}
+
 /** A share (0.25 = 25) as markup: `decimals` places and a non-breaking space before the %. */
 function formatPercent(share, decimals = 1) {
     return `${formatThousands(share * 100, decimals)}&nbsp;%`;
 }
 
-export { formatThousands, formatSignificant, formatAmount, formatPercent, computeTieFlags };
+export { formatThousands, formatSignificant, formatAmount, formatCompact, formatPercent, computeTieFlags };

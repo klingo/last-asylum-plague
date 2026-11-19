@@ -172,16 +172,17 @@ function starredSkill(skill, { stars = 0, weapon = 0 } = {}, weaponOnSkill = [])
 
 /**
  * A skill's description `text` as parts, in order: plain strings, and `{ sign, now, next, unit }` for each `{name}` (the
- * game shows these numbers in green). `now` is the value from `values[name]` (index level - 1, or the one number of a
- * value that doesn't depend on the level), null where it isn't known; `next` the value at `nextLevel` when that is above `level` and the value is known and different, else null;
+ * game shows these numbers in green). `now` is the value from `values[name]` (index level - `first`, the first level
+ * being 1 unless it is 0 as for the Raven's epigraphs; or the one number of a value that doesn't depend on the level), null
+ * where it isn't known; `next` the value at `nextLevel` when that is above `level` and the value is known and different, else null;
  * `sign` is the "+" right before the placeholder and `unit` the "%" right after it (both belong to each number,
  * "+522.9% (→ +535.35%)"), else "".
  */
-function describeSkill(text, values, level, nextLevel) {
+function describeSkill(text, values, level, nextLevel, first = 1) {
     const parts = [];
     let from = 0;
     // A value is a list by level, or one number for every level.
-    const at = (value, n) => (Array.isArray(value) ? value[n - 1] : value);
+    const at = (value, n) => (Array.isArray(value) ? value[n - first] : value);
     for (const match of text.matchAll(/(\+?)\{([a-z][a-z0-9_]*)\}(%?)/g)) {
         const list = values?.[match[2]];
         const now = at(list, level);

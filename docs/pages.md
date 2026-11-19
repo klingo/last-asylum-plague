@@ -174,10 +174,13 @@ deleted after 180 days without use; the button stays hidden until the build has 
   three plans, Warriors, Rangers and Warlocks). The three plans stand side by side, each laid out as the game's Epigraph Plan under its faction: the four epigraphs
   (Frenzied Flock on top, Guard of Nature in the middle, Protective Charm and Reversal Power below) on the triangle picture, each in its
   frame (set in the socket frame, with the border of its rarity over it) with its slot's badge, its promotion level as diamonds (the red gem at level 6)
-  and the copies it still needs in the corner. A click on an epigraph opens
-  its promote panel, as in the game: the level (bar, − / +), and the copies on hand against what the next promotion takes (1, 2, 3, 5, 7, 10:
-  28 in all). Below, the UR Epigraph Choice Chests and UR Epigraph Shards on hand, and the answer: how many UR Epigraph Chests, and
-  separately how many SSR Epigraph Chests, it takes until the 12 epigraphs are maxed, as the average and a safe count nine runs in ten stay
+  and the copies it still needs in the corner. A click on an epigraph
+  selects it (ringed) and opens its card under the board of its own plan (so on a phone right below the tapped one), as the Skill Upgrade Path does with a skill: its level as buttons 0 to 6, the
+  copies on hand against what the next promotion takes (1, 2, 3, 5, 7, 10: 28 in all) with a bar, and Promote, which spends those copies
+  and raises the level by one. The card also says what the epigraph does (`data/raven_epigraphs.json`, the game's text): its numbers at the level it
+  is at in green, the part after a plus the bonus of the Raven Evolve level entered above the plans (in orange) (its boost rises at
+  150, 300, 450, 600 and 750), a ? where a number isn't known yet; an epigraph without data shows no text. The Raven Evolve level also unlocks the plans (Warriors from 10, Rangers from 150, Warlocks from 300): a plan that is still locked is greyed out with a padlock, can't be selected and isn't counted in the answer (the Raven Evolve level is the highest while you haven't entered it). Below, the UR Epigraph Choice Chests and UR Epigraph Shards on hand, and the answer: how many UR Epigraph Chests, and
+  separately how many SSR or SR Epigraph Chests, it takes until the 12 epigraphs are maxed, as the average and a safe count nine runs in ten stay
   within. A simulation opens the chests one by one (a random copy is any of the 12 with the same chance and is wasted where nothing more is
   needed; every chest also gives shards); the choice chests and shards (800 craft an epigraph of choice) are used last, to fill the gaps
   (`core/epigraph-plan.js`, what the chests give is read from `pack_data.json`). Saved in the browser and synced (`epigraphs`). The pictures

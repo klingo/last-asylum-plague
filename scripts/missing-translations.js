@@ -6,6 +6,7 @@ import {
     I18N_DIR,
     LORD_DATA_PATH,
     PACK_DATA_PATH,
+    RAVEN_EPIGRAPHS_PATH,
     EVENTS_PATH,
     isMain,
     readJson,
@@ -16,7 +17,7 @@ const SOURCE_LANG = 'en';
 
 /**
  * Lists missing translations: UI texts (webapp/src/i18n/<lang>.json, compared with en.json), the
- * localized names in data/pack_data.json, data/events.json, data/lord_specialty.json and data/hero_skills.json (`{ "en": "...",
+ * localized names in data/pack_data.json, data/events.json, data/lord_specialty.json, data/hero_skills.json and data/raven_epigraphs.json (`{ "en": "...",
  * "<lang>": "..." }`),
  * and the labels of the data's codes (categories, hero classes, ...: scripts/lib/code-labels.js), also those
  * English lacks. A text is missing when English has it and the language's value is absent or empty.
@@ -25,7 +26,7 @@ const SOURCE_LANG = 'en';
  *        (or node scripts/missing-translations.js [lang] [--keys-only] [--data-only])
  *   lang         e.g. "de"; without it, every language that has a webapp/src/i18n/<lang>.json
  *   --keys-only  print only the keys, not the English text next to them
- *   --data-only  only the data names (pack_data.json, events.json, lord_specialty.json, hero_skills.json), not the UI texts
+ *   --data-only  only the data names (pack_data.json, events.json, lord_specialty.json, hero_skills.json, raven_epigraphs.json), not the UI texts
  */
 function main() {
     const { flags, positional } = splitArgs(process.argv.slice(2));
@@ -50,6 +51,7 @@ function main() {
     const gameData = { ...data, ...eventData };
     const lordData = readJson(LORD_DATA_PATH);
     const skillData = readJson(HERO_SKILLS_PATH);
+    const ravenData = readJson(RAVEN_EPIGRAPHS_PATH);
     if (!dataOnly) {
         // Labels English lacks too: the page would show the raw code in every language.
         const english = missingCodeLabels(gameData, source).map((key) => ({ key, english: '' }));
@@ -71,8 +73,15 @@ function main() {
         const eventNames = missingDataNames(eventData, lang);
         const lordNames = missingDataNames(lordData, lang);
         const skillNames = missingDataNames(skillData, lang);
+        const ravenNames = missingDataNames(ravenData, lang);
         const total =
-            ui.length + labels.length + names.length + eventNames.length + lordNames.length + skillNames.length;
+            ui.length +
+            labels.length +
+            names.length +
+            eventNames.length +
+            lordNames.length +
+            skillNames.length +
+            ravenNames.length;
         console.log(`\n=== ${lang}: ${total} missing ===`);
         if (!dataOnly) {
             printSection(`UI texts (webapp/src/i18n/${lang}.json)`, ui, keysOnly);
@@ -84,6 +93,7 @@ function main() {
         printSection('Events (data/events.json)', eventNames, keysOnly);
         printSection('Lord talents (data/lord_specialty.json)', lordNames, keysOnly);
         printSection('Hero skills (data/hero_skills.json)', skillNames, keysOnly);
+        printSection('Raven epigraphs (data/raven_epigraphs.json)', ravenNames, keysOnly);
     }
 }
 

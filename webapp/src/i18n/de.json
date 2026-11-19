@@ -271,7 +271,7 @@
                 },
                 "epigraphs": {
                     "name": "Epigraphen",
-                    "text": "Die Stufe und die Kopien jedes Epigraphs sowie die vorhandenen Wahltruhen und Splitter (Raben-Epigraph)."
+                    "text": "Die Stufe und die Kopien jedes Epigraphs die vorhandenen Wahltruhen und Splitter sowie die Rabe-Entwickeln-Stufe (Raben-Epigraph)."
                 },
                 "locale": {
                     "name": "Sprache",
@@ -966,29 +966,35 @@
             "aboutTitle": "Was diese Seite macht",
             "aboutText": "Der Rabe hat drei Epigraph-Pläne, einen für die Krieger, einen für die Ranger und einen für die Hexenmeister, jeweils mit denselben vier Epigraphen. Die drei Spielfelder stehen nebeneinander. Gib die Beförderungsstufe und die Kopien jedes Epigraphs ein, dazu die UR Epigraph Wahltruhen und UR Epigraph-Splitter, die du hast. Die Seite sagt dir, wie viele Truhen du noch öffnen musst, um alle 12 Epigraphen auf die höchste Stufe zu bringen.",
             "promoteTitle": "Einen Epigraph befördern",
-            "promoteText": "Tippe auf einen Epigraph, um sein Beförderungsfenster zu öffnen, wie im Spiel. Stelle seine Stufe mit den Rauten der Fortschrittsleiste oder den Tasten − und + ein (ein Tipp auf die aktuelle Stufe setzt sie einen Schritt zurück) und gib die Kopien ein, die du besitzt. Jede Beförderung braucht mehr Kopien als die vorige: {steps}, zusammen {total}. Die kleine Zahl an einem Epigraph ist das, was er noch braucht.",
+            "promoteText": "Klicke auf einen Epigraph, um ihn auszuwählen: Eine Karte unter den Spielfeldern zeigt ihn. Stelle seine Stufe mit den Stufen-Tasten ein und gib die Kopien ein, die du besitzt. Befördern verbraucht die Kopien, die die nächste Stufe braucht, und erhöht die Stufe um eins, wie im Spiel. Jede Beförderung braucht mehr Kopien als die vorige: {steps}, zusammen {total}. Die kleine Zahl an einem Epigraph ist das, was er noch braucht.",
+            "effectTitle": "Was ein Epigraph bewirkt",
+            "effectText": "Der Text eines Epigraphs zeigt seine Zahlen auf der Beförderungsstufe, auf der er steht; ein ? ist eine noch unbekannte Zahl. Der Teil nach einem Plus (zum Beispiel +500K, in Orange) ist der Bonus deiner Rabe-Entwickeln-Stufe: Seine Verstärkung steigt um eins bei den Stufen {levels}. Gib deine Rabe-Entwickeln-Stufe über den Plänen ein.",
+            "unlockTitle": "Pläne freischalten",
+            "unlockText": "Deine Rabe-Entwickeln-Stufe schaltet die Pläne frei: {plans} (jeder Plan mit der Stufe, bei der er freigeschaltet wird). Ein noch gesperrter Plan ist ausgegraut, und seine Epigraphen werden in der Antwort nicht gezählt.",
             "chestsTitle": "Die Truhen",
-            "chestsText": "Eine UR Epigraph Truhe gibt einen zufälligen UR-Epigraph (jeder der 12 mit gleicher Chance) und {urShards} UR Epigraph-Splitter. Eine SSR Epigraph Truhe gibt in {ssrChance} der Fälle einen und {ssrShards} Splitter. Eine Kopie eines Epigraphs auf der höchsten Stufe oder ohne weiteren Bedarf ist verschwendet. {craftShards} Splitter stellen einen Epigraph deiner Wahl her, und eine UR Epigraph Wahltruhe gibt einen (und {choiceShards} Splitter).",
+            "chestsText": "Eine UR Epigraph Truhe gibt einen zufälligen UR-Epigraph (jeder der 12 mit gleicher Chance) und {urShards} UR Epigraph-Splitter. Eine SSR Epigraph Truhe gibt in {ssrChance} der Fälle einen und {ssrShards} Splitter. Eine SR Epigraph Truhe gibt in {srChance} der Fälle einen und {srShards} Splitter. Eine Kopie eines Epigraphs auf der höchsten Stufe oder ohne weiteren Bedarf ist verschwendet. {craftShards} Splitter stellen einen Epigraph deiner Wahl her, und eine UR Epigraph Wahltruhe gibt einen (und {choiceShards} Splitter).",
             "answerTitle": "Die Antwort",
-            "answerText": "Deine Wahltruhen und Splitter werden bis zum Schluss aufgehoben, um die Lücken zu füllen, die die zufälligen Kopien lassen. Die Seite öffnet die Truhen viele Male nacheinander: Erwartet ist die durchschnittliche Zahl der Truhen, Sicher die Zahl, innerhalb derer neun von zehn Durchläufen bleiben. Die beiden Zeilen sind getrennte Antworten, keine Mischung.",
+            "answerText": "Deine Wahltruhen und Splitter werden bis zum Schluss aufgehoben, um die Lücken zu füllen, die die zufälligen Kopien lassen. Die Seite öffnet die Truhen viele Male nacheinander: Erwartet ist die durchschnittliche Zahl der Truhen, Sicher die Zahl, innerhalb derer neun von zehn Durchläufen bleiben. Die Zeilen sind getrennte Antworten, keine Mischung.",
             "savedTitle": "Deine Daten",
             "savedText": "Im Browser gespeichert, sobald du etwas änderst."
         },
+        "evolve": {
+            "label": "Rabe-Entwickeln-Stufe",
+            "boost": "Boost +{boost}"
+        },
         "planMissing": "Noch benötigte Kopien in diesem Plan: {count}",
         "planDone": "Dieser Plan ist auf der höchsten Stufe",
+        "planLocked": "Wird bei Rabe-Entwickeln-Stufe {level} freigeschaltet",
         "tileLabel": "{name}: Stufe {level} von {max}",
         "tileNeed": "Noch benötigte Kopien: {count}",
-        "promote": {
-            "title": "Epigraph befördern",
-            "close": "Schließen",
-            "progress": "Beförderungsfortschritt: {level}/{max}",
-            "lower": "Stufe senken",
-            "raise": "Stufe erhöhen",
-            "setLevel": "Stufe {level}",
+        "detail": {
+            "hint": "Klicke auf einen Epigraph, um Stufe und Kopien festzulegen.",
+            "level": "Stufe",
+            "levelGroup": "Beförderungsstufe von {name}",
             "copies": "Kopien",
-            "maxed": "Höchste Stufe erreicht",
             "needed": "Noch benötigte Kopien bis Stufe {max}: {count}",
-            "done": "Nichts mehr nötig"
+            "done": "Nichts mehr nötig",
+            "promote": "Befördern"
         },
         "stockTitle": "Was du hast",
         "resultTitle": "Benötigte Truhen",
@@ -999,7 +1005,9 @@
         "safe": "Sicher (9 von 10)",
         "resultNote": "Jede Zeile zählt nur diese Truhenart. Deine Wahltruhen und Splitter werden zuletzt eingesetzt, um den Rest zu füllen.",
         "allMaxed": "Jeder Epigraph ist auf der höchsten Stufe.",
-        "stockCovers": "Deine Wahltruhen und Splitter decken bereits alles ab."
+        "stockCovers": "Deine Wahltruhen und Splitter decken bereits alles ab.",
+        "noPlans": "Noch kein Plan ist freigeschaltet: der erste wird bei Rabe-Entwickeln-Stufe {level} freigeschaltet.",
+        "resultLocked": "Nicht gezählt: die noch gesperrten Pläne ({plans})."
     },
     "lord": {
         "heading": "Lord-Spezialisierung",

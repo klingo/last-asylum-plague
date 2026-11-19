@@ -101,7 +101,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   file. Each module's header comment says what it does; read it before changing the module. Logic a page needs goes
   here, not into the page: `settings-model.js` (defaults, priorities, the planner options the settings make),
   `event-plan.js` and `plan-view.js` (what the Events, Today and Ranking pages show of a plan), `step-analysis.js` (the
-  "spend more" tables), `gear-progress.js` (the gear page's progress), `skill-path.js` (the Skill Upgrade Path page's steps and levels), `epigraph-plan.js` (the Raven Epigraph page's gaps and chest simulation), plus the page-specific parts of `catalog.js`,
+  "spend more" tables), `gear-progress.js` (the gear page's progress), `skill-path.js` (the Skill Upgrade Path page's steps and levels), `epigraph-plan.js` (the Raven Epigraph page's gaps and chest simulation), `epigraph-effect.js` (the texts of its epigraphs with their numbers), plus the page-specific parts of `catalog.js`,
   `schedule.js`, `mine.js` and `item-sources.js`.
 - `webapp/src/ui/` holds the browser helpers: `valuation.js` (the worth model on top of the planner), `valuation-page.js`
   (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage: every key is listed in `STORAGE_KEYS`, prefix `lapkc_`; a new one goes there),
@@ -192,6 +192,14 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   skill (`weaponBonuses`, listed below the skill's star bonuses), its awakening level (only with 10 stars) the skill cap (`awakening_caps`) and the
   portrait's frame. Steps and levels are in
   `core/skill-path.js`. Skill names are data names (`name.de` left blank, never translated by me).
+- The Raven Epigraph page reads its own file for the epigraph texts, `data/raven_epigraphs.json` (schema `raven_epigraphs.schema.json`, checked
+  by `verify-data`, not part of `pack_data.json`; the epigraphs' names, pictures and rarity stay the items `<epigraph>_iv_<faction>`). Per
+  epigraph and plan (`epigraphs.<epigraph>.<faction>`) it holds a `description` with `{placeholders}` like a skill's: `values` by promotion
+  level (index = level 0 to 6) and `bonus_values` by Raven Evolve boost (index = boost 0 to 5, the boost is how many of
+  `evolve_boost_levels` the player's Raven Evolve level has reached), `null` where a number isn't known yet. An epigraph or plan without an entry shows
+  no text. `description.de` is taken from the game, blank until then, never translated by me (`i18n:missing` lists it). `core/epigraph-effect.js`
+  fills the text; the player's Raven Evolve level is `evolveLevel` in the synced `epigraphs` entry (the highest while not saved), and it unlocks the
+  plans (`plan_unlock_levels`: Warriors 10, Rangers 150, Warlocks 300): a locked plan is greyed out and not counted in the chest estimate.
 - The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
   by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs
   (`core/lord-specialty.js`), so don't reorder or insert talents casually. Talents above `max_level` show as "not in

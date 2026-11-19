@@ -28,7 +28,7 @@ npm run format:check           # prettier --check (npm run format fixes)
 ## Project structure
 
 ```text
-data/                   pack_data.json, events.json (the event calendar), lord_specialty.json, hero_skills.json (+ schemas): the game's data
+data/                   pack_data.json, events.json (the event calendar), lord_specialty.json, hero_skills.json, raven_epigraphs.json (+ schemas): the game's data
 webapp/                 the HTML pages (their URLs are the Pages URLs), vite.config.js
   src/core/             the valuation and planning: pure modules without DOM, shared with the scripts and tests
   src/ui/               browser helpers: settings, i18n, formatting, grids, the setup bar

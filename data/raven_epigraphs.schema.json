@@ -1,0 +1,106 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "RavenEpigraphs",
+    "description": "What the Raven's epigraphs do (Raven Epigraph page): the text of each epigraph in each plan with the numbers it shows at every promotion level and for every Raven Evolve boost. The epigraphs themselves are the items `<epigraph>_iv_<faction>` of pack_data.json (their names, pictures, rarity), referenced by those ids.",
+    "type": "object",
+    "required": ["evolve_boost_levels", "evolve_max_level", "plan_unlock_levels", "epigraphs"],
+    "additionalProperties": false,
+    "properties": {
+        "evolve_boost_levels": {
+            "type": "array",
+            "description": "The Raven Evolve levels at which the boost of its bonus rises by one: below the first the boost is 0, from the first it is 1, and so on. A boost's bonus numbers are `bonus_values` at the index of the boost.",
+            "minItems": 1,
+            "items": {
+                "type": "integer",
+                "minimum": 1
+            }
+        },
+        "evolve_max_level": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The highest Raven Evolve level the page takes."
+        },
+        "plan_unlock_levels": {
+            "type": "object",
+            "description": "The Raven Evolve level each plan (the Raven's epigraph plans I, II and III) unlocks at. A plan that isn't unlocked yet is greyed out and doesn't count in the answer.",
+            "required": ["warrior", "ranger", "warlock"],
+            "additionalProperties": false,
+            "properties": {
+                "warrior": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "ranger": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "warlock": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "epigraphs": {
+            "type": "object",
+            "description": "By epigraph (`frenzied_flock`, `protective_charm`, `reversal_power`, `guard_of_nature`), then by plan (`warrior`, `ranger`, `warlock`). An epigraph or plan without an entry shows no text yet.",
+            "propertyNames": {
+                "pattern": "^[a-z][a-z0-9_]*$"
+            },
+            "additionalProperties": {
+                "type": "object",
+                "propertyNames": {
+                    "pattern": "^[a-z]+$"
+                },
+                "additionalProperties": {
+                    "$ref": "#/definitions/effect"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "effect": {
+            "type": "object",
+            "required": ["description"],
+            "additionalProperties": false,
+            "properties": {
+                "description": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString",
+                    "description": "What the epigraph does, as the game words it. A {placeholder} (with a \"+\" right before it and a \"%\" right after it where the number has them) is a number: its name is a key of `values` (it depends on the promotion level) or of `bonus_values` (it depends on the Raven Evolve boost)."
+                },
+                "values": {
+                    "type": "object",
+                    "description": "The numbers by promotion level: per placeholder one list with the entry for promotion level n at index n (7 entries, level 0 to 6), null where the number isn't known yet (shown as ?); or one number for what doesn't depend on the level.",
+                    "propertyNames": {
+                        "pattern": "^[a-z][a-z0-9_]*$"
+                    },
+                    "additionalProperties": {
+                        "oneOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": ["number", "null"]
+                                }
+                            }
+                        ]
+                    }
+                },
+                "bonus_values": {
+                    "type": "object",
+                    "description": "The bonus numbers by Raven Evolve boost: per placeholder one list with the entry for boost n at index n (one more entry than `evolve_boost_levels`: boost 0 first, usually 0 which the page leaves out), null where the number isn't known yet.",
+                    "propertyNames": {
+                        "pattern": "^[a-z][a-z0-9_]*$"
+                    },
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": ["number", "null"]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

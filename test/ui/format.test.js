@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
     computeTieFlags,
     formatAmount,
+    formatCompact,
     formatPercent,
     formatSignificant,
     formatThousands,
@@ -50,4 +51,16 @@ test('tied ranks are flagged, missing keys never tie', () => {
         false,
         false,
     ]);
+});
+
+test('a big amount is written short as in the game: millions with a decimal, hundreds of thousands as K', () => {
+    assert.equal(formatCompact(3200000), '3.2M');
+    assert.equal(formatCompact(4000000), '4.0M');
+    assert.equal(formatCompact(12500000), '12.5M');
+    assert.equal(formatCompact(500000), '500K');
+    assert.equal(formatCompact(123456), '123K');
+    assert.equal(formatCompact(99999), "99'999", 'below 100000 as it is');
+    assert.equal(formatCompact(15), '15');
+    assert.equal(formatCompact(17.5), '17.5');
+    assert.equal(formatCompact(0), '0');
 });

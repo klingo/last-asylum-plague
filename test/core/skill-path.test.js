@@ -173,6 +173,11 @@ test('a description as text and level numbers, with the next one and the "%" uni
         'level 1 of damage is unknown, so there is no next either',
     );
     assert.deepEqual(
+        describeSkill('{damage}', { damage: [5, 6, 7] }, 0, 1, 0),
+        [{ sign: '', now: 5, next: 6, unit: '' }],
+        'a list that starts at level 0 (the Raven epigraphs)',
+    );
+    assert.deepEqual(
         describeSkill('{other}', values, 9, 9),
         [{ sign: '', now: null, next: null, unit: '' }],
         'beyond the list; no text around it',

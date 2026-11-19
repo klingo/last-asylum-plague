@@ -271,7 +271,7 @@
                 },
                 "epigraphs": {
                     "name": "Epigraphs",
-                    "text": "The level and copies of each epigraph, and the choice chests and shards on hand (Raven Epigraph)."
+                    "text": "The level and copies of each epigraph, the choice chests and shards on hand, and the Raven Evolve level (Raven Epigraph)."
                 },
                 "locale": {
                     "name": "Language",
@@ -966,29 +966,35 @@
             "aboutTitle": "What this page does",
             "aboutText": "The Raven has three epigraph plans, one for the Warriors, one for the Rangers and one for the Warlocks, each with the same four epigraphs. The three boards stand side by side. Enter the promotion level and the copies of every epigraph, and the UR Epigraph Choice Chests and UR Epigraph Shards you have. The page tells you how many chests you still have to open to bring all 12 epigraphs to the highest level.",
             "promoteTitle": "Promoting an epigraph",
-            "promoteText": "Tap an epigraph to open its promote panel, as in the game. Set its level with the diamonds of the progress bar or the − and + buttons (a tap on the level it is at takes it back one step), and enter the copies you hold. Each promotion takes more copies than the one before: {steps}, {total} in all. The small number on an epigraph is what it still needs.",
+            "promoteText": "Click an epigraph to select it: a card under the boards shows it. Set its level with the level buttons and enter the copies you hold. Promote uses the copies the next level takes and raises the level by one, as in the game. Each promotion takes more copies than the one before: {steps}, {total} in all. The small number on an epigraph is what it still needs.",
+            "effectTitle": "What an epigraph does",
+            "effectText": "An epigraph's text shows its numbers at the promotion level it is at; a ? is a number that isn't known yet. The part after a plus (for example +500K, in orange) is the bonus of your Raven Evolve level: its boost rises by one at each of the levels {levels}. Enter your Raven Evolve level above the plans.",
+            "unlockTitle": "Unlocking plans",
+            "unlockText": "Your Raven Evolve level unlocks the plans: {plans} (each plan with the level it unlocks at). A plan that is still locked is greyed out, and its epigraphs are not counted in the answer.",
             "chestsTitle": "The chests",
-            "chestsText": "A UR Epigraph Chest gives a random UR epigraph (any of the 12 with the same chance) and {urShards} UR Epigraph Shards. A SSR Epigraph Chest gives one {ssrChance} of the time, and {ssrShards} shards. A copy of an epigraph that is at the highest level, or needs no more copies, is wasted. {craftShards} shards craft an epigraph of your choice, and a UR Epigraph Choice Chest gives one (and {choiceShards} shards).",
+            "chestsText": "A UR Epigraph Chest gives a random UR epigraph (any of the 12 with the same chance) and {urShards} UR Epigraph Shards. A SSR Epigraph Chest gives one {ssrChance} of the time, and {ssrShards} shards. A SR Epigraph Chest gives one {srChance} of the time, and {srShards} shards. A copy of an epigraph that is at the highest level, or needs no more copies, is wasted. {craftShards} shards craft an epigraph of your choice, and a UR Epigraph Choice Chest gives one (and {choiceShards} shards).",
             "answerTitle": "The answer",
-            "answerText": "Your choice chests and shards are kept for the end, to fill the gaps the random copies leave. The page opens the chests one by one many times over: Expected is the average number of chests it took, Safe the number that nine runs in ten stay within. The two lines are separate answers, not a mix.",
+            "answerText": "Your choice chests and shards are kept for the end, to fill the gaps the random copies leave. The page opens the chests one by one many times over: Expected is the average number of chests it took, Safe the number that nine runs in ten stay within. The lines are separate answers, not a mix.",
             "savedTitle": "Your data",
             "savedText": "Saved in this browser as soon as you change something."
         },
+        "evolve": {
+            "label": "Raven Evolve level",
+            "boost": "Boost +{boost}"
+        },
         "planMissing": "Copies still needed in this plan: {count}",
         "planDone": "This plan is at the highest level",
+        "planLocked": "Unlocks at Raven Evolve level {level}",
         "tileLabel": "{name}: level {level} of {max}",
         "tileNeed": "Copies still needed: {count}",
-        "promote": {
-            "title": "Epigraph Promote",
-            "close": "Close",
-            "progress": "Promote Progress: {level}/{max}",
-            "lower": "Lower the level",
-            "raise": "Raise the level",
-            "setLevel": "Level {level}",
+        "detail": {
+            "hint": "Click an epigraph to set its level and copies.",
+            "level": "Level",
+            "levelGroup": "Promotion level of {name}",
             "copies": "Copies",
-            "maxed": "Highest level reached",
             "needed": "Copies still needed up to level {max}: {count}",
-            "done": "Nothing more needed"
+            "done": "Nothing more needed",
+            "promote": "Promote"
         },
         "stockTitle": "What you have",
         "resultTitle": "Chests needed",
@@ -999,7 +1005,9 @@
         "safe": "Safe (9 in 10)",
         "resultNote": "Each line counts only that kind of chest. Your choice chests and shards are used last, to fill what is left.",
         "allMaxed": "Every epigraph is at the highest level.",
-        "stockCovers": "Your choice chests and shards already cover all of it."
+        "stockCovers": "Your choice chests and shards already cover all of it.",
+        "noPlans": "No plan is unlocked yet: the first one unlocks at Raven Evolve level {level}.",
+        "resultLocked": "Not counted: the plans that are still locked ({plans})."
     },
     "lord": {
         "heading": "Lord Specialty",

@@ -10,6 +10,7 @@ import { calendarSections, normalizePackData } from '../webapp/src/core/pack-dat
 import { WEEKDAYS, dayNumber, weekdayIndex } from '../webapp/src/core/schedule.js';
 import { AWAKENING_FRAMES, MAX_WEAPON_STARS } from '../webapp/src/core/hero-stars.js';
 import { awakeningSkills, weaponBonuses } from '../webapp/src/core/skill-path.js';
+import { EPIGRAPHS, EPIGRAPH_FACTIONS, PROMOTE_COPIES, epigraphItemId } from '../webapp/src/core/epigraph-plan.js';
 import { missingCodeLabels } from './lib/code-labels.js';
 import {
     EVENTS_PATH,
@@ -17,6 +18,7 @@ import {
     I18N_DIR,
     LORD_DATA_PATH,
     PACK_DATA_PATH as DATA_PATH,
+    RAVEN_EPIGRAPHS_PATH,
 } from './lib/data-files.js';
 
 // A pack whose worth is this many times above (or below) its deal % is reported (Pack Worth vs Deal %).
@@ -31,6 +33,7 @@ const EN_TEXTS_PATH = path.join(I18N_DIR, 'en.json');
 const LORD_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'lord_specialty.schema.json');
 const LORD_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'lord');
 const HERO_SKILLS_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'hero_skills.schema.json');
+const RAVEN_SCHEMA_PATH = path.join(import.meta.dirname, '..', 'data', 'raven_epigraphs.schema.json');
 const SKILL_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'heroes', 'skills');
 const WEAPON_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'heroes', 'weapons');
 const FRAME_IMAGES_DIR = path.join(import.meta.dirname, '..', 'webapp', 'public', 'assets', 'heroes', 'frames');
@@ -47,6 +50,7 @@ const LOCK_ICON_PATH = path.join(import.meta.dirname, '..', 'webapp', 'public', 
  *   resolved (webapp/src/core/item-values.js)
  * - The lords' talent trees in data/lord_specialty.json (schema, icons, values per level)
  * - The heroes' skills and their level guide in data/hero_skills.json (schema, heroes, paths, icons, values, star bonuses, weapons, portrait frames)
+ * - The Raven's epigraph effects in data/raven_epigraphs.json (schema, epigraphs and plans, values and bonus values for every {number})
  */
 async function verifyData() {
     console.log('Starting Pack Data Verification...\n');
@@ -1246,6 +1250,109 @@ async function verifyData() {
                     levels[slot] = Math.max(levels[slot], step.level);
                 }
             });
+        }
+    });
+
+    // 8e. The Raven's epigraph effects (data/raven_epigraphs.json, Raven Epigraph page): its schema, the epigraphs and plans
+    // exist as items, every {number} of a description has values (by promotion level) or bonus values (by Raven Evolve boost)
+    // and none is left over, the lists have the right length, and numbers not known yet are warned about.
+    checkCategory('Raven Epigraphs', ({ reportError, reportWarning }) => {
+        let raven;
+        let ravenSchema;
+        try {
+            raven = JSON.parse(fs.readFileSync(RAVEN_EPIGRAPHS_PATH, 'utf8'));
+            ravenSchema = JSON.parse(fs.readFileSync(RAVEN_SCHEMA_PATH, 'utf8'));
+        } catch (err) {
+            reportError('Raven Epigraphs', `Failed to read ${RAVEN_EPIGRAPHS_PATH} or its schema: ${err.message}`);
+            return;
+        }
+        const ajv = new Ajv({ allErrors: true, strictTypes: false });
+        ajv.addSchema(schema, 'pack_data.schema.json');
+        const validate = ajv.compile(ravenSchema);
+        if (!validate(raven)) {
+            for (const err of validate.errors) {
+                reportError('Schema', `raven_epigraphs.json ${err.instancePath || 'root'} ${err.message}`);
+            }
+            return;
+        }
+        raven.evolve_boost_levels.forEach((level, i) => {
+            if (level > raven.evolve_max_level || (i > 0 && level <= raven.evolve_boost_levels[i - 1])) {
+                reportError(
+                    'Raven Epigraphs',
+                    `evolve_boost_levels entry ${i + 1} (${level}) doesn't rise within the highest level.`,
+                );
+            }
+        });
+        for (const [faction, level] of Object.entries(raven.plan_unlock_levels)) {
+            if (level > raven.evolve_max_level) {
+                reportError(
+                    'Raven Epigraphs',
+                    `plan_unlock_levels: ${faction} unlocks at ${level}, above the highest level.`,
+                );
+            }
+        }
+        const levelCount = PROMOTE_COPIES.length + 1;
+        const boostCount = raven.evolve_boost_levels.length + 1;
+        for (const [epigraph, plans] of Object.entries(raven.epigraphs)) {
+            if (!EPIGRAPHS.includes(epigraph)) {
+                reportError('Raven Epigraphs', `"${epigraph}" is no epigraph (${EPIGRAPHS.join(', ')}).`);
+            }
+            for (const [faction, entry] of Object.entries(plans)) {
+                const where = `${epigraph} (${faction})`;
+                if (!EPIGRAPH_FACTIONS.includes(faction)) {
+                    reportError(
+                        'Raven Epigraphs',
+                        `${where}: "${faction}" is no plan (${EPIGRAPH_FACTIONS.join(', ')}).`,
+                    );
+                    continue;
+                }
+                if (!data.items?.[epigraphItemId(epigraph, faction)]) {
+                    reportError(
+                        'Raven Epigraphs',
+                        `${where} has no item ${epigraphItemId(epigraph, faction)} in pack_data.json.`,
+                    );
+                }
+                const values = entry.values ?? {};
+                const bonusValues = entry.bonus_values ?? {};
+                const named = new Set();
+                for (const [lang, text] of Object.entries(entry.description)) {
+                    for (const [, name] of text.matchAll(/\{([a-z][a-z0-9_]*)\}/g)) {
+                        named.add(name);
+                        if (!(name in values) && !(name in bonusValues)) {
+                            reportError(
+                                'Raven Epigraphs',
+                                `${where}: the ${lang} text has {${name}}, which has no values or bonus values.`,
+                            );
+                        }
+                    }
+                }
+                for (const name of Object.keys({ ...values, ...bonusValues })) {
+                    if (!named.has(name)) {
+                        reportError('Raven Epigraphs', `${where}: "${name}" has numbers but is not in the text.`);
+                    }
+                    if (name in values && name in bonusValues) {
+                        reportError('Raven Epigraphs', `${where}: "${name}" is in values and in bonus_values.`);
+                    }
+                }
+                const lists = [
+                    ...Object.entries(values)
+                        .filter(([, list]) => Array.isArray(list))
+                        .map(([name, list]) => [name, list, levelCount, 'promotion levels']),
+                    ...Object.entries(bonusValues).map(([name, list]) => [name, list, boostCount, 'boosts']),
+                ];
+                for (const [name, list, count, what] of lists) {
+                    if (list.length !== count) {
+                        reportError(
+                            'Raven Epigraphs',
+                            `${where}: "${name}" has ${list.length} entries, one for each of the ${count} ${what} wanted.`,
+                        );
+                    }
+                    const missing = list.filter((value) => value === null).length;
+                    if (missing > 0) {
+                        reportWarning('Raven Epigraphs', `${where}: "${name}" has ${missing} numbers not known yet.`);
+                    }
+                }
+            }
         }
     });
 

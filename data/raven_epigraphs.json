@@ -1,0 +1,27 @@
+{
+    "evolve_boost_levels": [150, 300, 450, 600, 750],
+    "evolve_max_level": 900,
+    "plan_unlock_levels": {
+        "warrior": 10,
+        "ranger": 150,
+        "warlock": 300
+    },
+    "epigraphs": {
+        "guard_of_nature": {
+            "warrior": {
+                "description": {
+                    "en": "At battle start, Warrior allies gain a {shield}+{bonus_shield}-HP shield, which absorbs 50% damage for 15s. After shield ends, ally damage taken reduced by {reduction}%+{bonus_reduction}% until battle ends.",
+                    "de": ""
+                },
+                "values": {
+                    "shield": [800000, 1600000, 1600000, 2400000, 3200000, 3200000, 4000000],
+                    "reduction": [5, 5, 10, 10, 10, 15, 15]
+                },
+                "bonus_values": {
+                    "bonus_shield": [0, 250000, 500000, 750000, 1000000, 1250000],
+                    "bonus_reduction": [0, 1, 2, 3, 4, 5]
+                }
+            }
+        }
+    }
+}
