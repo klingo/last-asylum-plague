@@ -5,9 +5,9 @@
  * - An epigraph of a plan has a text with {numbers}: the numbers of `values` depend on its promotion level (the list has
  *   an entry for level 0 to 6), the numbers of `bonus_values` on the boost of the player's Raven Evolve level. The bonus is
  *   the part after the plus in the game's text ("3.2M+500K").
- * - The Raven Evolve level is 1 to `evolve_max_level`; its boost is how many of `evolve_boost_levels` it has reached
+ * - The Raven Evolve level is 0 to `evolve_max_level`; its boost is how many of `evolve_boost_levels` it has reached
  *   (150, 300, ... : 0 to 5), and it unlocks the plans (`plan_unlock_levels`: 10, 150 and 300). It is saved with the rest
- *   of the page as `evolveLevel`; where it isn't saved yet it is the highest, so every plan is unlocked.
+ *   of the page as `evolveLevel`; where it isn't saved yet it is 0, so no plan is unlocked.
  * - `describeEpigraph` fills the text like a skill's (`describeSkill` in skill-path.js): parts, with the number at the
  *   promotion level, null where a number isn't known yet. A number with a bonus right behind it (a plus) is one part, as the
  *   game shows "3.2M+500K": the page shows the bonus in its own colour.
@@ -16,14 +16,12 @@
  */
 import { describeSkill } from './skill-path.js';
 
-/** A Raven Evolve level as a whole number from 1 to the highest (anything that isn't a number is the highest). */
+/** A Raven Evolve level as a whole number from 0 to the highest (anything that isn't a number is 0). */
 function clampEvolve(raven, value) {
-    return Number.isFinite(value)
-        ? Math.min(Math.max(Math.trunc(value), 1), raven.evolve_max_level)
-        : raven.evolve_max_level;
+    return Number.isFinite(value) ? Math.min(Math.max(Math.trunc(value), 0), raven.evolve_max_level) : 0;
 }
 
-/** The Raven Evolve level in the saved state (the highest where it isn't). */
+/** The Raven Evolve level in the saved state (0 where it isn't). */
 const evolveLevelOf = (raven, saved) => clampEvolve(raven, saved?.evolveLevel);
 
 /** The boost a Raven Evolve level gives: how many of `evolve_boost_levels` it has reached. */

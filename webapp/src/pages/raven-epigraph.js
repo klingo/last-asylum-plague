@@ -354,7 +354,7 @@ function renderEvolve() {
     evolve.innerHTML = `
         <label class="epigraph-evolve__field">
             <span>${tHtml('ravenEpigraph.evolve.label')}</span>
-            <input type="number" min="1" max="${ravenData.evolve_max_level}" step="1" value="${level}" data-evolve />
+            <input type="number" min="0" max="${ravenData.evolve_max_level}" step="1" value="${level}" data-evolve />
         </label>
         <span class="text-dim" data-boost>${boost(level)}</span>`;
     evolve.querySelector('[data-evolve]').addEventListener('change', (event) => {

@@ -33,16 +33,16 @@ const raven = {
     },
 };
 
-test('the Raven Evolve level is a whole number from 1 to the highest', () => {
+test('the Raven Evolve level is a whole number from 0 to the highest', () => {
     assert.equal(clampEvolve(raven, 300), 300);
-    assert.equal(clampEvolve(raven, 0), 1);
-    assert.equal(clampEvolve(raven, -5), 1);
+    assert.equal(clampEvolve(raven, 0), 0);
+    assert.equal(clampEvolve(raven, -5), 0);
     assert.equal(clampEvolve(raven, 1200), 900);
     assert.equal(clampEvolve(raven, 12.9), 12);
-    assert.equal(clampEvolve(raven, 'x'), 900, 'not a number: the highest');
+    assert.equal(clampEvolve(raven, 'x'), 0, 'not a number: 0');
     assert.equal(evolveLevelOf(raven, { evolveLevel: 450 }), 450);
-    assert.equal(evolveLevelOf(raven, {}), 900, 'not saved: the highest, every plan unlocked');
-    assert.equal(evolveLevelOf(raven, undefined), 900);
+    assert.equal(evolveLevelOf(raven, {}), 0, 'not saved: 0, no plan unlocked');
+    assert.equal(evolveLevelOf(raven, undefined), 0);
 });
 
 test('the boost is how many of the boost levels the Raven Evolve level has reached', () => {

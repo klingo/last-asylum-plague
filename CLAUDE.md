@@ -199,7 +199,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   `evolve_boost_levels` the player's Raven Evolve level has reached), `null` where a number isn't known yet. A `%` right after a `{placeholder}` makes it a percentage (the number shows one decimal, as the game does: `15.0%+2%`).
   An epigraph or plan without an entry shows
   no text. `description.de` is taken from the game, blank until then, never translated by me (`i18n:missing` lists it). `core/epigraph-effect.js`
-  fills the text; the player's Raven Evolve level is `evolveLevel` in the synced `epigraphs` entry (the highest while not saved), and it unlocks the
+  fills the text; the player's Raven Evolve level is `evolveLevel` in the synced `epigraphs` entry (0 while not saved), and it unlocks the
   plans (`plan_unlock_levels`: Warriors 10, Rangers 150, Warlocks 300): a locked plan is greyed out and not counted in the chest estimate.
 - The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
   by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs
