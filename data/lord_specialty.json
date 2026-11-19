@@ -160,7 +160,7 @@
                     "id": "siege_war_flag",
                     "name": {
                         "en": "Siege War Flag",
-                        "de": "Belagerungs-Kriegsflagge"
+                        "de": "Belagerung-Kriegsflagge"
                     },
                     "icon": "siege_war_flag.png",
                     "unlock_level": 20,
@@ -216,8 +216,8 @@
                     "cooldown_hours": 23.5,
                     "max_level": 2,
                     "description": {
-                        "en": "Use on an Alliance Member. Increases your and the Alliance Member's building speed by {value}%, lasts 60m (non-stackable).",
-                        "de": "Bei einem Allianzmitglied anwenden. Erhöht deine und die Baugeschwindigkeit des Allianzmitglieds um {value}%, hält  60 Min. an (nicht stapelbar)."
+                        "en": "Use on an Alliance Member. Increases your and the Alliance Member's building speed by {value}%, lasts 60m (non-stackable). CD: 23.5h",
+                        "de": "Bei einem Allianzmitglied anwenden. Erhöht deine und die Baugeschwindigkeit des Allianzmitglieds um {value}%, hält 60 Min. an (nicht stapelbar). AZ: 23,5 Std."
                     },
                     "values": [10, 20]
                 },
@@ -233,8 +233,8 @@
                     "cooldown_hours": 23.5,
                     "max_level": 2,
                     "description": {
-                        "en": "Use on an Alliance Member. Increases your and the Alliance Member's research speed by {value}%, lasts 60m (non-stackable).",
-                        "de": "Bei einem Allianzmitglied anwenden. Erhöht deine und die Forschungsgeschwindigkeit des Allianzmitglieds um {value}%, hält  60 Min. an (nicht stapelbar)."
+                        "en": "Use on an Alliance Member. Increases your and the Alliance Member's research speed by {value}%, lasts 60m (non-stackable). CD: 23.5h",
+                        "de": "Bei einem Allianzmitglied anwenden. Erhöht deine und die Forschungsgeschwindigkeit des Allianzmitglieds um {value}%, hält 60 Min. an (nicht stapelbar). AZ: 23,5 Std."
                     },
                     "values": [10, 20]
                 },
@@ -282,8 +282,8 @@
                     "cooldown_hours": 71.5,
                     "max_level": 5,
                     "description": {
-                        "en": "Use on an Alliance Member. Increases your and the Alliance Member's Infirmary Capacity by {value}%, lasts 240m (non-stackable).",
-                        "de": "Bei einem Allianzmitglied anwenden. Erhöht deine und die Krankenhauskapauität des Allianzmitglieds um {value}%, hält 240 Min. an (nicht stapelbar)."
+                        "en": "Use on an Alliance Member. Increases your and the Alliance Member's Infirmary Capacity by {value}%, lasts 240m (non-stackable). CD: 71.5h",
+                        "de": "Bei einem Allianzmitglied anwenden. Erhöht deine und die Krankenhauskapazität des Allianzmitglieds um {value}%, hält 240 Min. an (nicht stapelbar). AZ: 71,5 Std."
                     },
                     "values": [6, 14, 24, 36, 50]
                 },
@@ -299,8 +299,8 @@
                     "cooldown_hours": 71.5,
                     "max_level": 3,
                     "description": {
-                        "en": "Use on yourself or an Alliance Member. Grants the target {value}h of shield (non-stackable).",
-                        "de": "Verwende es an dir selbst oder einem Allianzmitglied. Gewährt dem Ziel {value} Std. Schild (nicht stapelbar)."
+                        "en": "Use on yourself or an Alliance Member. Grants the target {value}h of shield (non-stackable). CD: 71.5h",
+                        "de": "Verwende es an dir selbst oder einem Allianzmitglied. Gewährt dem Ziel {value} Std. Schild (nicht stapelbar). AZ: 71,5 Std."
                     },
                     "values": [1, 3, 5]
                 },
@@ -364,8 +364,8 @@
                     "cooldown_hours": 72,
                     "max_level": 5,
                     "description": {
-                        "en": "Deploys on vacant terrain in this Kingdom. Once triggered, reduces the target's Durability by {value}. At max level, ignites the territory. The trap lasts 24h; up to 2 traps can exist at the same time.",
-                        "de": ""
+                        "en": "Deploys on vacant terrain in this Kingdom. Once triggered, reduces the target's Durability by {value}. At max level, ignites the territory. The trap lasts 24h; up to 2 traps can exist at the same time. CD: 72h",
+                        "de": "Wird auf leerem Gelände in diesem Königreich eingesetzt. Einmal ausgelöst, reduziert es die Beständigkeit des Ziels um {value}. Auf max. Level entzündet es das Gebiet. Die Falle hält 24 Std.; bis zu 2 Fallen können gleichzeitig existieren. AZ: 72 Std."
                     },
                     "values": [375, 820, 1300, 1875, 2500]
                 }
@@ -635,7 +635,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "When reinforcing an Alliance Member's territory, all defending Heroes' ATK, DEF, and HP increase by {value}% (non-stackable)",
-                        "de": "Beim Verstärken des Gebiets eines Allianzmitglieds erhöhen sich ANG, VER und LP aller verteidigenden Helden um {value}% (nicht-stapelbar)"
+                        "de": "Beim Verstärken des Gebiets eines Allianzmitglieds erhöhen sich ANG, VER und LP aller verteidigenden Helden um {value}% (nicht stapelbar)"
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -682,7 +682,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "Heroes defending inside Walls gain +{value}% ATK, DEF, and HP",
-                        "de": ""
+                        "de": "Helden, die innerhalb von Mauern verteidigen, erhalten +{value}% ANG, VER und LP"
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -714,7 +714,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "Heroes attacking territories gain +{value}% ATK, DEF, and HP",
-                        "de": ""
+                        "de": "Helden, die Gebiete angreifen, erhalten +{value}% ANG, VER und LP"
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -722,7 +722,7 @@
                     "id": "eliminate_threats",
                     "name": {
                         "en": "Eliminate Threats",
-                        "de": ""
+                        "de": "Bedrohungen beseitigen"
                     },
                     "icon": "eliminate_threats.png",
                     "unlock_level": 50,
@@ -730,8 +730,8 @@
                     "cooldown_hours": 72,
                     "max_level": 5,
                     "description": {
-                        "en": "Deploys on vacant terrain in this Kingdom. Once triggered, {value} soldiers in the target's Barracks will die. The trap lasts 24h; up to 2 traps can exist at the same time.",
-                        "de": ""
+                        "en": "Deploys on vacant terrain in this Kingdom. Once triggered, {value} soldiers in the target's Barracks will die. The trap lasts 24h; up to 2 traps can exist at the same time. CD: 72h",
+                        "de": "Wird auf leerem Gelände in diesem Königreich eingesetzt. Einmal ausgelöst, sterben {value} Soldaten in der Kaserne des Ziels. Die Falle hält 24 Std.; bis zu 2 Fallen können gleichzeitig existieren. AZ: 72 Std."
                     },
                     "values": [40, 82, 135, 190, 250]
                 }

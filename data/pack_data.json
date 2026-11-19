@@ -383,7 +383,7 @@
         },
         "excl_weapon_shard_choice_chest": {
             "name": {
-                "en": "Excl Weapon Shard Choice Chest",
+                "en": "Excl. Weapon Shard Choice Chest",
                 "de": "Exkl. Waffe Splitter Wahltruhe"
             },
             "category": "chest",
@@ -1535,8 +1535,8 @@
         },
         "lv5_raven_gear_choice_chest": {
             "name": {
-                "en": "LV5 Raven Gear Choice Chest",
-                "de": "LV5 Raben-Ausrüstungs Wahltruhe"
+                "en": "Lv.5 Raven Gear Choice Chest",
+                "de": "Lv.5 Raben-Ausrüstung Wahltruhe"
             },
             "category": "chest",
             "rarity": "ur",
@@ -2382,8 +2382,8 @@
         },
         "speedup": {
             "name": {
-                "en": "Speedup",
-                "de": "Beschleunigung"
+                "en": "Universal Speedup",
+                "de": "Universelle Beschleunigung"
             },
             "category": "speedup",
             "rarity": null,
@@ -2600,8 +2600,8 @@
         },
         "star_moon_sigil": {
             "name": {
-                "en": "Star Moon Sigil",
-                "de": ""
+                "en": "Star-Moon Sigil",
+                "de": "Sternen-Mond-Siegel"
             },
             "category": "event_item",
             "rarity": "ur"
@@ -3300,7 +3300,7 @@
         "calendar_gift_hero_pack": {
             "name": {
                 "en": "Calendar Gift: Hero Pack",
-                "de": ""
+                "de": "Kalender Geschenk: Heldenpaket"
             },
             "category": "calendar_gift",
             "exclusive_group": "calendar_gift",
@@ -3323,7 +3323,7 @@
         "calendar_gift_inscription_pack": {
             "name": {
                 "en": "Calendar Gift: Inscription Pack",
-                "de": ""
+                "de": "Kalender Geschenk: Inschriftenpaket"
             },
             "category": "calendar_gift",
             "exclusive_group": "calendar_gift",
@@ -3346,7 +3346,7 @@
         "calendar_gift_raven_pack": {
             "name": {
                 "en": "Calendar Gift: Raven Pack",
-                "de": ""
+                "de": "Kalender Geschenk: Rabenpaket"
             },
             "category": "calendar_gift",
             "exclusive_group": "calendar_gift",
@@ -3552,8 +3552,8 @@
         },
         "diamond_100": {
             "name": {
-                "en": "+100 Diamonds",
-                "de": "+100 Diamanten"
+                "en": "100 Diamonds",
+                "de": "100 Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -3564,8 +3564,8 @@
         },
         "diamond_1000": {
             "name": {
-                "en": "+1'000 Diamonds",
-                "de": "+1'000 Diamanten"
+                "en": "1K Diamonds",
+                "de": "1K Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -3576,8 +3576,8 @@
         },
         "diamond_10000": {
             "name": {
-                "en": "+10'000 Diamonds",
-                "de": "+10'000 Diamanten"
+                "en": "10K Diamonds",
+                "de": "10K Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -3588,8 +3588,8 @@
         },
         "diamond_2000": {
             "name": {
-                "en": "+2'000 Diamonds",
-                "de": "+2'000 Diamanten"
+                "en": "2K Diamonds",
+                "de": "2K Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -3612,8 +3612,8 @@
         },
         "diamond_5000": {
             "name": {
-                "en": "+5'000 Diamonds",
-                "de": "+5'000 Diamanten"
+                "en": "5K Diamonds",
+                "de": "5K Diamanten"
             },
             "category": "diamond",
             "purchase_limit": null,
@@ -3805,7 +3805,7 @@
         "epigraph_pass": {
             "name": {
                 "en": "Epigraph Pass",
-                "de": ""
+                "de": "Epigraph-Pass"
             },
             "image": "epigraph_pass",
             "category": "value_event",
@@ -4030,8 +4030,8 @@
         },
         "halloween_ball_mystery_shop_lv5_raven_gear_choice_chest_iii": {
             "name": {
-                "en": "Mystery Shop (Lv.5 Raven Gear Choice Chest III)",
-                "de": "Geheim-Shop (Lv.5 Raben-Ausrüstung Wahltruhe)"
+                "en": "Mystery Shop: Raven Gear Choice III",
+                "de": "Geheim-Shop: Wahl der Raben-Ausrüstung III"
             },
             "category": "special_event",
             "event_id": "halloween_ball",
@@ -4156,8 +4156,8 @@
         },
         "halloween_ball_mystery_shop_raven_essence_ii": {
             "name": {
-                "en": "Mystery Shop (Raven Essence II)",
-                "de": "Geheim-Shop (Rabenessenz II)"
+                "en": "Mystery Shop: Raven Essence II",
+                "de": "Geheim-Shop: Rabenessenz II"
             },
             "category": "special_event",
             "event_id": "halloween_ball",
@@ -4174,8 +4174,8 @@
         },
         "halloween_ball_mystery_shop_raven_essence_iii": {
             "name": {
-                "en": "Mystery Shop (Raven Essence III)",
-                "de": "Geheim-Shop (Rabenessenz III)"
+                "en": "Mystery Shop: Raven Essence III",
+                "de": "Geheim-Shop: Rabenessenz III"
             },
             "category": "special_event",
             "event_id": "halloween_ball",
@@ -4192,8 +4192,8 @@
         },
         "halloween_ball_mystery_shop_ur_hero_omni_shard_i": {
             "name": {
-                "en": "Mystery Shop (UR Hero Omni Shard I)",
-                "de": "Geheim-Shop (UR Held-Omni-Splitter I)"
+                "en": "Mystery Shop: Hero Offer I",
+                "de": "Geheim-Shop: Heldenangebot I"
             },
             "category": "special_event",
             "event_id": "halloween_ball",
@@ -4210,8 +4210,8 @@
         },
         "halloween_ball_mystery_shop_ur_hero_omni_shard_ii": {
             "name": {
-                "en": "Mystery Shop (UR Hero Omni Shard II)",
-                "de": "Geheim-Shop (UR Held-Omni-Splitter II)"
+                "en": "Mystery Shop: Hero Offer II",
+                "de": "Geheim-Shop: Heldenangebot II"
             },
             "category": "special_event",
             "event_id": "halloween_ball",
@@ -4228,8 +4228,8 @@
         },
         "halloween_ball_mystery_shop_ur_hero_omni_shard_iii": {
             "name": {
-                "en": "Mystery Shop (UR Hero Omni Shard III)",
-                "de": "Geheim-Shop (UR Held-Omni-Splitter III)"
+                "en": "Mystery Shop: Hero Offer III",
+                "de": "Geheim-Shop: Heldenangebot III"
             },
             "category": "special_event",
             "event_id": "halloween_ball",
@@ -4880,7 +4880,7 @@
         "premium_herb_pack": {
             "name": {
                 "en": "Premium Herb Pack",
-                "de": " Premium-Kräuterpaket"
+                "de": "Premium-Kräuterpaket"
             },
             "category": "daily_must_buy",
             "limit_type": "daily",
@@ -6157,7 +6157,7 @@
         "alliance_shop": {
             "name": {
                 "en": "Alliance Shop",
-                "de": "Allianz-Shop"
+                "de": "Allianz Shop"
             },
             "currency_item_id": "alliance_coins",
             "offers": {
@@ -6893,7 +6893,7 @@
         "stone_blade_exchange_shop": {
             "name": {
                 "en": "Stone Blade Exchange Shop",
-                "de": ""
+                "de": "Steinklinge Tausch Shop"
             },
             "event_id": "blades_out",
             "currency_item_id": "stone_blade",
@@ -8062,8 +8062,8 @@
         },
         "ancient_recipe_gearstone": {
             "name": {
-                "en": "Ancient Recipe (Gearstones)",
-                "de": "Uraltes Rezept (Ausrüstungssteine)"
+                "en": "Ancient Recipe (Gearstone)",
+                "de": "Uraltes Rezept (Ausrüstungsstein)"
             },
             "image": "ancient_recipe",
             "tiers": {
@@ -8141,8 +8141,8 @@
         },
         "artisans_request_gearstone": {
             "name": {
-                "en": "Artisan's Request (Gearstones)",
-                "de": "Auftrag des Handwerkers (Ausrüstungssteine)"
+                "en": "Artisan's Request (Gearstone)",
+                "de": "Auftrag des Handwerkers (Ausrüstungsstein)"
             },
             "image": "artisans_request",
             "tiers": {

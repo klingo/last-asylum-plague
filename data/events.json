@@ -191,7 +191,7 @@
         "royal_city_scramble": {
             "name": {
                 "en": "Royal City Scramble",
-                "de": ""
+                "de": "Königsstadtkampf"
             },
             "category": "ingame_event",
             "image": "royal_city_scramble"
@@ -284,7 +284,7 @@
                         {
                             "text": {
                                 "en": "Use 1m Construction Speedup",
-                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                                "de": "Verwende 1-Min.-Bau-Beschleunigung"
                             },
                             "points": 10,
                             "item_id": "construction_speedup"
@@ -521,7 +521,7 @@
                         {
                             "text": {
                                 "en": "Get 1 UR Epigraph Shard for each Epigraph Chest opened",
-                                "de": ""
+                                "de": "Erhalte 1 UR Epigraph-Splitter für jede geöffnete Epigraph-Truhe"
                             },
                             "points": 2812.5,
                             "item_id": "ur_epigraph_shard"
@@ -560,7 +560,7 @@
                         {
                             "text": {
                                 "en": "Consume 1 Raven Fruit",
-                                "de": ""
+                                "de": "Verbrauche 1 Rabenfrucht"
                             },
                             "points": 7.5,
                             "item_id": "raven_fruit"
@@ -610,7 +610,7 @@
                         {
                             "text": {
                                 "en": "Consume 1 Excl. Wpn. Shard",
-                                "de": ""
+                                "de": "1 Exkl. Wff. Splitter verbrauchen"
                             },
                             "points": 25000,
                             "item_id": "exclusive_weapon_shard"
@@ -618,7 +618,7 @@
                         {
                             "text": {
                                 "en": "Use 1m Construction Speedup",
-                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                                "de": "Verwende 1-Min.-Bau-Beschleunigung"
                             },
                             "points": 150,
                             "item_id": "construction_speedup"
@@ -676,7 +676,7 @@
                         {
                             "text": {
                                 "en": "For each Lv.1 Raven Gear Chest opened",
-                                "de": ""
+                                "de": "Für jede geöffnete Lv.1 Raben-Ausrüstungstruhe"
                             },
                             "points": 2750,
                             "item_id": "lv1_raven_gear_chest"
@@ -684,14 +684,14 @@
                         {
                             "text": {
                                 "en": "For each Lv.2 Raven Gear Chest opened",
-                                "de": ""
+                                "de": "Für jede geöffnete Lv.2 Raben-Ausrüstungstruhe"
                             },
                             "points": 8250
                         },
                         {
                             "text": {
                                 "en": "For each Lv.3 Raven Gear Chest opened",
-                                "de": ""
+                                "de": "Für jede geöffnete Lv.3 Raben-Ausrüstungstruhe"
                             },
                             "points": 25000,
                             "item_id": "lv3_raven_gear_chest"
@@ -699,14 +699,14 @@
                         {
                             "text": {
                                 "en": "For each Lv.4 Raven Gear Chest opened",
-                                "de": ""
+                                "de": "Für jede geöffnete Lv.4 Raben-Ausrüstungstruhe"
                             },
                             "points": 75000
                         },
                         {
                             "text": {
                                 "en": "For each Lv.5 Raven Gear Chest opened",
-                                "de": ""
+                                "de": "Für jede geöffnete Lv.5 Raben-Ausrüstungstruhe"
                             },
                             "points": 225000,
                             "item_id": "lv5_raven_gear_chest"
@@ -714,14 +714,14 @@
                         {
                             "text": {
                                 "en": "For each Lv.6 Raven Gear Chest opened",
-                                "de": ""
+                                "de": "Für jede geöffnete Lv.6 Raben-Ausrüstungstruhe"
                             },
                             "points": 675000
                         },
                         {
                             "text": {
                                 "en": "For each Lv.7 Raven Gear Chest opened",
-                                "de": ""
+                                "de": "Für jede geöffnete Lv.7 Raben-Ausrüstungstruhe"
                             },
                             "points": 2025000
                         },
@@ -744,7 +744,7 @@
                         {
                             "text": {
                                 "en": "Consume 1 Study Scroll",
-                                "de": ""
+                                "de": "1 Studien-Schriftrolle verbrauchen"
                             },
                             "points": 750,
                             "item_id": "study_scroll"
@@ -891,7 +891,7 @@
                         {
                             "text": {
                                 "en": "Use 1m Construction Speedup",
-                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                                "de": "Verwende 1-Min.-Bau-Beschleunigung"
                             },
                             "points": 150,
                             "item_id": "construction_speedup"
@@ -924,7 +924,7 @@
                         {
                             "text": {
                                 "en": "Use 1m Construction Speedup",
-                                "de": "Verwende 1-Min.-Baubeschleunigung"
+                                "de": "Verwende 1-Min.-Bau-Beschleunigung"
                             },
                             "points": 150,
                             "item_id": "construction_speedup"
@@ -969,7 +969,7 @@
                         {
                             "text": {
                                 "en": "Use 1m Healing Speedup",
-                                "de": ""
+                                "de": "Verwende 1-Min.-Heilung-Beschleunigung"
                             },
                             "points": 150,
                             "item_id": "healing_speedup"
@@ -1037,28 +1037,28 @@
                     "id": "preview",
                     "name": {
                         "en": "Preview Phase",
-                        "de": ""
+                        "de": "Vorschauphase"
                     }
                 },
                 {
                     "id": "preparation",
                     "name": {
                         "en": "Preparation Phase",
-                        "de": ""
+                        "de": "Vorbereitungsphase"
                     }
                 },
                 {
                     "id": "contest",
                     "name": {
                         "en": "Contest Phase",
-                        "de": ""
+                        "de": "Wettbewerbsphase"
                     }
                 },
                 {
                     "id": "results",
                     "name": {
                         "en": "Results Phase",
-                        "de": ""
+                        "de": "Ergebnisphase"
                     }
                 }
             ],

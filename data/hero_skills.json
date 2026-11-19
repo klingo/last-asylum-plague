@@ -156,11 +156,11 @@
                     "id": "soul_of_warrior",
                     "name": {
                         "en": "[Faction Enhance] Soul of Warrior",
-                        "de": ""
+                        "de": "[Fraktion Verbessern] Seele des Kriegers"
                     },
                     "description": {
-                        "en": "In battle, increase all allied Warrior Heroes' ATK, HP, and DEF by 8%",
-                        "de": ""
+                        "en": "During battle, boost all allied Warrior Heroes' ATK, HP, and DEF by 8%",
+                        "de": "Während des Kampfes verstärke ANG, LP und VER aller verbündeten Krieger-Helden um 8%"
                     }
                 },
                 {
@@ -206,28 +206,28 @@
                     "id": "dagger",
                     "name": {
                         "en": "Dagger",
-                        "de": ""
+                        "de": "Dolch"
                     }
                 },
                 "active": {
                     "id": "mountain_god_wrath",
                     "name": {
                         "en": "Mountain God Wrath",
-                        "de": ""
+                        "de": "Zorn des Berggottes"
                     }
                 },
                 "ultimate": {
                     "id": "forest_hunter",
                     "name": {
                         "en": "Forest Hunter",
-                        "de": ""
+                        "de": "Waldjäger"
                     }
                 },
                 "passive": {
                     "id": "lady_of_the_forest",
                     "name": {
                         "en": "Lady of the Forest",
-                        "de": ""
+                        "de": "Dame des Waldes"
                     }
                 }
             },
@@ -281,28 +281,28 @@
                     "id": "battle_shield",
                     "name": {
                         "en": "Battle Shield",
-                        "de": ""
+                        "de": "Kampfschild"
                     }
                 },
                 "active": {
                     "id": "rock_solid",
                     "name": {
                         "en": "Rock Solid",
-                        "de": ""
+                        "de": "Felsenfest"
                     }
                 },
                 "ultimate": {
                     "id": "earthshattering",
                     "name": {
                         "en": "Earthshattering",
-                        "de": ""
+                        "de": "Erderschütternd"
                     }
                 },
                 "passive": {
                     "id": "strong_will",
                     "name": {
                         "en": "Strong Will",
-                        "de": ""
+                        "de": "Eiserner Wille"
                     }
                 }
             },
@@ -336,56 +336,56 @@
                     "id": "battle_will",
                     "name": {
                         "en": "Battle Will",
-                        "de": ""
+                        "de": "Kampfwille"
                     }
                 },
                 "active": {
                     "id": "deadly_pierce",
                     "name": {
                         "en": "Deadly Pierce",
-                        "de": ""
+                        "de": "Tödlicher Bruch"
                     }
                 },
                 "ultimate": {
                     "id": "bloodshed_defense",
                     "name": {
                         "en": "Bloodshed Defense",
-                        "de": ""
+                        "de": "Blutvergießen-Verteidigung"
                     }
                 },
                 "passive": {
                     "id": "resolute_fight",
                     "name": {
                         "en": "Resolute Fight",
-                        "de": ""
+                        "de": "Entschlossener Kampf"
                     }
                 }
             },
             "weapon": {
                 "name": {
                     "en": "Crimson Greatsword",
-                    "de": ""
+                    "de": "Rotes Großschwert"
                 },
                 "bonuses": [
                     {
                         "stars": 1,
                         "text": {
                             "en": "Hero DEF↑ 10.00%",
-                            "de": ""
+                            "de": "Held-VER↑ 10.00%"
                         }
                     },
                     {
                         "stars": 2,
                         "text": {
                             "en": "Hero HP↑ 10.00%",
-                            "de": ""
+                            "de": "Held-LP↑ 10.00%"
                         }
                     },
                     {
                         "stars": 3,
                         "text": {
                             "en": "Hero ATK↑ 10.00%",
-                            "de": ""
+                            "de": "Held-ANG↑ 10.00%"
                         }
                     },
                     {
@@ -393,14 +393,14 @@
                         "skill": "auto_attack",
                         "text": {
                             "en": "[Battle Will] Extra damage increases to 300%.",
-                            "de": ""
+                            "de": "[Kampfwille] Zusätzlicher Schaden steigt auf 300%."
                         }
                     },
                     {
                         "stars": 5,
                         "text": {
                             "en": "Hero Energy DMG Taken↓ 10.00%",
-                            "de": ""
+                            "de": "Held Erlittener Energie-SCH↓ 10.00%"
                         }
                     },
                     {
@@ -408,29 +408,29 @@
                         "skill": "passive",
                         "text": {
                             "en": "[Resolute Fight] Support Hero also gets a Shield when HP is below 50%",
-                            "de": ""
+                            "de": "[Entschlossener Kampf] Unterstützungsheld bekommt auch einen Schild, wenn LP unter 50% sind"
                         }
                     },
                     {
                         "stars": 7,
                         "text": {
                             "en": "Hero Physical DMG Taken↓ 10.00%",
-                            "de": ""
+                            "de": "Held Erlittener Physischer SCH↓ 10.00%"
                         }
                     },
                     {
                         "stars": 8,
                         "skill": "active",
                         "text": {
-                            "en": "[Deadly Pierce] Extra HP recover increases to 400%.",
-                            "de": ""
+                            "en": "[Deadly Pierce] Extra HP recovery increases to 400%.",
+                            "de": "[Tödlicher Bruch] Zusätzliche LP-Wiederherstellung erhöht sich auf 400%."
                         }
                     },
                     {
                         "stars": 9,
                         "text": {
                             "en": "Hero DMG Dealt↑ 10.00%",
-                            "de": ""
+                            "de": "Verursachter Held-SCH↑ 10.00%"
                         }
                     },
                     {
@@ -438,7 +438,7 @@
                         "skill": "ultimate",
                         "text": {
                             "en": "[Bloodshed Defense] Shield effect increases by 30%.",
-                            "de": ""
+                            "de": "[Blutvergießen-Verteidigung] Schildeffekt erhöht sich um 30%."
                         }
                     }
                 ]
@@ -473,28 +473,28 @@
                     "id": "bubble",
                     "name": {
                         "en": "Bubble",
-                        "de": ""
+                        "de": "Blase"
                     }
                 },
                 "active": {
                     "id": "vitality_bubble",
                     "name": {
                         "en": "Vitality Bubble",
-                        "de": ""
+                        "de": "Vitalitätsblase"
                     }
                 },
                 "ultimate": {
                     "id": "war_flute_sound",
                     "name": {
                         "en": "War Flute Sound",
-                        "de": ""
+                        "de": "Kriegsflötenklang"
                     }
                 },
                 "passive": {
                     "id": "warriors_anthem",
                     "name": {
                         "en": "Warrior's Anthem",
-                        "de": ""
+                        "de": "Kriegerhymne"
                     }
                 }
             },
@@ -524,28 +524,28 @@
                     "id": "blood_blade",
                     "name": {
                         "en": "Blood Blade",
-                        "de": ""
+                        "de": "Blutklinge"
                     }
                 },
                 "active": {
                     "id": "bloodthirsty_slaughter",
                     "name": {
                         "en": "Bloodthirsty Slaughter",
-                        "de": ""
+                        "de": "Blutrünstiges Gemetzel"
                     }
                 },
                 "ultimate": {
                     "id": "crimson_rose",
                     "name": {
                         "en": "Crimson Rose",
-                        "de": ""
+                        "de": "Rote Rose"
                     }
                 },
                 "passive": {
                     "id": "lone_flower",
                     "name": {
                         "en": "Lone Flower",
-                        "de": ""
+                        "de": "Einsame Blume"
                     }
                 }
             },
@@ -580,28 +580,28 @@
                     "id": "moon_blade",
                     "name": {
                         "en": "Moon Blade",
-                        "de": ""
+                        "de": "Mondklinge"
                     }
                 },
                 "active": {
                     "id": "lunar_hunt",
                     "name": {
                         "en": "Lunar Hunt",
-                        "de": ""
+                        "de": "Mondjagd"
                     }
                 },
                 "ultimate": {
                     "id": "moonfall_dance",
                     "name": {
                         "en": "Moonfall Dance",
-                        "de": ""
+                        "de": "Monduntergang-Tanz"
                     }
                 },
                 "passive": {
                     "id": "moons_blessing",
                     "name": {
                         "en": "Moon's Blessing",
-                        "de": ""
+                        "de": "Mondsegen"
                     }
                 }
             },
@@ -611,7 +611,7 @@
                     "skill": "auto_attack",
                     "name": {
                         "en": "Battle Skill: Moon Blade",
-                        "de": ""
+                        "de": "Kampffähigkeit: Mondklinge"
                     },
                     "description": {
                         "en": "Each Moon Blade cast grants Cynthia 1 stack of [Moonlight], capped at 4x the number of Ranger Heroes in your team. Each stack grants Cynthia 1% Energy Dmg Bonus",
@@ -697,56 +697,56 @@
                     "id": "shackles",
                     "name": {
                         "en": "Shackles",
-                        "de": ""
+                        "de": "Fesseln"
                     }
                 },
                 "active": {
                     "id": "force_link",
                     "name": {
                         "en": "Force Link",
-                        "de": ""
+                        "de": "Kraftverbindung"
                     }
                 },
                 "ultimate": {
                     "id": "cross_whip",
                     "name": {
                         "en": "Cross Whip",
-                        "de": ""
+                        "de": "Kreuzpeitsche"
                     }
                 },
                 "passive": {
                     "id": "indomitable_spirit",
                     "name": {
                         "en": "Indomitable Spirit",
-                        "de": ""
+                        "de": "Unbezwingbarer Geist"
                     }
                 }
             },
             "weapon": {
                 "name": {
                     "en": "Thorn Shackles",
-                    "de": ""
+                    "de": "Dornenfesseln"
                 },
                 "bonuses": [
                     {
                         "stars": 1,
                         "text": {
                             "en": "Hero DEF↑ 10.00%",
-                            "de": ""
+                            "de": "Held-VER↑ 10.00%"
                         }
                     },
                     {
                         "stars": 2,
                         "text": {
                             "en": "Hero HP↑ 10.00%",
-                            "de": ""
+                            "de": "Held-LP↑ 10.00%"
                         }
                     },
                     {
                         "stars": 3,
                         "text": {
                             "en": "Hero ATK↑ 10.00%",
-                            "de": ""
+                            "de": "Held-ANG↑ 10.00%"
                         }
                     },
                     {
@@ -754,14 +754,14 @@
                         "skill": "auto_attack",
                         "text": {
                             "en": "[Shackles] Extra damage increases to 300%.",
-                            "de": ""
+                            "de": "[Fesseln] Zusätzlicher Schaden steigt auf 300%."
                         }
                     },
                     {
                         "stars": 5,
                         "text": {
                             "en": "Hero Energy DMG Taken↓ 10.00%",
-                            "de": ""
+                            "de": "Held Erlittener Energie-SCH↓ 10.00%"
                         }
                     },
                     {
@@ -769,14 +769,14 @@
                         "skill": "passive",
                         "text": {
                             "en": "[Indomitable Spirit] Duration +1s",
-                            "de": ""
+                            "de": "[Unbezwingbarer Geist] Dauer +1s"
                         }
                     },
                     {
                         "stars": 7,
                         "text": {
                             "en": "Hero Physical DMG Taken↓ 10.00%",
-                            "de": ""
+                            "de": "Held Erlittener Physischer SCH↓ 10.00%"
                         }
                     },
                     {
@@ -784,14 +784,14 @@
                         "skill": "active",
                         "text": {
                             "en": "[Force Link] Target +1",
-                            "de": ""
+                            "de": "[Kraftverbindung] Ziel +1"
                         }
                     },
                     {
                         "stars": 9,
                         "text": {
                             "en": "Hero DMG Dealt↑ 10.00%",
-                            "de": ""
+                            "de": "Verursachter Held-SCH↑ 10.00%"
                         }
                     },
                     {
@@ -799,7 +799,7 @@
                         "skill": "ultimate",
                         "text": {
                             "en": "[Cross Whip] Damage reduction increases by 5%",
-                            "de": ""
+                            "de": "[Kreuzpeitsche] Schadensreduzierung erhöht sich um 5%"
                         }
                     }
                 ]
@@ -830,28 +830,28 @@
                     "id": "smoke_cartridge",
                     "name": {
                         "en": "Smoke Cartridge",
-                        "de": ""
+                        "de": "Rauchpatrone"
                     }
                 },
                 "active": {
                     "id": "shadow_strike",
                     "name": {
                         "en": "Shadow Strike",
-                        "de": ""
+                        "de": "Schattenschlag"
                     }
                 },
                 "ultimate": {
                     "id": "shadow_hunt",
                     "name": {
                         "en": "Shadow Hunt",
-                        "de": ""
+                        "de": "Schattenjagd"
                     }
                 },
                 "passive": {
                     "id": "shadow_veil",
                     "name": {
                         "en": "Shadow Veil",
-                        "de": ""
+                        "de": "Schattenschleier"
                     }
                 }
             },
@@ -885,28 +885,28 @@
                     "id": "musical_note",
                     "name": {
                         "en": "Musical Note",
-                        "de": ""
+                        "de": "Musiknote"
                     }
                 },
                 "active": {
                     "id": "healing_sound",
                     "name": {
                         "en": "Healing Sound",
-                        "de": ""
+                        "de": "Heilklang"
                     }
                 },
                 "ultimate": {
                     "id": "inspiration",
                     "name": {
                         "en": "Inspiration",
-                        "de": ""
+                        "de": "Inspiration"
                     }
                 },
                 "passive": {
                     "id": "battle_anthem",
                     "name": {
                         "en": "Battle Anthem",
-                        "de": ""
+                        "de": "Kampfhymne"
                     }
                 }
             },
@@ -936,11 +936,11 @@
                     "id": "sharp_claw",
                     "name": {
                         "en": "Sharp Claw",
-                        "de": ""
+                        "de": "Scharfe Klaue"
                     },
                     "description": {
                         "en": "Swings sharp claws, dealing {damage}% ATK Physical DMG to a single enemy.",
-                        "de": ""
+                        "de": "Schwingt scharfe Krallen und fügt einem einzelnen Feind {damage}% ANG Physischer SCH zu."
                     },
                     "values": {
                         "damage": [87.16]
@@ -950,7 +950,7 @@
                             "stars": 1,
                             "text": {
                                 "en": "Deals 40% extra damage.",
-                                "de": ""
+                                "de": "Verursacht 40% zusätzlichen Schaden."
                             },
                             "scale": {
                                 "damage": 40
@@ -960,7 +960,7 @@
                             "stars": 5,
                             "text": {
                                 "en": "Extra damage increases to 100%.",
-                                "de": ""
+                                "de": "Zusätzlicher Schaden erhöht sich auf 100%."
                             },
                             "scale": {
                                 "damage": 100
@@ -970,7 +970,7 @@
                             "stars": 10,
                             "text": {
                                 "en": "Extra damage increases to 200%.",
-                                "de": ""
+                                "de": "Zusätzlicher Schaden erhöht sich auf 200%."
                             },
                             "scale": {
                                 "damage": 200
@@ -982,11 +982,11 @@
                     "id": "lunar_howl",
                     "name": {
                         "en": "Lunar Howl",
-                        "de": ""
+                        "de": "Mondgeheul"
                     },
                     "description": {
                         "en": "Howls to the sky, entering Berserk state: when taking damage, reflects {reflect}% of that damage back to the attacker. This effect lasts for 3s.",
-                        "de": ""
+                        "de": "Heult zum Himmel und geht in den Berserker-Zustand über: Bei erlittenem Schaden werden {reflect}% dieses Schadens an den Angreifer zurückgeworfen. Dieser Effekt hält 3 Sek. an."
                     },
                     "values": {
                         "reflect": []
@@ -996,11 +996,11 @@
                     "id": "throat_bite",
                     "name": {
                         "en": "Throat Bite",
-                        "de": ""
+                        "de": "Kehlenbiss"
                     },
                     "description": {
                         "en": "Charges up, then lunges forward and bites the target, dealing {damage}% ATK Physical DMG, and reducing all damage taken by all allied heroes by {reduction}% for 4s.",
-                        "de": ""
+                        "de": "Lädt auf, stürmt dann nach vorne und beißt das Ziel, fügt {damage}% ANG Physischer SCH zu und reduziert allen verbündeten Helden den erlittenen Schaden um {reduction}% für 4 Sek."
                     },
                     "values": {
                         "damage": [],
@@ -1011,11 +1011,11 @@
                     "id": "wolf_bloodline",
                     "name": {
                         "en": "Wolf Bloodline",
-                        "de": ""
+                        "de": "Wolfsblutlinie"
                     },
                     "description": {
                         "en": "In combat, reduces all damage taken by {reduction}%.",
-                        "de": ""
+                        "de": "Im Kampf wird aller erlittener Schaden um {reduction}% reduziert."
                     },
                     "values": {
                         "reduction": []
@@ -1025,28 +1025,28 @@
             "weapon": {
                 "name": {
                     "en": "Wolven Claw",
-                    "de": ""
+                    "de": "Wolfsklaue"
                 },
                 "bonuses": [
                     {
                         "stars": 1,
                         "text": {
                             "en": "Hero DEF↑ 10.00%",
-                            "de": ""
+                            "de": "Held-VER↑ 10.00%"
                         }
                     },
                     {
                         "stars": 2,
                         "text": {
                             "en": "Hero HP↑ 10.00%",
-                            "de": ""
+                            "de": "Held-LP↑ 10.00%"
                         }
                     },
                     {
                         "stars": 3,
                         "text": {
                             "en": "Hero ATK↑ 10.00%",
-                            "de": ""
+                            "de": "Held-ANG↑ 10.00%"
                         }
                     },
                     {
@@ -1054,7 +1054,7 @@
                         "skill": "auto_attack",
                         "text": {
                             "en": "[Sharp Claw] Extra damage increases to 300%.",
-                            "de": ""
+                            "de": "[Scharfe Klaue] Zusätzlicher Schaden steigt auf 300%."
                         },
                         "scale": {
                             "damage": 300
@@ -1064,7 +1064,7 @@
                         "stars": 5,
                         "text": {
                             "en": "Hero Energy DMG Taken↓ 10.00%",
-                            "de": ""
+                            "de": "Held Erlittener Energie-SCH↓ 10.00%"
                         }
                     },
                     {
@@ -1072,14 +1072,14 @@
                         "skill": "passive",
                         "text": {
                             "en": "[Wolf Bloodline] Effect increases by 5%.",
-                            "de": ""
+                            "de": "[Wolfsblutlinie] Effekt erhöht sich um 5%."
                         }
                     },
                     {
                         "stars": 7,
                         "text": {
                             "en": "Hero Physical DMG Taken↓ 10.00%",
-                            "de": ""
+                            "de": "Held Erlittener Physischer SCH↓ 10.00%"
                         }
                     },
                     {
@@ -1087,14 +1087,14 @@
                         "skill": "active",
                         "text": {
                             "en": "[Lunar Howl] While in Berserk state, DEF increases by 10%",
-                            "de": ""
+                            "de": "[Mondgeheul] Im Berserkerzustand erhöht sich VER um 10%"
                         }
                     },
                     {
                         "stars": 9,
                         "text": {
                             "en": "Hero DMG Dealt↑ 10.00%",
-                            "de": ""
+                            "de": "Verursachter Held-SCH↑ 10.00%"
                         }
                     },
                     {
@@ -1102,7 +1102,7 @@
                         "skill": "ultimate",
                         "text": {
                             "en": "[Throat Bite] Effect increases by 7%.",
-                            "de": ""
+                            "de": "[Kehlenbiss] Effekt erhöht sich um 7%."
                         }
                     }
                 ]
@@ -1133,28 +1133,28 @@
                     "id": "wooden_frame",
                     "name": {
                         "en": "Wooden Frame",
-                        "de": ""
+                        "de": "Holzrahmen"
                     }
                 },
                 "active": {
                     "id": "fates_thread",
                     "name": {
                         "en": "Fate's Thread",
-                        "de": ""
+                        "de": "Schicksalsfaden"
                     }
                 },
                 "ultimate": {
                     "id": "truth_and_lies",
                     "name": {
                         "en": "Truth and Lies",
-                        "de": ""
+                        "de": "Wahrheit und Lügen"
                     }
                 },
                 "passive": {
                     "id": "puppet",
                     "name": {
                         "en": "Puppet",
-                        "de": ""
+                        "de": "Marionette"
                     }
                 }
             },
@@ -1188,28 +1188,28 @@
                     "id": "deal_cards",
                     "name": {
                         "en": "Deal Cards",
-                        "de": ""
+                        "de": "Karten austeilen"
                     }
                 },
                 "active": {
                     "id": "hearthunt_red_card",
                     "name": {
                         "en": "Hearthunt Red Card",
-                        "de": ""
+                        "de": "Herzjagd Rote Karte"
                     }
                 },
                 "ultimate": {
                     "id": "joker_ace",
                     "name": {
                         "en": "Joker Ace",
-                        "de": ""
+                        "de": "Joker-Ass"
                     }
                 },
                 "passive": {
                     "id": "frenzied_emotion",
                     "name": {
                         "en": "Frenzied Emotion",
-                        "de": ""
+                        "de": "Rasende Emotion"
                     }
                 }
             },
@@ -1248,28 +1248,28 @@
                     "id": "candy",
                     "name": {
                         "en": "Candy",
-                        "de": ""
+                        "de": "Süßigkeit"
                     }
                 },
                 "active": {
                     "id": "surprise_gift",
                     "name": {
                         "en": "Surprise Gift",
-                        "de": ""
+                        "de": "Überraschungsgeschenk"
                     }
                 },
                 "ultimate": {
                     "id": "candy_jar",
                     "name": {
                         "en": "Candy Jar",
-                        "de": ""
+                        "de": "Süßigkeitenglas"
                     }
                 },
                 "passive": {
                     "id": "charged_gummies",
                     "name": {
                         "en": "Charged Gummies",
-                        "de": ""
+                        "de": "Geladene Gummis"
                     }
                 }
             },
@@ -1279,11 +1279,11 @@
                     "skill": "auto_attack",
                     "name": {
                         "en": "Battle Skill: Candy",
-                        "de": ""
+                        "de": "Kampffähigkeit: Süßigkeit"
                     },
                     "description": {
-                        "en": "Candy has a 50% Probabilities to inflict [Burn] on the target for 2s, dealing 200% Energy Dmg per second. When the team successfully applies [Burn], additionally apply 1 stack of [Scorch] to the target. [Scorch] deals 35% of Annie's ATK as damage per second, lasting 20s, with a maximum stack count equal to the number of allied Warlock Heroes.",
-                        "de": ""
+                        "en": "Candy has a 50% Probabilities to inflict [Burn] on the target for 2s, dealing 200% Energy Dmg per second. When the team successfully applies [Burn], additionally apply 1 stack of [Scorch] to the target. [Scorch] deals 35% of Annie's ATK as damage per second, lasting 20s, with a maximum stack count equal to the number of allied Warlock Heroes",
+                        "de": "Candy hat 50% Wahrscheinlichkeiten, dem Ziel 2s lang [Verbrennung] zuzufügen und dabei 200% Energie-Schaden pro Sekunde zu verursachen. Wenn das Team erfolgreich [Verbrennung] anwendet, wird dem Ziel zusätzlich 1 Stapel [Versengen] zugefügt. [Versengen] verursacht 35% von Annies ANG als Schaden pro Sekunde, hält 20s an, mit einer maximalen Stapelanzahl gleich der Anzahl verbündeter Hexenmeister-Helden"
                     }
                 },
                 {
@@ -1291,11 +1291,11 @@
                     "skill": "active",
                     "name": {
                         "en": "Battle Skill: Surprise Gift",
-                        "de": ""
+                        "de": "Kampffähigkeit: Überraschungsgeschenk"
                     },
                     "description": {
-                        "en": "Surprise Gift damage increased by 15% for each stack of [Scorch] the target has, damage increased by an additional 4%.",
-                        "de": ""
+                        "en": "Surprise Gift damage increased by 15%. for each stack of [Scorch] the target has, damage increased by an additional 4%",
+                        "de": "Überraschungsgeschenk-Schaden um 15% erhöht. Für jeden Stapel [Versengen], den das Ziel hat, erhöht sich der Schaden um zusätzliche 4%"
                     }
                 },
                 {
@@ -1303,11 +1303,11 @@
                     "skill": "ultimate",
                     "name": {
                         "en": "Battle Skill: Candy Jar",
-                        "de": ""
+                        "de": "Kampffähigkeit: Süßigkeitenglas"
                     },
                     "description": {
-                        "en": "Deals additional Energy DMG to all enemies with [Scorch], equal to 250% of Annie's ATK x the target's [Scorch] stacks.",
-                        "de": ""
+                        "en": "Deals additional Energy DMG to all enemies with [Scorch], equal to 250% of Annie's ATK × the target's [Scorch] stacks.",
+                        "de": "Verursacht zusätzlichen Energie-SCH an allen Feinden mit [Versengen], gleich 250% von Annies ANG × die [Versengen]-Stapel des Ziels."
                     }
                 },
                 {
@@ -1315,11 +1315,11 @@
                     "id": "soul_of_warlock",
                     "name": {
                         "en": "[Faction Enhance] Soul of Warlock",
-                        "de": ""
+                        "de": "[Fraktion Verbessern] Seele des Hexenmeisters"
                     },
                     "description": {
                         "en": "During battle, increase all allied Warlock Heroes' ATK, HP, and DEF by 8%",
-                        "de": ""
+                        "de": "Während des Kampfes erhöhe ANG, LP und VER aller verbündeten Hexenmeister-Helden um 8%"
                     }
                 },
                 {
@@ -1365,28 +1365,28 @@
                     "id": "ember_dust",
                     "name": {
                         "en": "Ember Dust",
-                        "de": ""
+                        "de": "Glutstaub"
                     }
                 },
                 "active": {
                     "id": "heartwarming_flame",
                     "name": {
                         "en": "Heartwarming Flame",
-                        "de": ""
+                        "de": "Wärmende Flamme"
                     }
                 },
                 "ultimate": {
                     "id": "inferno_array",
                     "name": {
                         "en": "Inferno Array",
-                        "de": ""
+                        "de": "Inferno-Array"
                     }
                 },
                 "passive": {
                     "id": "flame_soul_power",
                     "name": {
                         "en": "Flame Soul Power",
-                        "de": ""
+                        "de": "Flammenseelenkraft"
                     }
                 }
             },
