@@ -231,6 +231,13 @@
                     }
                 }
             },
+            "weapon": {
+                "name": {
+                    "en": "Forest Blade",
+                    "de": "Waldklinge"
+                },
+                "bonuses": []
+            },
             "path": [
                 {
                     "skills": ["ultimate", "active"],
@@ -548,6 +555,13 @@
                         "de": "Einsame Blume"
                     }
                 }
+            },
+            "weapon": {
+                "name": {
+                    "en": "Crimson Edge",
+                    "de": "Rote Klinge"
+                },
+                "bonuses": []
             },
             "path": [
                 {
@@ -1157,6 +1171,13 @@
                         "de": "Marionette"
                     }
                 }
+            },
+            "weapon": {
+                "name": {
+                    "en": "Puppet Frame",
+                    "de": "Puppenrahmen"
+                },
+                "bonuses": []
             },
             "path": [
                 {
