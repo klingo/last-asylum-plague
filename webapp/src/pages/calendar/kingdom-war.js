@@ -1,6 +1,6 @@
 /**
  * The Kingdom War box (`kingdom_war` in events.json, `core/kingdom-war.js`): which war week is on now, the Royal City
- * Scramble of every Saturday and Origin of the Curse of the break week. A chart over the current local week and the 3
+ * Scramble of every war week's Saturday and Origin of the Curse of the break week. A chart over the current local week and the 3
  * after it with three rows: the war weeks (one bar each, named, the break is the gap between Week 3 and the next
  * Week 1), the scramble and Origin of the Curse (its run in the break week). A war week's bar starts and ends at the
  * game's daily reset in local time; the scramble, 4 hours next to 6-day weeks, is a faint bar for its day (it has the

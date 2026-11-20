@@ -141,7 +141,7 @@
         },
         "kingdomWar": {
             "type": "object",
-            "description": "The Kingdom War: a cycle of war weeks and a break that repeats forever (core/kingdom-war.js, shown in the Calendar's Kingdom War box and on the Today page), the Royal City Scramble that runs every Saturday of it, and Origin of the Curse, which runs in its break weeks. A war week runs from its Monday's daily reset through its first `days` game days (until the end of Saturday); the Sundays around it are off.",
+            "description": "The Kingdom War: a cycle of war weeks and a break that repeats forever (core/kingdom-war.js, shown in the Calendar's Kingdom War box and on the Today page), the Royal City Scramble that runs every Saturday of a war week (none in the break), and Origin of the Curse, which runs in its break weeks. A war week runs from its Monday's daily reset through its first `days` game days (until the end of Saturday); the Sundays around it are off.",
             "required": ["event_id", "cycle_start", "days", "weeks", "royal_city_scramble"],
             "additionalProperties": false,
             "properties": {
@@ -176,7 +176,7 @@
                 },
                 "royal_city_scramble": {
                     "type": "object",
-                    "description": "The Royal City Scramble: every week of the cycle (the break too), on `weekday`, from `start_hour` hours after that day's reset (= server time, as the reset is 00:00 server time) for `hours` hours.",
+                    "description": "The Royal City Scramble: every war week of the cycle (none in the break), on `weekday`, from `start_hour` hours after that day's reset (= server time, as the reset is 00:00 server time) for `hours` hours.",
                     "required": ["event_id", "weekday", "start_hour", "hours"],
                     "additionalProperties": false,
                     "properties": {

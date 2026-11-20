@@ -1,8 +1,8 @@
 /**
  * The Kingdom War (`kingdom_war` in events.json), a cycle that repeats forever: its weeks in order from
  * `cycle_start` (a Monday), each a war week (Week 1, Week 2, Week 3: Finals) or `null` for a break week, and the Royal
- * City Scramble, which runs every Saturday of it, the break included, and Origin of the Curse, which runs in every
- * break week.
+ * City Scramble, which runs every Saturday of a war week (none in the break), and Origin of the Curse, which runs in
+ * every break week.
  * - the periods (`warPeriods`): the war weeks, each from its Monday's reset through its first `days` game days (until
  *   the end of Saturday), and the breaks. A break is the time between two war weeks that is longer than the one Sunday
  *   between weeks of the same stretch, so it takes the Sundays on both sides along; that plain Sunday is no period.
@@ -13,13 +13,14 @@
  * Days are game days (day numbers, see core/schedule.js); `start_hour` and a timeline's `time` count from the day's
  * reset, which is 00:00 server time. Pure module: callers pass `today` / `nowMs`.
  */
-import { DAYS_PER_WEEK, DAY_MS, HOUR_MS, WEEKDAYS, dayNumber, dayStartMs, gameDay, weekdayIndex } from './schedule.js';
+import { DAYS_PER_WEEK, DAY_MS, HOUR_MS, WEEKDAYS, dayNumber, dayStartMs, gameDay } from './schedule.js';
 
 // How far (in cycles) the status looks ahead for the next war week.
 const LOOKAHEAD_CYCLES = 2;
-// The window of `scrambleStatus`: a slot that began up to a day ago, and the next one within a week and a bit.
+// The window of `scrambleStatus`: a slot that began up to a day ago, and the next one within two weeks and a bit (the
+// break week has none).
 const SCRAMBLE_BEHIND_MS = 24 * HOUR_MS;
-const SCRAMBLE_AHEAD_MS = 8 * 24 * HOUR_MS;
+const SCRAMBLE_AHEAD_MS = 15 * 24 * HOUR_MS;
 
 /** The weeks (`{ week, start }`: a war week or null for a break week, its Monday as a game day) of the cycles around [from, to], oldest first. */
 function cycleWeeks(war, from, to) {
@@ -73,14 +74,14 @@ function warStatus(war, today) {
     };
 }
 
-/** The scramble's slots that overlap [fromMs, toMs): `{ start, end }` (ms), oldest first. */
+/** The scramble's slots that overlap [fromMs, toMs): `{ start, end }` (ms), oldest first. None in a break week. */
 function scrambleSlots(war, fromMs, toMs) {
     const { weekday, start_hour: startHour, hours } = war.royal_city_scramble;
     const wanted = WEEKDAYS.indexOf(weekday);
     const slots = [];
-    for (let day = gameDay(new Date(fromMs)).day - 1; day <= gameDay(new Date(toMs)).day; day += 1) {
-        if (weekdayIndex(day) === wanted) {
-            const start = dayStartMs(day) + startHour * HOUR_MS;
+    for (const { week, start: monday } of cycleWeeks(war, gameDay(new Date(fromMs)).day, gameDay(new Date(toMs)).day)) {
+        if (week) {
+            const start = dayStartMs(monday + wanted) + startHour * HOUR_MS;
             const end = start + hours * HOUR_MS;
             if (end > fromMs && start < toMs) {
                 slots.push({ start, end });

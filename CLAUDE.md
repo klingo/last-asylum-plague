@@ -159,7 +159,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
 - `kingdom_war` is the Kingdom War, a cycle that repeats forever: `cycle_start` (a Monday), `weeks` (a war week `{ id, name }`
   or `null` for a break week; Week 1, Week 2, Week 3: Finals, break), `days` (a war week lasts that many game days from its
   Monday's reset: 6, until the end of Saturday) and the `royal_city_scramble` (`weekday`, `start_hour` after the
-  reset = server time, `hours`; every week of the cycle, the break too). `core/kingdom-war.js` gives the periods (a break
+  reset = server time, `hours`; every war week of the cycle, none in the break). `core/kingdom-war.js` gives the periods (a break
   also takes the Sundays around it) and the scramble's slots; the Calendar's Kingdom War box and the Today page show them.
   Nothing is recorded in `schedule` for it. `origin_of_the_curse` (optional) is Origin of the Curse, which runs in every
   break week (a `null` in `weeks`): `phases` (id, name) and a `timeline` of `{ phase, weekday, time }` (`time` is HH:MM

@@ -415,7 +415,7 @@
             "pairedWith": "Zählt auch für {event}: {phase}"
         },
         "kingdomWar": {
-            "lead": "Kriegswochen laufen von Montag bis zum Ende des Samstags, danach folgt eine Pausenwoche. {scramble} findet jeden Samstag statt.",
+            "lead": "Kriegswochen laufen von Montag bis zum Ende des Samstags, danach folgt eine Pausenwoche. {scramble} findet jeden Samstag einer Kriegswoche statt.",
             "now": "Jetzt · {week}, endet {time}",
             "nowBreak": "Jetzt · Pause, {next} beginnt {time}",
             "nowOff": "Jetzt · spielfrei, {next} beginnt {time}",

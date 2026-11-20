@@ -79,14 +79,15 @@ test('war status: the week on now, and the next one', () => {
     assert.equal(between.next.week.id, 'finals');
 });
 
-test('scramble: every Saturday from 12:00 to 16:00 server time (14:00 to 18:00 UTC), the break included', () => {
-    const slots = scrambleSlots(war, Date.UTC(2026, 10, 9), Date.UTC(2026, 10, 24));
+test('scramble: every war week Saturday from 12:00 to 16:00 server time (14:00 to 18:00 UTC), none in the break', () => {
+    const slots = scrambleSlots(war, Date.UTC(2026, 10, 9), Date.UTC(2026, 10, 30));
     assert.deepEqual(
         slots.map((slot) => [slot.start, slot.end]),
         [
             [Date.UTC(2026, 10, 14, 14), Date.UTC(2026, 10, 14, 18)],
-            [Date.UTC(2026, 10, 21, 14), Date.UTC(2026, 10, 21, 18)],
+            [Date.UTC(2026, 10, 28, 14), Date.UTC(2026, 10, 28, 18)],
         ],
+        'Saturday Nov 21 is in the break week',
     );
     assert.equal(slots[0].start, dayStartMs(day('2026-11-14')) + 12 * HOUR, '12:00 after the reset');
 });
@@ -96,16 +97,16 @@ test('scramble: a slot the window cuts is included, and the status says what is 
     assert.equal(scrambleSlots(war, during, during + 1).length, 1);
     const on = scrambleStatus(war, during);
     assert.equal(on.current.start, Date.UTC(2026, 10, 14, 14));
-    assert.equal(on.next.start, Date.UTC(2026, 10, 21, 14));
+    assert.equal(on.next.start, Date.UTC(2026, 10, 28, 14), 'the break week has none');
 
     const before = scrambleStatus(war, Date.UTC(2026, 10, 14, 13, 59));
     assert.equal(before.current, null);
     assert.equal(before.next.start, Date.UTC(2026, 10, 14, 14));
     assert.equal(scrambleStatus(war, Date.UTC(2026, 10, 14, 14)).current.end, Date.UTC(2026, 10, 14, 18));
-    // The moment it ends it is over: the next one is the following Saturday.
+    // The moment it ends it is over: the next one is the first Saturday after the break.
     const after = scrambleStatus(war, Date.UTC(2026, 10, 14, 18));
     assert.equal(after.current, null);
-    assert.equal(after.next.start, Date.UTC(2026, 10, 21, 14));
+    assert.equal(after.next.start, Date.UTC(2026, 10, 28, 14));
 });
 
 // The reset is 02:00 UTC = 00:00 server time, so Saturday 00:40 server time is 02:40 UTC.

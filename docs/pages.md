@@ -87,7 +87,7 @@ deleted after 180 days without use; the button stays hidden until the build has 
   Below them the **Kingdom War** box (`kingdom_war` in `events.json`, `core/kingdom-war.js`): the current week and the
   3 after it, with a row for the war weeks (Week 1, Week 2, Week 3: Finals: Monday's reset to the end of Saturday, its
   name on the bar; the break is the empty gap between Week 3 and the next Week 1), one for the Royal City Scramble, a
-  faint bar on every Saturday (the break week too) with the 4 hours as a thin bar on top (to scale, so the day is easy to see and the hours are where they fall),
+  faint bar on every Saturday of a war week (none in the break week) with the 4 hours as a thin bar on top (to scale, so the day is easy to see and the hours are where they fall),
   and one for Origin of the Curse (a faint bar for its run in the break week, Tuesday's reset to the end of Sunday, the
   Saturday's two Contest Phases as thin bars on top). The faint bars have the hover card (the scramble's local hours,
   12:00–16:00 server time; the run's days and each contest's local start time). A line says which week is on now and when it
