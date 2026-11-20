@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "last_updated": "2026-11-19"
+        "last_updated": "2026-11-20"
     },
     "events": {
         "alliance_duel": {
@@ -1211,6 +1211,10 @@
             {
                 "start": "2026-11-17",
                 "end": "2026-11-17"
+            },
+            {
+                "start": "2026-11-20",
+                "end": "2026-11-20"
             }
         ],
         "demon_king_warlock_blight": [
