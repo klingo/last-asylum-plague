@@ -277,6 +277,12 @@ a.schedule__bar {
     background: color-mix(in srgb, #4b5263 40%, transparent);
 }
 
+/* An ended one inside a day (run) that is still on stays in its green, only dimmer than the ones to come: the grey
+   would be barely visible on the faint green. */
+.schedule__bar--hours.schedule__bar--past.schedule__bar--active {
+    background: color-mix(in srgb, var(--bar-color) 55%, transparent);
+}
+
 /* Decoration only: the hover card is the day bar's, the pointer goes through to it. */
 .schedule__bar--hours {
     min-width: 4px;
