@@ -1,15 +1,20 @@
 /**
  * Item Sources: pick one item (`?item=`) to see every pack and shop offer on sale this week that gives it, nested at
  * any depth (`createUnitCounter`, core/item-sources.js), ranked by Banknotes per unit, with how much each gives and
- * an item ratio (the worth of the item alone ÷ price).
+ * an item ratio (the worth of the item alone ÷ price). A pack costs its price; a shop offer costs what one purchase
+ * takes from the weekly plan (`offerPurchaseCost`: the plan solved again, one offer at a time after the page is drawn;
+ * until then the offer's coins at what a coin buys in the plan).
  */
 import { startPage } from '../ui/page.js';
 import '../styles/pages/sources.css';
 import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPage } from '../ui/valuation-page.js';
+import { planOptions } from '../ui/valuation.js';
 import { getSettings } from '../ui/settings.js';
-import { isOnSale, currencyCost } from '../core/catalog.js';
+import { isOnSale, offerWeeklyCapacity } from '../core/catalog.js';
 import { createUnitCounter, sourcesListing } from '../core/item-sources.js';
+import { solveWeeklyPlan } from '../core/planner.js';
+import { offerPurchaseCost } from '../core/event-plan.js';
 import { createItemPicker } from '../ui/item-picker.js';
 import { packageDisplayName, itemDisplayName, itemDisplayText } from '../ui/labels.js';
 import { escapeHtml, banknotesAmount, banknotesHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
@@ -32,14 +37,20 @@ let recompute = null;
 let baseItems = {};
 // Top item of a crafting chain (Tempered Steel) -> its base (Cloth), whose units are counted.
 let chainBaseOf = new Map();
+// "<shopId>:<offerKey>" -> `offerPurchaseCost` of the offer in the current valuation (`{ failed: true }`: not worked out).
+let offerPrices = new Map();
+// Counts the page's draws, so working out the offer prices stops once the item or the valuation has changed.
+let generation = 0;
+// How long working out the exact offer prices of one item may take in all (each is a solve of the weekly plan).
+const REFINE_MS = 12000;
 
 const iconHtml = itemIconSlot;
 
 /**
  * Every purchase on sale this week that gives the target item, at any depth: packages (packs of
  * ticked events and seasonal passes on sale) and exchange-shop offers (VIP Shop, shops of ticked
- * events). Per source: units per purchase, its price in Banknotes (shop offers at what their coins cost, see
- * currencyCost in catalog.js; coins no pack sells at their worth in the plan),
+ * events). Per source: units per purchase, its price in Banknotes (shop offers: what one purchase costs the plan, see
+ * `offerPurchaseCost`; `offerPrices` has it once worked out, until then the coins at their worth in the plan),
  * Banknotes per unit, the item's share of the source's worth and the source's ratio (its whole worth
  * ÷ price, as on the Ranking).
  */
@@ -55,8 +66,7 @@ function buildSources(targetId) {
     const settings = getSettings();
     const activeEventIds = new Set(settings.activeEvents);
     const plannedPackages = new Set(valuation.plan.purchases.map((p) => p.id));
-    const plannedOffers = new Set(valuation.plan.exchanges.map((e) => `${e.shopId}:${e.offerKey}`));
-    // Items in a bundle that lead to the target only nested (for the grey "via" line).
+    const plannedOffers = new Set(valuation.plan.exchanges.map((e) => `${e.shopId}:${e.offerKey}`)); // Items in a bundle that lead to the target only nested (for the grey "via" line).
     const viaOf = (contents, choice) =>
         [
             ...new Set([
@@ -66,7 +76,9 @@ function buildSources(targetId) {
         ].filter((id) => id !== targetId && id !== countId && counter.ofItem(id).units > 0);
     const sources = [];
     const add = (source) => {
-        const perUnit = source.price > 0 && source.units > 0 ? source.price / source.units : null;
+        // A price of 0 counts where the plan says so (an offer whose last purchase only uses spare coins), not for packs.
+        const priceKnown = source.priceKnown ?? source.price > 0;
+        const perUnit = priceKnown && source.units > 0 ? source.price / source.units : null;
         // Share of the source's worth that is this item (capped: picks/expected amounts can round past 100 %).
         const share =
             unitWorth !== null && source.worth > 0 ? Math.min(1, (source.units * unitWorth) / source.worth) : null;
@@ -109,29 +121,30 @@ function buildSources(targetId) {
                 continue;
             }
             const b = valuation.bundle({ contains: { [offer.item_id]: offer.quantity } }, 0);
-            const cost = currencyCost(data.packages, shop.currency_item_id, offer.currency_cost, {
-                activeEventIds,
-                seasonalPasses: settings.seasonalPasses,
-            });
-            const price = cost ? cost.banknotes : coinWorth > 0 ? offer.currency_cost * coinWorth : 0;
+            const exact = offerPrices.get(`${shopId}:${offerKey}`);
+            // Until the plan has been solved for it, the coins at what a coin buys in the plan.
+            const estimate = coinWorth > 0 ? offer.currency_cost * coinWorth : 0;
+            const price = exact?.outOfReach ? 0 : (exact?.banknotes ?? estimate);
             // How the Banknote price came about, as an info icon next to the coin price.
-            const priceInfo =
-                price > 0
-                    ? infoIconHtml(
-                          cost
-                              ? t('sources.coinCost', {
-                                    amount: formatThousands(price, 0),
-                                    packs: cost.packIds
-                                        .map((id) => packageDisplayName(data.packages[id], locale))
-                                        .join(', '),
-                                })
-                              : t('sources.coinWorth', { amount: formatThousands(price, 0) }),
-                      )
-                    : '';
+            let priceInfo = '';
+            if (exact?.outOfReach) {
+                priceInfo = infoIconHtml(t('sources.offerOutOfReach'));
+            } else if (exact?.banknotes !== undefined) {
+                priceInfo = infoIconHtml(
+                    t(exact.last ? 'sources.offerCostLast' : 'sources.offerCost', {
+                        amount: formatThousands(price, 0),
+                    }),
+                );
+            } else if (estimate > 0) {
+                priceInfo = infoIconHtml(t('sources.offerEstimate', { amount: formatThousands(price, 0) }));
+            }
             add({
                 worth: b.worth,
                 incomplete: b.incomplete,
                 key: `offer:${shopId}:${offerKey}`,
+                priceKnown: exact?.outOfReach ? false : exact?.banknotes !== undefined || estimate > 0,
+                // What working out the exact price needs (`refineOfferPrices`), while it isn't known.
+                refine: exact ? null : { shopId, shop, offerKey, offer, worth: b.worth },
                 iconId: offer.item_id,
                 // Shop and item only: the amount is in the Gives column.
                 nameHtml: `${escapeHtml(localizedName(shop.name, locale))} - ${itemDisplayName(data.items, offer.item_id, locale)}`,
@@ -145,8 +158,53 @@ function buildSources(targetId) {
         }
     }
 
-    // Cheapest per unit first; sources without a Banknote price (coins of no worth) last.
+    // Cheapest per unit first; sources without a Banknote price (coins of no worth, offers out of reach) last.
     return sources.sort((a, b) => (a.perUnit ?? Infinity) - (b.perUnit ?? Infinity));
+}
+
+/**
+ * Works out the exact price of the shop offers in `sources` that don't have one yet (`offerPurchaseCost`), one solve of
+ * the weekly plan per timer tick so the page stays usable, and draws the table again after each. Stops when the item
+ * or the valuation changes (`run` is no longer `generation`) or `REFINE_MS` are used up (the rest keeps its
+ * estimate until the next full draw).
+ */
+function refineOfferPrices(sources, run) {
+    const pending = sources.filter((source) => source.refine);
+    const deadline = Date.now() + REFINE_MS;
+    const step = () => {
+        const seconds = (deadline - Date.now()) / 1000;
+        const next = pending.shift()?.refine;
+        if (run !== generation || !next || seconds <= 0) {
+            return;
+        }
+        const { shopId, shop, offerKey, offer, worth } = next;
+        const lockedOffers = getSettings().lockedOffers;
+        let price = null;
+        try {
+            price = offerPurchaseCost({
+                plan: valuation.plan,
+                shopId,
+                offerKey,
+                offerWorth: worth,
+                capacity: offerWeeklyCapacity(offer, shop, { activeEventIds: new Set(getSettings().activeEvents) }),
+                lockedOffers,
+                solve: (locks) =>
+                    solveWeeklyPlan(
+                        valuation.highs,
+                        data,
+                        planOptions(data, getSettings(), { lockedOffers: locks, timeLimit: seconds }),
+                    ),
+            });
+        } catch {
+            // Too slow: the offer keeps its estimate.
+        }
+        offerPrices.set(`${shopId}:${offerKey}`, price ?? { failed: true });
+        if (run === generation) {
+            render({ refine: false });
+            setTimeout(step);
+        }
+    };
+    setTimeout(step);
 }
 
 /** "31 %" share of a source's worth that is the selected item ("<1 %" for traces). */
@@ -157,7 +215,11 @@ function shareHtml(share) {
     return share > 0 && share < 0.01 ? '&lt;1&nbsp;%' : formatPercent(share, 0);
 }
 
-function render() {
+/** Draws the table; `refine`: also start working out the exact prices of its shop offers (a draw of its own doesn't). */
+function render({ refine = true } = {}) {
+    if (refine) {
+        generation++;
+    }
     const targetId = itemPicker.getValue();
     sourcesPrompt.hidden = Boolean(targetId);
     if (!targetId || !valuation) {
@@ -184,7 +246,7 @@ function render() {
     const maxRatio = ratioScale(sources.map((s) => s.ratio));
     const maxItemRatio = ratioScale(sources.map((s) => s.itemRatio));
     // Bulk items cost tiny fractions of a Banknote each: price per 1,000 / 1,000,000 / ... units instead.
-    const cheapest = Math.min(...sources.map((s) => s.perUnit).filter(Number.isFinite));
+    const cheapest = Math.min(...sources.map((s) => s.perUnit).filter((perUnit) => perUnit > 0));
     let unitScale = 1;
     while (cheapest * unitScale < 1 && unitScale < 1e12) {
         unitScale *= 1000;
@@ -238,6 +300,9 @@ function render() {
     sourcesTable.innerHTML = gridTable(headerRow, rows.join(''));
     hydrateItemIcons(sourcesTable);
     enableInfoTooltips(sourcesTable);
+    if (refine) {
+        refineOfferPrices(sources, generation);
+    }
 }
 
 async function init(loaded) {
@@ -253,6 +318,7 @@ async function init(loaded) {
         fields: ['budget', 'events', 'passes'],
         render: (next) => {
             valuation = next;
+            offerPrices = new Map();
             render();
         },
     }));

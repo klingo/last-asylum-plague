@@ -1,7 +1,8 @@
 /**
  * What the Event Shops page reads from the data and the weekly plan about one event: which event (and its shop and
  * mine) a tab stands for, whether the shop's currency also comes from outside the packs, every item the plan
- * gets from the event and the progress points it earns in the shop.
+ * gets from the event and the progress points it earns in the shop; and what one purchase of a shop offer costs the
+ * plan (`offerPurchaseCost`, Item Sources).
  *
  * Pure module (no DOM/i18n), shared with the tests.
  */
@@ -162,6 +163,37 @@ function extraToLeaveAlone({ eventId, baseline, current, extra, maxExtra = Infin
     return { taken, needed: Math.min(needed + gap, maxExtra) };
 }
 
+/**
+ * What one purchase of a shop offer costs in Banknotes: the worth the weekly plan gives up elsewhere for it (the coins
+ * of other offers, more or fewer packs, bonus tiers, unlocks), found by solving the plan again with only this offer's
+ * lock changed:
+ * - the plan doesn't buy it: the price of one more purchase (`solve` with it fixed at 1);
+ * - the plan buys it: the price of its last purchase (`solve` with it fixed one lower), what the plan would get back
+ *   without it, so a bought offer's price stays below its worth.
+ * `plan` is the weekly plan (`lockedOffers` the locks it was solved with), `offerWorth` the Banknote worth of one
+ * purchase's item, `capacity` the offer's purchases per week and `solve(lockedOffers)` the plan solved again with those
+ * locks (it may throw, e.g. out of time).
+ * Returns `{ banknotes, last }` (`last`: the price of the last purchase the plan makes), `{ outOfReach: true }` if
+ * the spend can't fit one more purchase, or null if the plan has no Banknote rate to price in.
+ */
+function offerPurchaseCost({ plan, shopId, offerKey, offerWorth, capacity, lockedOffers, solve }) {
+    if (!(plan.rate > 0)) {
+        return null;
+    }
+    const bought = Math.round(plan.exchanges.find((x) => x.shopId === shopId && x.offerKey === offerKey)?.count ?? 0);
+    const last = bought > 0;
+    if (!last && !(capacity > 0)) {
+        return { outOfReach: true };
+    }
+    const next = solve(withLock(lockedOffers, shopId, offerKey, last ? bought - 1 : 1));
+    if (!last && next.lockShortfalls.some((shortfall) => shortfall.key === `${shopId}:${offerKey}`)) {
+        return { outOfReach: true };
+    }
+    // What the plan loses by the change (the plan is the best one, so never below 0 but for rounding).
+    const loss = (plan.totalPoints - next.totalPoints) / plan.rate;
+    return { banknotes: Math.max(0, last ? offerWorth - loss : offerWorth + loss), last };
+}
+
 /** The lock keys that count: those of a shop that exists and is either without event or of an event on. */
 function activeLocks(lockedOffers, shops, activeEvents) {
     return Object.keys(lockedOffers || {}).filter((key) => {
@@ -205,6 +237,7 @@ export {
     extraToLeaveAlone,
     hasOutsideCurrency,
     lockSpendGap,
+    offerPurchaseCost,
     outsideCurrencyId,
     shopProgress,
     withLock,

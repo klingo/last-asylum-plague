@@ -24,7 +24,9 @@ its contents without a common value scale. The tool uses one:
   WebAssembly): the best purchases for your weekly Banknote spend within all purchase limits, passes and the events
   you tick. Worth = points ÷ what your last Banknote buys; diamonds and coins at what one more unit could still buy
   this week (at most what their best offer with room left gives, 0 once the shops are exhausted; a shop's bonus tiers
-  don't raise it). A ratio of 1.0 or more = worth buying at your weekly spend.
+  don't raise it). A ratio of 1.0 or more = worth buying at your weekly spend. A coin's worth is a marginal value; what
+  a whole shop offer costs is found by solving the plan again with one more purchase of it (Item Sources), which
+  respects every pack limit, bonus tier and unlock at once.
 
 ## Schedule and forecasts
 

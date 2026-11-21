@@ -5,6 +5,7 @@ import {
     eventItemTotals,
     eventSelection,
     hasOutsideCurrency,
+    offerPurchaseCost,
     outsideCurrencyId,
     shopProgress,
     withLock,
@@ -170,4 +171,63 @@ test('a dug mine adds its loot, wishes and progress rewards; the pickaxes are le
         ['gem', 3.5],
         ['hat', 2],
     ]);
+});
+
+// A stand-in weekly plan: `totalPoints` at `rate` points per Banknote, buying `count` of one offer.
+const costPlan = (count) => ({
+    rate: 2,
+    totalPoints: 1000,
+    exchanges: count ? [{ shopId: 'bazaar_shop', offerKey: 'gem', count }] : [],
+});
+const costOf = (plan, nextPoints, extra = {}) => {
+    const seen = [];
+    const result = offerPurchaseCost({
+        plan,
+        shopId: 'bazaar_shop',
+        offerKey: 'gem',
+        offerWorth: 300,
+        capacity: 5,
+        lockedOffers: { 'vip_shop:other': 2 },
+        solve: (locks) => {
+            seen.push(locks);
+            return { totalPoints: nextPoints, lockShortfalls: [], ...extra };
+        },
+    });
+    return { result, seen };
+};
+
+test('what an offer not bought yet costs: its worth plus what the plan loses to fit one more', () => {
+    // The plan loses 100 points = 50 Banknotes by buying one more.
+    const { result, seen } = costOf(costPlan(0), 900);
+    assert.deepEqual(result, { banknotes: 350, last: false });
+    assert.deepEqual(seen, [{ 'vip_shop:other': 2, 'bazaar_shop:gem': 1 }], 'its own lock changes, the others stay');
+});
+
+test('what a bought offer costs: its worth minus what the plan loses without its last purchase', () => {
+    const { result, seen } = costOf(costPlan(3), 800);
+    assert.deepEqual(result, { banknotes: 200, last: true });
+    assert.deepEqual(seen, [{ 'vip_shop:other': 2, 'bazaar_shop:gem': 2 }], 'one lower than the plan buys');
+    assert.equal(costOf(costPlan(1), 100).seen[0]['bazaar_shop:gem'], 0);
+    assert.equal(costOf(costPlan(3), 0).result.banknotes, 0, 'never below 0');
+});
+
+test('an offer the spend can not fit one more of, or that has no room, is out of reach', () => {
+    const short = { lockShortfalls: [{ key: 'bazaar_shop:gem', wanted: 1, got: 0 }] };
+    assert.deepEqual(costOf(costPlan(0), 900, short).result, { outOfReach: true });
+    const other = { lockShortfalls: [{ key: 'vip_shop:other', wanted: 2, got: 1 }] };
+    assert.equal(costOf(costPlan(0), 900, other).result.banknotes, 350, 'another lock falling short is not this one');
+    const full = offerPurchaseCost({
+        ...{},
+        plan: costPlan(0),
+        shopId: 'bazaar_shop',
+        offerKey: 'gem',
+        offerWorth: 1,
+        capacity: 0,
+        solve: () => assert.fail('no solve'),
+    });
+    assert.deepEqual(full, { outOfReach: true });
+});
+
+test('a plan without a Banknote rate has no offer prices', () => {
+    assert.equal(costOf({ ...costPlan(0), rate: NaN }, 900).result, null);
 });

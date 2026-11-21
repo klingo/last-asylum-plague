@@ -118,7 +118,10 @@ deleted after 180 days without use; the button stays hidden until the build has 
   spend the fixed offers take from your other packs, and how much extra for the event would give those back.
 - **Item Sources** (`sources.html`) — pick one item: every pack and shop offer on sale this week that gives it,
   nested at any depth (e.g. SR Resource Supplies → Herbs), ranked by Banknotes per unit, with how much each gives and
-  an item ratio (worth of the item alone ÷ price).
+  an item ratio (worth of the item alone ÷ price). A shop offer costs what one purchase takes from your weekly plan
+  (`offerPurchaseCost`): the plan is solved again with one more purchase of it, or one less if it already buys it, and
+  the worth given up (or gained) elsewhere is the price. That is one solve per offer, worked out after the page is
+  drawn; until then an offer shows its coins at what a coin buys in your plan.
 - **Item Priorities** (`items.html`) — search every item and set its priority; shows its worth at your weekly spend.
   Items you can't obtain, only see (the gear sets' MR pieces), aren't listed.
 - **Best Pick** (`choices.html`) — the options of a choice chest, a package with options, or a group of
