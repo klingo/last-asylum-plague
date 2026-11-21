@@ -30,11 +30,11 @@
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "ajv": "^8.20.0",
-        "eslint": "^10.14.0",
+        "eslint": "^10.15.0",
         "globals": "^17.14.0",
         "husky": "^9.1.7",
-        "lint-staged": "^17.6.0",
-        "prettier": "3.10.0",
+        "lint-staged": "^17.6.1",
+        "prettier": "3.10.1",
         "vite": "^8.3.8"
     },
     "overrides": {
