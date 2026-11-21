@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "last_updated": "2026-11-20"
+        "last_updated": "2026-11-21"
     },
     "events": {
         "alliance_duel": {
@@ -1069,29 +1069,24 @@
                     "time": "00:00"
                 },
                 {
-                    "phase": "preparation",
+                    "phase": "contest",
                     "weekday": "saturday",
-                    "time": "00:00"
+                    "time": "00:10"
                 },
                 {
-                    "phase": "contest",
+                    "phase": "preparation",
                     "weekday": "saturday",
                     "time": "00:40"
                 },
                 {
-                    "phase": "preparation",
-                    "weekday": "saturday",
-                    "time": "01:10"
-                },
-                {
                     "phase": "contest",
                     "weekday": "saturday",
-                    "time": "13:00"
+                    "time": "12:30"
                 },
                 {
                     "phase": "results",
                     "weekday": "saturday",
-                    "time": "13:30"
+                    "time": "13:00"
                 }
             ]
         }

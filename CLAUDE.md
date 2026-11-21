@@ -165,7 +165,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   break week (a `null` in `weeks`): `phases` (id, name) and a `timeline` of `{ phase, weekday, time }` (`time` is HH:MM
   server time = after the reset), the first entry is its start (Tuesday) and each phase lasts until the next entry,
   the last to the end of the break week (a `phase: null` entry ends it early). A phase may come up more than once
-  (Preparation before and between the two Saturday contests). `curseRuns` / `curseStatus` in `core/kingdom-war.js`;
+  (Contest on Saturday at 00:10 and 12:30, Preparation only between the two). `curseRuns` / `curseStatus` in `core/kingdom-war.js`;
   the Calendar shows it as a row of its own, Today its phase on now and the next. Nothing is recorded for it either.
 - Spend reward tracks share one list of Banknote packs and the points they count (`spend_reward_conversions`);
   `normalizePackData` gives it to every track without its own `conversions` (`[]` = 1 point per Banknote).

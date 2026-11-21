@@ -30,11 +30,10 @@ const war = {
         ],
         timeline: [
             { phase: 'preview', weekday: 'tuesday', time: '00:00' },
-            { phase: 'preparation', weekday: 'saturday', time: '00:00' },
-            { phase: 'contest', weekday: 'saturday', time: '00:40' },
-            { phase: 'preparation', weekday: 'saturday', time: '01:10' },
-            { phase: 'contest', weekday: 'saturday', time: '13:00' },
-            { phase: 'results', weekday: 'saturday', time: '13:30' },
+            { phase: 'contest', weekday: 'saturday', time: '00:10' },
+            { phase: 'preparation', weekday: 'saturday', time: '00:40' },
+            { phase: 'contest', weekday: 'saturday', time: '12:30' },
+            { phase: 'results', weekday: 'saturday', time: '13:00' },
         ],
     },
 };
@@ -109,9 +108,9 @@ test('scramble: a slot the window cuts is included, and the status says what is 
     assert.equal(after.next.start, Date.UTC(2026, 10, 28, 14));
 });
 
-// The reset is 02:00 UTC = 00:00 server time, so Saturday 00:40 server time is 02:40 UTC.
+// The reset is 02:00 UTC = 00:00 server time, so Saturday 00:10 server time is 02:10 UTC.
 const MINUTE = 60000;
-const contestStart = Date.UTC(2026, 10, 21, 2, 40);
+const contestStart = Date.UTC(2026, 10, 21, 2, 10);
 
 test('curse: one run in the break week, from Tuesday to the end of Sunday, cut into the timeline phases', () => {
     const runs = curseRuns(war, Date.UTC(2026, 10, 9), Date.UTC(2026, 11, 7));
@@ -122,8 +121,7 @@ test('curse: one run in the break week, from Tuesday to the end of Sunday, cut i
     assert.deepEqual(
         run.segments.map(({ phase, start, end }) => [phase.id, start - contestStart, end - contestStart]),
         [
-            ['preview', -(4 * 24 * 60 + 40) * MINUTE, -40 * MINUTE],
-            ['preparation', -40 * MINUTE, 0],
+            ['preview', -(4 * 24 * 60 + 10) * MINUTE, 0],
             ['contest', 0, 30 * MINUTE],
             ['preparation', 30 * MINUTE, 12 * 60 * MINUTE + 20 * MINUTE],
             ['contest', 12 * 60 * MINUTE + 20 * MINUTE, 12 * 60 * MINUTE + 50 * MINUTE],
@@ -152,16 +150,16 @@ test('curse runs: a null entry ends the event early', () => {
         },
     };
     const [run] = curseRuns(early, Date.UTC(2026, 10, 16), Date.UTC(2026, 10, 24));
-    assert.equal(run.segments.length, 6);
+    assert.equal(run.segments.length, 5);
     assert.equal(run.end, dayStartMs(day('2026-11-22')) + 12 * HOUR);
-    assert.equal(run.segments[5].end, run.end, 'Results end where the null entry starts');
+    assert.equal(run.segments[4].end, run.end, 'Results end where the null entry starts');
 });
 
 test('curse status: the phase on now and the next one, also across the weeks of war', () => {
     const preview = curseStatus(war, Date.UTC(2026, 10, 17, 12));
     assert.equal(preview.current.phase.id, 'preview');
-    assert.equal(preview.next.phase.id, 'preparation');
-    assert.equal(preview.next.start, dayStartMs(day('2026-11-21')));
+    assert.equal(preview.next.phase.id, 'contest');
+    assert.equal(preview.next.start, contestStart);
 
     const contest = curseStatus(war, contestStart + 10 * MINUTE);
     assert.equal(contest.current.phase.id, 'contest');
