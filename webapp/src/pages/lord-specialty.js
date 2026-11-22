@@ -377,6 +377,32 @@ function scrollTreeToBottom() {
     tree.scrollTop = tree.scrollHeight;
 }
 
+/**
+ * Side by side, the tree takes the viewport height the rest of the page leaves (the detail card's height at least), so
+ * the page itself doesn't scroll while the tree can shrink, down to one row. Stacked (phones) the CSS fallback applies.
+ */
+const sideBySide = window.matchMedia('(min-width: 961px)');
+
+function fitTree() {
+    if (!sideBySide.matches) {
+        tree.style.removeProperty('--lord-tree-max');
+        return;
+    }
+    const layout = tree.closest('.lord-layout');
+    const boardExtra = tree.parentElement.offsetHeight - tree.offsetHeight;
+    const available = document.documentElement.clientHeight - (document.body.offsetHeight - layout.offsetHeight);
+    const row = tree.querySelector('.lord-row');
+    const oneRow = row ? row.offsetHeight + 12 : 100;
+    const max = `${Math.max(oneRow, Math.floor(Math.max(available, detail.offsetHeight) - boardExtra))}px`;
+    if (tree.style.getPropertyValue('--lord-tree-max') === max) {
+        return;
+    }
+    // Keep the distance of the shown part to the tree's bottom, which is where it starts.
+    const fromBottom = tree.scrollHeight - tree.scrollTop - tree.clientHeight;
+    tree.style.setProperty('--lord-tree-max', max);
+    tree.scrollTop = tree.scrollHeight - tree.clientHeight - fromBottom;
+}
+
 function cancelPress() {
     clearTimeout(press?.timer);
     press = null;
@@ -536,7 +562,13 @@ function init() {
     extraInput.value = setup.extra;
     wireEvents();
     renderAll();
+    fitTree();
     scrollTreeToBottom();
+    // The page's height changes with the window, the open "How it works" and the detail card.
+    const observer = new ResizeObserver(fitTree);
+    observer.observe(document.body);
+    observer.observe(detail);
+    window.addEventListener('resize', fitTree);
 }
 
 startPage('lord-specialty', { init, onLocaleChange: renderAll, withData: false });

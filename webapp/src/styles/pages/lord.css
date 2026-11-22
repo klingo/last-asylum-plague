@@ -99,9 +99,10 @@
     align-items: start;
 }
 
-/* The tree scrolls and starts at its bottom (Lv 1), as in the game. */
+/* The tree scrolls and starts at its bottom (Lv 1), as in the game. Side by side, the page script sets --lord-tree-max
+   to the height left in the window, so the page doesn't scroll as well; stacked, it is 62vh. */
 .lord-tree {
-    max-height: min(760px, calc(100vh - 240px));
+    max-height: var(--lord-tree-max, 62vh);
     padding: 6px 0;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -485,10 +486,6 @@
 @media (max-width: 960px) {
     .lord-layout {
         grid-template-columns: minmax(0, 1fr);
-    }
-
-    .lord-tree {
-        max-height: 62vh;
     }
 
     .lord-detail {
