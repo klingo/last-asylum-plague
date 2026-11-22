@@ -63,6 +63,7 @@ const detail = document.getElementById('lord-detail');
 const bar = document.getElementById('lord-bar');
 const seasonSwitch = document.getElementById('lord-season');
 const seasonLabel = document.getElementById('lord-season-label');
+const experimental = document.getElementById('lord-experimental');
 const levelInput = document.getElementById('lord-level');
 const levelValue = document.getElementById('lord-level-value');
 const extraInput = document.getElementById('lord-extra');
@@ -227,7 +228,9 @@ function renderControls() {
     intro.textContent = localizedName(currentTree().description);
     seasonSwitch.checked = frozen;
     seasonSwitch.closest('label').hidden = !season;
-    seasonLabel.textContent = season ? localizedName(season.name) : '';
+    seasonLabel.textContent = season ? t('lord.seasonSwitch', { name: localizedName(season.name) }) : '';
+    // The next season isn't confirmed yet: its switch and everything it shows says so.
+    experimental.hidden = !frozen;
 }
 
 /** A talent's icon in a hexagon (active) or a rounded square (passive), with its points below it. */

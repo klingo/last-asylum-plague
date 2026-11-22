@@ -195,7 +195,7 @@ deleted after 180 days without use; the button stays hidden until the build has 
   extra Specialty Skill Points (saved in the browser): specialty skills above your level are grey and take no points
   (points they already have stay, with a red count, so lowering the level doesn't lose the build). The bar shows what
   the build requires ("Legion Commander: Lv.31", extra points only beyond the season's highest level), red while you
-  can't have it yet, and your Specialty Points left. The next season's switch (Season 02: Frozen Era, remembered in the
+  can't have it yet, and your Specialty Points left. The next season's switch (Season 02: Frozen Era, marked experimental, with a notice while it's on; remembered in the
   browser) raises the level limit from 40 to 60, enables the lords' specialty skills up to Lv.60 and adds a third tab with
   the season's own specialty skills; their points aren't your Specialty Points (the bar shows what they spend and the
   level they need), and switching it off removes the points above Lv.40. A specialty skill may need another at max level

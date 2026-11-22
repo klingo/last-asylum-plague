@@ -92,6 +92,25 @@
     font-size: 0.85rem;
 }
 
+/* "Experimental": the next season's data isn't confirmed yet (a badge on its switch, a notice while it's on). */
+.lord-badge {
+    padding: 1px 8px;
+    border: 1px solid var(--warn);
+    border-radius: 999px;
+    color: var(--warn);
+    font-size: 0.75rem;
+}
+
+.lord-experimental {
+    max-width: 900px;
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    border: 1px solid var(--warn);
+    border-radius: var(--radius);
+    color: var(--warn);
+    font-size: 0.85rem;
+}
+
 /* The next season's tab has no text of its own. */
 .lord-intro:empty {
     margin: 0 0 16px;
