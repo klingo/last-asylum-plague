@@ -375,7 +375,6 @@
                         "en": "One More Serving",
                         "de": ""
                     },
-                    "icon": "one_more_serving.png",
                     "unlock_level": 55,
                     "kind": "passive",
                     "max_level": 5,
@@ -391,7 +390,6 @@
                         "en": "Enhanced Help",
                         "de": ""
                     },
-                    "icon": "enhanced_help.png",
                     "unlock_level": 55,
                     "kind": "passive",
                     "max_level": 5,
@@ -407,7 +405,6 @@
                         "en": "Efficient Gathering",
                         "de": "Effizientes Sammeln"
                     },
-                    "icon": "efficient_gathering.png",
                     "unlock_level": 60,
                     "kind": "passive",
                     "max_level": 5,
@@ -423,7 +420,6 @@
                         "en": "First Aid Expert",
                         "de": ""
                     },
-                    "icon": "first_aid_expert.png",
                     "unlock_level": 60,
                     "kind": "passive",
                     "max_level": 5,
@@ -805,7 +801,6 @@
                         "en": "Super Frenzy",
                         "de": ""
                     },
-                    "icon": "super_frenzy.png",
                     "unlock_level": 55,
                     "kind": "passive",
                     "max_level": 5,
@@ -822,7 +817,6 @@
                         "en": "Rally Vanguard",
                         "de": ""
                     },
-                    "icon": "rally_vanguard.png",
                     "unlock_level": 55,
                     "kind": "passive",
                     "max_level": 5,
@@ -838,7 +832,6 @@
                         "en": "Riot Squad",
                         "de": ""
                     },
-                    "icon": "riot_squad.png",
                     "unlock_level": 60,
                     "kind": "passive",
                     "max_level": 5,
@@ -854,7 +847,6 @@
                         "en": "Efficient Training",
                         "de": ""
                     },
-                    "icon": "efficient_training.png",
                     "unlock_level": 60,
                     "kind": "passive",
                     "max_level": 5,
