@@ -6,7 +6,7 @@
         "alliance_duel": {
             "name": {
                 "en": "Alliance Duel",
-                "de": ""
+                "de": "Allianz-Duell"
             },
             "category": "ingame_event",
             "image": "alliance_duel"
@@ -158,7 +158,7 @@
         "origin_of_the_curse": {
             "name": {
                 "en": "Origin of the Curse",
-                "de": ""
+                "de": "Ursprung des Fluchs"
             },
             "category": "ingame_event",
             "image": "origin_of_the_curse"
@@ -529,7 +529,7 @@
                         {
                             "text": {
                                 "en": "Use 660 Antitoxin",
-                                "de": ""
+                                "de": "Verwende 660 Gegengift"
                             },
                             "points": 2.5,
                             "item_id": "antitoxin"
@@ -537,14 +537,14 @@
                         {
                             "text": {
                                 "en": "Complete Falcon Quest once",
-                                "de": ""
+                                "de": "Schließe die Falken-Quest einmal ab"
                             },
                             "points": 30000
                         },
                         {
                             "text": {
                                 "en": "Consume 1 Raven Essence",
-                                "de": ""
+                                "de": "Verbrauche 1 Rabenessenz"
                             },
                             "points": 6250,
                             "item_id": "raven_essence"
@@ -568,7 +568,7 @@
                         {
                             "text": {
                                 "en": "Gather 100 Grain",
-                                "de": ""
+                                "de": "Sammle 100 Getreide"
                             },
                             "points": 12.5,
                             "item_id": "grain"
@@ -576,7 +576,7 @@
                         {
                             "text": {
                                 "en": "Gather 100 Timber",
-                                "de": ""
+                                "de": "Sammle 100 Holz"
                             },
                             "points": 12.5,
                             "item_id": "timber"
@@ -584,7 +584,7 @@
                         {
                             "text": {
                                 "en": "Gather 60 Herbs",
-                                "de": ""
+                                "de": "Sammle 60 Kräuter"
                             },
                             "points": 12.5,
                             "item_id": "herbs"
@@ -634,7 +634,7 @@
                         {
                             "text": {
                                 "en": "Execute 1 UR Covert Operation",
-                                "de": ""
+                                "de": "Führe 1 UR Verdeckte Operation aus"
                             },
                             "points": 225000,
                             "item_id": "covert_order"
@@ -642,7 +642,7 @@
                         {
                             "text": {
                                 "en": "Dispatch a UR Caravan",
-                                "de": ""
+                                "de": "Entsende eine UR-Karawane"
                             },
                             "points": 300000,
                             "item_id": "trade_agreement"
@@ -650,7 +650,7 @@
                         {
                             "text": {
                                 "en": "Recruit survivor once",
-                                "de": ""
+                                "de": "Rekrutiere einmal einen Überlebenden"
                             },
                             "points": 4500,
                             "item_id": "survivor_recruit_ticket"
@@ -752,7 +752,7 @@
                         {
                             "text": {
                                 "en": "Complete Falcon Quest once",
-                                "de": ""
+                                "de": "Schließe die Falken-Quest einmal ab"
                             },
                             "points": 30000
                         }
@@ -777,7 +777,7 @@
                         {
                             "text": {
                                 "en": "Consume 1 Hero Awaken Shard or Awaken Omni Shard",
-                                "de": ""
+                                "de": "1 Held Erwachen Splitter oder Erwachen Omni-Splitter verbrauchen"
                             },
                             "points": 25000,
                             "item_id": "hero_awaken_shard"
@@ -793,7 +793,7 @@
                         {
                             "text": {
                                 "en": "Use 660 Antitoxin",
-                                "de": ""
+                                "de": "Verwende 660 Gegengift"
                             },
                             "points": 2.5,
                             "item_id": "antitoxin"
@@ -801,7 +801,7 @@
                         {
                             "text": {
                                 "en": "Consume 1 UR Hero Shard",
-                                "de": ""
+                                "de": "Verbrauche 1 UR-Helden-Splitter"
                             },
                             "points": 25000,
                             "item_id": "ur_hero_shard"
@@ -809,7 +809,7 @@
                         {
                             "text": {
                                 "en": "Consume 1 SSR Hero Shard",
-                                "de": ""
+                                "de": "Verbrauche 1 SSR-Held-Splitter"
                             },
                             "points": 8750,
                             "item_id": "ssr_hero_shard"
@@ -817,7 +817,7 @@
                         {
                             "text": {
                                 "en": "Consume 1 SR Hero Shard",
-                                "de": ""
+                                "de": "Verbrauche 1 SR Held-Splitter"
                             },
                             "points": 2500,
                             "item_id": "sr_hero_shard"
@@ -825,7 +825,7 @@
                         {
                             "text": {
                                 "en": "Use 1 Skill Badge",
-                                "de": ""
+                                "de": "Verwende 1 Fähigkeitsabzeichen"
                             },
                             "points": 25,
                             "item_id": "skill_badge"
@@ -899,7 +899,7 @@
                         {
                             "text": {
                                 "en": "Complete Falcon Quest once",
-                                "de": ""
+                                "de": "Schließe die Falken-Quest einmal ab"
                             },
                             "points": 30000
                         }
@@ -955,14 +955,14 @@
                         {
                             "text": {
                                 "en": "For each Lv.10 soldier defeated",
-                                "de": ""
+                                "de": "Für jeden besiegten Lv.10 Soldaten"
                             },
                             "points": 33
                         },
                         {
                             "text": {
                                 "en": "For each Lv.10 soldier lost",
-                                "de": ""
+                                "de": "Für jeden verlorenen Lv.10 Soldaten"
                             },
                             "points": 27.5
                         },
@@ -977,7 +977,7 @@
                         {
                             "text": {
                                 "en": "Execute 1 UR Covert Operation",
-                                "de": ""
+                                "de": "Führe 1 UR Verdeckte Operation aus"
                             },
                             "points": 225000,
                             "item_id": "covert_order"
@@ -985,7 +985,7 @@
                         {
                             "text": {
                                 "en": "Dispatch a UR Caravan",
-                                "de": ""
+                                "de": "Entsende eine UR-Karawane"
                             },
                             "points": 300000,
                             "item_id": "trade_agreement"

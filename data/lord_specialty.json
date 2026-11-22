@@ -184,7 +184,7 @@
                     "max_level": 3,
                     "description": {
                         "en": "Era monster kills grant +{value}% Specialty EXP",
-                        "de": "zeitalter-Monster-Tötungen gewähren +{value}% Spezialität-EP"
+                        "de": "Zeitalter-Monster-Tötungen gewähren +{value}% Spezialität-EP"
                     },
                     "values": [10, 20, 30]
                 },
@@ -250,7 +250,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "Building resource cost reduced by {value}%",
-                        "de": "Ressourcenkosten für Gebäude um {value}% reduziert."
+                        "de": "Ressourcenkosten für Gebäude um {value}% reduziert"
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -332,7 +332,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "When defending the territory, inflict casualty rate +{value}% on attacking soldiers based on your fallen soldiers' levels",
-                        "de": ""
+                        "de": "Bei der Verteidigung des Gebiets verursache eine Verlustrate von +{value}% bei angreifenden Soldaten basierend auf den Leveln deiner gefallenen Soldaten"
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -405,7 +405,7 @@
                     "id": "efficient_gathering",
                     "name": {
                         "en": "Efficient Gathering",
-                        "de": ""
+                        "de": "Effizientes Sammeln"
                     },
                     "icon": "efficient_gathering.png",
                     "unlock_level": 60,
@@ -651,7 +651,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "Damage +{value}% when participating in or initiating a rally (non-stackable)",
-                        "de": "Schaden +{value}% bei Teilnahme oder Initierung einer Versammlung (nicht-stapelbar)"
+                        "de": "Schaden +{value}% bei Teilnahme oder Initiierung einer Versammlung (nicht stapelbar)"
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -683,7 +683,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "When reinforcing an Alliance Member's territory, attacking soldiers' casualty rate increases by {value}%",
-                        "de": "Beim Verstärken des gebiets eines Allianzmitglieds steigt die Verlustrate der angreifenden Soldaten um {value}%"
+                        "de": "Beim Verstärken des Gebiets eines Allianzmitglieds steigt die Verlustrate der angreifenden Soldaten um {value}%"
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -762,7 +762,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "When launching a rally in World PvP battles, reduces the casualty rate of all squads in the rally by {value}%.",
-                        "de": ""
+                        "de": "Beim Starten einer Versammlung in Welt-PvP-Schlachten wird die Verlustrate aller Truppen in der Versammlung um {value}% reduziert."
                     },
                     "values": [1, 2, 3, 4, 5]
                 },
@@ -871,7 +871,7 @@
         "id": "frozen_era",
         "name": {
             "en": "Frozen Era",
-            "de": ""
+            "de": "Eiszeitalter"
         },
         "max_level": 60,
         "talents": [
@@ -879,7 +879,7 @@
                 "id": "combat_exp_world",
                 "name": {
                     "en": "Combat EXP",
-                    "de": ""
+                    "de": "Kampf-EP"
                 },
                 "unlock_level": 1,
                 "kind": "passive",

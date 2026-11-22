@@ -65,7 +65,7 @@
         "id": "tenacity",
         "name": {
             "en": "Tenacity",
-            "de": ""
+            "de": "Hartnäckigkeit"
         },
         "description": {
             "en": "ATK, HP, and DEF +{stats}%; skill cooldown speed +{cooldown}%.",
@@ -89,28 +89,28 @@
                     "id": "skybreaker_slash",
                     "name": {
                         "en": "Skybreaker Slash",
-                        "de": ""
+                        "de": "Himmelsbrecher-Schnitt"
                     }
                 },
                 "active": {
                     "id": "crimson_bloom",
                     "name": {
                         "en": "Crimson Bloom",
-                        "de": ""
+                        "de": "Rote Blüte"
                     }
                 },
                 "ultimate": {
                     "id": "peerless_blade",
                     "name": {
                         "en": "Peerless Blade",
-                        "de": ""
+                        "de": "Unvergleichliche Klinge"
                     }
                 },
                 "passive": {
                     "id": "war_gods_will",
                     "name": {
                         "en": "War God's Will",
-                        "de": ""
+                        "de": "Wille des Kriegsgottes"
                     }
                 }
             },
@@ -661,11 +661,11 @@
                     "id": "soul_of_ranger",
                     "name": {
                         "en": "[Faction Enhance] Soul of Ranger",
-                        "de": ""
+                        "de": "[Fraktion Verbessern] Seele des Rangers"
                     },
                     "description": {
                         "en": "In battle, increase all allied Ranger Heroes' ATK, HP, and DEF by 8%",
-                        "de": ""
+                        "de": "Im Kampf erhöht sich ANG, LP und VER aller verbündeten Ranger-Helden um 8%"
                     }
                 },
                 {
