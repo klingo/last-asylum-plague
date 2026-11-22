@@ -368,6 +368,70 @@
                         "de": "Wird auf leerem Gelände in diesem Königreich eingesetzt. Einmal ausgelöst, reduziert es die Beständigkeit des Ziels um {value}. Auf max. Level entzündet es das Gebiet. Die Falle hält 24 Std.; bis zu 2 Fallen können gleichzeitig existieren. AZ: 72 Std."
                     },
                     "values": [375, 820, 1300, 1875, 2500]
+                },
+                {
+                    "id": "one_more_serving",
+                    "name": {
+                        "en": "One More Serving",
+                        "de": ""
+                    },
+                    "icon": "one_more_serving.png",
+                    "unlock_level": 55,
+                    "kind": "passive",
+                    "max_level": 5,
+                    "description": {
+                        "en": "Daily quest point chest rewards have a {value}% chance to double.",
+                        "de": ""
+                    },
+                    "values": [5, 10, 15, 20, 25]
+                },
+                {
+                    "id": "enhanced_help",
+                    "name": {
+                        "en": "Enhanced Help",
+                        "de": ""
+                    },
+                    "icon": "enhanced_help.png",
+                    "unlock_level": 55,
+                    "kind": "passive",
+                    "max_level": 5,
+                    "description": {
+                        "en": "Each help received reduces the timer by an additional {value} seconds.",
+                        "de": ""
+                    },
+                    "values": [20, 45, 80, 110, 150]
+                },
+                {
+                    "id": "efficient_gathering",
+                    "name": {
+                        "en": "Efficient Gathering",
+                        "de": ""
+                    },
+                    "icon": "efficient_gathering.png",
+                    "unlock_level": 60,
+                    "kind": "passive",
+                    "max_level": 5,
+                    "description": {
+                        "en": "Gathering speed +{value}%",
+                        "de": ""
+                    },
+                    "values": [5, 10, 15, 20, 25]
+                },
+                {
+                    "id": "first_aid_expert",
+                    "name": {
+                        "en": "First Aid Expert",
+                        "de": ""
+                    },
+                    "icon": "first_aid_expert.png",
+                    "unlock_level": 60,
+                    "kind": "passive",
+                    "max_level": 5,
+                    "description": {
+                        "en": "On defeat, increases the share of soldiers sent to the First Aid Center by {value}%.",
+                        "de": ""
+                    },
+                    "values": [1, 2, 3, 4, 5]
                 }
             ]
         },
@@ -734,8 +798,222 @@
                         "de": "Wird auf leerem Gelände in diesem Königreich eingesetzt. Einmal ausgelöst, sterben {value} Soldaten in der Kaserne des Ziels. Die Falle hält 24 Std.; bis zu 2 Fallen können gleichzeitig existieren. AZ: 72 Std."
                     },
                     "values": [40, 82, 135, 190, 250]
+                },
+                {
+                    "id": "super_frenzy",
+                    "name": {
+                        "en": "Super Frenzy",
+                        "de": ""
+                    },
+                    "icon": "super_frenzy.png",
+                    "unlock_level": 55,
+                    "kind": "passive",
+                    "max_level": 5,
+                    "description": {
+                        "en": "Raises the maximum Battle Frenzy duration by 5 minutes and grants an additional {value}% Hero ATK while active. Requires the Frenzy skill at maximum level.",
+                        "de": ""
+                    },
+                    "values": [1, 2, 3, 4, 5],
+                    "requires": "frenzy"
+                },
+                {
+                    "id": "rally_vanguard",
+                    "name": {
+                        "en": "Rally Vanguard",
+                        "de": ""
+                    },
+                    "icon": "rally_vanguard.png",
+                    "unlock_level": 55,
+                    "kind": "passive",
+                    "max_level": 5,
+                    "description": {
+                        "en": "When starting a rally in World PvP battles, increases enemy deaths by {value}%.",
+                        "de": ""
+                    },
+                    "values": [1, 2, 3, 4, 5]
+                },
+                {
+                    "id": "riot_squad",
+                    "name": {
+                        "en": "Riot Squad",
+                        "de": ""
+                    },
+                    "icon": "riot_squad.png",
+                    "unlock_level": 60,
+                    "kind": "passive",
+                    "max_level": 5,
+                    "description": {
+                        "en": "Damage reduction +{value}%",
+                        "de": ""
+                    },
+                    "values": [1, 2, 3, 4, 5]
+                },
+                {
+                    "id": "efficient_training",
+                    "name": {
+                        "en": "Efficient Training",
+                        "de": ""
+                    },
+                    "icon": "efficient_training.png",
+                    "unlock_level": 60,
+                    "kind": "passive",
+                    "max_level": 5,
+                    "description": {
+                        "en": "Soldier training resource cost -{value}%",
+                        "de": ""
+                    },
+                    "values": [1, 2, 3, 4, 5]
                 }
             ]
         }
+    },
+    "next_season": {
+        "id": "frozen_era",
+        "name": {
+            "en": "Season 02: Frozen Era",
+            "de": ""
+        },
+        "max_level": 60,
+        "talents": [
+            {
+                "id": "combat_exp_world",
+                "name": {
+                    "en": "Combat EXP",
+                    "de": ""
+                },
+                "unlock_level": 1,
+                "kind": "passive",
+                "max_level": 3,
+                "description": {
+                    "en": "Increases Specialty EXP earned from defeating world monsters by {value}%.",
+                    "de": ""
+                },
+                "values": [20, 40, 60]
+            },
+            {
+                "id": "construction_inspiration",
+                "name": {
+                    "en": "Construction Inspiration I",
+                    "de": ""
+                },
+                "unlock_level": 10,
+                "kind": "passive",
+                "max_level": 3,
+                "description": {
+                    "en": "Increases Specialty EXP earned from upgrading era buildings by {value}%.",
+                    "de": ""
+                },
+                "values": [5, 10, 15]
+            },
+            {
+                "id": "double_exchange",
+                "name": {
+                    "en": "Double Exchange",
+                    "de": ""
+                },
+                "unlock_level": 25,
+                "kind": "active",
+                "cooldown_hours": 47.5,
+                "max_level": 3,
+                "description": {
+                    "en": "Exchanges up to {value} era resources at a 1:2 ratio. Cooldown: 47.5 hours.",
+                    "de": ""
+                },
+                "values": [5000, 15000, 25000]
+            },
+            {
+                "id": "incendiary_bomb",
+                "name": {
+                    "en": "Incendiary Bomb",
+                    "de": ""
+                },
+                "unlock_level": 30,
+                "kind": "active",
+                "cooldown_hours": 23.5,
+                "max_level": 3,
+                "description": {
+                    "en": "Targets an empty tile. Raises temperature in a 9×9 area by {value}°C for 5 minutes. Cooldown: 23.5 hours. Effects do not stack.",
+                    "de": ""
+                },
+                "values": [10, 25, 45]
+            },
+            {
+                "id": "specialty_insight",
+                "name": {
+                    "en": "Specialty Insight",
+                    "de": ""
+                },
+                "unlock_level": 35,
+                "kind": "active",
+                "cooldown_hours": 23.5,
+                "max_level": 5,
+                "description": {
+                    "en": "Immediately grants {value}% of the current level's Specialty EXP (capped). Cooldown: 23.5 hours.",
+                    "de": ""
+                },
+                "values": [2, 4, 6, 8, 10]
+            },
+            {
+                "id": "blazing_overload",
+                "name": {
+                    "en": "Blazing Overload",
+                    "de": ""
+                },
+                "unlock_level": 40,
+                "kind": "passive",
+                "max_level": 3,
+                "description": {
+                    "en": "Blazing Furnace overload effect: {value}°C.",
+                    "de": ""
+                },
+                "values": [2, 4, 6]
+            },
+            {
+                "id": "shared_warmth",
+                "name": {
+                    "en": "Shared Warmth",
+                    "de": ""
+                },
+                "unlock_level": 45,
+                "kind": "passive",
+                "max_level": 1,
+                "description": {
+                    "en": "Heating efficiency for allies: 100%.",
+                    "de": ""
+                }
+            },
+            {
+                "id": "ice_bomb",
+                "name": {
+                    "en": "Ice Bomb",
+                    "de": ""
+                },
+                "unlock_level": 55,
+                "kind": "active",
+                "cooldown_hours": 47.5,
+                "max_level": 3,
+                "description": {
+                    "en": "Targets an empty tile. Lowers temperature in a 9×9 area by {value}°C for 10 minutes. Cooldown: 47.5 hours. Effects do not stack.",
+                    "de": ""
+                },
+                "values": [-5, -10, -20]
+            },
+            {
+                "id": "cooling_mine",
+                "name": {
+                    "en": "Cooling Mine",
+                    "de": ""
+                },
+                "unlock_level": 60,
+                "kind": "active",
+                "cooldown_hours": 24,
+                "max_level": 3,
+                "description": {
+                    "en": "Place on an empty tile in the original warzone. When triggered, lowers the target base's temperature by {value}°C and freezes it. Lasts 24 hours. Cooldown: 24 hours.",
+                    "de": ""
+                },
+                "values": [5, 10, 15]
+            }
+        ]
     }
 }

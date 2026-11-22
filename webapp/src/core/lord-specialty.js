@@ -6,8 +6,12 @@
  * - A build is the level of every talent of the lord, in the data's order (0 = not taken).
  * - Every Specialty level gives 1 point, skill books give extra points; every talent level costs 1 point. A talent
  *   unlocks at its `unlock_level`, so a build needs the highest unlock level of its talents, and its points.
- * - Talents above the season's `max_level` (Lv.45/50, "not in the current season") can't take points.
+ * - Talents above the active season's `maxLevel` (40 now, 60 with the next season) don't exist for the build: they
+ *   can't take points, and a build's points in them are dropped.
+ * - A talent may `require` another of its tree at its max level (Super Frenzy needs Frenzy): it takes no points
+ *   before, and a build that has them anyway (the requirement was lowered later) isn't reachable.
  * - A setup is the player's `{ level, extra }`: their Specialty level and their extra points.
+ * - A tree is a lord's or the next season's own: anything with `talents`.
  *
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
@@ -21,19 +25,37 @@ function spentPoints(build) {
     return build.reduce((sum, points) => sum + points, 0);
 }
 
-/** True for a talent no Specialty level of this season unlocks (Lv 45/50 "not in the current season"). */
+/** True for a talent no Specialty level of the active season unlocks (above its `maxLevel`). */
 function isOutOfSeason(talent, maxLevel) {
     return talent.unlock_level > maxLevel;
 }
 
-/** True for a talent the player's Specialty `level` doesn't unlock (yet), or that's not in this season. */
+/** True for a talent the player's Specialty `level` doesn't unlock (yet), or that's not in the active season. */
 function isLocked(talent, level, maxLevel) {
     return talent.unlock_level > Math.min(level, maxLevel);
 }
 
 /**
- * Why talent `index` can't take one more point at the player's `level`: 'outOfSeason', 'locked' (level too low) or
- * 'maxed'; null if it can.
+ * The index of the talent that talent `index` requires while that one isn't at its max level; null when it needs
+ * none or the requirement is met.
+ */
+function unmetRequirement(lord, build, index) {
+    const id = lord.talents[index].requires;
+    if (!id) {
+        return null;
+    }
+    const required = lord.talents.findIndex((talent) => talent.id === id);
+    return required >= 0 && build[required] < lord.talents[required].max_level ? required : null;
+}
+
+/** True when every talent with points has its requirement met (points kept after the requirement was lowered don't). */
+function requirementsMet(lord, build) {
+    return lord.talents.every((talent, index) => !build[index] || unmetRequirement(lord, build, index) === null);
+}
+
+/**
+ * Why talent `index` can't take one more point at the player's `level`: 'outOfSeason', 'locked' (level too low),
+ * 'requires' (its required talent isn't maxed) or 'maxed'; null if it can.
  */
 function raiseBlock(lord, build, index, level, maxLevel) {
     const talent = lord.talents[index];
@@ -42,6 +64,9 @@ function raiseBlock(lord, build, index, level, maxLevel) {
     }
     if (isLocked(talent, level, maxLevel)) {
         return 'locked';
+    }
+    if (unmetRequirement(lord, build, index) !== null) {
+        return 'requires';
     }
     return build[index] >= talent.max_level ? 'maxed' : null;
 }
@@ -73,10 +98,10 @@ function pointsLeft(build, { level, extra }) {
     return level + extra - spentPoints(build);
 }
 
-/** True when the player can have the build: their level unlocks its talents and their points pay for it. */
+/** True when the player can have the build: their level unlocks its talents, their points pay for it, requirements hold. */
 function isReachable(lord, build, setup) {
     const { unlockLevel } = requirements(lord, build, setup.level);
-    return unlockLevel <= setup.level && pointsLeft(build, setup) >= 0;
+    return unlockLevel <= setup.level && pointsLeft(build, setup) >= 0 && requirementsMet(lord, build);
 }
 
 /** The value of a talent at its level 1 … max_level (`values`), or null for talents without values. */
@@ -118,6 +143,8 @@ export {
     spentPoints,
     isOutOfSeason,
     isLocked,
+    unmetRequirement,
+    requirementsMet,
     raiseBlock,
     changeTalent,
     requirements,

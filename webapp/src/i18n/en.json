@@ -267,7 +267,7 @@
                 },
                 "lordSetup": {
                     "name": "Lord setup",
-                    "text": "The level, extra points, lord and builds of the Lord Specialty."
+                    "text": "The level, extra points, season, lord and builds of the Lord Specialty."
                 },
                 "epigraphs": {
                     "name": "Epigraphs",
@@ -1035,22 +1035,21 @@
             "clicksTitle": "Adding points",
             "clicks": "Left click a specialty skill to add a point, right click to remove one; hover it to see what it does. On a phone, tap a specialty skill to add a point (it also shows its details) and hold it to remove one. With the keyboard, Enter adds a point and Delete removes one.",
             "shapesTitle": "Specialty skills",
-            "shapes": "As in the game, the tree starts at Lv.1 at the bottom. Hexagons are active specialty skills (you use them in the game, then they cool down), squares are passive ones. The preview switch shows the specialty skills of later seasons (Lv.45/50), greyed out: they can't take points yet.",
+            "shapes": "As in the game, the tree starts at Lv.1 at the bottom. Hexagons are active specialty skills (you use them in the game, then they cool down), squares are passive ones. The next season's switch raises your level limit to 60, unlocks the specialty skills up to Lv.60 and adds a tab with the season's own specialty skills; switching it off removes the points above Lv.40. The season's own specialty skills don't use your Specialty Points (it isn't known yet how the game counts them), so their bar only shows what they spend. Some specialty skills need another one at max level first (Super Frenzy needs Frenzy): they stay grey until then.",
             "shareTitle": "Sharing",
-            "share": "This browser remembers your lord, each lord's build, your level and your extra points. The page's address holds the lord and every specialty skill's points (not your level or extra points): Copy link copies it, and whoever opens it sees the same build. Opening a link shows its build; it replaces your saved one only once you change something."
+            "share": "This browser remembers your lord, each lord's build, your level, your extra points and the season switch. The page's address holds the tab and every specialty skill's points (not your level or extra points): Copy link copies it, and whoever opens it sees the same build (a link with points of the next season turns its switch on). Opening a link shows its build; it replaces your saved one only once you change something."
         },
         "lords": "Lord",
         "yourLevel": "Your level",
         "levelValue": "Lv.{level}",
         "yourExtra": "Extra Specialty Skill Points",
-        "preview": "Preview later seasons (Lv.45/50)",
         "count": "{points}/{max}",
         "talentLabel": "{name}, {points}/{max}",
         "active": "Active",
         "passive": "Passive",
         "cooldown": "Cooldown {time}",
         "unlocksAt": "Unlocks at Lv.{level}",
-        "outOfSeason": "Not in the current season",
+        "requiresTalent": "Requires {name} at max level",
         "talentLevel": "Lv.{points}/{max}",
         "now": "Now:",
         "next": "Next level:",
@@ -1061,11 +1060,12 @@
         "pickHint": "Hover over a specialty skill to see what it does. Left click adds a point, right click removes one.",
         "requires": "{lord}: {level}",
         "left": "Specialty Points: {left}",
+        "spent": "Specialty Points spent: {spent}",
         "copyLink": "Copy link",
         "copied": "Link copied.",
         "copyFailed": "Couldn't copy: copy the address bar instead.",
         "blocked": {
-            "outOfSeason": "{name} is not in the current season."
+            "requires": "{name} needs {required} at max level first."
         }
     },
     "valuation": {

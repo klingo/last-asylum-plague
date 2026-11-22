@@ -267,7 +267,7 @@
                 },
                 "lordSetup": {
                     "name": "Lord-Setup",
-                    "text": "Die Stufe, zusätzliche Punkte, der Lord und die Builds der Lord-Spezialisierung."
+                    "text": "Die Stufe, zusätzliche Punkte, die Saison, der Lord und die Builds der Lord-Spezialisierung."
                 },
                 "epigraphs": {
                     "name": "Epigraphen",
@@ -1035,22 +1035,21 @@
             "clicksTitle": "Punkte verteilen",
             "clicks": "Linksklick auf eine Spezialisierungsfähigkeit fügt einen Punkt hinzu, Rechtsklick entfernt einen; fahre mit der Maus darüber, um zu sehen, was sie bewirkt. Auf dem Handy fügt Antippen einen Punkt hinzu (und zeigt die Details), Gedrückthalten entfernt einen. Mit der Tastatur fügt Enter einen Punkt hinzu und Entf entfernt einen.",
             "shapesTitle": "Spezialisierungsfähigkeiten",
-            "shapes": "Wie im Spiel beginnt der Baum unten mit Lv.1. Sechsecke sind aktive Spezialisierungsfähigkeiten (du setzt sie im Spiel ein, danach laden sie sich auf), Quadrate sind passive. Der Vorschau-Schalter zeigt die Spezialisierungsfähigkeiten späterer Saisons (Lv.45/50), ausgegraut: Sie können noch keine Punkte bekommen.",
+            "shapes": "Wie im Spiel beginnt der Baum unten mit Lv.1. Sechsecke sind aktive Spezialisierungsfähigkeiten (du setzt sie im Spiel ein, danach laden sie sich auf), Quadrate sind passive. Der Schalter der nächsten Saison hebt dein Stufenlimit auf 60, schaltet die Spezialisierungsfähigkeiten bis Lv.60 frei und fügt einen Reiter mit den eigenen Spezialisierungsfähigkeiten der Saison hinzu; ausgeschaltet entfernt er die Punkte über Lv.40. Diese eigenen Spezialisierungsfähigkeiten brauchen deine Spezialisierungspunkte nicht (wie das Spiel sie zählt, ist noch nicht bekannt), ihre Leiste zeigt nur, was sie kosten. Manche Spezialisierungsfähigkeiten brauchen zuerst eine andere auf max. Level (Super Frenzy braucht Raserei): bis dahin bleiben sie grau.",
             "shareTitle": "Teilen",
-            "share": "Dieser Browser merkt sich deinen Lord, den Build jedes Lords, deine Stufe und deine zusätzlichen Punkte. Die Adresse der Seite enthält den Lord und die Punkte jeder Spezialisierungsfähigkeit (nicht deine Stufe oder deine zusätzlichen Punkte): Link kopieren kopiert sie, und wer sie öffnet, sieht denselben Build. Ein geöffneter Link zeigt seinen Build; er ersetzt deinen gespeicherten erst, wenn du etwas änderst."
+            "share": "Dieser Browser merkt sich deinen Lord, den Build jedes Lords, deine Stufe, deine zusätzlichen Punkte und den Saison-Schalter. Die Adresse der Seite enthält den Reiter und die Punkte jeder Spezialisierungsfähigkeit (nicht deine Stufe oder deine zusätzlichen Punkte): Link kopieren kopiert sie, und wer sie öffnet, sieht denselben Build (ein Link mit Punkten der nächsten Saison schaltet deren Schalter ein). Ein geöffneter Link zeigt seinen Build; er ersetzt deinen gespeicherten erst, wenn du etwas änderst."
         },
         "lords": "Lord",
         "yourLevel": "Deine Stufe",
         "levelValue": "Lv.{level}",
         "yourExtra": "Zusätzliche Spezialisierungspunkte",
-        "preview": "Vorschau späterer Saisons (Lv.45/50)",
         "count": "{points}/{max}",
         "talentLabel": "{name}, {points}/{max}",
         "active": "Aktiv",
         "passive": "Passiv",
         "cooldown": "Abklingzeit {time}",
         "unlocksAt": "Frei ab Lv.{level}",
-        "outOfSeason": "Nicht in der aktuellen Saison",
+        "requiresTalent": "Benötigt {name} auf max. Level",
         "talentLevel": "Lv.{points}/{max}",
         "now": "Jetzt:",
         "next": "Nächste Stufe:",
@@ -1061,11 +1060,12 @@
         "pickHint": "Fahre mit der Maus über eine Spezialisierungsfähigkeit, um zu sehen, was sie bewirkt. Linksklick fügt einen Punkt hinzu, Rechtsklick entfernt einen.",
         "requires": "{lord}: {level}",
         "left": "Spezialisierungspunkte: {left}",
+        "spent": "Ausgegebene Spezialisierungspunkte: {spent}",
         "copyLink": "Link kopieren",
         "copied": "Link kopiert.",
         "copyFailed": "Kopieren fehlgeschlagen: kopiere stattdessen die Adresszeile.",
         "blocked": {
-            "outOfSeason": "{name} ist nicht in der aktuellen Saison."
+            "requires": "{name} benötigt zuerst {required} auf max. Level."
         }
     },
     "valuation": {

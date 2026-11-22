@@ -10,13 +10,21 @@ import {
     isReachable,
     pointsLeft,
     raiseBlock,
+    requirementsMet,
     requirements,
     spentPoints,
     talentRows,
     talentValue,
+    unmetRequirement,
 } from '../../webapp/src/core/lord-specialty.js';
 
-const talent = (id, unlockLevel, maxLevel, values) => ({ id, unlock_level: unlockLevel, max_level: maxLevel, values });
+const talent = (id, unlockLevel, maxLevel, values, requires) => ({
+    id,
+    unlock_level: unlockLevel,
+    max_level: maxLevel,
+    values,
+    requires,
+});
 const lord = {
     talents: [
         talent('a', 1, 5, [3, 6, 10, 16, 24]),
@@ -24,13 +32,15 @@ const lord = {
         talent('c', 5, 3, [10, 20, 30]),
         talent('d', 5, 2, [10, 20]),
         talent('e', 45, 5),
+        // Needs talent c (index 2) at its max level.
+        talent('f', 10, 3, undefined, 'c'),
     ],
 };
 const MAX_LEVEL = 10;
 
 test('points spent', () => {
     assert.equal(spentPoints([5, 1, 0, 2, 0]), 8);
-    assert.deepEqual(emptyBuild(lord), [0, 0, 0, 0, 0]);
+    assert.deepEqual(emptyBuild(lord), [0, 0, 0, 0, 0, 0]);
 });
 
 test('a build needs the highest unlock level of its talents and a level per point', () => {
@@ -68,6 +78,24 @@ test('a talent takes points up to its max level, but not out of season', () => {
     assert.equal(isOutOfSeason(lord.talents[2], MAX_LEVEL), false);
 });
 
+test('a talent needs its required talent at max level', () => {
+    // f (index 5) requires c (index 2, max 3).
+    assert.equal(unmetRequirement(lord, [0, 0, 2, 0, 0, 0], 5), 2);
+    assert.equal(unmetRequirement(lord, [0, 0, 3, 0, 0, 0], 5), null);
+    // No requirement: nothing unmet.
+    assert.equal(unmetRequirement(lord, [0, 0, 0, 0, 0, 0], 0), null);
+    assert.equal(raiseBlock(lord, [0, 0, 2, 0, 0, 0], 5, MAX_LEVEL, MAX_LEVEL), 'requires');
+    assert.equal(raiseBlock(lord, [0, 0, 3, 0, 0, 0], 5, MAX_LEVEL, MAX_LEVEL), null);
+    // The level still comes first.
+    assert.equal(raiseBlock(lord, [0, 0, 3, 0, 0, 0], 5, 9, MAX_LEVEL), 'locked');
+    assert.equal(requirementsMet(lord, [0, 0, 3, 0, 0, 2]), true);
+    // c lowered after f got points: the points stay, but the build isn't reachable.
+    assert.equal(requirementsMet(lord, [0, 0, 2, 0, 0, 2]), false);
+    assert.equal(requirementsMet(lord, [0, 0, 2, 0, 0, 0]), true);
+    assert.equal(isReachable(lord, [0, 0, 3, 0, 0, 2], { level: 10, extra: 0 }), true);
+    assert.equal(isReachable(lord, [0, 0, 2, 0, 0, 2], { level: 10, extra: 0 }), false);
+});
+
 test('changing a talent stays within 0 and its max level', () => {
     assert.deepEqual(changeTalent(lord, [0, 0, 0, 0, 0], 0, 1), [1, 0, 0, 0, 0]);
     assert.deepEqual(changeTalent(lord, [0, 0, 0, 0, 0], 0, -1), [0, 0, 0, 0, 0]);
@@ -81,14 +109,16 @@ test('the value at a talent level', () => {
 });
 
 test('the build as URL text and back', () => {
-    const build = [5, 1, 0, 2, 0];
+    const build = [5, 1, 0, 2, 0, 0];
     assert.equal(encodeBuild(build), '5102');
     assert.equal(encodeBuild(emptyBuild(lord)), '');
     assert.deepEqual(decodeBuild(lord, '5102', MAX_LEVEL), build);
-    assert.deepEqual(decodeBuild(lord, '', MAX_LEVEL), [0, 0, 0, 0, 0]);
-    assert.deepEqual(decodeBuild(lord, null, MAX_LEVEL), [0, 0, 0, 0, 0]);
+    assert.deepEqual(decodeBuild(lord, '', MAX_LEVEL), [0, 0, 0, 0, 0, 0]);
+    assert.deepEqual(decodeBuild(lord, null, MAX_LEVEL), [0, 0, 0, 0, 0, 0]);
     // Too high for the talent: capped; not a digit: 0; out of season: 0; extra digits: ignored.
-    assert.deepEqual(decodeBuild(lord, '9x99999', MAX_LEVEL), [5, 0, 3, 2, 0]);
+    assert.deepEqual(decodeBuild(lord, '9x9999999', MAX_LEVEL), [5, 0, 3, 2, 0, 3]);
+    // With a higher season maximum the talent of Lv.45 takes points too.
+    assert.deepEqual(decodeBuild(lord, '9x9999999', 50), [5, 0, 3, 2, 5, 3]);
 });
 
 test('the tree rows by unlock level', () => {
@@ -97,6 +127,7 @@ test('the tree rows by unlock level', () => {
         [
             [1, [0, 1]],
             [5, [2, 3]],
+            [10, [5]],
             [45, [4]],
         ],
     );

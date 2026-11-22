@@ -9,17 +9,45 @@
         "max_level": {
             "type": "integer",
             "minimum": 1,
-            "description": "The highest Specialty level this season. Talents unlocking above it are shown, but locked."
+            "description": "The highest Specialty level of the current season. Talents unlocking above it only show (and can take points) with the next season's switch on."
         },
         "lords": {
             "type": "object",
-            "description": "The lords (classes) to choose from, in the order of the page's switch.",
+            "description": "The lords (classes) to choose from, in the order of the page's switch. Their talents above `max_level` belong to the next season.",
             "minProperties": 1,
             "propertyNames": {
                 "$ref": "pack_data.schema.json#/definitions/id"
             },
             "additionalProperties": {
                 "$ref": "#/definitions/lord"
+            }
+        },
+        "next_season": {
+            "type": "object",
+            "description": "The next season (Season 02: Frozen Era): the page's switch for it raises the Specialty level to its `max_level`, enables the lords' talents up to it and adds a tree of its own, `talents`.",
+            "required": ["id", "name", "max_level", "talents"],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "$ref": "pack_data.schema.json#/definitions/id",
+                    "description": "The season's tree in the page's switch and URL (`?lord=`): not a lord's id."
+                },
+                "name": {
+                    "$ref": "pack_data.schema.json#/definitions/localizedString"
+                },
+                "max_level": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "The highest Specialty level of the next season, above the current `max_level`."
+                },
+                "talents": {
+                    "type": "array",
+                    "description": "The season's own talents, which no lord has: a tree in order like a lord's (it is also the build's order in the URL). Their points are not the player's Specialty points.",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/talent"
+                    }
+                }
             }
         }
     },
@@ -47,7 +75,7 @@
         },
         "talent": {
             "type": "object",
-            "required": ["id", "name", "icon", "unlock_level", "kind", "max_level", "description"],
+            "required": ["id", "name", "unlock_level", "kind", "max_level", "description"],
             "additionalProperties": false,
             "properties": {
                 "id": {
@@ -58,8 +86,12 @@
                 },
                 "icon": {
                     "type": "string",
-                    "description": "Image file in webapp/public/assets/lord/.",
+                    "description": "Image file in webapp/public/assets/lord/. Without one the tile shows the placeholder icon.",
                     "pattern": "^[a-z0-9_]+\\.png$"
+                },
+                "requires": {
+                    "$ref": "pack_data.schema.json#/definitions/id",
+                    "description": "A talent of the same tree, listed before this one, that must be at its max level before this one takes points."
                 },
                 "unlock_level": {
                     "type": "integer",

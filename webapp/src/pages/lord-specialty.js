@@ -3,15 +3,22 @@
  * game's tree: a spine from Lv.1 at the bottom up, with a badge per unlock level and that level's two talents left
  * and right of it (hexagons are active talents, squares passive ones). Left click adds a point, right click removes
  * one; hovering a talent shows what it does. On a phone (no hover) a tap adds a point and shows the talent, a long
- * press removes one. The talents of later seasons (Lv.45/50) only show with the preview switch.
+ * press removes one.
+ *
+ * The next season's switch (Season 02: Frozen Era) raises the Specialty level to its highest, shows and enables the
+ * lords' talents up to it (Lv.41 to 60) and adds a tab with the season's own talents (`next_season`). Those points
+ * aren't the player's Specialty points (how the game counts them isn't known yet), so that tab's bar only says what
+ * the build spends and which level it needs. A talent may require another at its max level (Super Frenzy needs
+ * Frenzy): it stays grey until then.
  *
  * The bar says what the build requires (the lord's level, and extra points only once the season's levels don't give
  * enough) and how many of the player's points are left: their Specialty level and extra Specialty Skill Points,
  * entered above the tree. The rules live in core/lord-specialty.js.
  *
- * The lord and the build are in the URL, so a link shares the build. This browser saves the player's level and extra
- * points, the lord and every lord's build: the page without a link opens them again. A shared link shows its build,
- * saved (over the player's own) only once they change something.
+ * The tab and the build are in the URL, so a link shares the build. This browser saves the player's level and extra
+ * points, the season switch, the tab and every tab's build: the page without a link opens them again. A shared link
+ * shows its build (and turns the season on if it needs it), saved (over the player's own) only once they change
+ * something.
  */
 import { startPage } from '../ui/page.js';
 import '../styles/pages/lord.css';
@@ -20,6 +27,7 @@ import { setUrlParams, urlParam } from '../ui/url.js';
 import { localizedName, t, tHtml } from '../ui/i18n.js';
 import { escapeHtml } from '../ui/html.js';
 import { formatThousands } from '../ui/format.js';
+import { PLACEHOLDER_ICON } from '../ui/images.js';
 import lordData from '../../../data/lord_specialty.json';
 import {
     changeTalent,
@@ -27,13 +35,14 @@ import {
     emptyBuild,
     encodeBuild,
     isLocked,
-    isOutOfSeason,
     isReachable,
     pointsLeft,
     raiseBlock,
+    requirementsMet,
     requirements,
     talentRows,
     talentValue,
+    unmetRequirement,
 } from '../core/lord-specialty.js';
 import { BASE_URL } from '../ui/base-url.js';
 
@@ -52,19 +61,35 @@ const intro = document.getElementById('lord-intro');
 const tree = document.getElementById('lord-tree');
 const detail = document.getElementById('lord-detail');
 const bar = document.getElementById('lord-bar');
-const previewSwitch = document.getElementById('lord-preview');
+const seasonSwitch = document.getElementById('lord-season');
+const seasonLabel = document.getElementById('lord-season-label');
 const levelInput = document.getElementById('lord-level');
 const levelValue = document.getElementById('lord-level-value');
 const extraInput = document.getElementById('lord-extra');
 
-const lordIds = Object.keys(lordData.lords);
-const maxLevel = lordData.max_level;
+// The lords' trees, then the next season's own (a tab only while its switch is on).
+const season = lordData.next_season;
+const seasonId = season?.id;
+const trees = { ...lordData.lords, ...(season ? { [seasonId]: season } : {}) };
+const treeIds = Object.keys(trees);
 
-let lordId = lordIds[0];
-// The build per lord: switching lords keeps the other one's build (only the shown one is in the URL).
-const builds = Object.fromEntries(lordIds.map((id) => [id, emptyBuild(lordData.lords[id])]));
-// The talents of later seasons (above max_level) are shown: a preview, they can't take points.
-let preview = false;
+/** What this browser saved: `{ level, extra, season2, lord, builds: { <tree>: <build as URL text> } }` (or less). */
+function loadSaved() {
+    return readJson(STORAGE_KEYS.lordSetup);
+}
+
+const saved = loadSaved();
+// The next season's switch: its talents are shown and enabled, the Specialty level goes up to its highest.
+let frozen = Boolean(season) && saved.season2 === true;
+
+/** The highest Specialty level of the active season. */
+const seasonMax = () => (frozen ? season.max_level : lordData.max_level);
+/** The highest level the tree's talents have: the season's own tree keeps its builds (and Lv.55/60) while the switch is off. */
+const treeMax = (id) => (id === seasonId ? season.max_level : seasonMax());
+
+let treeId = treeIds[0];
+// The build per tree: switching tabs keeps the other ones' builds (only the shown one is in the URL).
+const builds = Object.fromEntries(treeIds.map((id) => [id, emptyBuild(trees[id])]));
 // The talent in the detail panel (its index in the build): the one last hovered, focused or tapped.
 let shown = null;
 let note = '';
@@ -73,55 +98,57 @@ let noteTimer = null;
 let press = null;
 let longPressed = false;
 
-const lord = () => lordData.lords[lordId];
-const build = () => builds[lordId];
+const currentTree = () => trees[treeId];
+const build = () => builds[treeId];
 
 function clampInt(value, min, max, fallback) {
     const number = Number.parseInt(value, 10);
     return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : fallback;
 }
 
-/** What this browser saved: `{ level, extra, lord, builds: { <lord>: <build as URL text> } }` (or less). */
-function loadSaved() {
-    return readJson(STORAGE_KEYS.lordSetup);
-}
-
-const saved = loadSaved();
 // The player's Specialty level (the season's highest at first) and extra points.
 const setup = {
-    level: clampInt(saved.level, 1, maxLevel, maxLevel),
+    level: clampInt(saved.level, 1, seasonMax(), seasonMax()),
     extra: clampInt(saved.extra, 0, MAX_EXTRA, 0),
 };
 
-/** Saves the player's level and extra points, the lord and every lord's build. */
+/** Saves the player's level and extra points, the season switch, the tab and every tab's build. */
 function save() {
-    const encoded = Object.fromEntries(lordIds.map((id) => [id, encodeBuild(builds[id])]));
-    writeJson(STORAGE_KEYS.lordSetup, { ...setup, lord: lordId, builds: encoded });
+    const encoded = Object.fromEntries(treeIds.map((id) => [id, encodeBuild(builds[id])]));
+    writeJson(STORAGE_KEYS.lordSetup, { ...setup, season2: frozen, lord: treeId, builds: encoded });
 }
 
-/** The saved lord and builds, then the URL's: a link (with `lord`) shows its lord and build. */
+/**
+ * The saved tab and builds, then the URL's: a link (with `lord`) shows its tab and build, and turns the next season
+ * on when the tab is the season's or the build has points in talents of its levels.
+ */
 function readState() {
-    if (lordIds.includes(saved.lord)) {
-        lordId = saved.lord;
-    }
-    lordIds.forEach((id) => {
-        builds[id] = decodeBuild(lordData.lords[id], saved.builds?.[id], maxLevel);
+    treeIds.forEach((id) => {
+        builds[id] = decodeBuild(trees[id], saved.builds?.[id], treeMax(id));
     });
+    if (treeIds.includes(saved.lord) && (frozen || saved.lord !== seasonId)) {
+        treeId = saved.lord;
+    }
     const linked = urlParam('lord');
-    if (lordIds.includes(linked)) {
-        lordId = linked;
-        builds[lordId] = decodeBuild(lord(), urlParam('t'), maxLevel);
+    if (treeIds.includes(linked)) {
+        treeId = linked;
+        const asked = decodeBuild(trees[linked], urlParam('t'), season ? season.max_level : lordData.max_level);
+        const needsSeason =
+            linked === seasonId ||
+            asked.some((points, i) => points > 0 && trees[linked].talents[i].unlock_level > lordData.max_level);
+        frozen = Boolean(season) && (frozen || needsSeason);
+        builds[linked] = decodeBuild(trees[linked], urlParam('t'), treeMax(linked));
     }
 }
 
-/** A change to the lord or the build: into the URL and saved. */
+/** A change to the tab or the build: into the URL and saved. */
 function commit() {
     writeUrl();
     save();
 }
 
 function writeUrl() {
-    setUrlParams({ lord: lordId, t: encodeBuild(build()) });
+    setUrlParams({ lord: treeId, t: encodeBuild(build()) });
 }
 
 /** A cooldown in hours as the game's days, hours and minutes ("1d 23h 30m"). */
@@ -157,16 +184,22 @@ function showNote(text) {
 
 /**
  * One point more (`delta` 1) or less (-1) on talent `index`. A click on a maxed talent, or one the player's level
- * doesn't unlock, does nothing; one on a talent of a later season says why. Points can always be removed (also from
- * talents the level no longer unlocks after lowering it).
+ * doesn't unlock, does nothing; one on a talent whose required talent isn't maxed says why. Points can always be
+ * removed (also from talents the level no longer unlocks after lowering it).
  */
 function changePoints(index, delta) {
     shown = index;
-    const reason = delta > 0 ? raiseBlock(lord(), build(), index, setup.level, maxLevel) : null;
-    if (reason === 'outOfSeason') {
-        showNote(t('lord.blocked.outOfSeason', { name: localizedName(lord().talents[index].name) }));
+    const reason = delta > 0 ? raiseBlock(currentTree(), build(), index, setup.level, seasonMax()) : null;
+    if (reason === 'requires') {
+        const talents = currentTree().talents;
+        showNote(
+            t('lord.blocked.requires', {
+                name: localizedName(talents[index].name),
+                required: localizedName(talents[unmetRequirement(currentTree(), build(), index)].name),
+            }),
+        );
     } else if (!reason) {
-        builds[lordId] = changeTalent(lord(), build(), index, delta);
+        builds[treeId] = changeTalent(currentTree(), build(), index, delta);
         commit();
         renderBar();
     }
@@ -181,15 +214,20 @@ function showTalent(index) {
     }
 }
 
+/** The tabs: the lords, and the next season's own tree while its switch is on. */
 function renderControls() {
-    controls.innerHTML = lordIds
+    controls.innerHTML = treeIds
+        .filter((id) => frozen || id !== seasonId)
         .map(
             (id) =>
-                `<button type="button" class="lord-switch__button${id === lordId ? ' is-active' : ''}" data-lord="${id}" aria-pressed="${id === lordId}">${escapeHtml(localizedName(lordData.lords[id].name))}</button>`,
+                `<button type="button" class="lord-switch__button${id === treeId ? ' is-active' : ''}" data-lord="${id}" aria-pressed="${id === treeId}">${escapeHtml(localizedName(trees[id].name))}</button>`,
         )
         .join('');
     controls.setAttribute('aria-label', t('lord.lords'));
-    intro.textContent = localizedName(lord().description);
+    intro.textContent = localizedName(currentTree().description);
+    seasonSwitch.checked = frozen;
+    seasonSwitch.closest('label').hidden = !season;
+    seasonLabel.textContent = season ? localizedName(season.name) : '';
 }
 
 /** A talent's icon in a hexagon (active) or a rounded square (passive), with its points below it. */
@@ -198,15 +236,19 @@ function tileHtml(talent, points = null) {
         points === null
             ? ''
             : `<span class="lord-talent__count">${tHtml('lord.count', { points, max: talent.max_level })}</span>`;
-    return `<span class="lord-talent__frame"><img src="${ICONS}${talent.icon}" alt="" draggable="false" /></span>${count}`;
+    const src = talent.icon ? `${ICONS}${talent.icon}` : PLACEHOLDER_ICON;
+    return `<span class="lord-talent__frame"><img src="${src}" alt="" draggable="false" /></span>${count}`;
 }
 
 /**
- * A talent the player's level doesn't unlock is grey and takes no points. One that has points anyway (the level was
- * lowered after) keeps them, with a red count: the build stays as it was when the level goes back up.
+ * A talent the player's level doesn't unlock, or whose required talent isn't maxed, is grey and takes no points. One
+ * that has points anyway (the level or the required talent was lowered after) keeps them, with a red count: the
+ * build stays as it was when it goes back up.
  */
-function talentClasses(talent, points) {
-    const locked = isLocked(talent, setup.level, maxLevel);
+function talentClasses(index, points) {
+    const talent = currentTree().talents[index];
+    const locked =
+        isLocked(talent, setup.level, seasonMax()) || unmetRequirement(currentTree(), build(), index) !== null;
     return [
         'lord-talent',
         `lord-talent--${talent.kind}`,
@@ -219,7 +261,7 @@ function talentClasses(talent, points) {
 
 function talentHtml({ talent, index }, current) {
     const points = current[index];
-    const classes = talentClasses(talent, points);
+    const classes = talentClasses(index, points);
     const label = t('lord.talentLabel', { name: localizedName(talent.name), points, max: talent.max_level });
     const disabled = classes.includes('is-locked') ? ' aria-disabled="true"' : '';
     return `<button type="button" class="${classes.join(' ')}" data-index="${index}" aria-label="${escapeHtml(label)}"${disabled}>${tileHtml(talent, points)}</button>`;
@@ -228,14 +270,14 @@ function talentHtml({ talent, index }, current) {
 function renderTree() {
     const current = build();
     // As in the game: the highest level on top, Lv.1 at the bottom, lit up to the player's level.
-    const rows = talentRows(lord())
-        .filter((row) => preview || row.level <= maxLevel)
+    const rows = talentRows(currentTree())
+        .filter((row) => row.level <= seasonMax())
         .reverse();
     const rowsHtml = rows
         .map((row) => {
             const [left, ...right] = row.talents;
             const reached = row.level <= setup.level;
-            const badgeTitle = row.level > maxLevel ? t('lord.outOfSeason') : t('lord.unlocksAt', { level: row.level });
+            const badgeTitle = t('lord.unlocksAt', { level: row.level });
             return `
                 <div class="lord-row${reached ? ' is-reached' : ''}">
                     <div class="lord-row__side lord-row__side--left">${talentHtml(left, current)}<span class="lord-row__link"></span></div>
@@ -289,7 +331,7 @@ function placeSpine() {
 }
 
 function renderDetail() {
-    const talent = shown === null ? null : lord().talents[shown];
+    const talent = shown === null ? null : currentTree().talents[shown];
     if (!talent) {
         detail.innerHTML = `<p class="lord-detail__hint">${tHtml('lord.pickHint')}</p>`;
         return;
@@ -298,7 +340,12 @@ function renderDetail() {
     const facts = [
         t(talent.kind === 'active' ? 'lord.active' : 'lord.passive'),
         talent.cooldown_hours ? t('lord.cooldown', { time: formatCooldown(talent.cooldown_hours) }) : null,
-        isOutOfSeason(talent, maxLevel) ? t('lord.outOfSeason') : t('lord.unlocksAt', { level: talent.unlock_level }),
+        t('lord.unlocksAt', { level: talent.unlock_level }),
+        talent.requires
+            ? t('lord.requiresTalent', {
+                  name: localizedName(currentTree().talents.find((other) => other.id === talent.requires).name),
+              })
+            : null,
     ].filter(Boolean);
     const effects = talent.values
         ? `
@@ -315,7 +362,7 @@ function renderDetail() {
         : `<p>${effectHtml(talent, points)}</p>`;
     detail.innerHTML = `
         <div class="lord-detail__head">
-            <span class="${talentClasses(talent, points).join(' ')}">${tileHtml(talent)}</span>
+            <span class="${talentClasses(shown, points).join(' ')}">${tileHtml(talent)}</span>
             <div>
                 <h3>${escapeHtml(localizedName(talent.name))}</h3>
                 <p class="lord-detail__facts">${facts.map(escapeHtml).join(' · ')}</p>
@@ -326,26 +373,34 @@ function renderDetail() {
 }
 
 /** "Legion Commander: Lv.31": the level the build uses (Lv.0 while it's empty). */
-function requiresHtml({ level }) {
+function requiresHtml(level) {
     return tHtml('lord.requires', {
-        lord: escapeHtml(localizedName(lord().name)),
+        lord: escapeHtml(localizedName(currentTree().name)),
         level: `<strong>${tHtml('lord.levelValue', { level })}</strong>`,
     });
 }
 
 function renderBar() {
-    const needs = requirements(lord(), build(), maxLevel);
+    const needs = requirements(currentTree(), build(), seasonMax());
+    // The season's own talents don't use the player's points (not known yet how the game counts them): the bar says
+    // what the build spends and needs, and the player's level and the requirements decide whether they can have it.
+    const own = treeId === seasonId;
     const left = pointsLeft(build(), setup);
     // Red when the player can't have the build yet: their level is too low, or their points don't pay for it.
-    const reachable = isReachable(lord(), build(), setup);
+    const reachable = own
+        ? needs.unlockLevel <= setup.level && requirementsMet(currentTree(), build())
+        : isReachable(currentTree(), build(), setup);
     // As in the game: the lord and level, the points with a reset icon next to them; Copy link on the right in every
     // language (the text wraps, the button stays).
     const reset = tHtml('common.reset');
+    const points = own
+        ? `<span class="lord-bar__points">${tHtml('lord.spent', { spent: `<strong>${needs.spent}</strong>` })}</span>`
+        : `<span class="${left < 0 ? 'text-bad' : 'lord-bar__points'}">${tHtml('lord.left', { left: `<strong>${left}</strong>` })}</span>`;
     bar.innerHTML = `
         <div class="lord-bar__summary">
-            <span class="${reachable ? '' : 'text-bad'}">${requiresHtml(needs)}</span>
+            <span class="${reachable ? '' : 'text-bad'}">${requiresHtml(own ? needs.unlockLevel : needs.level)}</span>
             <span class="lord-bar__points-group">
-                <span class="${left < 0 ? 'text-bad' : 'lord-bar__points'}">${tHtml('lord.left', { left: `<strong>${left}</strong>` })}</span>
+                ${points}
                 <button type="button" class="lord-bar__reset btn-secondary" data-action="reset" title="${reset}" aria-label="${reset}" ${needs.spent > 0 ? '' : 'disabled'}>↺</button>
             </span>
             <span class="lord-bar__note" role="status">${escapeHtml(note)}</span>
@@ -403,6 +458,34 @@ function fitTree() {
     tree.scrollTop = tree.scrollHeight - tree.clientHeight - fromBottom;
 }
 
+/**
+ * Turns the next season on or off. On: the lords' talents up to its highest level take points, its own tab appears.
+ * Off: the level and the lords' builds go back to the current season's (the points above are dropped), the tab goes
+ * (its build stays saved).
+ */
+function setSeason(on) {
+    frozen = on;
+    levelInput.max = seasonMax();
+    if (!on) {
+        setup.level = Math.min(setup.level, seasonMax());
+        levelInput.value = setup.level;
+        treeIds
+            .filter((id) => id !== seasonId)
+            .forEach((id) => {
+                builds[id] = decodeBuild(trees[id], encodeBuild(builds[id]), seasonMax());
+            });
+        if (treeId === seasonId) {
+            treeId = treeIds[0];
+        }
+    }
+    shown = null;
+    commit();
+    // The rows come and go on top: keep the view where it was.
+    const fromBottom = tree.scrollHeight - tree.scrollTop;
+    renderAll();
+    tree.scrollTop = tree.scrollHeight - fromBottom;
+}
+
 function cancelPress() {
     clearTimeout(press?.timer);
     press = null;
@@ -411,8 +494,8 @@ function cancelPress() {
 function wireEvents() {
     controls.addEventListener('click', (event) => {
         const button = event.target.closest('[data-lord]');
-        if (button && button.dataset.lord !== lordId) {
-            lordId = button.dataset.lord;
+        if (button && button.dataset.lord !== treeId) {
+            treeId = button.dataset.lord;
             shown = null;
             commit();
             renderAll();
@@ -421,13 +504,13 @@ function wireEvents() {
     });
 
     const setupInputs = [
-        [levelInput, 'level', 1, maxLevel],
-        [extraInput, 'extra', 0, MAX_EXTRA],
+        [levelInput, 'level', 1, seasonMax],
+        [extraInput, 'extra', 0, () => MAX_EXTRA],
     ];
     setupInputs.forEach(([input, key, min, max]) => {
         input.addEventListener('input', () => {
             // While typing: only a valid number counts (an empty field keeps the last one).
-            setup[key] = clampInt(input.value, min, max, setup[key]);
+            setup[key] = clampInt(input.value, min, max(), setup[key]);
             save();
             renderLevel();
             // The level locks and unlocks talents.
@@ -440,18 +523,7 @@ function wireEvents() {
         });
     });
 
-    previewSwitch.addEventListener('change', () => {
-        preview = previewSwitch.checked;
-        // A talent of a later season leaves the details with the preview.
-        if (!preview && shown !== null && isOutOfSeason(lord().talents[shown], maxLevel)) {
-            shown = null;
-            renderDetail();
-        }
-        const fromBottom = tree.scrollHeight - tree.scrollTop;
-        renderTree();
-        // The new rows are on top: keep the view where it was.
-        tree.scrollTop = tree.scrollHeight - fromBottom;
-    });
+    seasonSwitch.addEventListener('change', () => setSeason(seasonSwitch.checked));
 
     const talentOf = (event) => event.target.closest('.lord-talent[data-index]');
     const indexOf = (button) => Number(button.dataset.index);
@@ -537,7 +609,7 @@ function wireEvents() {
     bar.addEventListener('click', async (event) => {
         const action = event.target.closest('[data-action]')?.dataset.action;
         if (action === 'reset') {
-            builds[lordId] = emptyBuild(lord());
+            builds[treeId] = emptyBuild(currentTree());
             commit();
             renderTree();
             renderDetail();
@@ -556,7 +628,7 @@ function wireEvents() {
 function init() {
     readState();
     writeUrl();
-    levelInput.max = maxLevel;
+    levelInput.max = seasonMax();
     levelInput.value = setup.level;
     extraInput.max = MAX_EXTRA;
     extraInput.value = setup.extra;

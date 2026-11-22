@@ -110,6 +110,7 @@ function createItemImage(itemId, altText, className = 'item-icon') {
 }
 
 export {
+    PLACEHOLDER_ICON,
     setItemImageSrc,
     setItemImageAliases,
     rarityClass,

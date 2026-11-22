@@ -203,8 +203,10 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   plans (`plan_unlock_levels`: Warriors 10, Rangers 150, Warlocks 300): a locked plan is greyed out and not counted in the chest estimate.
 - The Lord Specialty page reads its own file, `data/lord_specialty.json` (schema `lord_specialty.schema.json`, checked
   by `verify-data`, not part of `pack_data.json`). A lord's talent order is the build's order in shared URLs
-  (`core/lord-specialty.js`), so don't reorder or insert talents casually. Talents above `max_level` show as "not in
-  the current season".
+  (`core/lord-specialty.js`), so don't reorder or insert talents casually. `max_level` is the current season's highest
+  Specialty level; the lords' talents above it, and the talents of `next_season` (Season 02: its own tree, a tab on the
+  page, an `icon` is optional there), only exist while the page's season switch is on. A talent's optional `requires`
+  names a talent of its tree above it that must be at max level first.
 
 ## Valuation Model
 

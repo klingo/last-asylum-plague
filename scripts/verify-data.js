@@ -951,8 +951,9 @@ async function verifyData() {
         }
     });
 
-    // 8c. The lords' talent trees (data/lord_specialty.json, Lord Specialty page): its schema, the icons, one value
-    // per talent level, and "{value}" in the text exactly when there are values.
+    // 8c. The lords' talent trees and the next season's (data/lord_specialty.json, Lord Specialty page): its schema, the
+    // icons, one value per talent level, "{value}" in the text exactly when there are values, and a `requires` that
+    // names a talent above it.
     checkCategory('Lord Specialty', ({ reportError }) => {
         let lordData;
         let lordSchema;
@@ -972,7 +973,20 @@ async function verifyData() {
             }
             return;
         }
-        for (const [lordId, lord] of Object.entries(lordData.lords)) {
+        const season = lordData.next_season;
+        if (season) {
+            if (season.id in lordData.lords) {
+                reportError('Lord Talent', `The next season's id "${season.id}" is a lord's id.`);
+            }
+            if (season.max_level <= lordData.max_level) {
+                reportError('Lord Talent', "The next season's max_level must be above the current season's.");
+            }
+        }
+        const trees = Object.entries(lordData.lords);
+        if (season) {
+            trees.push([season.id, season]);
+        }
+        for (const [lordId, lord] of trees) {
             const ids = new Set();
             let previousLevel = 0;
             for (const talent of lord.talents) {
@@ -980,12 +994,15 @@ async function verifyData() {
                 if (ids.has(talent.id)) {
                     reportError('Lord Talent', `${where} is listed twice.`);
                 }
+                if (talent.requires && !ids.has(talent.requires)) {
+                    reportError('Lord Talent', `${where} requires "${talent.requires}", which isn't listed above it.`);
+                }
                 ids.add(talent.id);
                 if (talent.unlock_level < previousLevel) {
                     reportError('Lord Talent', `${where} unlocks before the talent above it (the tree's order).`);
                 }
                 previousLevel = talent.unlock_level;
-                if (!fs.existsSync(path.join(LORD_IMAGES_DIR, talent.icon))) {
+                if (talent.icon && !fs.existsSync(path.join(LORD_IMAGES_DIR, talent.icon))) {
                     reportError(
                         'Lord Talent',
                         `${where} has no icon "${talent.icon}" (webapp/public/assets/lord/${talent.icon}).`,

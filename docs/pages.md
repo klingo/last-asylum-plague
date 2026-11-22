@@ -195,9 +195,13 @@ deleted after 180 days without use; the button stays hidden until the build has 
   extra Specialty Skill Points (saved in the browser): specialty skills above your level are grey and take no points
   (points they already have stay, with a red count, so lowering the level doesn't lose the build). The bar shows what
   the build requires ("Legion Commander: Lv.31", extra points only beyond the season's highest level), red while you
-  can't have it yet, and your Specialty Points left. A preview switch shows the specialty skills of later seasons (Lv.45/50, greyed out). The lord and
-  the build are in the URL (`?lord=&t=`, one digit per specialty skill), so a link shares the build; the browser also
-  saves the lord and each lord's build (a shared link's build replaces yours only once you change it). Data:
+  can't have it yet, and your Specialty Points left. The next season's switch (Season 02: Frozen Era, remembered in the
+  browser) raises the level limit from 40 to 60, enables the lords' specialty skills up to Lv.60 and adds a third tab with
+  the season's own specialty skills; their points aren't your Specialty Points (the bar shows what they spend and the
+  level they need), and switching it off removes the points above Lv.40. A specialty skill may need another at max level
+  first (Super Frenzy needs Frenzy): it stays grey until then. The tab and the build are in the URL (`?lord=&t=`, one
+  digit per specialty skill), so a link shares the build (and turns the season on when it needs it); the browser also
+  saves the tab and each tab's build (a shared link's build replaces yours only once you change it). Data:
   `data/lord_specialty.json` (its own schema, checked by `verify-data`; icons in `webapp/public/assets/lord/`).
 
 Weekly spend, events, seasonal passes on sale (e.g. the Gear Pass) and item priorities are shared by all pages

@@ -1,6 +1,6 @@
 /* Lord Specialty: the tree as in the game (Lv 1 at the bottom, a spine lit in the game's gold up to the level the build
    needs, a badge per unlock level, a talent left and right of it), the bar below it and the details beside it. */
-/* The lord buttons, the player's level and extra points, and the preview switch on the right. */
+/* The lord buttons, the player's level and extra points, and the next season's switch on the right. */
 .lord-controls {
     display: flex;
     flex-wrap: wrap;
@@ -42,13 +42,17 @@
     font-variant-numeric: tabular-nums;
 }
 
-.lord-preview {
+.lord-season {
     display: flex;
     margin-left: auto;
     align-items: center;
     gap: 10px;
     font-size: 0.9rem;
     cursor: pointer;
+}
+
+.lord-season[hidden] {
+    display: none;
 }
 
 .lord-switch {
@@ -86,6 +90,11 @@
     margin: 12px 0 16px;
     color: var(--text-dim);
     font-size: 0.85rem;
+}
+
+/* The next season's tab has no text of its own. */
+.lord-intro:empty {
+    margin: 0 0 16px;
 }
 
 .lord-layout {
