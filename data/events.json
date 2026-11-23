@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "last_updated": "2026-11-22"
+        "last_updated": "2026-11-23"
     },
     "events": {
         "alliance_duel": {
@@ -1146,6 +1146,10 @@
             {
                 "start": "2026-11-09",
                 "end": "2026-11-10"
+            },
+            {
+                "start": "2026-11-23",
+                "end": "2026-11-24"
             }
         ],
         "crystal_cluster_valley": [
