@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "last_updated": "2026-11-23"
+        "last_updated": "2026-11-24"
     },
     "events": {
         "alliance_duel": {
@@ -1122,6 +1122,10 @@
             {
                 "start": "2026-10-27",
                 "end": "2026-11-01"
+            },
+            {
+                "start": "2026-11-24",
+                "end": "2026-11-29"
             }
         ],
         "canyon_conquest": [
