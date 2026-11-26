@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "last_updated": "2026-11-25"
+        "last_updated": "2026-11-26"
     },
     "events": {
         "alliance_duel": {
@@ -1368,6 +1368,10 @@
             {
                 "start": "2026-11-24",
                 "end": "2026-11-25"
+            },
+            {
+                "start": "2026-11-26",
+                "end": "2026-11-27"
             }
         ],
         "falcon_tower_pass": [
