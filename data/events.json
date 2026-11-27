@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "last_updated": "2026-11-26"
+        "last_updated": "2026-11-27"
     },
     "events": {
         "alliance_duel": {
@@ -10,6 +10,14 @@
             },
             "category": "ingame_event",
             "image": "alliance_duel"
+        },
+        "black_friday": {
+            "name": {
+                "en": "Black Friday",
+                "de": ""
+            },
+            "category": "special_event",
+            "image": "black_friday"
         },
         "blades_out": {
             "name": {
@@ -1116,6 +1124,12 @@
             {
                 "start": "2026-11-16",
                 "end": "2026-11-22"
+            }
+        ],
+        "black_friday": [
+            {
+                "start": "2026-11-27",
+                "end": "2026-11-29"
             }
         ],
         "blades_out": [
