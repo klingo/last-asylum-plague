@@ -43,6 +43,14 @@ test('units of an item per purchase (Item Sources, "Only here")', () => {
     });
 });
 
+test('a package with several choice slots gives the best option of each', () => {
+    const items = { gem: {}, ore: {} };
+    const counter = createUnitCounter(items, 'gem');
+    const slot = { choices: [{ gem: 2 }, { gem: 5 }, { ore: 1 }] };
+    assert.equal(counter.ofBundle({ contains: { gem: 1 }, choice: slot }).units, 6);
+    assert.equal(counter.ofBundle({ contains: { gem: 1 }, choice: [slot, slot] }).units, 11);
+});
+
 test('an item with another source than one shop ("Only here" otherwise)', () => {
     const shop = (itemId) => ({ offers: { o: { item_id: itemId } } });
     const base = {

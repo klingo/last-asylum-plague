@@ -19,7 +19,7 @@
  * Pure module: callers pass an initialized HiGHS instance and the normalized data (pack-data.js).
  */
 import { capacityInWindow, deliveryPeriod, isEventActive, isOnSale, packageCapacityForDays } from './catalog.js';
-import { isRandomItem, isChoiceItem, selectCount, substituteTargets } from './items.js';
+import { isRandomItem, isChoiceItem, selectCount, choicePools, substituteTargets } from './items.js';
 import { addPackageRules } from './package-rows.js';
 import { createModel, addTerm, linkRow, solutionValue, solveModel, varName } from './lp.js';
 
@@ -92,18 +92,21 @@ function addPackageVars(builder, packages, { days, startDay, activeEventIds, sea
         model.bounds.set(name, { upper: capacity });
         model.integers.add(name);
         produceAll(pkg.contains, name, deliveredShare(pkg, days));
-        if (pkg.choice) {
-            const pickNames = pkg.choice.choices.map((option, index) => {
-                const pick = varName('pc', id, String(index));
+        choicePools(pkg.choice).forEach((pool, slot) => {
+            // A slot's picks are named by slot and option (a package's first slot keeps the plain option index).
+            const tag = (index) => (slot === 0 ? String(index) : `${slot}_${index}`);
+            const pickNames = pool.choices.map((option, index) => {
+                const pick = varName('pc', id, tag(index));
                 produceAll(option, pick);
                 model.integers.add(pick);
-                model.rows.push(linkRow(varName('pcx', id, String(index)), pick, name));
+                model.rows.push(linkRow(varName('pcx', id, tag(index)), pick, name));
                 return pick;
             });
             const terms = new Map(pickNames.map((pick) => [pick, 1]));
-            terms.set(name, -selectCount(pkg.choice));
-            model.rows.push({ name: varName('pcs', id), terms, op: '<=', rhs: 0 });
-        }
+            terms.set(name, -selectCount(pool));
+            const limit = slot === 0 ? varName('pcs', id) : varName('pcs', id, String(slot));
+            model.rows.push({ name: limit, terms, op: '<=', rhs: 0 });
+        });
         packageVars.set(id, { name, pkg, capacity, coefficient: 1 });
     }
     addPackageRules(model, packageVars, packages);

@@ -533,6 +533,7 @@
         "packDetails": {
             "contents": "Always included",
             "picks": "Pick {count} of {total}: counted with the {count} most valuable options",
+            "slotPicks": "Choice {slot}: pick {count} of {total}, counted with the {count} most valuable options",
             "skipped": "Not counted (less valuable)"
         },
         "mineStat": {
@@ -677,6 +678,7 @@
             "package": "Package",
             "gain": "Net gain"
         },
+        "slotName": "{name}: choice {slot}",
         "groupName": "Only one of: {packages}",
         "groupHint": "You can buy only one of these. Ranked by net gain = worth − price; ratio 1.0 or more = worth buying at your weekly spend.",
         "incomplete": "incomplete"

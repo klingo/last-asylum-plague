@@ -87,3 +87,23 @@ test('a pack of an event that is not running is not available', () => {
     assert.equal(solve(shops, { gem: 5 }, { activeEventIds: new Set() }).reachable, false);
     assert.equal(solve(shops, { gem: 5 }, { activeEventIds: new Set(['feast']) }).totalCost, 500);
 });
+
+test('each choice slot of a pack is picked on its own', () => {
+    const shopData = {
+        items: { gem: {}, ore: {} },
+        packages: {
+            slot_pack: {
+                price: 100,
+                contains: {},
+                purchase_limit: 1,
+                limit_type: 'weekly',
+                choice: [{ choices: [{ gem: 1 }, { ore: 1 }] }, { choices: [{ gem: 1 }, { ore: 1 }] }],
+            },
+        },
+        exchange_shops: {},
+    };
+    // One purchase gives one pick per slot: a gem and an ore, or two gems, or two ores.
+    assert.equal(solve(shopData, { gem: 2 }).totalCost, 100);
+    assert.equal(solve(shopData, { gem: 1, ore: 1 }).totalCost, 100);
+    assert.equal(solve(shopData, { gem: 3 }).reachable, false);
+});

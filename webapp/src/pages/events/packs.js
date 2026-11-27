@@ -3,7 +3,7 @@
  */
 import { eventPacksOnSale } from '../../core/catalog.js';
 import { eventPurchases } from '../../core/step-analysis.js';
-import { selectCount } from '../../core/items.js';
+import { selectCount, choicePools } from '../../core/items.js';
 import { packageDisplayName } from '../../ui/labels.js';
 import { banknotesAmount, buyBadge, escapeHtml, hydrateItemIcons } from '../../ui/html.js';
 import {
@@ -95,35 +95,38 @@ function renderPacks({ eventId }) {
 
 /**
  * The Details block of a pack: what its worth adds up from. Each item with its amount and worth; for a pack
- * with a pick (`choice`), the always included items, the options counted (the most valuable, as the worth does)
- * and, dimmed, the ones left out.
+ * with picks (`choice`, a block per slot), the always included items, the options counted (the most valuable, as
+ * the worth does) and, dimmed, the ones left out.
  */
 function packDetailsHtml(key, pkg) {
     const intro = (text) => `<p class="ranking-grid__details-intro">${escapeHtml(text)}</p>`;
     const itemRows = (parts, dim = false) =>
         breakdownParts(parts, ctx.data, ctx.valuation).map((part) => packPartRowHtml(part, { dim }));
-    const optionParts = (indexes) =>
-        indexes.flatMap((index) => ctx.valuation.bundle({ contains: pkg.choice.choices[index] }, 0).parts);
+    const optionParts = (pool, indexes) =>
+        indexes.flatMap((index) => ctx.valuation.bundle({ contains: pool.choices[index] }, 0).parts);
+    const pools = choicePools(pkg.choice);
     const blocks = [];
     const fixed = itemRows(ctx.valuation.bundle({ contains: pkg.contains }, 0).parts);
     if (fixed.length > 0) {
-        blocks.push((pkg.choice ? intro(t('events.packDetails.contents')) : '') + fixed.join(''));
+        blocks.push((pools.length > 0 ? intro(t('events.packDetails.contents')) : '') + fixed.join(''));
     }
-    if (pkg.choice) {
-        const picked = ctx.valuation.bundle(pkg, 0).picked || [];
-        const skipped = pkg.choice.choices.map((_, index) => index).filter((index) => !picked.includes(index));
+    const pickedBySlot = pools.length > 0 ? ctx.valuation.bundle(pkg, 0).picked : [];
+    pools.forEach((pool, slot) => {
+        const picked = pickedBySlot[slot] || [];
+        const skipped = pool.choices.map((_, index) => index).filter((index) => !picked.includes(index));
         blocks.push(
             intro(
-                t('events.packDetails.picks', {
-                    count: formatThousands(selectCount(pkg.choice)),
-                    total: formatThousands(pkg.choice.choices.length),
+                t(pools.length > 1 ? 'events.packDetails.slotPicks' : 'events.packDetails.picks', {
+                    slot: formatThousands(slot + 1),
+                    count: formatThousands(selectCount(pool)),
+                    total: formatThousands(pool.choices.length),
                 }),
-            ) + itemRows(optionParts(picked)).join(''),
+            ) + itemRows(optionParts(pool, picked)).join(''),
         );
         if (skipped.length > 0) {
-            blocks.push(intro(t('events.packDetails.skipped')) + itemRows(optionParts(skipped), true).join(''));
+            blocks.push(intro(t('events.packDetails.skipped')) + itemRows(optionParts(pool, skipped), true).join(''));
         }
-    }
+    });
     return gridDetails(key, packExpanded, blocks.join(''));
 }
 

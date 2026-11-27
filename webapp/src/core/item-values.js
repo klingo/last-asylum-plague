@@ -16,7 +16,7 @@
  * Unknown parts count as 0 and mark the result `incomplete`; a result with no known part at all
  * stays unknown. Pure module (no DOM/i18n), shared with Node scripts.
  */
-import { itemKind, selectCount, substituteTargets } from './items.js';
+import { itemKind, selectCount, choicePools, substituteTargets } from './items.js';
 
 /**
  * Extends `explicit` (Map itemId -> `{ value, source }`) with the values lent down reversible
@@ -182,8 +182,9 @@ function resolveItemValues(items, { basePoints = null, currencyValues = {}, curr
 }
 
 /**
- * Points of a package / reward bundle: its `contains` plus its best `choice` options.
- * Returns `{ value, incomplete, parts, picked }` (value 0 rather than null for an empty bundle).
+ * Points of a package / reward bundle: its `contains` plus the best options of each of its `choice` slots.
+ * Returns `{ value, incomplete, parts, picked }` (value 0 rather than null for an empty bundle); `picked` is the
+ * option indexes taken per slot (`[[0, 2], [1]]`), null without a choice.
  */
 function bundleValue({ contains, choice } = {}, values) {
     const valueOf = (id) => values.get(id) || { value: null };
@@ -191,13 +192,14 @@ function bundleValue({ contains, choice } = {}, values) {
     let value = base.value ?? 0;
     let incomplete = base.incomplete;
     let parts = base.parts;
-    let picked = null;
-    if (choice) {
-        const best = bestChoices(choice, valueOf);
+    const pools = choicePools(choice);
+    const picked = pools.length > 0 ? [] : null;
+    for (const pool of pools) {
+        const best = bestChoices(pool, valueOf);
         value += best.value ?? 0;
         incomplete = incomplete || best.incomplete;
         parts = parts.concat(best.parts);
-        picked = best.picked;
+        picked.push(best.picked);
     }
     return { value, incomplete, parts, picked };
 }

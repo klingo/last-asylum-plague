@@ -238,6 +238,21 @@
                 }
             }
         },
+        "packageChoice": {
+            "description": "What a package lets the buyer pick: one pool, or a list of pools when it has several separate choice slots (each pool is one slot, with its own options and `select_count`).",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/choicePool"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/choicePool"
+                    },
+                    "minItems": 1
+                }
+            ]
+        },
         "choiceItem": {
             "type": "object",
             "required": ["name", "category", "type", "choice"],
@@ -412,7 +427,7 @@
                     "$ref": "#/definitions/itemQuantities"
                 },
                 "choice": {
-                    "$ref": "#/definitions/choicePool"
+                    "$ref": "#/definitions/packageChoice"
                 },
                 "delivery_days": {
                     "type": "integer",
@@ -461,7 +476,7 @@
                     "$ref": "#/definitions/itemQuantities"
                 },
                 "choice": {
-                    "$ref": "#/definitions/choicePool"
+                    "$ref": "#/definitions/packageChoice"
                 }
             }
         },

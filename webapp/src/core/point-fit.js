@@ -33,7 +33,7 @@
 import { currencyItemIds } from './catalog.js';
 import { packageFamilyId } from './pack-data.js';
 import { lendReversible } from './item-values.js';
-import { itemKind, isRandomItem, selectCount, substituteTargets } from './items.js';
+import { itemKind, isRandomItem, selectCount, choicePools, substituteTargets } from './items.js';
 import { median, quantile } from './stats.js';
 
 // Obtained through event mechanics the data doesn't model (Moon Coin machine): left out of the
@@ -172,8 +172,8 @@ function createExpander(items, pinned, groupOf, choicePick) {
         const acc = { terms: new Map(), constant: 0, skip: false };
         const visiting = new Set();
         expandInto(acc, contains, 1, visiting);
-        if (choice) {
-            addOptions(acc, choice.choices || [], selectCount(choice), 1, visiting);
+        for (const pool of choicePools(choice)) {
+            addOptions(acc, pool.choices || [], selectCount(pool), 1, visiting);
         }
         return acc;
     };

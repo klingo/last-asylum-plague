@@ -41,6 +41,14 @@ function selectCount(choice) {
     return choice?.select_count || 1;
 }
 
+/** The choice slots of a package's `choice` (one pool, or a list of pools): a list of pools, empty without a choice. */
+function choicePools(choice) {
+    if (!choice) {
+        return [];
+    }
+    return Array.isArray(choice) ? choice : [choice];
+}
+
 /** `[[targetId, qty], ...]` of an item's `substitutes_for` (a plain list means 1 each). */
 function substituteTargets(item) {
     return Array.isArray(item.substitutes_for)
@@ -71,4 +79,4 @@ function itemKind(item) {
     return item.crafted_from ? 'recipe' : 'leaf';
 }
 
-export { isRandomItem, expectedRolls, isChoiceItem, selectCount, substituteTargets, itemKind };
+export { isRandomItem, expectedRolls, isChoiceItem, selectCount, choicePools, substituteTargets, itemKind };

@@ -533,6 +533,7 @@
         "packDetails": {
             "contents": "Immer enthalten",
             "picks": "{count} von {total} wählen: gerechnet mit den {count} wertvollsten Optionen",
+            "slotPicks": "Wahl {slot}: {count} von {total} wählen, gerechnet mit den {count} wertvollsten Optionen",
             "skipped": "Nicht gezählt (weniger wertvoll)"
         },
         "mineStat": {
@@ -677,6 +678,7 @@
             "package": "Paket",
             "gain": "Nettogewinn"
         },
+        "slotName": "{name}: Wahl {slot}",
         "groupName": "Nur eines von: {packages}",
         "groupHint": "Du kannst nur eines davon kaufen. Geordnet nach Nettogewinn = Wert − Preis; Ratio 1,0 oder mehr = lohnt sich bei deinen wöchentlichen Ausgaben.",
         "incomplete": "unvollständig"

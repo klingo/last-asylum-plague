@@ -6,7 +6,7 @@ import { startPage } from '../ui/page.js';
 import '../styles/pages/choices.css';
 import { urlParam, setUrlParams } from '../ui/url.js';
 import { mountValuationPage } from '../ui/valuation-page.js';
-import { selectCount } from '../core/items.js';
+import { selectCount, choicePools } from '../core/items.js';
 import { packageDisplayName, packageDisplayText, bundleLabel } from '../ui/labels.js';
 import { createItemPicker } from '../ui/item-picker.js';
 import { banknotesAmount, banknotesHtml, escapeHtml, itemIconSlot, hydrateItemIcons } from '../ui/html.js';
@@ -43,13 +43,21 @@ function collectChoiceSources(locale) {
     }
     const groups = new Map();
     for (const [pkgId, pkg] of Object.entries(data.packages)) {
-        if (pkg.choice?.choices?.length) {
-            result[`package:${pkgId}`] = {
-                name: packageDisplayText(pkg, locale),
+        // A package with several choice slots lists each slot as its own pool: `package:<id>:<slot>`.
+        const pools = choicePools(pkg.choice);
+        pools.forEach((pool, slot) => {
+            if (!pool.choices?.length) {
+                return;
+            }
+            const several = pools.length > 1;
+            result[several ? `package:${pkgId}:${slot + 1}` : `package:${pkgId}`] = {
+                name: several
+                    ? t('choices.slotName', { name: packageDisplayText(pkg, locale), slot: slot + 1 })
+                    : packageDisplayText(pkg, locale),
                 category: pkg.category,
-                choice: pkg.choice,
+                choice: pool,
             };
-        }
+        });
         if (pkg.exclusive_group && pkg.price > 0) {
             if (!groups.has(pkg.exclusive_group)) {
                 groups.set(pkg.exclusive_group, []);

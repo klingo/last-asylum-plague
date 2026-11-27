@@ -418,7 +418,7 @@
                     "id": "first_aid_expert",
                     "name": {
                         "en": "First Aid Expert",
-                        "de": ""
+                        "de": "急救专家"
                     },
                     "unlock_level": 60,
                     "kind": "passive",
@@ -799,7 +799,7 @@
                     "id": "super_frenzy",
                     "name": {
                         "en": "Super Frenzy",
-                        "de": ""
+                        "de": "超级狂热"
                     },
                     "unlock_level": 55,
                     "kind": "passive",
@@ -815,7 +815,7 @@
                     "id": "rally_vanguard",
                     "name": {
                         "en": "Rally Vanguard",
-                        "de": ""
+                        "de": "集结先锋"
                     },
                     "unlock_level": 55,
                     "kind": "passive",
@@ -830,7 +830,7 @@
                     "id": "riot_squad",
                     "name": {
                         "en": "Riot Squad",
-                        "de": ""
+                        "de": "防暴队"
                     },
                     "unlock_level": 60,
                     "kind": "passive",
@@ -852,7 +852,7 @@
                     "max_level": 5,
                     "description": {
                         "en": "Soldier training resource cost -{value}%",
-                        "de": ""
+                        "de": "训练士兵消耗的资源-{value}%"
                     },
                     "values": [1, 2, 3, 4, 5]
                 }
@@ -933,7 +933,7 @@
                 "id": "specialty_insight",
                 "name": {
                     "en": "Specialty Insight",
-                    "de": ""
+                    "de": "专长感悟"
                 },
                 "unlock_level": 35,
                 "kind": "active",
@@ -949,7 +949,7 @@
                 "id": "blazing_overload",
                 "name": {
                     "en": "Blazing Overload",
-                    "de": ""
+                    "de": "炽热过载"
                 },
                 "unlock_level": 40,
                 "kind": "passive",

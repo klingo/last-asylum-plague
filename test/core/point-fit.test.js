@@ -27,6 +27,25 @@ test('fit: VIP points take their share of the deal %, unless left out ("Count VI
     near5(zero.get('gem').value, 90);
 });
 
+test('fit: a package with two choice slots is the fixed pack of its best options', () => {
+    const slot = { choices: [{ gem: 5 }, { vip_points: 1 }] };
+    const sliced = fitItemPoints({
+        ...data,
+        packages: {
+            ...data.packages,
+            slot_pack: { price: 100, deal_percentage: 1500, contains: { diamonds: 100 }, choice: [slot, slot] },
+        },
+    }).points;
+    const fixed = fitItemPoints({
+        ...data,
+        packages: {
+            ...data.packages,
+            slot_pack: { price: 100, deal_percentage: 1500, contains: { diamonds: 100, gem: 10 } },
+        },
+    }).points;
+    near5(sliced.get('gem').value, fixed.get('gem').value);
+});
+
 test('hold-out: a pack the others explain is predicted, one with an item nobody else has is skipped', () => {
     const three = {
         ...data,

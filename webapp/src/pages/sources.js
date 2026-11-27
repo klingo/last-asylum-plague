@@ -13,6 +13,7 @@ import { planOptions } from '../ui/valuation.js';
 import { getSettings } from '../ui/settings.js';
 import { isOnSale, offerWeeklyCapacity } from '../core/catalog.js';
 import { createUnitCounter, sourcesListing } from '../core/item-sources.js';
+import { choicePools } from '../core/items.js';
 import { solveWeeklyPlan } from '../core/planner.js';
 import { offerPurchaseCost } from '../core/event-plan.js';
 import { createItemPicker } from '../ui/item-picker.js';
@@ -71,7 +72,7 @@ function buildSources(targetId) {
         [
             ...new Set([
                 ...Object.keys(contents || {}),
-                ...(choice?.choices || []).flatMap((option) => Object.keys(option)),
+                ...choicePools(choice).flatMap((pool) => pool.choices.flatMap((option) => Object.keys(option))),
             ]),
         ].filter((id) => id !== targetId && id !== countId && counter.ofItem(id).units > 0);
     const sources = [];

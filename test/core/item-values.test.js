@@ -72,7 +72,23 @@ test('currencies and unknown parts', () => {
 test('bundleValue: contents plus the best choice options', () => {
     const b = bundleValue({ contains: { gem: 2 }, choice: { choices: [{ ore: 1 }, { gem: 1 }] } }, values);
     assert.equal(b.value, 30);
-    assert.deepEqual(b.picked, [1]);
+    assert.deepEqual(b.picked, [[1]]);
     assert.equal(b.incomplete, false);
     assert.equal(bundleValue({}, values).value, 0);
+    assert.equal(bundleValue({}, values).picked, null);
+});
+
+test('bundleValue: every choice slot counts at its best options', () => {
+    const b = bundleValue(
+        {
+            contains: { gem: 2 },
+            choice: [
+                { choices: [{ ore: 1 }, { gem: 1 }] },
+                { select_count: 2, choices: [{ ore: 1 }, { gem: 1 }, { gem: 2 }] },
+            ],
+        },
+        values,
+    );
+    assert.equal(b.value, 20 + 10 + (20 + 10));
+    assert.deepEqual(b.picked, [[1], [2, 1]]);
 });

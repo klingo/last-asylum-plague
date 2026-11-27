@@ -9,7 +9,8 @@ its contents without a common value scale. The tool uses one:
 - **Points** — every item has a relative worth in points (diamonds = 1). Nothing is hardcoded: base items are
   fitted live from the game's own deal percentages (every pack says what its contents are worth in diamonds;
   exchange-shop prices are used as weak extra hints), everything else is derived from what it contains (chests:
-  expected contents, choice chests: best option, omni shards: the shard they replace, crafting chains: 4:1).
+  expected contents, choice chests: best option, a pack's own `choice` slots: the best option of each slot, omni
+  shards: the shard they replace, crafting chains: 4:1).
   Recipes (`crafted_from`, e.g. 800 UR Epigraph Shards → any UR Epigraph IV, 9 Lv.1 → 1 Lv.3 raven gear) cap an
   item at its crafting cost. Moon Coins and Star Moon Sigils are not modelled. Diamonds, event
   coins and dig-event pickaxes have no points of their own: they are worth what their shop offers buy (diamonds: the

@@ -2,7 +2,7 @@
     "metadata": {
         "game": "Last Asylum: Plague",
         "currency": "Banknotes",
-        "last_updated": "2026-11-19"
+        "last_updated": "2026-11-27"
     },
     "items": {
         "alliance_coins": {
@@ -1341,6 +1341,125 @@
                     "probability": 0.1
                 }
             ]
+        },
+        "lv4_attackers_claw": {
+            "name": {
+                "en": "Lv.4 Attacker's Claw",
+                "de": "Lv.4 Klaue des Angreifers"
+            },
+            "category": "raven",
+            "rarity": "ssr",
+            "image": "attackers_claw",
+            "value_equivalent": {
+                "lv1_attackers_claw": 27
+            }
+        },
+        "lv4_eye_of_perception": {
+            "name": {
+                "en": "Lv.4 Eye of Perception",
+                "de": "Lv.4 Auge der Wahrnehmung"
+            },
+            "category": "raven",
+            "rarity": "ssr",
+            "image": "eye_of_perception",
+            "value_equivalent": {
+                "lv1_eye_of_perception": 27
+            }
+        },
+        "lv4_feather_of_the_night": {
+            "name": {
+                "en": "Lv.4 Feather of the Night",
+                "de": "Lv.4 Feder der Nacht"
+            },
+            "category": "raven",
+            "rarity": "ssr",
+            "image": "feather_of_the_night",
+            "value_equivalent": {
+                "lv1_feather_of_the_night": 27
+            }
+        },
+        "lv4_heart_of_wisdom": {
+            "name": {
+                "en": "Lv.4 Heart of Wisdom",
+                "de": "Lv.4 Herz der Weisheit"
+            },
+            "category": "raven",
+            "rarity": "ssr",
+            "image": "heart_of_wisdom",
+            "value_equivalent": {
+                "lv1_heart_of_wisdom": 27
+            }
+        },
+        "lv4_raven_gear_chest": {
+            "name": {
+                "en": "Lv.4 Raven Gear Chest",
+                "de": "Lv.4 Raben-Ausrüstung Truhe"
+            },
+            "category": "chest",
+            "rarity": "ssr",
+            "type": "random",
+            "drop_table": [
+                {
+                    "contains": {
+                        "lv4_attackers_claw": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv4_eye_of_perception": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv4_feather_of_the_night": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv4_heart_of_wisdom": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv4_sharp_beak": 1
+                    },
+                    "probability": 0.16667
+                },
+                {
+                    "contains": {
+                        "lv4_tail_of_wind": 1
+                    },
+                    "probability": 0.16667
+                }
+            ]
+        },
+        "lv4_sharp_beak": {
+            "name": {
+                "en": "Lv.4 Sharp Beak",
+                "de": "Lv.4 Scharfer Schnabel"
+            },
+            "category": "raven",
+            "rarity": "ssr",
+            "image": "sharp_beak",
+            "value_equivalent": {
+                "lv1_sharp_beak": 27
+            }
+        },
+        "lv4_tail_of_wind": {
+            "name": {
+                "en": "Lv.4 Tail of Wind",
+                "de": "Lv.4 Schweif des Windes"
+            },
+            "category": "raven",
+            "rarity": "ssr",
+            "image": "tail_of_wind",
+            "value_equivalent": {
+                "lv1_tail_of_wind": 27
+            }
         },
         "lv5_alliance_chest": {
             "name": {
@@ -3113,6 +3232,303 @@
                     }
                 }
             }
+        },
+        "black_friday_i": {
+            "name": {
+                "en": "Black Friday I",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "black_friday",
+            "price": 499,
+            "deal_percentage": 5369,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 500,
+                "vip_points": 500,
+                "lv2_alliance_chest": 1
+            },
+            "choice": [
+                {
+                    "choices": [
+                        {
+                            "raven_essence": 23
+                        },
+                        {
+                            "resource_supply_ur": 10
+                        },
+                        {
+                            "study_scroll": 80
+                        },
+                        {
+                            "lv3_raven_gear_chest": 4
+                        }
+                    ]
+                },
+                {
+                    "choices": [
+                        {
+                            "universal_curio_shard": 20
+                        },
+                        {
+                            "raven_fruit": 100000
+                        },
+                        {
+                            "gearstone": 1000
+                        },
+                        {
+                            "skill_badge": 500
+                        },
+                        {
+                            "speedup": 300
+                        }
+                    ]
+                }
+            ]
+        },
+        "black_friday_ii": {
+            "name": {
+                "en": "Black Friday II",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "black_friday",
+            "price": 999,
+            "deal_percentage": 5551,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 1000,
+                "vip_points": 1000,
+                "lv3_alliance_chest": 1
+            },
+            "choice": [
+                {
+                    "choices": [
+                        {
+                            "raven_essence": 46
+                        },
+                        {
+                            "resource_supply_ur": 20
+                        },
+                        {
+                            "study_scroll": 160
+                        },
+                        {
+                            "lv3_raven_gear_chest": 9
+                        }
+                    ]
+                },
+                {
+                    "choices": [
+                        {
+                            "universal_curio_shard": 50
+                        },
+                        {
+                            "raven_fruit": 250000
+                        },
+                        {
+                            "gearstone": 2000
+                        },
+                        {
+                            "skill_badge": 1000
+                        },
+                        {
+                            "speedup": 500
+                        }
+                    ]
+                }
+            ]
+        },
+        "black_friday_iii": {
+            "name": {
+                "en": "Black Friday III",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "black_friday",
+            "price": 1999,
+            "deal_percentage": 5214,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 2000,
+                "vip_points": 2000,
+                "lv4_alliance_chest": 1
+            },
+            "choice": [
+                {
+                    "choices": [
+                        {
+                            "raven_essence": 85
+                        },
+                        {
+                            "resource_supply_ur": 35
+                        },
+                        {
+                            "ur_hero_omni_shard": 20
+                        },
+                        {
+                            "study_scroll": 300
+                        }
+                    ]
+                },
+                {
+                    "choices": [
+                        {
+                            "universal_curio_shard": 80
+                        },
+                        {
+                            "lv3_raven_gear_chest": 3
+                        },
+                        {
+                            "speedup": 1000
+                        }
+                    ]
+                },
+                {
+                    "choices": [
+                        {
+                            "raven_fruit": 400000
+                        },
+                        {
+                            "skill_badge": 2000
+                        },
+                        {
+                            "gearstone": 5000
+                        }
+                    ]
+                }
+            ]
+        },
+        "black_friday_iv": {
+            "name": {
+                "en": "Black Friday IV",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "black_friday",
+            "price": 4999,
+            "deal_percentage": 4857,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 5000,
+                "vip_points": 5000,
+                "lv5_alliance_chest": 1
+            },
+            "choice": [
+                {
+                    "choices": [
+                        {
+                            "raven_essence": 210
+                        },
+                        {
+                            "lv5_raven_gear_choice_chest": 2
+                        },
+                        {
+                            "ur_hero_omni_shard": 40
+                        },
+                        {
+                            "study_scroll": 550
+                        }
+                    ]
+                },
+                {
+                    "choices": [
+                        {
+                            "lv5_raven_gear_chest": 1
+                        },
+                        {
+                            "raven_fruit": 600000
+                        },
+                        {
+                            "skill_badge": 5000
+                        },
+                        {
+                            "gearstone": 12000
+                        }
+                    ]
+                },
+                {
+                    "choices": [
+                        {
+                            "universal_curio_shard": 200
+                        },
+                        {
+                            "antitoxin_level_supply_ur": 15
+                        },
+                        {
+                            "lv4_raven_gear_chest": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        "black_friday_v": {
+            "name": {
+                "en": "Black Friday V",
+                "de": ""
+            },
+            "category": "special_event",
+            "event_id": "black_friday",
+            "price": 9999,
+            "deal_percentage": 4575,
+            "purchase_limit": 1,
+            "limit_type": "event",
+            "contains": {
+                "diamonds": 10000,
+                "vip_points": 10000,
+                "lv6_alliance_chest": 1
+            },
+            "choice": [
+                {
+                    "choices": [
+                        {
+                            "raven_essence": 420
+                        },
+                        {
+                            "lv5_raven_gear_choice_chest": 3
+                        },
+                        {
+                            "curio_chest_ur": 3
+                        },
+                        {
+                            "study_scroll": 1100
+                        }
+                    ]
+                },
+                {
+                    "choices": [
+                        {
+                            "lv5_raven_gear_chest": 2
+                        },
+                        {
+                            "raven_fruit": 1200000
+                        },
+                        {
+                            "skill_badge": 12000
+                        },
+                        {
+                            "gearstone": 25000
+                        }
+                    ]
+                },
+                {
+                    "choices": [
+                        {
+                            "universal_curio_shard": 400
+                        },
+                        {
+                            "antitoxin_level_supply_ur": 30
+                        },
+                        {
+                            "lv4_raven_gear_chest": 4
+                        }
+                    ]
+                }
+            ]
         },
         "blades_out_deluxe_pack": {
             "name": {

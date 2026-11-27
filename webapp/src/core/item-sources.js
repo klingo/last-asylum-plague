@@ -15,7 +15,7 @@
  * Pure module (no DOM/i18n), shared with Node scripts.
  */
 
-import { itemKind, selectCount, substituteTargets } from './items.js';
+import { itemKind, selectCount, choicePools, substituteTargets } from './items.js';
 
 const NONE = Object.freeze({ units: 0, random: false });
 
@@ -158,8 +158,11 @@ function createUnitCounter(items, targetId) {
 
     function ofBundle({ contains, choice } = {}) {
         const fixed = ofContents(contains);
-        const picked = choice ? ofChoice(choice, new Set()) : NONE;
-        return { units: fixed.units + picked.units, random: fixed.random || picked.random };
+        const picked = choicePools(choice).map((pool) => ofChoice(pool, new Set()));
+        return {
+            units: picked.reduce((sum, r) => sum + r.units, fixed.units),
+            random: fixed.random || picked.some((r) => r.random),
+        };
     }
 
     return { ofItem: (id) => ofItem(id), ofBundle };

@@ -6,6 +6,7 @@ import { fitItemPoints, fitSensitivity, isDependent } from '../webapp/src/core/p
 import { resolveItemValues, bundleValue } from '../webapp/src/core/item-values.js';
 import { currencyFlows } from '../webapp/src/core/planner.js';
 import { currencyItemIds } from '../webapp/src/core/catalog.js';
+import { choicePools } from '../webapp/src/core/items.js';
 import { calendarSections, normalizePackData } from '../webapp/src/core/pack-data.js';
 import { WEEKDAYS, dayNumber, weekdayIndex } from '../webapp/src/core/schedule.js';
 import { AWAKENING_FRAMES, MAX_WEAPON_STARS } from '../webapp/src/core/hero-stars.js';
@@ -314,20 +315,24 @@ async function verifyData() {
         }
 
         function checkChoice(label, choice) {
-            if (!choice || !Array.isArray(choice.choices)) {
-                return;
-            }
-            for (let i = 0; i < choice.choices.length; i++) {
-                for (const itemId of Object.keys(choice.choices[i])) {
-                    referencedItemKeys.add(itemId);
-                    if (!itemKeys.has(itemId)) {
-                        reportError(
-                            'Package Reference',
-                            `${label} choice option #${i + 1} contains unresolvable item: "${itemId}"`,
-                        );
+            const pools = choicePools(choice);
+            pools.forEach((pool, slot) => {
+                if (!Array.isArray(pool.choices)) {
+                    return;
+                }
+                const where = pools.length > 1 ? `${label} choice slot #${slot + 1}` : `${label} choice`;
+                for (let i = 0; i < pool.choices.length; i++) {
+                    for (const itemId of Object.keys(pool.choices[i])) {
+                        referencedItemKeys.add(itemId);
+                        if (!itemKeys.has(itemId)) {
+                            reportError(
+                                'Package Reference',
+                                `${where} option #${i + 1} contains unresolvable item: "${itemId}"`,
+                            );
+                        }
                     }
                 }
-            }
+            });
         }
 
         for (const [pkgId, pkg] of Object.entries(packages)) {

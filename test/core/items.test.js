@@ -1,6 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { isChoiceItem, isRandomItem, itemKind, selectCount, substituteTargets } from '../../webapp/src/core/items.js';
+import {
+    choicePools,
+    isChoiceItem,
+    isRandomItem,
+    itemKind,
+    selectCount,
+    substituteTargets,
+} from '../../webapp/src/core/items.js';
 
 test('an item has the first kind that matches', () => {
     assert.equal(itemKind(undefined), null);
@@ -25,6 +32,13 @@ test('a choice picks one option unless it says more', () => {
     assert.equal(selectCount({ choices: [] }), 1);
     assert.equal(selectCount({ choices: [], select_count: 3 }), 3);
     assert.equal(selectCount(undefined), 1);
+});
+
+test('a package has one choice slot, or a list of them', () => {
+    const pool = { choices: [{ a: 1 }, { b: 1 }] };
+    assert.deepEqual(choicePools(undefined), []);
+    assert.deepEqual(choicePools(pool), [pool]);
+    assert.deepEqual(choicePools([pool, pool]), [pool, pool]);
 });
 
 test('what an item substitutes for, as item and amount', () => {
