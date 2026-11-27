@@ -80,6 +80,12 @@ const NAV_GROUPS = [
                 description: 'nav.descriptions.seasonalPasses',
             },
             {
+                page: 'custom-pack',
+                href: 'custom-pack.html',
+                label: 'nav.customPack',
+                description: 'nav.descriptions.customPack',
+            },
+            {
                 page: 'spend-rewards',
                 href: 'spend-rewards.html',
                 label: 'nav.spendRewards',

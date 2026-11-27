@@ -377,11 +377,12 @@ function createItemPicker({
             close();
         }
     });
-    document.addEventListener('pointerdown', (event) => {
+    const closeOnOutsideClick = (event) => {
         if (isOpen() && !container.contains(event.target)) {
             close();
         }
-    });
+    };
+    document.addEventListener('pointerdown', closeOnOutsideClick);
 
     renderTrigger();
 
@@ -425,6 +426,12 @@ function createItemPicker({
         reset() {
             selectedId = '';
             renderTrigger();
+        },
+        /** For a picker whose row is removed: closes it and stops listening to the page. */
+        destroy() {
+            close();
+            document.removeEventListener('pointerdown', closeOnOutsideClick);
+            panel.remove();
         },
     };
 }

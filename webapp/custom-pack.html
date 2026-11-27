@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/assets/ui/favicon.svg" />
+        <title data-i18n="docTitle.customPack"></title>
+    </head>
+    <body>
+        <header class="app-header"></header>
+        <main>
+            <section class="card">
+                <h2 data-i18n="customPack.heading"></h2>
+                <p class="page-lead" data-i18n="customPack.description"></p>
+                <details class="page-details">
+                    <summary data-i18n="common.howItWorks"></summary>
+                    <p data-i18n="customPack.details"></p>
+                </details>
+                <div id="valuation-panel"></div>
+
+                <div class="custom-builder">
+                    <div class="custom-section">
+                        <h3 data-i18n="customPack.itemsHeading"></h3>
+                        <p class="text-dim" data-i18n="customPack.itemsHint"></p>
+                        <div id="items-list"></div>
+                        <button
+                            type="button"
+                            id="add-item"
+                            class="btn-secondary"
+                            data-i18n="customPack.addItem"
+                        ></button>
+                    </div>
+
+                    <div class="custom-section">
+                        <h3 data-i18n="customPack.slotsHeading"></h3>
+                        <p class="text-dim" data-i18n="customPack.slotsHint"></p>
+                        <div id="slots-list"></div>
+                        <button
+                            type="button"
+                            id="add-slot"
+                            class="btn-secondary"
+                            data-i18n="customPack.addSlot"
+                        ></button>
+                    </div>
+                </div>
+
+                <div class="form-row custom-section">
+                    <div class="field field--narrow">
+                        <label for="price-input" data-i18n="customPack.priceLabel"></label>
+                        <input id="price-input" type="number" min="1" step="1" list="price-options" />
+                        <datalist id="price-options">
+                            <option value="99"></option>
+                            <option value="199"></option>
+                            <option value="399"></option>
+                            <option value="499"></option>
+                            <option value="999"></option>
+                            <option value="1999"></option>
+                            <option value="2499"></option>
+                            <option value="4999"></option>
+                            <option value="9999"></option>
+                        </datalist>
+                    </div>
+                    <div class="field field--narrow">
+                        <label for="deal-input" data-i18n="customPack.dealLabel"></label>
+                        <input id="deal-input" type="number" min="1" step="1" />
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2 data-i18n="customPack.resultHeading"></h2>
+                <div id="result-empty" class="empty-state" data-i18n="customPack.empty"></div>
+                <div id="result" hidden>
+                    <div id="verdict"></div>
+                    <p class="summary-line" id="deal-check" hidden></p>
+                    <h3 data-i18n="customPack.contentsHeading"></h3>
+                    <div class="table-wrap"><table id="contents-table"></table></div>
+                    <div id="slot-tables"></div>
+                </div>
+            </section>
+        </main>
+        <footer class="app-footer"><span>Klingo's Companion</span></footer>
+        <script type="module" src="/src/pages/custom-pack.js"></script>
+    </body>
+</html>

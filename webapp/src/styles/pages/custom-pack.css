@@ -1,0 +1,74 @@
+/* Custom Package: the builder's rows (item picker, amount, remove) and its choose-1 slots. */
+.custom-section {
+    margin-top: 18px;
+}
+
+.custom-section h3 {
+    margin: 0 0 2px;
+    font-size: 0.95rem;
+}
+
+/* Items and choose-1 slots side by side on wide screens. */
+.custom-builder {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 32px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .custom-builder {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .custom-row .item-picker {
+        max-width: none;
+    }
+}
+
+.custom-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.custom-row .item-picker {
+    flex: 1;
+    min-width: 0;
+    max-width: 340px;
+}
+
+.custom-row__qty {
+    width: 110px;
+    flex: none;
+}
+
+.custom-slot {
+    margin-bottom: 12px;
+    padding: 12px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.custom-slot__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* The options a slot offers: the one counted is marked, the others fade. */
+.custom-option--other {
+    color: var(--text-dim);
+}
+
+#result h3 {
+    margin: 16px 0 6px;
+    font-size: 0.95rem;
+}

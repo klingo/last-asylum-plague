@@ -6,7 +6,7 @@ change the project: the [README](../README.md).
 The top nav starts with **Today** (the home page) and **Calendar**, then groups the other pages into menus (`NAV_GROUPS` in
 `webapp/src/ui/nav.js`; each page's short description is the `title` of its link: shown on hover, read out by
 screen readers): **Shop** (Deal Ranking, Event Shops, Seasonal
-Passes, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
+Passes, Custom Package, Spend Rewards), **Items** (Item Sources, Best Pick, Compare Items, Item Priorities),
 **Heroes** (My Heroes, Gear Upgrade Path, Skill Upgrade Path, Raven Epigraph) and **Lord** (Lord Specialty). The page files keep their names (`rankings.html`,
 `events.html`, `gear.html`, ...), so saved links still work. The Sync button (shown once the build has a sync server) and the cogwheel at the right of the header open **Sync** and
 **Settings**.
@@ -136,6 +136,14 @@ deleted after 180 days without use; the button stays hidden until the build has 
   pre-selected, and the Calendar's pass bars link here): its banner and when it runs, its price, everything the
   whole pass gives (all tiers) with each item's worth, and the pass's worth against its price as a ratio, plus the
   tiers your weekly plan buys.
+- **Custom Package** (`custom-pack.html`) — for a pack that isn't in the data (a one-time offer): up to 10 items with
+  amounts, up to 3 "choose 1" slots of up to 5 options each (a slot counts at its best option, as a data pack's `choice`
+  does), and the price in Banknotes. It gets the verdict of every pack on the Deal Ranking, worth ÷ price at your weekly
+  spend (1.0 or more = worth buying), with the gain, the place it would take among this week's packs and what each item
+  adds; the pack never enters the weekly plan. An optional deal % (as the game shows it) only checks the entries: the
+  game's claim (price × deal % ÷ 100 diamonds) against the points the model makes of the contents, unweighted by your
+  priorities; a gap beyond 1.5× either way is flagged (a mistyped amount, say). The pack is kept in the page's link
+  (`?items=<id>:<qty>,...&c1=...&c2=...&c3=...&price=&deal=`), so a reload or a shared link opens the same pack.
 - **My Heroes** (`heroes.html`) — what you have of each of your heroes, per faction (a switch picks Warriors, Rangers or
   Warlocks; the heroes stand as the squad does). Five star icons per hero show its stars, yellow up to 5 and red from 6
   on (the red ones replace the yellow ones), set from 0 to 10 with a slider under them in whole stars (the game's fifths aren't

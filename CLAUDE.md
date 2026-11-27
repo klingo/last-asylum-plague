@@ -101,7 +101,7 @@ it, the shared state is `ctx` in `state.js`), which starts with `startPage` (`ui
   file. Each module's header comment says what it does; read it before changing the module. Logic a page needs goes
   here, not into the page: `settings-model.js` (defaults, priorities, the planner options the settings make),
   `event-plan.js` and `plan-view.js` (what the Events, Today and Ranking pages show of a plan), `step-analysis.js` (the
-  "spend more" tables), `gear-progress.js` (the gear page's progress), `skill-path.js` (the Skill Upgrade Path page's steps and levels), `epigraph-plan.js` (the Raven Epigraph page's gaps and chest simulation), `epigraph-effect.js` (the texts of its epigraphs with their numbers), plus the page-specific parts of `catalog.js`,
+  "spend more" tables), `gear-progress.js` (the gear page's progress), `skill-path.js` (the Skill Upgrade Path page's steps and levels), `epigraph-plan.js` (the Raven Epigraph page's gaps and chest simulation), `custom-pack.js` (the Custom Package page's URL format, slots and deal % check), `epigraph-effect.js` (the texts of its epigraphs with their numbers), plus the page-specific parts of `catalog.js`,
   `schedule.js`, `mine.js` and `item-sources.js`.
 - `webapp/src/ui/` holds the browser helpers: `valuation.js` (the worth model on top of the planner), `valuation-page.js`
   (the setup bar and the valuation every valuation page starts with), `settings.js` and `storage.js` (localStorage: every key is listed in `STORAGE_KEYS`, prefix `lapkc_`; a new one goes there),
